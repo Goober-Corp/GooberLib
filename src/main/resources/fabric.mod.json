@@ -10,7 +10,8 @@
   "icon": "assets/gooberlib/icon.png",
   "environment": "client",
   "entrypoints": {
-    "main": [ "com.goobercorp.gooberlib.GooberLibEntrypoint" ]
+    "main": [ "com.goobercorp.gooberlib.GooberLibEntrypoint" ],
+    "modmenu": ["com.goobercorp.gooberlib.ModMenuIntegration"]
   },
   "mixins": [
     "gooberlib.mixins.json"

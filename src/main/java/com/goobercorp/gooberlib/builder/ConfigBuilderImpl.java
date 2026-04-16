@@ -19,6 +19,7 @@ BULLSHIT CODE
 
  */
 class ConfigBuilderImpl implements GooberConfigBuilder {
+    //TODO where you have a field of a certain type and many options that set fields in that struct
     private final List<ConfigCategory> categories = new ArrayList<>();
 
     private final Class<?> configClass; // is this even needed?

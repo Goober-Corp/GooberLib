@@ -1,6 +1,7 @@
 package com.goobercorp.gooberlib;
 
 import com.goobercorp.gooberlib.asm.ModClassVisitor;
+import com.goobercorp.gooberlib.builder.BuiltConfig;
 import com.google.common.reflect.ClassPath;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 public class GooberLibEntrypoint implements ModInitializer {
     private static final String MOD_ID = "gooberlib";
+    protected static Map<String, BuiltConfig> builtConfigMap = new HashMap<>();
 
     @Override
     public void onInitialize() {
@@ -26,7 +28,7 @@ public class GooberLibEntrypoint implements ModInitializer {
                 System.out.printf("Discovered %d configs in %dms%n", discoveryResult.className2ModId().size(),
                         Duration.ofNanos(System.nanoTime() - start).toMillis());
 
-                ConfigDiscovery.flatten(discoveryResult);
+                builtConfigMap = ConfigDiscovery.flatten(discoveryResult);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

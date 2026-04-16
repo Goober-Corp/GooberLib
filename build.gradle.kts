@@ -30,12 +30,14 @@ loom {
 
 repositories {
     mavenCentral()
+    maven("https://maven.terraformersmc.com/")
 }
 
 val minecraftVersion: String by project
 val loaderVersion: String by project
 
 dependencies {
+    modImplementation("com.terraformersmc:modmenu:17.0.0")
     minecraft("com.mojang:minecraft:${minecraftVersion}")
     mappings(libs.yarn)
     modImplementation("net.fabricmc:fabric-loader:${loaderVersion}")

@@ -5,6 +5,7 @@ import com.goobercorp.gooberlib.asm.ModClassVisitor;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.google.common.reflect.ClassPath;
+import net.minecraft.client.gui.screen.Screen;
 import org.objectweb.asm.ClassReader;
 
 import java.io.IOException;
@@ -47,7 +48,7 @@ class ConfigDiscovery {
         return new DiscoveryResult(className2ModId, className2AccessorMethod);
     }
 
-    static void flatten(DiscoveryResult discoveryResult) {
+    static Map<String, BuiltConfig> flatten(DiscoveryResult discoveryResult) {
         ClassLoader classLoader = getDiscoveryClassLoader();
 
         final Map<String, BuiltConfig> flattened = new HashMap<>();
@@ -84,6 +85,14 @@ class ConfigDiscovery {
                         throw new RuntimeException(e);
                     }
                 });
+        return flattened;
+    }
+    //TODO: stop being retarded
+    public static BuiltConfig getBuiltConfig(String modid){
+        return GooberLibEntrypoint.builtConfigMap.get(modid);
+    }
+    public static Map<String, BuiltConfig> getConfigs(){
+        return GooberLibEntrypoint.builtConfigMap;
     }
 
     private static ClassLoader getDiscoveryClassLoader() {
