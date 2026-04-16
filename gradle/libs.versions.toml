@@ -1,0 +1,12 @@
+[versions]
+loom = "1.16+"
+
+yarn = "1.21.11+build.4"
+fabric_api = "0.141.3+1.21.11"
+
+[libraries]
+yarn = { module = "net.fabricmc:yarn", version.ref = "yarn" }
+fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric_api" }
+
+[plugins]
+loom = { id = "fabric-loom", version.ref = "loom" }
