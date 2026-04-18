@@ -8,7 +8,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.function.Consumer;
 
 /*
 
@@ -89,12 +88,12 @@ class ConfigBuilderImpl implements GooberConfigBuilder {
 
         @Override
         public GooberFieldBuilder<GooberCategoryBuilder> field(String name) {
-            return new FieldBuilder<>(this, name);
+            return new OptionBuilder<>(this, name);
         }
 
         @Override
-        public void register(String name, Metadata metadata) {
-            elements.add(new ConfigOption(metadata, name));
+        public void register(String name, Metadata metadata, List<ConfigOption> children) {
+            elements.add(new ConfigOption(metadata, name, children));
         }
 
         class SectionBuilder implements GooberSectionBuilder, FieldRegistry {
@@ -126,17 +125,17 @@ class ConfigBuilderImpl implements GooberConfigBuilder {
 
             @Override
             public GooberFieldBuilder<GooberSectionBuilder> field(String name) {
-                return new FieldBuilder<>(this, name);
+                return new OptionBuilder<>(this, name);
             }
 
             @Override
-            public void register(String name, Metadata metadata) {
-                options.add(new ConfigOption(metadata, name));
+            public void register(String name, Metadata metadata, List<ConfigOption> children) {
+                options.add(new ConfigOption(metadata, name, children));
             }
         }
     }
 
-    static class FieldBuilder<TB extends OptionHolder<TB>, T extends OptionHolder<TB> & FieldRegistry> implements GooberFieldBuilder<TB> {
+    static class OptionBuilder<TB extends OptionHolder<TB>, T extends OptionHolder<TB> & FieldRegistry> implements GooberFieldBuilder<TB> {
         private final T parent;
 
         private final List<ConfigOption> children = new ArrayList<>();
@@ -145,9 +144,14 @@ class ConfigBuilderImpl implements GooberConfigBuilder {
         private Text name;
         private @Nullable Text description;
 
-        FieldBuilder(T parent, String fieldName) {
+        OptionBuilder(T parent, String fieldName) {
             this.parent = parent;
             this.fieldName = fieldName;
+        }
+
+        @Override
+        public GooberChildAppender<TB> withChildren() {
+            return new ChildAppender();
         }
 
         @Override
@@ -155,7 +159,7 @@ class ConfigBuilderImpl implements GooberConfigBuilder {
         public TB build() {
             Validate.notNull(name, "name must not be null");
 
-            parent.register(fieldName, new Metadata(name, description));
+            parent.register(fieldName, new Metadata(name, description), children);
             return (TB) parent;
         }
 
@@ -170,9 +174,35 @@ class ConfigBuilderImpl implements GooberConfigBuilder {
             this.description = description;
             return this;
         }
+
+        class ChildAppender implements GooberChildAppender<TB>, FieldRegistry {
+            @Override
+            public GooberFieldBuilder<GooberChildAppender<TB>> field(String name) {
+                return new OptionBuilder<>(this, name);
+            }
+
+            @Override
+            public GooberFieldBuilder<GooberChildAppender<TB>> child(String fieldName) {
+                return field(fieldName);
+            }
+
+            @Override
+            public void register(String name, Metadata metadata, List<ConfigOption> children) {
+                children.add(new ConfigOption(metadata, name, children));
+            }
+
+            @Override
+            @SuppressWarnings("unchecked")
+            public TB build() {
+                Validate.notNull(name, "name must not be null");
+
+                parent.register(fieldName, new Metadata(name, description), children);
+                return (TB) parent;
+            }
+        }
     }
 
     interface FieldRegistry {
-        void register(String name, MetadataHolder.Metadata metadata);
+        void register(String name, MetadataHolder.Metadata metadata, List<ConfigOption> children);
     }
 }

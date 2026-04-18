@@ -18,10 +18,11 @@ public class TestConfig {
                 .name("A section")
                     .field("int2")
                     .name("Int field in a section")
-                    .build()
+                    .withChildren()
+                        .child("int3")
+                        .name("int3 name")
+                        .build()
 
-                    .field("int3")
-                    .name("int3 name")
                     .build()
                 .build()
             .build();
