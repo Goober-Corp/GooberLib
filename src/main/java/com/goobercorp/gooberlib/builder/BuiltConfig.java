@@ -1,6 +1,5 @@
 package com.goobercorp.gooberlib.builder;
 
-import com.goobercorp.gooberlib.ConfigCategory;
 import com.google.gson.Gson;
 import net.minecraft.text.Text;
 

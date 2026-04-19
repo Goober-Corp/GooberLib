@@ -1,5 +1,7 @@
-package com.goobercorp.gooberlib;
+package com.goobercorp.gooberlib.util;
 
+import com.goobercorp.gooberlib.GooberLibEntrypoint;
+import com.goobercorp.gooberlib.annotations.GooberConfig;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.google.common.reflect.ClassPath;
@@ -15,7 +17,7 @@ import java.util.Map;
 
 import static org.apache.commons.lang3.function.Failable.rethrow;
 
-class ConfigDiscovery {
+public class ConfigDiscovery {
     private static final String[] BLACKLISTED_PACKAGES = {
             "org.objectweb", "net.minecraft", "com.sun", "it.unimi",
             "org.lwjgl", "org.slf4j", "com.mojang", "net.fabricmc",
@@ -25,7 +27,7 @@ class ConfigDiscovery {
     }; // TODO improve hacky approach
 	// TODO: figure out what this is for
 
-    static Map<String, BuiltConfig> discover() throws IOException {
+    public static Map<String, BuiltConfig> discover() throws IOException {
         final Map<String, BuiltConfig> flattened = new HashMap<>();
 
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();

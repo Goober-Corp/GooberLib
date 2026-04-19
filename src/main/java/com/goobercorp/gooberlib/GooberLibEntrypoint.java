@@ -1,6 +1,7 @@
 package com.goobercorp.gooberlib;
 
 import com.goobercorp.gooberlib.builder.BuiltConfig;
+import com.goobercorp.gooberlib.util.ConfigDiscovery;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 
@@ -13,7 +14,7 @@ import static org.apache.commons.lang3.function.Failable.rethrow;
 
 public class GooberLibEntrypoint implements ModInitializer {
     private static final String MOD_ID = "gooberlib";
-    protected static Map<String, BuiltConfig> builtConfigMap = new HashMap<>();
+    public static Map<String, BuiltConfig> builtConfigMap = new HashMap<>();
 
     @Override
     public void onInitialize() {

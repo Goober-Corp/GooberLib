@@ -1,9 +1,10 @@
-package com.goobercorp.gooberlib;
+package com.goobercorp.gooberlib.compat;
 
+import com.goobercorp.gooberlib.screen.GooberScreen;
+import com.goobercorp.gooberlib.util.ConfigDiscovery;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 
-import java.io.ObjectInputFilter;
 import java.util.HashMap;
 import java.util.Map;
 

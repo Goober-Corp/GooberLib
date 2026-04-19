@@ -11,7 +11,7 @@
   "environment": "client",
   "entrypoints": {
     "main": [ "com.goobercorp.gooberlib.GooberLibEntrypoint" ],
-    "modmenu": ["com.goobercorp.gooberlib.ModMenuIntegration"]
+    "modmenu": ["com.goobercorp.gooberlib.compat.ModMenuIntegration"]
   },
   "mixins": [
     "gooberlib.mixins.json"

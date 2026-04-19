@@ -1,6 +1,4 @@
-package com.goobercorp.gooberlib;
-
-import com.goobercorp.gooberlib.builder.MetadataHolder;
+package com.goobercorp.gooberlib.builder;
 
 import java.util.List;
 

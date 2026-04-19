@@ -1,5 +1,6 @@
-package com.goobercorp.gooberlib;
+package com.goobercorp.gooberlib.screen;
 
+import com.goobercorp.gooberlib.builder.ConfigCategory;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
 import com.goobercorp.gooberlib.builder.ConfigSection;
 import com.goobercorp.gooberlib.mixin.ClickableWidgetAcessor;

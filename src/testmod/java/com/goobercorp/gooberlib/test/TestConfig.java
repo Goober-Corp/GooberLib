@@ -1,6 +1,6 @@
 package com.goobercorp.gooberlib.test;
 
-import com.goobercorp.gooberlib.GooberConfig;
+import com.goobercorp.gooberlib.annotations.GooberConfig;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import net.minecraft.text.Text;
 
