@@ -1,18 +1,19 @@
 package com.goobercorp.gooberlib;
 
-import com.goobercorp.gooberlib.asm.MethodResult;
-import com.goobercorp.gooberlib.asm.ModClassVisitor;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.google.common.reflect.ClassPath;
-import net.minecraft.client.gui.screen.Screen;
-import org.objectweb.asm.ClassReader;
+import org.spongepowered.asm.mixin.transformer.ClassInfo;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static org.apache.commons.lang3.function.Failable.rethrow;
 
 class ConfigDiscovery {
     private static final String[] BLACKLISTED_PACKAGES = {
@@ -22,69 +23,53 @@ class ConfigDiscovery {
             "io.netty", "com.ibm", "com.llamalad7.mixinextras",
             "oshi", "org.spongepowered", "java"
     }; // TODO improve hacky approach
+	// TODO: figure out what this is for
 
-    static DiscoveryResult discover() throws IOException {
-        Map<String, String> className2ModId = new HashMap<>();
-        Map<String, MethodResult> className2AccessorMethod = new HashMap<>();
-
-        ModClassVisitor modClassVisitor = new ModClassVisitor(className2ModId::put, className2AccessorMethod::put);
-        ClassLoader classLoader = getDiscoveryClassLoader();
-
-        ClassPath.from(classLoader)
-                .getAllClasses()
-                .forEach(classInfo -> {
-                    String packageName = classInfo.getPackageName();
-                    for (String blacklistedPackage : BLACKLISTED_PACKAGES)
-                        if (packageName.startsWith(blacklistedPackage)) return;
-
-                    try {
-                        ClassReader classReader = new ClassReader(classInfo.asByteSource().read());
-                        classReader.accept(modClassVisitor, 0);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-
-        return new DiscoveryResult(className2ModId, className2AccessorMethod);
-    }
-
-    static Map<String, BuiltConfig> flatten(DiscoveryResult discoveryResult) {
-        ClassLoader classLoader = getDiscoveryClassLoader();
-
+    static Map<String, BuiltConfig> discover() throws IOException {
         final Map<String, BuiltConfig> flattened = new HashMap<>();
-        discoveryResult.className2ModId()
-                .forEach((className, modId) -> {
-                    if (flattened.containsKey(modId))
-                        throw new IllegalStateException("Multiple config classes found for the same mod id: %s"
-                                .formatted(modId));
 
-                    try {
-                        Class<?> configClass = Class.forName(className.replace('/', '.'));
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-                        MethodResult accessorMethodResult = discoveryResult.className2AccessorMethod().get(className);
-                        if (accessorMethodResult == null)
-                            throw new IllegalStateException("Config class " + configClass.getName() + " has no defined GooberBuilderAccessor method");
+		ClassPath.from(classLoader)
+				.getAllClasses()
+				.forEach(classInfo -> {
+					try {
+						String className = classInfo.getName();
+						if (ClassInfo.isMixin(className)) return;
+						for (String blacklistedPackage : BLACKLISTED_PACKAGES)
+							if (classInfo.getPackageName().startsWith(blacklistedPackage)) return;
+						if (classInfo.getPackageName().isEmpty()) return;
+						if (classInfo.getName().endsWith("module-info")) return;
+						if (classInfo.getPackageName().contains("META-INF")) return;
 
-                        Method accessorMethod = ReflectionUtil.getMethod(classLoader, configClass, accessorMethodResult);
-                        int mods = accessorMethod.getModifiers();
+						Class<?> configClass = Class.forName(className, false, classLoader);
 
-                        if (!Modifier.isStatic(mods))
-                            throw new IllegalStateException("Accessor method is not static");
+						if (configClass.isAnnotationPresent(GooberConfig.class)) {
+							String modId = configClass.getAnnotation(GooberConfig.class).modId();
+							if (flattened.containsKey(modId)) {
+								throw new IllegalStateException("Multiple config classes found for the same mod id: %s".formatted(modId));
+							}
 
-                        if (accessorMethod.getReturnType() != GooberConfigBuilder.class)
-                            throw new IllegalStateException("Accessor method does not return GooberConfigBuilder");
+							List<Field> builderFields = Arrays.stream(configClass.getDeclaredFields())
+									.filter(f -> f.getType() == GooberConfigBuilder.class)
+									.filter(f -> Modifier.isPublic(f.getModifiers()))
+									.filter(f -> Modifier.isStatic(f.getModifiers()))
+									.filter(f -> Modifier.isFinal(f.getModifiers()))
+									.toList();
 
-                        GooberConfigBuilder gooberConfigBuilder = (GooberConfigBuilder) accessorMethod.invoke(null);
+							if (builderFields.isEmpty())
+								throw new IllegalStateException("Builder field does not exist, is not public, is not static, is not final, or is not of type GooberConfigBuilder");
+							if (builderFields.size() > 1)
+								throw new IllegalStateException("Please only have one builder field");
 
-                        flattened.put(modId, gooberConfigBuilder.build());
-                    } catch (ClassNotFoundException cnf) {
-                        throw new RuntimeException("Couldn't load config class. why???", cnf);
-                    } catch (NoSuchMethodException nsm) {
-                        throw new RuntimeException("Discovered method doesn't exist. why???", nsm);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+							Field builderField = builderFields.getFirst();
+							GooberConfigBuilder gooberConfigBuilder = (GooberConfigBuilder) builderField.get(null);
+							flattened.put(modId, gooberConfigBuilder.build());
+						}
+					} catch (IllegalAccessException | ClassNotFoundException e) {
+						throw rethrow(e);
+					}
+				});
         return flattened;
     }
     //TODO: stop being retarded
@@ -94,10 +79,4 @@ class ConfigDiscovery {
     public static Map<String, BuiltConfig> getConfigs(){
         return GooberLibEntrypoint.builtConfigMap;
     }
-
-    private static ClassLoader getDiscoveryClassLoader() {
-        return GooberConfig.class.getClassLoader();
-    }
-
-    record DiscoveryResult(Map<String, String> className2ModId, Map<String, MethodResult> className2AccessorMethod) {}
 }

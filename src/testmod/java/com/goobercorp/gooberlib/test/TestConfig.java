@@ -1,12 +1,13 @@
-package com.goobercorp.gooberlib;
+package com.goobercorp.gooberlib.test;
 
+import com.goobercorp.gooberlib.GooberConfig;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import net.minecraft.text.Text;
 
+@SuppressWarnings("unused")
 @GooberConfig(modId = "gooberlib")
 public class TestConfig {
-
-    private static final GooberConfigBuilder BUILDER = GooberConfigBuilder.create()
+    public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.create()
             .title(Text.of("YEAH!!!"))
             .category()
             .name("Int fields")
@@ -31,10 +32,4 @@ public class TestConfig {
     public static int int1;
     public static int int2;
     public static int int3;
-
-    @GooberBuilderAccessor
-    public static GooberConfigBuilder getBuilder() {
-        return BUILDER;
-    }
-
 }
