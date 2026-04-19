@@ -6,6 +6,9 @@
   "mixins": [
   ],
   "client": [
+    "ClickableWidgetAcessor",
+    "ScreenMixin",
+    "TooltipAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
