@@ -5,7 +5,7 @@ import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import net.minecraft.text.Text;
 
 @SuppressWarnings("unused")
-@GooberConfig(modId = "gooberlib")
+@GooberConfig(modId = "testmod")
 public class TestConfig {
     public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.create()
             .title(Text.of("YEAH!!!"))
@@ -24,9 +24,14 @@ public class TestConfig {
                         .child("int3")
                         .name("int3 name")
                         .build()
-
                     .build()
                 .build()
+            .section(Text.of("second section yknow how it be"))
+            .build()
+            .build()
+            .category(Text.of("second category"))
+            .section(Text.of("second page section"))
+            .build()
             .build();
 
     public static int int1;

@@ -1,7 +1,7 @@
 package com.goobercorp.gooberlib.screen;
 
-import com.goobercorp.gooberlib.builder.ConfigCategory;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
+import com.goobercorp.gooberlib.builder.ConfigCategory;
 import com.goobercorp.gooberlib.builder.ConfigSection;
 import com.goobercorp.gooberlib.mixin.ClickableWidgetAcessor;
 import com.goobercorp.gooberlib.mixin.ScreenMixin;
@@ -10,11 +10,17 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tab.GridScreenTab;
+import net.minecraft.client.gui.tab.Tab;
+import net.minecraft.client.gui.tab.TabManager;
 import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.TabNavigationWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -23,6 +29,13 @@ public class GooberScreen extends Screen {
     private final Screen parent;
     private Text descriptionText = Text.of("");
     private float descriptionAnimationProgress = 0;
+    private float categoryHoverProgress = 0;
+    private float screenCategoryAnimationState = 0;
+    private TabNavigationWidget tabNavigationWidget;
+    private final TabManager tabManager = new TabManager(element -> {
+        ClickableWidget var10000 = this.addDrawableChild(element);
+    }, this::remove);
+    Tab[] tabs;
 
     public GooberScreen(BuiltConfig config, Screen parent) {
         super(config.title());
@@ -33,13 +46,25 @@ public class GooberScreen extends Screen {
     @Override
     protected void init() {
         super.init();
+        tabs = new GridScreenTab[config.categories().size()];
+        for (int i = 0; i < config.categories().size(); i++) {
+            tabs[i] = new GridScreenTab(config.categories().get(i).metadata().name());
+        }
+        //TODO: implement own widget that is upside down
+        tabNavigationWidget = TabNavigationWidget.builder(tabManager, width)
+                .tabs(tabs)
+                .build();
+        addSelectableChild(tabNavigationWidget);
+        tabNavigationWidget.selectTab(0, false);
+        this.tabNavigationWidget.init();
         // padding
         int y = 25;
-        //TODO: tabs
+//        //TODO: tabs
         for (ConfigCategory c : config.categories()) {
             for (Object o : c.elements()) {
                 if (o instanceof ConfigSection) {
-                    TextWidget t = new TextWidget((MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - textRenderer.getWidth(((ConfigSection) o).metadata().name()) / 2, y, 100, textRenderer.fontHeight, ((ConfigSection) o).metadata().name(), textRenderer);
+                    TextWidget t = new TextWidget(((MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - textRenderer.getWidth(((ConfigSection) o).metadata().name()) / 2) * (config.categories().indexOf(c) + 1), y, 0, textRenderer.fontHeight, ((ConfigSection) o).metadata().name(), textRenderer);
+                    t.setMaxWidth(Integer.MAX_VALUE);
                     //check for null
                     if (((ConfigSection) o).metadata().description() != null) {
                         t.setTooltip(Tooltip.of(((ConfigSection) o).metadata().description()));
@@ -62,16 +87,30 @@ public class GooberScreen extends Screen {
 
     @Override
     public void render(DrawContext drawContext, int i, int j, float f) {
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().translate(-width * screenCategoryAnimationState, 0);
         super.render(drawContext, i, j, f);
+        drawContext.getMatrices().popMatrix();
         AtomicBoolean animate = new AtomicBoolean(false);
         ((ScreenMixin) this).drawables().forEach(drawable -> {
             if (drawable instanceof TextWidget) {
                 if (((TextWidget) drawable).isHovered()) {
                     animate.set(true);
-                    descriptionText = ((TooltipAccessor) ((ClickableWidgetAcessor) drawable).tooltip().getTooltip()).content();
+                    if (((TooltipAccessor) ((ClickableWidgetAcessor) drawable).tooltip().getTooltip()) != null) {
+                        descriptionText = ((TooltipAccessor) ((ClickableWidgetAcessor) drawable).tooltip().getTooltip()).content();
+                    } else {
+                        descriptionText = Text.of("");
+                    }
                 }
             }
         });
+        categoryHoverProgress = (float) ease(categoryHoverProgress, tabNavigationWidget.isMouseOver(i, j) ? 1 : 0, 15);
+        int yeah = ArrayUtils.indexOf(tabs, tabManager.getCurrentTab());
+        screenCategoryAnimationState = (float) ease(screenCategoryAnimationState, yeah == -1 ? 0 : yeah, 15);
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().translate(0, -26 * (1 - categoryHoverProgress));
+        tabNavigationWidget.render(drawContext, i, j, f);
+        drawContext.getMatrices().popMatrix();
         descriptionAnimationProgress = (float) ease(descriptionAnimationProgress, animate.get() ? 1 : 0, 15);
         drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, drawContext.getScaledWindowWidth() / 2, (int) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))), ColorHelper.getWhite(descriptionAnimationProgress));
     }
@@ -84,7 +123,14 @@ public class GooberScreen extends Screen {
         drawContext.getMatrices().scale(2.5F, 2.5F);
         drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, Identifier.of("gooberlib", "textures/him.png"), 0, 0, 100, 100, 100, 100, 100, 100);
         drawContext.getMatrices().popMatrix();
-        drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, drawContext.getScaledWindowWidth() / 2, (int) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))), ColorHelper.getWhite(descriptionAnimationProgress));
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().translate(-width * screenCategoryAnimationState, 0);
+        ((ScreenMixin) this).drawables().forEach(drawable -> {
+            if (drawable instanceof TextWidget) {
+                drawable.render(drawContext, i, j, f);
+            }
+        });
+        drawContext.getMatrices().popMatrix();
         drawContext.createNewRootLayer();
         super.renderBackground(drawContext, i, j, f);
     }
