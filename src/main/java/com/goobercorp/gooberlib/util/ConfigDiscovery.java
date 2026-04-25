@@ -25,60 +25,62 @@ public class ConfigDiscovery {
             "io.netty", "com.ibm", "com.llamalad7.mixinextras",
             "oshi", "org.spongepowered", "java"
     }; // TODO improve hacky approach
-	// TODO: figure out what this is for
+    // TODO: figure out what this is for
 
     public static Map<String, BuiltConfig> discover() throws IOException {
         final Map<String, BuiltConfig> flattened = new HashMap<>();
 
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-		ClassPath.from(classLoader)
-				.getAllClasses()
-				.forEach(classInfo -> {
-					try {
-						String className = classInfo.getName();
-						if (ClassInfo.isMixin(className)) return;
-						for (String blacklistedPackage : BLACKLISTED_PACKAGES)
-							if (classInfo.getPackageName().startsWith(blacklistedPackage)) return;
-						if (classInfo.getPackageName().isEmpty()) return;
-						if (classInfo.getName().endsWith("module-info")) return;
-						if (classInfo.getPackageName().contains("META-INF")) return;
+        ClassPath.from(classLoader)
+                .getAllClasses()
+                .forEach(classInfo -> {
+                    try {
+                        String className = classInfo.getName();
+                        if (ClassInfo.isMixin(className)) return;
+                        for (String blacklistedPackage : BLACKLISTED_PACKAGES)
+                            if (classInfo.getPackageName().startsWith(blacklistedPackage)) return;
+                        if (classInfo.getPackageName().isEmpty()) return;
+                        if (classInfo.getName().endsWith("module-info")) return;
+                        if (classInfo.getPackageName().contains("META-INF")) return;
 
-						Class<?> configClass = Class.forName(className, false, classLoader);
+                        Class<?> configClass = Class.forName(className, false, classLoader);
 
-						if (configClass.isAnnotationPresent(GooberConfig.class)) {
-							String modId = configClass.getAnnotation(GooberConfig.class).modId();
-							if (flattened.containsKey(modId)) {
-								throw new IllegalStateException("Multiple config classes found for the same mod id: %s".formatted(modId));
-							}
+                        if (configClass.isAnnotationPresent(GooberConfig.class)) {
+                            String modId = configClass.getAnnotation(GooberConfig.class).modId();
+                            if (flattened.containsKey(modId)) {
+                                throw new IllegalStateException("Multiple config classes found for the same mod id: %s".formatted(modId));
+                            }
 
-							List<Field> builderFields = Arrays.stream(configClass.getDeclaredFields())
-									.filter(f -> f.getType() == GooberConfigBuilder.class)
-									.filter(f -> Modifier.isPublic(f.getModifiers()))
-									.filter(f -> Modifier.isStatic(f.getModifiers()))
-									.filter(f -> Modifier.isFinal(f.getModifiers()))
-									.toList();
+                            List<Field> builderFields = Arrays.stream(configClass.getDeclaredFields())
+                                    .filter(f -> f.getType() == GooberConfigBuilder.class)
+                                    .filter(f -> Modifier.isPublic(f.getModifiers()))
+                                    .filter(f -> Modifier.isStatic(f.getModifiers()))
+                                    .filter(f -> Modifier.isFinal(f.getModifiers()))
+                                    .toList();
 
-							if (builderFields.isEmpty())
-								throw new IllegalStateException("Builder field does not exist, is not public, is not static, is not final, or is not of type GooberConfigBuilder");
-							if (builderFields.size() > 1)
-								throw new IllegalStateException("Please only have one builder field");
+                            if (builderFields.isEmpty())
+                                throw new IllegalStateException("Builder field does not exist, is not public, is not static, is not final, or is not of type GooberConfigBuilder");
+                            if (builderFields.size() > 1)
+                                throw new IllegalStateException("Please only have one builder field");
 
-							Field builderField = builderFields.getFirst();
-							GooberConfigBuilder gooberConfigBuilder = (GooberConfigBuilder) builderField.get(null);
-							flattened.put(modId, gooberConfigBuilder.build());
-						}
-					} catch (IllegalAccessException | ClassNotFoundException e) {
-						throw rethrow(e);
-					}
-				});
+                            Field builderField = builderFields.getFirst();
+                            GooberConfigBuilder gooberConfigBuilder = (GooberConfigBuilder) builderField.get(null);
+                            flattened.put(modId, gooberConfigBuilder.build());
+                        }
+                    } catch (IllegalAccessException | ClassNotFoundException e) {
+                        throw rethrow(e);
+                    }
+                });
         return flattened;
     }
+
     //TODO: stop being retarded
-    public static BuiltConfig getBuiltConfig(String modid){
+    public static BuiltConfig getBuiltConfig(String modid) {
         return GooberLibEntrypoint.builtConfigMap.get(modid);
     }
-    public static Map<String, BuiltConfig> getConfigs(){
+
+    public static Map<String, BuiltConfig> getConfigs() {
         return GooberLibEntrypoint.builtConfigMap;
     }
 }

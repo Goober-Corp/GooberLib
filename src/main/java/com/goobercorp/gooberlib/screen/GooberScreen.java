@@ -1,11 +1,13 @@
 package com.goobercorp.gooberlib.screen;
 
+import com.goobercorp.gooberlib.GooberLibEntrypoint;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
 import com.goobercorp.gooberlib.builder.ConfigCategory;
 import com.goobercorp.gooberlib.builder.ConfigSection;
 import com.goobercorp.gooberlib.mixin.ClickableWidgetAcessor;
 import com.goobercorp.gooberlib.mixin.ScreenAccessor;
 import com.goobercorp.gooberlib.mixin.TooltipAccessor;
+import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -14,7 +16,6 @@ import net.minecraft.client.gui.tab.GridScreenTab;
 import net.minecraft.client.gui.tab.Tab;
 import net.minecraft.client.gui.tab.TabManager;
 import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.TabNavigationWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -23,6 +24,8 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.goobercorp.gooberlib.util.RenderUtils.ease;
+
 public class GooberScreen extends Screen {
     private final BuiltConfig config;
     private final Screen parent;
@@ -30,7 +33,7 @@ public class GooberScreen extends Screen {
     private float descriptionAnimationProgress = 0;
     private float categoryHoverProgress = 0;
     private float screenCategoryAnimationState = 0;
-    private TabNavigationWidget tabNavigationWidget;
+    private EvilTabNavigationWidget tabNavigationWidget;
     private final TabManager tabManager = new TabManager(this::addDrawableChild, this::remove);
     private Tab[] tabs;
 
@@ -42,15 +45,14 @@ public class GooberScreen extends Screen {
 
     @Override
     protected void init() {
-		this.tabs = new GridScreenTab[config.categories().size()];
-		for (int i = 0; i < config.categories().size(); i++) {
-			tabs[i] = new GridScreenTab(config.categories().get(i).metadata().name());
-		}
-
-        this.tabNavigationWidget = this.addSelectableChild(TabNavigationWidget.builder(tabManager, width)
+        this.tabs = new GridScreenTab[config.categories().size()];
+        for (int i = 0; i < config.categories().size(); i++) {
+            tabs[i] = new GridScreenTab(config.categories().get(i).metadata().name());
+        }
+        this.tabNavigationWidget = this.addSelectableChild(EvilTabNavigationWidget.builder(tabManager, width)
                 .tabs(tabs)
                 .build());
-		this.tabNavigationWidget.selectTab(0, false);
+        this.tabNavigationWidget.selectTab(0, false);
         this.tabNavigationWidget.init();
 
         // padding
@@ -59,13 +61,13 @@ public class GooberScreen extends Screen {
             for (Object o : c.elements()) {
                 if (o instanceof ConfigSection configSection) {
                     TextWidget t = new TextWidget(
-							((MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - textRenderer.getWidth(configSection.metadata().name()) / 2) * (config.categories().indexOf(c) + 1),
-							y,
-							0,
-							textRenderer.fontHeight,
-							configSection.metadata().name(),
-							textRenderer
-					);
+                            ((MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - textRenderer.getWidth(configSection.metadata().name()) / 2) * (config.categories().indexOf(c) + 1),
+                            y,
+                            0,
+                            textRenderer.fontHeight,
+                            configSection.metadata().name(),
+                            textRenderer
+                    );
                     t.setMaxWidth(Integer.MAX_VALUE);
                     if (configSection.metadata().description() != null) {
                         t.setTooltip(Tooltip.of(configSection.metadata().description()));
@@ -80,14 +82,12 @@ public class GooberScreen extends Screen {
     @Override
     public void close() {
         MinecraftClient.getInstance().setScreen(parent);
-    }
-
-    public static double ease(double start, double end, float speed) {
-        return (start + (end - start) * (1 - Math.exp(-(1.0F / MinecraftClient.getInstance().getCurrentFps()) * speed)));
+        GooberLibEntrypoint.tweeners.clear();
     }
 
     @Override
     public void render(DrawContext drawContext, int i, int j, float f) {
+        GooberLibEntrypoint.tweeners.forEach(Tweener::update);
         drawContext.getMatrices().pushMatrix();
         drawContext.getMatrices().translate(-width * screenCategoryAnimationState, 0);
         super.render(drawContext, i, j, f);
@@ -96,11 +96,11 @@ public class GooberScreen extends Screen {
         AtomicBoolean animate = new AtomicBoolean(false);
         ((ScreenAccessor) this).drawables().forEach(drawable -> {
             if (drawable instanceof TextWidget textWidget) {
-				var accessor = (ClickableWidgetAcessor) textWidget;
+                var accessor = (ClickableWidgetAcessor) textWidget;
                 if (textWidget.isHovered()) {
                     animate.set(true);
-					var accessor2 = (TooltipAccessor) accessor.tooltip().getTooltip();
-					descriptionText = accessor2 == null ? Text.of("") : accessor2.content();
+                    var accessor2 = (TooltipAccessor) accessor.tooltip().getTooltip();
+                    descriptionText = accessor2 == null ? Text.of("") : accessor2.content();
                 }
             }
         });
@@ -114,12 +114,13 @@ public class GooberScreen extends Screen {
         tabNavigationWidget.render(drawContext, i, j, f);
         drawContext.getMatrices().popMatrix();
 
-		descriptionAnimationProgress = (float) ease(descriptionAnimationProgress, animate.get() ? 1 : 0, 15);
+        descriptionAnimationProgress = (float) ease(descriptionAnimationProgress, animate.get() ? 1 : 0, 15);
         drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, drawContext.getScaledWindowWidth() / 2, (int) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))), ColorHelper.getWhite(descriptionAnimationProgress));
     }
 
     @Override
     public void renderBackground(DrawContext drawContext, int i, int j, float f) {
+
         drawContext.getMatrices().pushMatrix();
         drawContext.getMatrices().translate(-i * 0.1F, -j * 0.1F);
         drawContext.getMatrices().translate(MinecraftClient.getInstance().getWindow().getScaledWidth() / 2F - 100, MinecraftClient.getInstance().getWindow().getScaledHeight() / 2F - 100);
@@ -136,7 +137,13 @@ public class GooberScreen extends Screen {
         });
         drawContext.getMatrices().popMatrix();
 
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().translate(0, -26 * (1 - categoryHoverProgress));
+        tabNavigationWidget.renderForBackgroundLayer(drawContext);
+        drawContext.getMatrices().popMatrix();
+
         drawContext.createNewRootLayer();
         super.renderBackground(drawContext, i, j, f);
     }
+
 }
