@@ -7,7 +7,7 @@
   ],
   "client": [
     "ClickableWidgetAcessor",
-    "ScreenMixin",
+    "ScreenAccessor",
     "TooltipAccessor"
   ],
   "injectors": {
