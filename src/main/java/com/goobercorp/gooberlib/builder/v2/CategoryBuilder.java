@@ -11,7 +11,7 @@ public class CategoryBuilder {
     private Text name;
     private Text description;
 
-    private final List<Object> elements = new ArrayList<>();
+    private final List<OptionHolder> elements = new ArrayList<>();
 
     private final GooberConfigBuilder parent;
 

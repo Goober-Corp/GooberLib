@@ -5,5 +5,4 @@ import net.minecraft.text.Text;
 
 import java.util.List;
 
-// TODO add parent and child options
 public record BuiltConfig(Gson gson, Text title, List<ConfigCategory> categories) {}

@@ -16,9 +16,7 @@ import static org.apache.commons.io.function.Erase.rethrow;
 
 public class GooberLibApi {
 	public static void saveAll() {
-		ConfigDiscovery.getConfigs().forEach((modId, config) -> {
-			save(modId, config);
-		});
+		ConfigDiscovery.getConfigs().forEach(GooberLibApi::save);
 	}
 
 	public static void loadAll() {
@@ -35,6 +33,7 @@ public class GooberLibApi {
 		return FabricLoader.getInstance().getConfigDir().resolve(modId).resolve(config.title().getString());
 	}
 
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static void load(String modId, BuiltConfig config) throws IOException {
 		Path saveFilePath = getPath(modId, config).resolve("config.json");
 		if (!Files.exists(saveFilePath)) {
@@ -52,9 +51,9 @@ public class GooberLibApi {
 					Object loaded = config.gson().fromJson(toLoad, type);
 					Consumer setter = option.setter();
 					setter.accept(loaded);
-				} else if (o instanceof ConfigSection section) {
-					JsonObject sectionObject = object.get(section.metadata().name().getString()).getAsJsonObject();
-					for (ConfigOption option : section.options()) {
+				} else if (o instanceof ConfigSection(MetadataHolder.Metadata metadata, List<ConfigOption> childOptions)) {
+					JsonObject sectionObject = object.get(metadata.name().getString()).getAsJsonObject();
+					for (ConfigOption option : childOptions) {
 						String optionName = option.metadata().name().getString();
 						Type type = option.type();
 						JsonElement toLoad = sectionObject.get(optionName);
@@ -93,7 +92,8 @@ public class GooberLibApi {
 					name = metadata.name().getString();
 					toAdd = sectionObject;
 				}
-				object.add(name, toAdd);
+
+                object.add(name, toAdd);
 			}
 			theObject.add(category.metadata().name().getString(), object);
 		}
