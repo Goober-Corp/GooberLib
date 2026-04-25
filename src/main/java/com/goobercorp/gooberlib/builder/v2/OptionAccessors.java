@@ -4,6 +4,7 @@ import com.goobercorp.gooberlib.util.ReflectionUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -12,12 +13,12 @@ public interface OptionAccessors {
     Supplier<?> getter();
     Consumer<?> setter();
 
-    Class<?> type();
+    Type type();
 
     class FieldAccessors implements OptionAccessors {
         private final Supplier<?> getter;
         private final Consumer<?> setter;
-        private final Class<?> type;
+        private final Type type;
 
         FieldAccessors(Class<?> clazz, String fieldName) {
             try {
@@ -33,7 +34,7 @@ public interface OptionAccessors {
 
                 this.getter = ReflectionUtil.staticFieldGetter(field);
                 this.setter = ReflectionUtil.staticFieldSetter(field);
-                this.type = field.getType();
+                this.type = field.getGenericType();
             } catch (NoSuchFieldException e) {
                 throw new RuntimeException(e);
             }
@@ -50,7 +51,7 @@ public interface OptionAccessors {
         }
 
         @Override
-        public Class<?> type() {
+        public Type type() {
             return type;
         }
     }
