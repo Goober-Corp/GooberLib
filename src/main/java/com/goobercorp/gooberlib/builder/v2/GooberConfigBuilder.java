@@ -45,7 +45,7 @@ public class GooberConfigBuilder {
     private final List<ConfigCategory> categories = new ArrayList<>();
     private final Class<?> configClass;
 
-    private final GsonBuilder gsonBuilder = new GsonBuilder();
+    private final GsonBuilder gsonBuilder = new GsonBuilder().setPrettyPrinting();
 
     public GooberConfigBuilder() {
         this.configClass = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)

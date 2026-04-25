@@ -17,22 +17,29 @@ import static org.apache.commons.io.function.Erase.rethrow;
 public class GooberLibApi {
 	public static void saveAll() {
 		ConfigDiscovery.getConfigs().forEach((modId, config) -> {
-			save(config);
+			save(modId, config);
 		});
 	}
 
 	public static void loadAll() {
 		ConfigDiscovery.getConfigs().forEach((modId, config) -> {
 			try {// todo move this around to a more specific place
-				load(config);
+				load(modId, config);
 			} catch (IOException e) {
 				rethrow(e);
 			}
 		});
 	}
 
-	public static void load(BuiltConfig config) throws IOException {
-		Path saveFilePath = FabricLoader.getInstance().getConfigDir().resolve(config.title().getString()).resolve("config.json");
+	private static Path getPath(String modId, BuiltConfig config) {
+		return FabricLoader.getInstance().getConfigDir().resolve(modId).resolve(config.title().getString());
+	}
+
+	public static void load(String modId, BuiltConfig config) throws IOException {
+		Path saveFilePath = getPath(modId, config).resolve("config.json");
+		if (!Files.exists(saveFilePath)) {
+			save(modId, config);
+		}
 		JsonObject theObject = JsonParser.parseString(Files.readString(saveFilePath)).getAsJsonObject();
 
 		for (ConfigCategory category : config.categories()) {
@@ -60,7 +67,7 @@ public class GooberLibApi {
 		}
 	}
 
-	public static void save(BuiltConfig config) {
+	public static void save(String modId, BuiltConfig config) {
 		JsonObject theObject = new JsonObject();
 		for (ConfigCategory category : config.categories()) {
 			JsonObject object = new JsonObject();
@@ -91,12 +98,16 @@ public class GooberLibApi {
 			theObject.add(category.metadata().name().getString(), object);
 		}
 
-		Path saveFilePath = FabricLoader.getInstance().getConfigDir().resolve(config.title().getString()).resolve("config.json");
+		Path saveFilePath = getPath(modId, config);
 		try {
-			Files.createFile(saveFilePath);
-			Files.writeString(saveFilePath, config.gson().toJson(theObject));
+			if (Files.notExists(saveFilePath))
+				Files.createDirectories(saveFilePath);
+			if (Files.notExists(saveFilePath.resolve("config.json")))
+				Files.createFile(saveFilePath.resolve("config.json"));
+			Files.writeString(saveFilePath.resolve("config.json"), config.gson().toJson(theObject));
 		} catch (IOException e) {
-			System.out.println("Couldn't load config for " + config.title().getString() + ": " + e);
+			System.out.println("Couldn't save config for " + config.title().getString() + ": " + e);
+			throw rethrow(e);
 		}
 	}
 

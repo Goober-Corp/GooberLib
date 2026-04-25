@@ -11,7 +11,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.apache.commons.lang3.function.Failable.rethrow;
+import static org.apache.commons.io.function.Erase.rethrow;
 
 public class GooberLibEntrypoint implements ModInitializer {
     private static final String MOD_ID = "gooberlib";
@@ -31,6 +31,7 @@ public class GooberLibEntrypoint implements ModInitializer {
                         Duration.ofNanos(System.nanoTime() - start).toMillis());
 
 				GooberLibApi.saveAll();
+				GooberLibApi.loadAll();
             } catch (IOException e) {
                 throw rethrow(e);
             }
