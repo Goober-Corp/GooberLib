@@ -33,7 +33,6 @@ public class GooberLibApi {
 		return FabricLoader.getInstance().getConfigDir().resolve(modId).resolve(config.title().getString());
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static void load(String modId, BuiltConfig config) throws IOException {
 		Path saveFilePath = getPath(modId, config).resolve("config.json");
 		if (!Files.exists(saveFilePath)) {
@@ -45,21 +44,11 @@ public class GooberLibApi {
 			JsonObject object = theObject.get(category.metadata().name().getString()).getAsJsonObject();
 			for (Object o : category.elements()) {
 				if (o instanceof ConfigOption option) {
-					String name = option.metadata().name().getString();
-					Type type = option.type();
-					JsonElement toLoad = object.get(name);
-					Object loaded = config.gson().fromJson(toLoad, type);
-					Consumer setter = option.setter();
-					setter.accept(loaded);
+					deserializeOption(option, object.getAsJsonObject(option.metadata().name().getString()), config.gson());
 				} else if (o instanceof ConfigSection(MetadataHolder.Metadata metadata, List<ConfigOption> childOptions)) {
 					JsonObject sectionObject = object.get(metadata.name().getString()).getAsJsonObject();
 					for (ConfigOption option : childOptions) {
-						String optionName = option.metadata().name().getString();
-						Type type = option.type();
-						JsonElement toLoad = sectionObject.get(optionName);
-						Object loaded = config.gson().fromJson(toLoad, type);
-						Consumer setter = option.setter();
-						setter.accept(loaded);
+						deserializeOption(option, sectionObject.getAsJsonObject(option.metadata().name().getString()), config.gson());
 					}
 				}
 			}
@@ -71,29 +60,19 @@ public class GooberLibApi {
 		for (ConfigCategory category : config.categories()) {
 			JsonObject object = new JsonObject();
 			for (Object o : category.elements()) {
-				JsonElement toAdd = null;
-				String name = null;
 				if (o instanceof ConfigOption option) {
-					name = option.metadata().name().getString();
-					Object toSave = option.getter().get();
-
-					toAdd = config.gson().toJsonTree(toSave, option.type());
+					serializeOption(option, object, config.gson());
 				} else if (o instanceof ConfigSection(
 						MetadataHolder.Metadata metadata,
 						List<ConfigOption> options
 				)) {
 					JsonObject sectionObject = new JsonObject();
 					for (ConfigOption option : options) {
-						String optionName = option.metadata().name().getString();
-						Object toSave = option.getter().get();
-
-						sectionObject.add(optionName, config.gson().toJsonTree(toSave, option.type()));
+						serializeOption(option, sectionObject, config.gson());
 					}
-					name = metadata.name().getString();
-					toAdd = sectionObject;
+					String name = metadata.name().getString();
+					object.add(name, sectionObject);
 				}
-
-                object.add(name, toAdd);
 			}
 			theObject.add(category.metadata().name().getString(), object);
 		}
@@ -109,6 +88,32 @@ public class GooberLibApi {
 			System.out.println("Couldn't save config for " + config.title().getString() + ": " + e);
 			throw rethrow(e);
 		}
+	}
+
+	private static void deserializeOption(ConfigOption option, JsonObject jo, Gson gson) {
+		JsonElement valueObject = jo.get("value");
+		JsonObject childrenObject = jo.get("children").getAsJsonObject();
+
+		option.setter().accept(gson.fromJson(valueObject, option.type()));
+		for (ConfigOption childOption : option.childOptions()) {
+			deserializeOption(childOption, childrenObject.getAsJsonObject(childOption.metadata().name().getString()), gson);
+		}
+	}
+
+	private static void serializeOption(ConfigOption option, JsonObject out, Gson gson) {
+		String optionName = option.metadata().name().getString();
+		Object value = option.getter().get();
+
+		JsonObject jo = new JsonObject();
+		jo.add("value", gson.toJsonTree(value, option.type()));
+
+		JsonObject childrenObject = new JsonObject();
+		for (ConfigOption childOption : option.childOptions()) {
+			serializeOption(childOption, childrenObject, gson);
+		}
+		jo.add("children", childrenObject);
+
+		out.add(optionName, jo);
 	}
 
 	static {
