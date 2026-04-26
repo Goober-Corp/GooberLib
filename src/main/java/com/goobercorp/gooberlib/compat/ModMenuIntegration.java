@@ -12,7 +12,7 @@ public class ModMenuIntegration implements ModMenuApi {
     @Override
     public Map<String, ConfigScreenFactory<?>> getProvidedConfigScreenFactories() {
         HashMap<String, ConfigScreenFactory<?>> map = new HashMap<>();
-        ConfigDiscovery.getConfigs().forEach((modid, config) -> map.put(modid, parent -> new GooberScreen(config, parent)));
+        ConfigDiscovery.getConfigs().forEach((modid, config) -> map.put(modid, parent -> new GooberScreen(config, parent, modid)));
         return map;
     }
 }

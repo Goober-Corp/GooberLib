@@ -12,24 +12,24 @@ public class RenderUtils {
         return (start + (end - start) * (1 - Math.exp(-(1.0F / MinecraftClient.getInstance().getCurrentFps()) * speed)));
     }
 
-    public static void drawHorizontalLine(DrawContext context, float i, float j, float k, int l) {
-        if (j < i) {
-            float m = i;
-            i = j;
-            j = m;
+    public static void drawHorizontalLine(DrawContext context, float x1, float x2, float y, int col) {
+        if (x2 < x1) {
+            float m = x1;
+            x1 = x2;
+            x2 = m;
         }
 
-        fillEvil(context, i, k, j + 1, k + 1, l);
+        fillEvil(context, x1, y, x2 + 1, y + 1, col);
     }
 
-    public static void drawVerticalLine(DrawContext context, float i, float j, float k, int l) {
-        if (k < j) {
-            float m = j;
-            j = k;
-            k = m;
+    public static void drawVerticalLine(DrawContext context, float x, float y1, float y2, int col) {
+        if (y2 < y1) {
+            float m = y1;
+            y1 = y2;
+            y2 = m;
         }
 
-        fillEvil(context, i, j + 1, i + 1, k, l);
+        fillEvil(context, x, y1 + 1, x + 1, y2, col);
     }
 
     public static void fillEvil(DrawContext context, float x, float y, float x2, float y2, int col) {

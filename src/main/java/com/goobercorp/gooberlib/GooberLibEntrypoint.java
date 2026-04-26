@@ -34,7 +34,7 @@ public class GooberLibEntrypoint implements ModInitializer {
                 System.out.printf("Discovered %d configs in %dms%n", builtConfigMap.size(),
                         Duration.ofNanos(System.nanoTime() - start).toMillis());
 
-				GooberLibApi.saveAll();
+//				GooberLibApi.saveAll();
 				GooberLibApi.loadAll();
             } catch (IOException e) {
                 throw rethrow(e);

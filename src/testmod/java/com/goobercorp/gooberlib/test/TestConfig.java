@@ -14,28 +14,47 @@ public class TestConfig {
                 .descriptionTranslation("A description")
                         .option("int1")
                         .name("Standalone field")
+                        .withChildren()
+                        .child("int2")
+                        .name("standalone child")
+                        .build()
+                        .child("int3")
+                        .name("second standalone child")
+                        .withChildren().child("int4").name("nested child").build().build()
+                        .build()
+                        .build()
                         .build()
                     .section()
                     .name("A section")
                     .description(Text.of("description of doom and despair"))
-                        .option("int2")
+                        .option("int5")
                         .name("Int field in a section")
                             .withChildren()
-                                .child("int3")
+                                .child("int6")
                                 .name("int3 name")
                                 .build()
                             .build()
                         .build()
                     .build()
                     .section(Text.of("second section yknow how it be"))
+            .description("oh yeahhh")
+                    .option("int7")
+                    .name("yeah")
+                    .build()
                     .build()
                 .build()
             .category(Text.of("second category"))
                 .section(Text.of("second page section"))
+            .description("yah")
                 .build()
             .build();
 
     public static int int1;
     public static int int2;
     public static int int3;
+    public static int int4;
+    public static int int5;
+    public static int int6;
+    public static int int7;
+
 }
