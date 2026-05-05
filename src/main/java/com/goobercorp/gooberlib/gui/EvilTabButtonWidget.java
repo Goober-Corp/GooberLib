@@ -1,4 +1,4 @@
-package com.goobercorp.gooberlib.screen;
+package com.goobercorp.gooberlib.gui;
 
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
@@ -70,9 +70,9 @@ public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWid
 
 
     private void drawMessage(DrawnTextConsumer drawnTextConsumer) {
-        int i = this.getX() + 1;
+        int i = this.getX() + 2;
         int j = this.getY();
-        int k = this.getX() + this.getWidth() - 1;
+        int k = this.getX() + this.getWidth() - 2;
         int l = this.getY() + this.getHeight();
         drawnTextConsumer.text(this.getMessage(), i, k, j, l);
     }
@@ -81,7 +81,6 @@ public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWid
         float j = (float) (Math.min(textRenderer.getWidth(this.getMessage()), this.getWidth() - 4) * currentTabProgress.get());
         float k = this.getX() + (this.getWidth() - j) / 2F;
         float l = (this.getY());
-        //TODO: unsure if i like it coming in from the bottom or top
         fillEvil(drawContext, k, l, k + j, (float) (l + 1 - (1 - currentTabProgress.get())), i);
     }
 

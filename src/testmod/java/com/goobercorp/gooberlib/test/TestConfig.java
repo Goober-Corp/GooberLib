@@ -52,7 +52,13 @@ public class TestConfig {
                 .section(Text.of("second page section"))
                     .description("yah")
                     .build()
-                .build();
+                .build()
+            .category().name("THIRD ONE !!")
+            .build()
+            .category().name("FOURTH ONE !!")
+            .build()
+            .category().name("FIFTH ONE !!")
+            .build();
     // @formatter:on
 
     public static int int1;

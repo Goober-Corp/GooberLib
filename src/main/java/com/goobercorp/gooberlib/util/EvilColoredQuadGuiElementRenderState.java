@@ -1,4 +1,4 @@
-package com.goobercorp.gooberlib.screen;
+package com.goobercorp.gooberlib.util;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.fabricmc.api.EnvType;
@@ -34,9 +34,9 @@ public record EvilColoredQuadGuiElementRenderState(
     @Override
     public void setupVertices(VertexConsumer vertexConsumer) {
         vertexConsumer.vertex(this.matrix(), this.x(), this.y()).color(this.col1());
-        vertexConsumer.vertex(this.matrix(), this.x(), this.y2()).color(this.col2());
+        vertexConsumer.vertex(this.matrix(), this.x(), this.y2()).color(this.col1());
         vertexConsumer.vertex(this.matrix(), this.x2(), this.y2()).color(this.col2());
-        vertexConsumer.vertex(this.matrix(), this.x2(), this.y()).color(this.col1());
+        vertexConsumer.vertex(this.matrix(), this.x2(), this.y()).color(this.col2());
     }
 
     @Override

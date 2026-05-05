@@ -1,4 +1,4 @@
-package com.goobercorp.gooberlib.screen;
+package com.goobercorp.gooberlib.gui;
 
 import com.google.common.collect.ImmutableList;
 
@@ -205,6 +205,11 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
         }
 
         return false;
+    }
+
+    @Override
+    public boolean mouseScrolled(double d, double e, double f, double g) {
+        return super.mouseScrolled(d, e, f, g);
     }
 
     private int getTabForKey(KeyInput keyInput) {

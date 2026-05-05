@@ -7,6 +7,9 @@ import com.goobercorp.gooberlib.builder.ConfigCategory;
 import com.goobercorp.gooberlib.builder.ConfigOption;
 import com.goobercorp.gooberlib.builder.ConfigSection;
 import com.goobercorp.gooberlib.builder.v2.OptionHolder;
+import com.goobercorp.gooberlib.gui.GroupTextWidget;
+import com.goobercorp.gooberlib.gui.EvilSliderWidget;
+import com.goobercorp.gooberlib.gui.EvilTabNavigationWidget;
 import com.goobercorp.gooberlib.mixin.ClickableWidgetAcessor;
 import com.goobercorp.gooberlib.mixin.ScreenAccessor;
 import com.goobercorp.gooberlib.mixin.TooltipAccessor;
@@ -14,7 +17,6 @@ import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tab.GridScreenTab;
@@ -30,16 +32,18 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.ArrayUtils;
+import org.joml.Vector2i;
 
-import java.lang.reflect.Type;
-
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
+import static com.goobercorp.gooberlib.util.RenderUtils.drawHorizontalLine;
 import static com.goobercorp.gooberlib.util.RenderUtils.ease;
 
 public class GooberScreen extends Screen {
+    private static final int VERTICAL_PADDING = 32;
+    private static final int HORIZONTAL_PADDING = 32;
+    private static final int CHILD_INSET = 16;
     private final BuiltConfig config;
     private final Screen parent;
     private Text descriptionText = Text.of("");
@@ -70,7 +74,7 @@ public class GooberScreen extends Screen {
         int addY = 0;
         ClickableWidget widget;
         if (option.type().getTypeName().equals("int")) {
-            widget = new SliderWidget(x, y, 125, 15, option.metadata().name(), ((int) option.getter().get()) / 25F) {
+            widget = new SliderWidget(x, y, 125, 16, option.metadata().name(), ((int) option.getter().get()) / 25F) {
                 {
                     this.updateMessage();
                 }
@@ -94,10 +98,10 @@ public class GooberScreen extends Screen {
         widget.setX(x);
         widget.setY(y + addY);
         this.addDrawableChild(widget);
-        addY += 25;
+        addY += VERTICAL_PADDING;
 
         for (ConfigOption child : option.childOptions()) {
-            addY += addOptionWithChildren(child, y + addY, x + 25);
+            addY += addOptionWithChildren(child, y + addY, x + CHILD_INSET);
         }
 
         return addY;
@@ -117,10 +121,10 @@ public class GooberScreen extends Screen {
 
         for (ConfigCategory c : config.categories()) {
             int x = (config.categories().indexOf(c) == 0 ? 0 : MinecraftClient.getInstance().getWindow().getScaledWidth() * (config.categories().indexOf(c)));
-            int y = 25;
+            int y = VERTICAL_PADDING;
             for (OptionHolder o : c.elements()) {
                 if (o instanceof ConfigSection configSection) {
-                    TextWidget t = new TextWidget(
+                    GroupTextWidget t = new GroupTextWidget(
                             configSection.metadata().name(),
                             textRenderer
                     );
@@ -130,12 +134,12 @@ public class GooberScreen extends Screen {
                         t.setTooltip(Tooltip.of(configSection.metadata().description()));
                     }
                     this.addDrawable(t);
-                    y += 25;
+                    y += VERTICAL_PADDING;
                     for (ConfigOption yeah : o.childOptions()) {
-                        y += addOptionWithChildren(yeah, y, x + 50);
+                        y += addOptionWithChildren(yeah, y, x + CHILD_INSET);
                     }
                 } else {
-                    y += addOptionWithChildren((ConfigOption) o, y, x + 25);
+                    y += addOptionWithChildren((ConfigOption) o, y, x + CHILD_INSET);
                 }
             }
         }
@@ -150,7 +154,7 @@ public class GooberScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double d, double e, double f, double g) {
-        scrollProgress = MathHelper.clamp(scrollProgress + g * 10, -1000, 0);
+        scrollProgress = MathHelper.clamp(scrollProgress + g * 15, -1000, 0);
         return super.mouseScrolled(d, e, f, g);
     }
 //    @Override
@@ -202,32 +206,38 @@ public class GooberScreen extends Screen {
 
     private void drawLines(DrawContext drawContext) {
         for (ConfigCategory c : config.categories()) {
-            float x = (config.categories().indexOf(c) == 0 ? 0 : MinecraftClient.getInstance().getWindow().getScaledWidth() * (config.categories().indexOf(c)));
-            int yPadding = (int) ((ConfigOption) config.categories().get(0).elements().get(0)).getter().get();
-            int y = yPadding;
+            int x = (config.categories().indexOf(c) == 0 ? 0 : MinecraftClient.getInstance().getWindow().getScaledWidth() * (config.categories().indexOf(c))) + (int) (HORIZONTAL_PADDING * 0.75F);
+            Vector2i vector2i = new Vector2i(x, VERTICAL_PADDING);
             for (OptionHolder o : c.elements()) {
                 if (!(o instanceof ConfigSection)) {
                     if (!o.childOptions().isEmpty()) {
-                        drawLinesForOption((ConfigOption) o, drawContext, x + 20, y, 0);
-                        y += yPadding;
+                        vector2i.add(drawLinesForOption((ConfigOption) o, drawContext, vector2i));
                     }
+                    vector2i.x = x;
+                } else {
+                    for (ConfigOption opt : o.childOptions()) {
+                        vector2i.add(drawLinesForOption(opt, drawContext, vector2i));
+                    }
+                    vector2i.x = x;
                 }
-                y += yPadding;
             }
         }
     }
 
-    private void drawLinesForOption(ConfigOption option, DrawContext drawContext, float x, int y, int yeah) {
-        //TODO: figure out a way to actually draw lines
-        RenderUtils.drawVerticalLine(drawContext, x + 13.5F, y + 9.5F, y + 35.375F, 0xFF3e3e3e);
-        RenderUtils.drawHorizontalLine(drawContext, x + 13.5F, x + 28.5F + yeah, y + 35.375F, 0xFF3e3e3e);
-        RenderUtils.drawVerticalLine(drawContext, x + 12.5F, y + 8.5F, y + 34.375F, 0xFFFFFFFF);
-        RenderUtils.drawHorizontalLine(drawContext, x + 12.5F, x + 27.5F + yeah, y + 34.375F, 0xFFFFFFFF);
+    private Vector2i drawLinesForOption(ConfigOption option, DrawContext drawContext, Vector2i vec) {
+        int returnY = (VERTICAL_PADDING * option.childOptions().size());
+        RenderUtils.drawVerticalLine(drawContext, vec.x, vec.y + 8, vec.y + (VERTICAL_PADDING * option.childOptions().size()) + 8, 0xFFFFFFFF);
+        RenderUtils.drawVerticalLine(drawContext, vec.x + 1, vec.y + 9, vec.y + (VERTICAL_PADDING * option.childOptions().size()) + 9, 0xFF3e3e3e);
+        //I fucked up.
         for (ConfigOption opt : option.childOptions()) {
-            if (option.childOptions().indexOf(opt) != option.childOptions().size() - 1 || !opt.childOptions().isEmpty()) {
-                drawLinesForOption(opt, drawContext, x + 12.5F, y + 25, yeah);
-            }
+            int x2 = vec.x + CHILD_INSET;
+            int inset = VERTICAL_PADDING * (option.childOptions().indexOf(opt) + 1);
+            returnY += inset;
+            drawHorizontalLine(drawContext, vec.x, x2, vec.y + 8 + inset, 0xFFFFFFFF);
+            drawHorizontalLine(drawContext, vec.x + 1, x2 + 1, vec.y + 8 + inset + 1, 0xFF3e3e3e);
+            drawLinesForOption(opt, drawContext, new Vector2i(x2, vec.y + inset));
         }
+        return new Vector2i(vec.x, returnY);
     }
 
     @Override
