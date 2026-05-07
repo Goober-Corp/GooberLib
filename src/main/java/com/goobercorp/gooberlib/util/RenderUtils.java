@@ -6,9 +6,12 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.TextureSetup;
 import org.joml.Matrix3x2f;
 
+import static java.lang.Math.exp;
+
 public class RenderUtils {
     public static double ease(double start, double end, float speed) {
-        return (start + (end - start) * (1 - Math.exp(-(1.0F / MinecraftClient.getInstance().getCurrentFps()) * speed)));
+		var dt = 1.0F / MinecraftClient.getInstance().getCurrentFps();
+        return start + (end - start) * (1 - exp(-dt * speed));
     }
 
     public static void drawHorizontalLine(DrawContext context, float x1, float x2, float y, int col) {

@@ -24,17 +24,23 @@ import static com.goobercorp.gooberlib.util.RenderUtils.fillEvil;
 public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWidget {
     private final TabManager tabManager;
     private final Tab tab;
-    private final Tweener currentTabProgress = new Tweener(() -> isCurrentTab() ? 1 : 0);
-    private final Tweener isSelectedProgress = new Tweener(() -> isSelected() ? 1 : 0);
+    private final Tweener currentTabProgress;
+    private final Tweener isSelectedProgress;
 
     public EvilTabButtonWidget(TabManager tabManager, Tab tab, int i, int j) {
         super(0, 0, i, j, tab.getTitle());
         this.tabManager = tabManager;
         this.tab = tab;
+
+		this.currentTabProgress = new Tweener(() -> isCurrentTab() ? 1 : 0);
+		this.isSelectedProgress = new Tweener(() -> isSelected() ? 1 : 0);
     }
 
     @Override
     public void renderWidget(DrawContext context, int i, int j, float f) {
+		currentTabProgress.update();
+		isSelectedProgress.update();
+
         float yeah = (float) currentTabProgress.getLerped(4, 0);
         int ohyeah = ColorHelper.lerp((float) isSelectedProgress.get(), 0x33FFFFFF, 0xFFFFFFFF);
         int specialCol = ColorHelper.lerp((float) isSelectedProgress.get(), 0x00000000, 0xFFFFFFFF);

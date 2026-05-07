@@ -1,6 +1,5 @@
 package com.goobercorp.gooberlib.screen;
 
-import com.goobercorp.gooberlib.GooberLibEntrypoint;
 import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
 import com.goobercorp.gooberlib.builder.ConfigCategory;
@@ -8,7 +7,6 @@ import com.goobercorp.gooberlib.builder.ConfigOption;
 import com.goobercorp.gooberlib.builder.ConfigSection;
 import com.goobercorp.gooberlib.builder.v2.OptionHolder;
 import com.goobercorp.gooberlib.gui.GroupTextWidget;
-import com.goobercorp.gooberlib.gui.EvilSliderWidget;
 import com.goobercorp.gooberlib.gui.EvilTabNavigationWidget;
 import com.goobercorp.gooberlib.mixin.ClickableWidgetAcessor;
 import com.goobercorp.gooberlib.mixin.ScreenAccessor;
@@ -23,10 +21,7 @@ import net.minecraft.client.gui.tab.GridScreenTab;
 import net.minecraft.client.gui.tab.Tab;
 import net.minecraft.client.gui.tab.TabManager;
 import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.AbstractTextWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.SliderWidget;
-import net.minecraft.client.gui.widget.TextWidget;
+import net.minecraft.client.gui.widget.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
@@ -58,7 +53,7 @@ public class GooberScreen extends Screen {
     private Tab[] tabs;
     String modid;
 
-    public GooberScreen(BuiltConfig config, Screen parent, String modid) {
+	public GooberScreen(BuiltConfig config, Screen parent, String modid) {
         super(config.title());
         this.config = config;
         this.parent = parent;
@@ -148,7 +143,6 @@ public class GooberScreen extends Screen {
     @Override
     public void close() {
         MinecraftClient.getInstance().setScreen(parent);
-        GooberLibEntrypoint.tweeners.clear();
         GooberLibApi.save(modid, config);
     }
 
@@ -170,7 +164,7 @@ public class GooberScreen extends Screen {
 //        mouseY -= (int) scrollProgress;
 //        mouseX -= (int) (-width * screenCategoryAnimationState);
         //TODO: do something about tooltips not lining up
-        GooberLibEntrypoint.tweeners.forEach(Tweener::update);
+		this.scrollTweener.update();
         drawContext.getMatrices().pushMatrix();
         drawContext.getMatrices().translate(-width * screenCategoryAnimationState, (float) scrollTweener.get());
         drawLines(drawContext);
