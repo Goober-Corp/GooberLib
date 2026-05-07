@@ -6,11 +6,9 @@ import com.google.gson.*;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static org.apache.commons.io.function.Erase.rethrow;
 
@@ -18,37 +16,46 @@ public class GooberLibApi {
 	public static void saveAll() {
 		ConfigDiscovery.getConfigs().forEach(GooberLibApi::save);
 	}
-
 	public static void loadAll() {
-		ConfigDiscovery.getConfigs().forEach((modId, config) -> {
-			try {// todo move this around to a more specific place
-				load(modId, config);
-			} catch (IOException e) {
-				rethrow(e);
-			}
-		});
+		ConfigDiscovery.getConfigs().forEach(GooberLibApi::load);
 	}
 
 	private static Path getPath(String modId, BuiltConfig config) {
 		return FabricLoader.getInstance().getConfigDir().resolve(modId).resolve(config.title().getString());
 	}
 
-	public static void load(String modId, BuiltConfig config) throws IOException {
+	public static void load(String modId, BuiltConfig config) {
 		Path saveFilePath = getPath(modId, config).resolve("config.json");
 		if (!Files.exists(saveFilePath)) {
 			save(modId, config);
 		}
-		JsonObject theObject = JsonParser.parseString(Files.readString(saveFilePath)).getAsJsonObject();
+
+		JsonObject theObject;
+		try {
+			theObject = JsonParser.parseString(Files.readString(saveFilePath)).getAsJsonObject();
+		} catch (IOException e) {
+			throw rethrow(e);
+		}
 
 		for (ConfigCategory category : config.categories()) {
 			JsonObject object = theObject.get(category.metadata().name().getString()).getAsJsonObject();
-			for (Object o : category.elements()) {
-				if (o instanceof ConfigOption option) {
-					deserializeOption(option, object.getAsJsonObject(option.metadata().name().getString()), config.gson());
-				} else if (o instanceof ConfigSection(MetadataHolder.Metadata metadata, List<ConfigOption> childOptions)) {
-					JsonObject sectionObject = object.get(metadata.name().getString()).getAsJsonObject();
-					for (ConfigOption option : childOptions) {
-						deserializeOption(option, sectionObject.getAsJsonObject(option.metadata().name().getString()), config.gson());
+			for (var entry : object.asMap().entrySet()) {
+				for (Object o : category.elements()) {
+					if (o instanceof ConfigOption option) {
+						if (option.metadata().name().getString().equals(entry.getKey())) {
+							deserializeOption(option, entry.getValue().getAsJsonObject(), config.gson());
+						}
+					} else if (o instanceof ConfigSection(MetadataHolder.Metadata metadata, List<ConfigOption> childOptions)) {
+						if (metadata.name().getString().equals(entry.getKey())) {
+							JsonObject sectionObject = object.get(metadata.name().getString()).getAsJsonObject();
+							for (var sectionEntry : sectionObject.asMap().entrySet()) {
+								for (ConfigOption option : childOptions) {
+									if (option.metadata().name().getString().equals(sectionEntry.getKey())) {
+										deserializeOption(option, sectionEntry.getValue().getAsJsonObject(), config.gson());
+									}
+								}
+							}
+						}
 					}
 				}
 			}
