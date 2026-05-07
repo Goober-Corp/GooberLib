@@ -10,6 +10,7 @@ import net.minecraft.client.input.KeyInput;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.function.Function;
 
 public class PrecisePositionWidgetWrapper<T extends Drawable & Element & Selectable & Narratable> implements Drawable, Element, Selectable, Narratable {
 	private final T wrapped;
@@ -29,6 +30,14 @@ public class PrecisePositionWidgetWrapper<T extends Drawable & Element & Selecta
 
 	public double getY() {
 		return y;
+	}
+
+	public void offsetX(Function<Double, Double> theFunc) {
+		this.setX(theFunc.apply(this.getX()));
+	}
+
+	public void offsetY(Function<Double, Double> theFunc) {
+		this.setY(theFunc.apply(this.getY()));
 	}
 
 	public PrecisePositionWidgetWrapper(T wrapped, double x, double y) {
