@@ -2,6 +2,7 @@ package com.goobercorp.gooberlib.test;
 
 import com.goobercorp.gooberlib.annotations.GooberConfig;
 import com.goobercorp.gooberlib.builder.v2.GooberConfigBuilder;
+import com.goobercorp.gooberlib.misc.Hotkey;
 import net.minecraft.text.Text;
 
 @SuppressWarnings("unused")
@@ -38,6 +39,9 @@ public class TestConfig {
                             .child("int6")
                                 .name("int3 name")
                                 .build()
+							.child("hotkey")
+								.name("nya gothkey")
+								.build()
                             .build()
                         .build()
                     .build()
@@ -69,4 +73,5 @@ public class TestConfig {
     public static int int6;
     public static int int7;
 
+	public static Hotkey hotkey = new Hotkey("g, c", 5, () -> IO.println("nya"));
 }

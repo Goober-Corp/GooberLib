@@ -8,9 +8,9 @@ import com.goobercorp.gooberlib.builder.ConfigSection;
 import com.goobercorp.gooberlib.builder.v2.OptionHolder;
 import com.goobercorp.gooberlib.gui.GroupTextWidget;
 import com.goobercorp.gooberlib.gui.EvilTabNavigationWidget;
-import com.goobercorp.gooberlib.mixin.ClickableWidgetAcessor;
-import com.goobercorp.gooberlib.mixin.ScreenAccessor;
-import com.goobercorp.gooberlib.mixin.TooltipAccessor;
+import com.goobercorp.gooberlib.mixin.gui.ClickableWidgetAcessor;
+import com.goobercorp.gooberlib.mixin.gui.ScreenAccessor;
+import com.goobercorp.gooberlib.mixin.gui.TooltipAccessor;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.MinecraftClient;
@@ -81,6 +81,7 @@ public class GooberScreen extends Screen {
 
                 @Override
                 protected void applyValue() {
+					//noinspection unchecked
                     ((Consumer<Integer>) option.setter()).accept(MathHelper.floor(MathHelper.clampedLerp(this.value, 0, 25)));
                 }
             };

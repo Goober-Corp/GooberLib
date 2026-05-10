@@ -1,4 +1,4 @@
-package com.goobercorp.gooberlib.mixin;
+package com.goobercorp.gooberlib.mixin.gui;
 
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;

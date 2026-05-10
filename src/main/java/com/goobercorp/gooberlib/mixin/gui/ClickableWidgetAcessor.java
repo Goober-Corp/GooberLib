@@ -1,4 +1,4 @@
-package com.goobercorp.gooberlib.mixin;
+package com.goobercorp.gooberlib.mixin.gui;
 
 import net.minecraft.client.gui.tooltip.TooltipState;
 import net.minecraft.client.gui.widget.ClickableWidget;

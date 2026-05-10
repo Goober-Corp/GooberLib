@@ -6,10 +6,11 @@
   "mixins": [
   ],
   "client": [
-    "ClickableWidgetAcessor",
-    "InactivityFpsLimiterMixin",
-    "ScreenAccessor",
-    "TooltipAccessor"
+    "gui.ClickableWidgetAcessor",
+    "gui.InactivityFpsLimiterMixin",
+    "gui.ScreenAccessor",
+    "gui.TooltipAccessor",
+    "hotkey.KeyboardMixin"
   ],
   "injectors": {
     "defaultRequire": 1

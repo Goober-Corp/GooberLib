@@ -1,4 +1,4 @@
-package com.goobercorp.gooberlib.mixin;
+package com.goobercorp.gooberlib.mixin.gui;
 
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.text.Text;

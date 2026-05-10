@@ -1,4 +1,4 @@
-package com.goobercorp.gooberlib.mixin;
+package com.goobercorp.gooberlib.mixin.gui;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.client.option.InactivityFpsLimiter;

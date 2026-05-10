@@ -98,6 +98,7 @@ public class GooberLibApi {
 	}
 
 	private static void deserializeOption(ConfigOption option, JsonObject jo, Gson gson) {
+		if (jo == null) return;
 		JsonElement valueObject = jo.get("value");
 		JsonObject childrenObject = jo.get("children").getAsJsonObject();
 
@@ -123,7 +124,7 @@ public class GooberLibApi {
 		out.add(optionName, jo);
 	}
 
-	static {
+//	static {
 //		// primitives
 //		registerHandler(byte.class, JsonPrimitive::new, JsonElement::getAsByte);
 //		registerHandler(short.class, JsonPrimitive::new, JsonElement::getAsShort);
@@ -172,5 +173,5 @@ public class GooberLibApi {
 //				throw new RuntimeException(e);
 //			}
 //		});
-	}
+//	}
 }
