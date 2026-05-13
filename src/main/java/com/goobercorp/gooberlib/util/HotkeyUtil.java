@@ -4,6 +4,7 @@ import com.goobercorp.gooberlib.misc.Hotkey;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.client.input.KeyInput;
+import net.minecraft.client.input.MouseInput;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
@@ -29,7 +30,20 @@ public class HotkeyUtil {
 		if (keyAction == 1) PRESSED.add(keyInput.getKeycode());
 		else PRESSED.removeIf(i -> i == keyInput.getKeycode());
 		main: for (Hotkey hotkey : ALL_HOTKEYS) {
-			if (hotkey.settings.matches(keyAction, keyInput, PRESSED, hotkey)) {
+			if (hotkey.settings.matches(keyAction, PRESSED, hotkey)) {
+				for (int key : hotkey.keyCodes) {
+					if (!isPressed(key)) continue main;
+				}
+				if (hotkey.onPress()) break;
+			}
+		}
+	}
+
+	public static void handleMouse(int keyAction, MouseInput mouseInput) {
+		if (keyAction == 1) PRESSED.add(mouseInput.getKeycode());
+		else PRESSED.removeIf(i -> i == mouseInput.getKeycode());
+		main: for (Hotkey hotkey : ALL_HOTKEYS) {
+			if (hotkey.settings.matches(keyAction, PRESSED, hotkey)) {
 				for (int key : hotkey.keyCodes) {
 					if (!isPressed(key)) continue main;
 				}

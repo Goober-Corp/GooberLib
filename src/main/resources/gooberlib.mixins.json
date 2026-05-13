@@ -10,7 +10,8 @@
     "gui.InactivityFpsLimiterMixin",
     "gui.ScreenAccessor",
     "gui.TooltipAccessor",
-    "hotkey.KeyboardMixin"
+    "hotkey.KeyboardMixin",
+    "hotkey.MouseMixin"
   ],
   "injectors": {
     "defaultRequire": 1
