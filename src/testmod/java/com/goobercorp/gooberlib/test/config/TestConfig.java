@@ -1,4 +1,4 @@
-package com.goobercorp.gooberlib.test;
+package com.goobercorp.gooberlib.test.config;
 
 import com.goobercorp.gooberlib.annotations.GooberConfig;
 import com.goobercorp.gooberlib.builder.v2.GooberConfigBuilder;
@@ -66,7 +66,8 @@ public class TestConfig {
             .category().name("FOURTH ONE !!")
             .build()
             .category().name("FIFTH ONE !!")
-            .build();
+            .build()
+			.addBuiltCategory(TheOne.category);
     // @formatter:on
 
     public static int int1;

@@ -3,25 +3,34 @@ package com.goobercorp.gooberlib.builder.v2;
 import com.goobercorp.gooberlib.builder.ConfigCategory;
 import com.goobercorp.gooberlib.builder.MetadataHolder;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryBuilder {
-    private Text name;
+	private final Class<?> parentClass;
+	private Text name;
     private Text description;
 
     private final List<OptionHolder> elements = new ArrayList<>();
 
+	@Nullable
     private final GooberConfigBuilder parent;
 
     CategoryBuilder(GooberConfigBuilder parent) {
         this.parent = parent;
+		this.parentClass = parent.getConfigClass();
+    }
+
+    public CategoryBuilder(Class<?> clazz) {
+        this.parentClass = clazz;
+		this.parent = null;
     }
 
     public OptionBuilder<CategoryBuilder> option(String fieldName) {
-        return new OptionBuilder<>(this, parent.getConfigClass(),
-                new OptionAccessors.FieldAccessors(parent.getConfigClass(), fieldName), elements::add);
+        return new OptionBuilder<>(this, parentClass,
+                new OptionAccessors.FieldAccessors(parentClass, fieldName), elements::add);
     }
 
     public SectionBuilder section() {
@@ -58,13 +67,18 @@ public class CategoryBuilder {
         return description(Text.translatable(key));
     }
 
-
     public GooberConfigBuilder build() {
+		if (parent == null) throw new IllegalStateException("If you're trying to make a ConfigCategory, use buildCategory() instead!");
         parent.addCategory(new ConfigCategory(new MetadataHolder.Metadata(name, description), elements));
         return parent;
     }
 
+	public ConfigCategory buildCategory() {
+		return new ConfigCategory(new MetadataHolder.Metadata(name, description), elements);
+	}
+
     GooberConfigBuilder getParent() {
+		if (parent == null) throw new IllegalStateException("If you're trying to make a ConfigCategory, use buildCategory() instead!");
         return parent;
     }
 

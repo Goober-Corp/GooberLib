@@ -76,6 +76,11 @@ public class GooberConfigBuilder {
         return category().name(name);
     }
 
+	public GooberConfigBuilder addBuiltCategory(ConfigCategory category) {
+		addCategory(category);
+		return this;
+	}
+
     public GooberConfigBuilder typeAdapter(Type type, Object adapter) {
         gsonBuilder.registerTypeAdapter(type, adapter);
         return this;

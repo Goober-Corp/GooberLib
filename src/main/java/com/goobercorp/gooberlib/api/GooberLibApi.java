@@ -38,7 +38,10 @@ public class GooberLibApi {
 		}
 
 		for (ConfigCategory category : config.categories()) {
-			JsonObject object = theObject.get(category.metadata().name().getString()).getAsJsonObject();
+			if (category.metadata().name() == null) throw new IllegalStateException("Please provide a name for your category! " + category);
+			var objectName = category.metadata().name().getString();
+			if (!theObject.has(objectName)) continue;
+			JsonObject object = theObject.get(objectName).getAsJsonObject();
 			for (var entry : object.asMap().entrySet()) {
 				for (Object o : category.elements()) {
 					if (o instanceof ConfigOption option) {
