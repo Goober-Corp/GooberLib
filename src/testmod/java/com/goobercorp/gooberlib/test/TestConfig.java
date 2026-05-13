@@ -16,6 +16,7 @@ public class TestConfig {
                 .descriptionTranslation("A description")
                 .option("int1")
                     .name("Standalone field")
+                    .description("meow")
                     .withChildren()
                         .child("int2")
                             .name("standalone child")
@@ -27,6 +28,9 @@ public class TestConfig {
                                     .name("nested child")
                                     .build()
                                 .build()
+            .child("int8")
+            .name("yeah")
+            .build()
                             .build()
                         .build()
                     .build()
@@ -72,6 +76,7 @@ public class TestConfig {
     public static int int5;
     public static int int6;
     public static int int7;
+    public static int int8;
 
 	public static Hotkey hotkey = new Hotkey("g, c", 5, () -> IO.println("nya"));
 }

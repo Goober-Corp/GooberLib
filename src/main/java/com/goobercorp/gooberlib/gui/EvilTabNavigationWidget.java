@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.gui;
 
+import com.goobercorp.gooberlib.util.RenderUtils;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -10,12 +11,7 @@ import java.util.Optional;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.AbstractParentElement;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.Selectable;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.navigation.GuiNavigation;
 import net.minecraft.client.gui.navigation.GuiNavigationPath;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -38,6 +34,8 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
     private final TabManager tabManager;
     private final ImmutableList<Tab> tabs;
     private final ImmutableList<EvilTabButtonWidget> tabButtons;
+    private float targetX = 0;
+    private float preciseX;
 
     EvilTabNavigationWidget(int i, TabManager tabManager, Iterable<Tab> iterable) {
         this.tabNavWidth = i;
@@ -67,6 +65,12 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
     }
 
     @Override
+    public boolean mouseDragged(Click click, double deltaX, double deltaY) {
+        this.targetX += (float) deltaX;
+        return super.mouseDragged(click, deltaX, deltaY);
+    }
+
+    @Override
     public void setFocused(boolean bl) {
         super.setFocused(bl);
         if (this.getFocused() != null) {
@@ -81,6 +85,7 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
             this.tabManager.setCurrentTab(tabButtonWidget.getTab(), true);
         }
     }
+
 
     @Nullable
     @Override
@@ -110,6 +115,27 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
     }
 
     @Override
+    public boolean mouseClicked(Click click, boolean bl) {
+        Optional<Element> optional = this.hoveredElement(click.comp_4798(), click.comp_4799());
+        if (optional.isEmpty()) {
+            return false;
+        } else {
+            Element element = optional.get();
+            if (element.mouseClicked(click, bl) && element.isClickable()) {
+                if (!element.isFocused()) {
+                    this.setFocused(element);
+                    this.targetX = -(50 * getCurrentTabIndex());
+                }
+                if (click.button() == 0) {
+                    this.setDragging(true);
+                }
+            }
+
+            return true;
+        }
+    }
+
+    @Override
     public void appendNarrations(NarrationMessageBuilder narrationMessageBuilder) {
         Optional<EvilTabButtonWidget> optional = this.tabButtons
                 .stream()
@@ -134,8 +160,16 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
         }
     }
 
+
     @Override
     public void render(DrawContext drawContext, int i, int j, float f) {
+        float clampedTargetX = Math.clamp(targetX, -grid.getWidth() / 2F, grid.getWidth() / 2F);
+        preciseX = (float) RenderUtils.ease(preciseX, targetX, 15);
+        targetX = (float) RenderUtils.ease(targetX, clampedTargetX, 15);
+
+        this.grid.setX((int) preciseX);
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().translate(preciseX - (int) preciseX, 0);
         drawContext.drawHorizontalLine(0, tabButtons.get(getCurrentTabIndex()).getX() - 1, this.grid.getY() + 1, 0x33FFFFFF);
         drawContext.drawHorizontalLine(0, tabButtons.get(getCurrentTabIndex()).getX() - 1, this.grid.getY(), 0xBF000000);
 
@@ -145,15 +179,20 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
         for (EvilTabButtonWidget tabButtonWidget : this.tabButtons) {
             tabButtonWidget.render(drawContext, i, j, f);
         }
+        drawContext.getMatrices().popMatrix();
     }
 
     public void renderForBackgroundLayer(DrawContext drawContext) {
+
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().translate(preciseX - (int) preciseX, 0);
         drawContext.drawHorizontalLine(0, tabButtons.getFirst().getX() - 1, this.grid.getY(), 0xBF000000);
         drawContext.drawHorizontalLine(tabButtons.getLast().getRight(), tabNavWidth, this.grid.getY(), 0xBF000000);
 
         for (EvilTabButtonWidget tabButtonWidget : this.tabButtons) {
             tabButtonWidget.renderForBackground(drawContext);
         }
+        drawContext.getMatrices().popMatrix();
     }
 
     @Override
@@ -162,15 +201,16 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
     }
 
     public void init() {
-        int i = Math.min(400, this.tabNavWidth) - 28;
-        int j = MathHelper.roundUpToMultiple(i / this.tabs.size(), 2);
+        int i = tabNavWidth - 10;
+//        int j = MathHelper.roundUpToMultiple(i / this.tabs.size(), 2);
 
         for (EvilTabButtonWidget tabButtonWidget : this.tabButtons) {
-            tabButtonWidget.setWidth(j);
+            tabButtonWidget.setWidth(100);
         }
 
         this.grid.refreshPositions();
         this.grid.setX(MathHelper.roundUpToMultiple((this.tabNavWidth - i) / 2, 2));
+        this.targetX = grid.getX();
         this.grid.setY(0);
     }
 
@@ -209,7 +249,12 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 
     @Override
     public boolean mouseScrolled(double d, double e, double f, double g) {
-        return super.mouseScrolled(d, e, f, g);
+        if (targetX > grid.getWidth() / 2F || targetX < -grid.getWidth() / 2F) {
+            targetX += (float) (g * 10 * Math.min(1 / Math.abs(targetX - Math.clamp(targetX, -grid.getWidth() / 2F, grid.getWidth() / 2F)), 1));
+        } else {
+            targetX += (float) (g * 10);
+        }
+        return false;
     }
 
     private int getTabForKey(KeyInput keyInput) {
@@ -229,7 +274,7 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
         }
     }
 
-    private int getCurrentTabIndex() {
+    public int getCurrentTabIndex() {
         Tab tab = this.tabManager.getCurrentTab();
         return this.tabs.indexOf(tab);
     }
@@ -239,6 +284,7 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
         int i = this.getCurrentTabIndex();
         return i != -1 ? this.tabButtons.get(i) : null;
     }
+
 
     @Environment(EnvType.CLIENT)
     public static class Builder {

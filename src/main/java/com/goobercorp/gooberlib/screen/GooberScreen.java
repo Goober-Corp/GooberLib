@@ -8,19 +8,16 @@ import com.goobercorp.gooberlib.builder.ConfigSection;
 import com.goobercorp.gooberlib.builder.v2.OptionHolder;
 import com.goobercorp.gooberlib.gui.GroupTextWidget;
 import com.goobercorp.gooberlib.gui.EvilTabNavigationWidget;
-import com.goobercorp.gooberlib.mixin.gui.ClickableWidgetAcessor;
-import com.goobercorp.gooberlib.mixin.gui.ScreenAccessor;
-import com.goobercorp.gooberlib.mixin.gui.TooltipAccessor;
+import com.goobercorp.gooberlib.gui.PrecisePositionWidgetWrapper;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tab.GridScreenTab;
 import net.minecraft.client.gui.tab.Tab;
 import net.minecraft.client.gui.tab.TabManager;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -29,6 +26,7 @@ import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Vector2i;
 
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
@@ -46,30 +44,39 @@ public class GooberScreen extends Screen {
     private float categoryHoverProgress = 1;
     private float screenCategoryAnimationState = 0;
     private EvilTabNavigationWidget tabNavigationWidget;
-    private int firstOpenTabAnimationTicks = 20;
+    private int tabHoldTicks = 20;
     private final TabManager tabManager = new TabManager(this::addDrawableChild, this::remove);
     private double scrollProgress = 0;
     private final Tweener scrollTweener = new Tweener(() -> scrollProgress);
-    private Tab[] tabs;
+    private final Tweener categoryTweener = new Tweener(() -> screenCategoryAnimationState);
+    private final HashMap<PrecisePositionWidgetWrapper<?>, OptionHolder> evilLayout = new HashMap<>();
+    private final Tab[] tabs;
+    AtomicBoolean animate = new AtomicBoolean(false);
     String modid;
 
-	public GooberScreen(BuiltConfig config, Screen parent, String modid) {
+    public GooberScreen(BuiltConfig config, Screen parent, String modid) {
         super(config.title());
         this.config = config;
         this.parent = parent;
         this.modid = modid;
+
+        this.tabs = new GridScreenTab[config.categories().size()];
+        for (int i = 0; i < config.categories().size(); i++) {
+            tabs[i] = new GridScreenTab(config.categories().get(i).metadata().name());
+        }
+
     }
 
     @Override
     public void tick() {
-        firstOpenTabAnimationTicks -= 1;
+        tabHoldTicks = Math.clamp(tabHoldTicks - 1, 0, 100);
     }
 
     private int addOptionWithChildren(ConfigOption option, int y, int x) {
         int addY = 0;
         ClickableWidget widget;
-        if (option.type().getTypeName().equals("int")) {
-            widget = new SliderWidget(x, y, 125, 16, option.metadata().name(), ((int) option.getter().get()) / 25F) {
+        if (option.type() == int.class) {
+            widget = new SliderWidget(0, 0, 125, 16, option.metadata().name(), ((int) option.getter().get()) / 25F) {
                 {
                     this.updateMessage();
                 }
@@ -81,7 +88,6 @@ public class GooberScreen extends Screen {
 
                 @Override
                 protected void applyValue() {
-					//noinspection unchecked
                     ((Consumer<Integer>) option.setter()).accept(MathHelper.floor(MathHelper.clampedLerp(this.value, 0, 25)));
                 }
             };
@@ -91,9 +97,9 @@ public class GooberScreen extends Screen {
                     textRenderer
             );
         }
-        widget.setX(x);
-        widget.setY(y + addY);
-        this.addDrawableChild(widget);
+        PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x, y + addY, option.metadata().description());
+        this.addDrawableChild(pw);
+        evilLayout.put(pw, option);
         addY += VERTICAL_PADDING;
 
         for (ConfigOption child : option.childOptions()) {
@@ -105,15 +111,11 @@ public class GooberScreen extends Screen {
 
     @Override
     protected void init() {
-        this.tabs = new GridScreenTab[config.categories().size()];
-        for (int i = 0; i < config.categories().size(); i++) {
-            tabs[i] = new GridScreenTab(config.categories().get(i).metadata().name());
-        }
         this.tabNavigationWidget = this.addSelectableChild(EvilTabNavigationWidget.builder(tabManager, width)
                 .tabs(tabs)
                 .build());
-        this.tabNavigationWidget.selectTab(0, false);
         this.tabNavigationWidget.init();
+        tabNavigationWidget.selectTab(0, false);
 
         for (ConfigCategory c : config.categories()) {
             int x = (config.categories().indexOf(c) == 0 ? 0 : MinecraftClient.getInstance().getWindow().getScaledWidth() * (config.categories().indexOf(c)));
@@ -124,12 +126,9 @@ public class GooberScreen extends Screen {
                             configSection.metadata().name(),
                             textRenderer
                     );
-                    t.setX(x + (MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - textRenderer.getWidth(configSection.metadata().name()) / 2);
-                    t.setY(y);
-                    if (configSection.metadata().description() != null) {
-                        t.setTooltip(Tooltip.of(configSection.metadata().description()));
-                    }
-                    this.addDrawable(t);
+                    PrecisePositionWidgetWrapper<GroupTextWidget> widgetWrapper = new PrecisePositionWidgetWrapper<>(t, x + ((double) MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (double) textRenderer.getWidth(configSection.metadata().name()) / 2, y, configSection.metadata().description());
+                    evilLayout.put(widgetWrapper, o);
+                    addDrawableChild(widgetWrapper);
                     y += VERTICAL_PADDING;
                     for (ConfigOption yeah : o.childOptions()) {
                         y += addOptionWithChildren(yeah, y, x + CHILD_INSET);
@@ -148,45 +147,50 @@ public class GooberScreen extends Screen {
     }
 
     @Override
+    public boolean mouseClicked(Click click, boolean bl) {
+        return super.mouseClicked(click, bl);
+    }
+
+    @Override
     public boolean mouseScrolled(double d, double e, double f, double g) {
-        scrollProgress = MathHelper.clamp(scrollProgress + g * 15, -1000, 0);
+        if (!tabNavigationWidget.isMouseOver(d, e)) {
+            scrollProgress = MathHelper.clamp(scrollProgress + g * 15, -1000, 0);
+        }
         return super.mouseScrolled(d, e, f, g);
     }
-//    @Override
-//    public boolean mouseClicked(Click click, boolean bl)
-//    {
-//        Click c = new Click(click.comp_4798(), click.comp_4799() - scrollProgress, click.comp_4800());
-//        return super.mouseClicked(c, bl);
-//    }
-//TODO: come up with a better way to move stuff around rather than shifting matrices
 
     @Override
     public void render(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
 //        mouseY -= (int) scrollProgress;
 //        mouseX -= (int) (-width * screenCategoryAnimationState);
         //TODO: do something about tooltips not lining up
-		this.scrollTweener.update();
-        drawContext.getMatrices().pushMatrix();
-        drawContext.getMatrices().translate(-width * screenCategoryAnimationState, (float) scrollTweener.get());
-        drawLines(drawContext);
-        super.render(drawContext, mouseX - (int) (-width * screenCategoryAnimationState), (int) (mouseY - scrollProgress), tickDelta);
-        drawContext.getMatrices().popMatrix();
+        this.scrollTweener.update();
+        this.categoryTweener.update();
 
-
-        AtomicBoolean animate = new AtomicBoolean(false);
-        ((ScreenAccessor) this).drawables().forEach(drawable -> {
-            if (drawable instanceof AbstractTextWidget textWidget) {
-                var accessor = (ClickableWidgetAcessor) textWidget;
-                if (textWidget.isHovered()) {
-                    animate.set(true);
-                    var accessor2 = (TooltipAccessor) accessor.tooltip().getTooltip();
-                    descriptionText = accessor2 == null ? Text.of("") : accessor2.content();
-                }
-            }
+        evilLayout.forEach((precisePositionWidgetWrapper, optionHolder) -> {
+            precisePositionWidgetWrapper.setOffsetY(scrollTweener.get());
+            precisePositionWidgetWrapper.setOffsetX(-width * categoryTweener.get());
+            precisePositionWidgetWrapper.render(drawContext, mouseX, mouseY, tickDelta);
         });
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().translate((float) (-width * categoryTweener.get()), (float) scrollTweener.get());
+        drawLines(drawContext);
+        drawContext.getMatrices().popMatrix();
+        super.render(drawContext, mouseX, mouseY, tickDelta);
 
+        for(PrecisePositionWidgetWrapper<?> yeah : evilLayout.keySet()){
+            if(yeah.isMouseOver(mouseX, mouseY)){
+                descriptionText = yeah.getHoverMessage();
+                animate.set(true);
+                break;
+            }
+            animate.set(false);
+        }
 
-        categoryHoverProgress = (float) ease(categoryHoverProgress, tabNavigationWidget.isMouseOver(mouseX, mouseY) || firstOpenTabAnimationTicks > 0 ? 1 : 0, 15);
+        if (tabNavigationWidget.isMouseOver(mouseX, mouseY)) {
+            tabHoldTicks = 10;
+        }
+        categoryHoverProgress = (float) ease(categoryHoverProgress,  tabHoldTicks > 0 ? 1 : 0, 15);
         int yeah = ArrayUtils.indexOf(tabs, tabManager.getCurrentTab());
         screenCategoryAnimationState = (float) ease(screenCategoryAnimationState, yeah == -1 ? 0 : yeah, 15);
 
@@ -219,6 +223,14 @@ public class GooberScreen extends Screen {
         }
     }
 
+    @Override
+    public void resize(int i, int j) {
+        evilLayout.clear();
+        int selectedTab = tabNavigationWidget.getCurrentTabIndex();
+        super.resize(i, j);
+        tabNavigationWidget.selectTab(selectedTab == -1 ? 0 : selectedTab, false);
+    }
+
     private Vector2i drawLinesForOption(ConfigOption option, DrawContext drawContext, Vector2i vec) {
         int returnY = (VERTICAL_PADDING * option.childOptions().size());
         RenderUtils.drawVerticalLine(drawContext, vec.x, vec.y + 8, vec.y + (VERTICAL_PADDING * option.childOptions().size()) + 8, 0xFFFFFFFF);
@@ -238,8 +250,8 @@ public class GooberScreen extends Screen {
     @Override
     public void renderBackground(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
         //TODO: make this better
-        mouseY -= (int) scrollProgress;
-        mouseX -= (int) (-width * screenCategoryAnimationState);
+//        mouseY -= (int) scrollProgress;
+//        mouseX -= (int) (-width * screenCategoryAnimationState);
         drawContext.getMatrices().pushMatrix();
         drawContext.getMatrices().translate(-mouseX * 0.1F, -mouseY * 0.1F);
         drawContext.getMatrices().translate(MinecraftClient.getInstance().getWindow().getScaledWidth() / 2F - 100, MinecraftClient.getInstance().getWindow().getScaledHeight() / 2F - 100);
@@ -248,14 +260,10 @@ public class GooberScreen extends Screen {
         drawContext.getMatrices().popMatrix();
 
         drawContext.getMatrices().pushMatrix();
-        drawContext.getMatrices().translate(-width * screenCategoryAnimationState, (float) scrollTweener.get());
-        drawLines(drawContext);
-        int finalX = mouseX;
-        int finalY = mouseY;
-        ((ScreenAccessor) this).drawables().forEach(drawable -> {
-            if (drawable instanceof AbstractTextWidget) {
-                drawable.render(drawContext, finalX, finalY, tickDelta);
-            }
+//        drawContext.getMatrices().translate(-width * screenCategoryAnimationState, (float) scrollTweener.get());
+//        drawLines(drawContext);
+        evilLayout.forEach((precisePositionWidgetWrapper, optionHolder) -> {
+            precisePositionWidgetWrapper.render(drawContext, mouseX, mouseY, tickDelta);
         });
         drawContext.getMatrices().popMatrix();
 

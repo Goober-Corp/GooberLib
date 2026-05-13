@@ -3,15 +3,18 @@ package com.goobercorp.gooberlib.gui;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.DrawnTextConsumer;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.widget.AbstractTextWidget;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import net.minecraft.util.Language;
+import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
 public class GroupTextWidget extends AbstractTextWidget {
@@ -19,6 +22,7 @@ public class GroupTextWidget extends AbstractTextWidget {
     private int cachedWidth = 0;
     private boolean cachedWidthDirty = true;
     private GroupTextWidget.TextOverflow textOverflow = GroupTextWidget.TextOverflow.CLAMPED;
+    private float renderProgress = 0;
 
     public GroupTextWidget(Text text, TextRenderer textRenderer) {
         this(0, 0, textRenderer.getWidth(text.asOrderedText()), 9, text, textRenderer);
@@ -30,7 +34,6 @@ public class GroupTextWidget extends AbstractTextWidget {
 
     public GroupTextWidget(int i, int j, int k, int l, Text text, TextRenderer textRenderer) {
         super(i, j, k, l, text, textRenderer);
-        this.active = false;
     }
 
     @Override
@@ -64,14 +67,19 @@ public class GroupTextWidget extends AbstractTextWidget {
     }
 
 
+
     @Override
     public void renderWidget(DrawContext drawContext, int i, int j, float f) {
         super.renderWidget(drawContext, i, j, f);
+        //TODO: only when appears from offscreen
+        renderProgress = (float) RenderUtils.ease(renderProgress, 1, 15);
         //this requires the widget to be centered. fuck
-        RenderUtils.drawHorizontalLine(drawContext,  this.getX() - drawContext.getScaledWindowWidth() / 2F + getTextRenderer().getWidth(message) / 2F, this.getX() - 2, this.getY() + 3, 0,  -1);
-        RenderUtils.drawHorizontalLine(drawContext,  this.getX() + getTextRenderer().getWidth(message), this.getX() + getTextRenderer().getWidth(message) / 2 + drawContext.getScaledWindowWidth() / 2F - 1, this.getY() + 3, -1, 0);
-        RenderUtils.drawHorizontalLine(drawContext,  this.getX() - drawContext.getScaledWindowWidth() / 2F + getTextRenderer().getWidth(message) / 2F + 1, this.getX() - 1, this.getY() + 4, 0, 0xFF3e3e3e);
-        RenderUtils.drawHorizontalLine(drawContext,  this.getX() + getTextRenderer().getWidth(message) + 1, this.getX() + getTextRenderer().getWidth(message) / 2 + drawContext.getScaledWindowWidth() / 2F - 1, this.getY() + 4, 0xFF3e3e3e, 0);
+        float yeah = this.getX() - drawContext.getScaledWindowWidth() / 2F + getTextRenderer().getWidth(message) / 2F;
+        RenderUtils.drawHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 3, 0, -1);
+        RenderUtils.drawHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah + 1, this.getX() - 1), this.getX() - 1, this.getY() + 4, 0, 0xFF3e3e3e);
+        int otherYeah = this.getX() + getTextRenderer().getWidth(message);
+        RenderUtils.drawHorizontalLine(drawContext, otherYeah, MathHelper.lerp(1 - renderProgress, this.getX() + getTextRenderer().getWidth(message) / 2 + drawContext.getScaledWindowWidth() / 2F - 1, otherYeah), this.getY() + 3, -1, 0);
+        RenderUtils.drawHorizontalLine(drawContext, otherYeah + 1, MathHelper.lerp(1 - renderProgress, this.getX() + getTextRenderer().getWidth(message) / 2 + drawContext.getScaledWindowWidth() / 2F - 1, otherYeah), this.getY() + 4, 0xFF3e3e3e, 0);
     }
 
     @Override
