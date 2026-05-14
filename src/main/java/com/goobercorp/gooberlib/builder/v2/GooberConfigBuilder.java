@@ -68,8 +68,10 @@ public class GooberConfigBuilder {
         return configClass;
     }
 
-    public CategoryBuilder category() {
-        return new CategoryBuilder(this);
+    public CategoryBuilder category(String name, String description) {
+        return new CategoryBuilder(this)
+                .name(name)
+                .description(description);
     }
 
     public CategoryBuilder category(Text name) {
