@@ -2,8 +2,12 @@ package com.goobercorp.gooberlib.builder.v3;
 
 import net.minecraft.text.Text;
 
+import java.util.List;
+
 public abstract class ValueOption<V> implements Option {
     public V value;
+
+    protected List<OptionHolderV3> children;
 
     protected Text name;
     protected Text description;
@@ -46,5 +50,10 @@ public abstract class ValueOption<V> implements Option {
     public <O extends ValueOption<V>> O description(Text description) {
         this.description = description;
         return (O) this;
+    }
+
+    @Override
+    public List<OptionHolderV3> childOptions() {
+        return children;
     }
 }

@@ -38,13 +38,16 @@ public class CategoryBuilder {
     }
 
     public SectionBuilder section(String name, String description) {
+        return section(Text.literal(name), Text.literal(description));
+    }
+
+    public SectionBuilder section(Text name, Text description) {
         return new SectionBuilder(this, elements::add)
-                .name(name)
-                .description(description);
+                .name(name).description(description);
     }
 
     public SectionBuilder section(Text name) {
-        return section().name(name);
+        return section(name, Text.empty());
     }
 
     public CategoryBuilder name(Text name) {
