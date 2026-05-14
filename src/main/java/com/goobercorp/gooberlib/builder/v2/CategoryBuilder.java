@@ -2,6 +2,9 @@ package com.goobercorp.gooberlib.builder.v2;
 
 import com.goobercorp.gooberlib.builder.ConfigCategory;
 import com.goobercorp.gooberlib.builder.MetadataHolder;
+import com.goobercorp.gooberlib.builder.v3.Option;
+import com.goobercorp.gooberlib.builder.v3.OptionContext;
+import com.goobercorp.gooberlib.builder.v3.OptionHolderV3;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +16,7 @@ public class CategoryBuilder {
 	private Text name;
     private Text description;
 
-    private final List<OptionHolder> elements = new ArrayList<>();
+    private final List<OptionHolderV3> elements = new ArrayList<>();
 
 	@Nullable
     private final GooberConfigBuilder parent;
@@ -28,17 +31,23 @@ public class CategoryBuilder {
 		this.parent = null;
     }
 
-    public OptionBuilder<CategoryBuilder> option(String fieldName) {
-        return new OptionBuilder<>(this, parentClass,
-                new OptionAccessors.FieldAccessors(parentClass, fieldName), elements::add);
+    public OptionContext<CategoryBuilder> option(Option option) {
+        OptionContext<CategoryBuilder> optionContext = new OptionContext<>(this, option);
+        elements.add(optionContext);
+        return optionContext;
     }
 
-    public SectionBuilder section() {
-        return new SectionBuilder(this, elements::add);
+    public SectionBuilder section(String name, String description) {
+        return section(Text.literal(name), Text.literal(description));
+    }
+
+    public SectionBuilder section(Text name, Text description) {
+        return new SectionBuilder(this, elements::add)
+                .name(name).description(description);
     }
 
     public SectionBuilder section(Text name) {
-        return section().name(name);
+        return section(name, Text.empty());
     }
 
     public CategoryBuilder name(Text name) {

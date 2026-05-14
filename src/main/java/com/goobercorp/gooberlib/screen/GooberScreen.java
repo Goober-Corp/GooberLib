@@ -6,6 +6,8 @@ import com.goobercorp.gooberlib.builder.ConfigCategory;
 import com.goobercorp.gooberlib.builder.ConfigOption;
 import com.goobercorp.gooberlib.builder.ConfigSection;
 import com.goobercorp.gooberlib.builder.v2.OptionHolder;
+import com.goobercorp.gooberlib.builder.v3.Option;
+import com.goobercorp.gooberlib.builder.v3.OptionHolderV3;
 import com.goobercorp.gooberlib.gui.GroupTextWidget;
 import com.goobercorp.gooberlib.gui.EvilTabNavigationWidget;
 import com.goobercorp.gooberlib.gui.PrecisePositionWidgetWrapper;
@@ -72,11 +74,11 @@ public class GooberScreen extends Screen {
         tabHoldTicks = Math.clamp(tabHoldTicks - 1, 0, 100);
     }
 
-    private int addOptionWithChildren(ConfigOption option, int y, int x) {
+    private int addOptionWithChildren(Option option, int y, int x) {
         int addY = 0;
         ClickableWidget widget;
         if (option.type() == int.class) {
-            widget = new SliderWidget(0, 0, 125, 16, option.metadata().name(), ((int) option.getter().get()) / 25F) {
+            widget = new SliderWidget(0, 0, 125, 16, option.name(), ((int) option.getter().get()) / 25F) {
                 {
                     this.updateMessage();
                 }
@@ -120,7 +122,7 @@ public class GooberScreen extends Screen {
         for (ConfigCategory c : config.categories()) {
             int x = (config.categories().indexOf(c) == 0 ? 0 : MinecraftClient.getInstance().getWindow().getScaledWidth() * (config.categories().indexOf(c)));
             int y = VERTICAL_PADDING;
-            for (OptionHolder o : c.elements()) {
+            for (OptionHolderV3 o : c.elements()) {
                 if (o instanceof ConfigSection configSection) {
                     GroupTextWidget t = new GroupTextWidget(
                             configSection.metadata().name(),
@@ -130,8 +132,8 @@ public class GooberScreen extends Screen {
                     evilLayout.put(widgetWrapper, o);
                     addDrawableChild(widgetWrapper);
                     y += VERTICAL_PADDING;
-                    for (ConfigOption yeah : o.childOptions()) {
-                        y += addOptionWithChildren(yeah, y, x + CHILD_INSET);
+                    for (OptionHolderV3 yeah : o.childOptions()) {
+                        y += addOptionWithChildren((Option) yeah, y, x + CHILD_INSET);
                     }
                 } else {
                     y += addOptionWithChildren((ConfigOption) o, y, x + CHILD_INSET);

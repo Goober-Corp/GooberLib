@@ -16,6 +16,7 @@ import java.net.URI;
 import java.nio.file.Path;
 
 public class TheOne {
+	/* commented out until all the options are implemented
 	public static ConfigCategory category = ConfigCategory.builder(TheOne.class)
 			.name("meow meow")
 			.description("wawaawa")
@@ -65,6 +66,7 @@ public class TheOne {
 	/*and arrays...*/
 	/*and lists...*/
 
+	/* commented out until all the options are implemented
 	public static String StringOption;
 	public static Color ColorOption;
 	public static SomeEnum EnumOption;
@@ -83,6 +85,7 @@ public class TheOne {
 	public static Hotkey HotkeyOption;
 
 	public enum SomeEnum { OPTION_ONE, OPTION_TWO, OPTION_THREE}
+	*/
 }
 
 

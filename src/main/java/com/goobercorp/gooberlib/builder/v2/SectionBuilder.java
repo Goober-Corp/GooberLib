@@ -3,6 +3,9 @@ package com.goobercorp.gooberlib.builder.v2;
 import com.goobercorp.gooberlib.builder.ConfigOption;
 import com.goobercorp.gooberlib.builder.ConfigSection;
 import com.goobercorp.gooberlib.builder.MetadataHolder;
+import com.goobercorp.gooberlib.builder.v3.Option;
+import com.goobercorp.gooberlib.builder.v3.OptionContext;
+import com.goobercorp.gooberlib.builder.v3.OptionHolderV3;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -12,7 +15,7 @@ public class SectionBuilder {
     private final CategoryBuilder parent;
     private final SectionAppender appender;
 
-    private final List<ConfigOption> options = new ArrayList<>();
+    private final List<OptionHolderV3> options = new ArrayList<>();
 
     private Text name;
     private Text description;
@@ -23,9 +26,10 @@ public class SectionBuilder {
         this.appender = appender;
     }
 
-    public OptionBuilder<SectionBuilder> option(String fieldName) {
-        return new OptionBuilder<>(this, parent.getParent().getConfigClass(),
-                new OptionAccessors.FieldAccessors(parent.getParent().getConfigClass(), fieldName), options::add);
+    public OptionContext<SectionBuilder> option(Option option) {
+        OptionContext<SectionBuilder> optionContext = new OptionContext<>(this, option);
+        options.add(optionContext);
+        return optionContext;
     }
 
 
