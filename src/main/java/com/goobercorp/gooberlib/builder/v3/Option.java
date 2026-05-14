@@ -1,14 +1,23 @@
 package com.goobercorp.gooberlib.builder.v3;
 
+import com.goobercorp.gooberlib.interfaces.ValueChangeCallback;
+import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 
-public interface Option extends OptionHolderV3 {
-    <T> T serialize(DynamicOps<T> ops);
-    <T> void deserialize(DynamicOps<T> ops, T object);
+public interface Option<T extends Option<T>> {
+	<S> S serialize(DynamicOps<S> ops);
 
-    default void onChange() {}
+	<S> void deserialize(DynamicOps<S> ops, S object);
 
-    Text name();
-    Text description();
+	default void onChange() {
+	}
+
+	Text name();
+
+	Text description();
+
+	void setOnValueChange(ValueChangeCallback<T> t);
+
+	WidgetProvider getWidgetProvider();
 }

@@ -1,8 +1,7 @@
 package com.goobercorp.gooberlib.api;
 
 import com.goobercorp.gooberlib.builder.*;
-import com.goobercorp.gooberlib.builder.v3.Option;
-import com.goobercorp.gooberlib.builder.v3.OptionHolderV3;
+import com.goobercorp.gooberlib.builder.v3.OptionContext;
 import com.goobercorp.gooberlib.util.ConfigDiscovery;
 import com.google.gson.*;
 import com.mojang.serialization.JsonOps;
@@ -19,6 +18,7 @@ public class GooberLibApi {
 	public static void saveAll() {
 		ConfigDiscovery.getConfigs().forEach(GooberLibApi::save);
 	}
+
 	public static void loadAll() {
 		ConfigDiscovery.getConfigs().forEach(GooberLibApi::load);
 	}
@@ -41,24 +41,26 @@ public class GooberLibApi {
 		}
 
 		for (ConfigCategory category : config.categories()) {
-			if (category.metadata().name() == null) throw new IllegalStateException("Please provide a name for your category! " + category);
+			if (category.metadata().name() == null)
+				throw new IllegalStateException("Please provide a name for your category! " + category);
 			var objectName = category.metadata().name().getString();
 			if (!theObject.has(objectName)) continue;
 			JsonObject object = theObject.get(objectName).getAsJsonObject();
 			for (var entry : object.asMap().entrySet()) {
 				for (Object o : category.elements()) {
-					if (o instanceof Option option) {
-						if (option.name().getString().equals(entry.getKey())) {
-							deserializeOption(option, entry.getValue().getAsJsonObject(), config.gson());
+					if (o instanceof OptionContext<?> optionContext) {
+						if (optionContext.option().name().getString().equals(entry.getKey())) {
+							deserializeOption(optionContext, entry.getValue().getAsJsonObject());
 						}
-					} else if (o instanceof ConfigSection(MetadataHolder.Metadata metadata, List<OptionHolderV3> childOptions)) {
+					} else if (o instanceof ConfigSection(
+							MetadataHolder.Metadata metadata, List<OptionContext<?>> childOptions
+					)) {
 						if (metadata.name().getString().equals(entry.getKey())) {
 							JsonObject sectionObject = object.get(metadata.name().getString()).getAsJsonObject();
 							for (var sectionEntry : sectionObject.asMap().entrySet()) {
-								for (OptionHolderV3 optionHolder : childOptions) {
-									Option option = (Option) optionHolder; // TODO fix
-									if (option.name().getString().equals(sectionEntry.getKey())) {
-										deserializeOption(option, sectionEntry.getValue().getAsJsonObject(), config.gson());
+								for (OptionContext<?> context : childOptions) {
+									if (context.option().name().getString().equals(sectionEntry.getKey())) {
+										deserializeOption(context, sectionEntry.getValue().getAsJsonObject());
 									}
 								}
 							}
@@ -74,16 +76,15 @@ public class GooberLibApi {
 		for (ConfigCategory category : config.categories()) {
 			JsonObject object = new JsonObject();
 			for (Object o : category.elements()) {
-				if (o instanceof Option option) {
-					serializeOption(option, object, config.gson());
+				if (o instanceof OptionContext<?> option) {
+					serializeOption(option, object);
 				} else if (o instanceof ConfigSection(
 						MetadataHolder.Metadata metadata,
-						List<OptionHolderV3> options
+						List<OptionContext<?>> options
 				)) {
 					JsonObject sectionObject = new JsonObject();
-					for (OptionHolderV3 optionHolder : options) {
-						Option option = (Option) optionHolder; // TODO fix
-						serializeOption(option, sectionObject, config.gson());
+					for (OptionContext<?> optionContext : options) {
+						serializeOption(optionContext, sectionObject);
 					}
 					String name = metadata.name().getString();
 					object.add(name, sectionObject);
@@ -105,29 +106,27 @@ public class GooberLibApi {
 		}
 	}
 
-	private static void deserializeOption(Option option, JsonObject jo, Gson gson) {
+	private static void deserializeOption(OptionContext<?> option, JsonObject jo) {
 		if (jo == null) return;
 		JsonElement valueObject = jo.get("value");
 		JsonObject childrenObject = jo.get("children").getAsJsonObject();
 
-		option.deserialize(JsonOps.INSTANCE, valueObject);
-		for (OptionHolderV3 childOptionHolder : option.childOptions()) {
-			Option childOption = (Option) childOptionHolder; // TODO fix
-			deserializeOption(childOption, childrenObject.getAsJsonObject(childOption.name().getString()), gson);
+		option.option().deserialize(JsonOps.INSTANCE, valueObject);
+		for (OptionContext<?> childOptionHolder : option.childOptionContexts()) {
+			deserializeOption(childOptionHolder, childrenObject.getAsJsonObject(childOptionHolder.option().name().getString()));
 		}
 	}
 
-	private static void serializeOption(Option option, JsonObject out, Gson gson) {
-		String optionName = option.name().getString();
-		JsonElement value = option.serialize(JsonOps.INSTANCE);
+	private static void serializeOption(OptionContext<?> option, JsonObject out) {
+		String optionName = option.option().name().getString();
+		JsonElement value = option.option().serialize(JsonOps.INSTANCE);
 
 		JsonObject jo = new JsonObject();
 		jo.add("value", value);
 
 		JsonObject childrenObject = new JsonObject();
-		for (OptionHolderV3 childOptionHolder : option.childOptions()) {
-			Option childOption = (Option) childOptionHolder; // TODO fix
-			serializeOption(childOption, childrenObject, gson);
+		for (OptionContext<?> childOption : option.childOptionContexts()) {
+			serializeOption(childOption, childrenObject);
 		}
 		jo.add("children", childrenObject);
 
