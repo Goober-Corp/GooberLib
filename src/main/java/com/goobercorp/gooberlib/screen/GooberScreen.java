@@ -205,11 +205,11 @@ public class GooberScreen extends Screen {
 
 	private void drawLinesForOption(DrawContext drawContext, OptionHolderV3 o) {
 		if (o.childOptions().isEmpty()) return;
-		PrecisePositionWidgetWrapper<ClickableWidget> ppww = (PrecisePositionWidgetWrapper<ClickableWidget>) evilLayout.get(o);
-		PrecisePositionWidgetWrapper<ClickableWidget> last = (PrecisePositionWidgetWrapper<ClickableWidget>) evilLayout.get(o.childOptions().getLast());
+		PrecisePositionWidgetWrapper<?> ppww = evilLayout.get(o);
+		PrecisePositionWidgetWrapper<?> last = evilLayout.get(o.childOptions().getLast());
 		RenderUtils.drawVerticalLine(drawContext, (float) ppww.getX() + 5, (float) ppww.getY() + ppww.getWrapped().getHeight() - 1, (float) last.getY() + (last.getWrapped().getHeight() / 2F), -1);
 		for (OptionHolderV3 opt : o.childOptions()) {
-			PrecisePositionWidgetWrapper<ClickableWidget> yeah = (PrecisePositionWidgetWrapper<ClickableWidget>) evilLayout.get(opt);
+			PrecisePositionWidgetWrapper<?> yeah = evilLayout.get(opt);
 			RenderUtils.drawHorizontalLine(drawContext, (float) ppww.getX() + 5, (float) evilLayout.get(opt).getX() - 1, (float) yeah.getY() + yeah.getWrapped().getHeight() / 2F, -1);
 			drawLinesForOption(drawContext, opt);
 		}

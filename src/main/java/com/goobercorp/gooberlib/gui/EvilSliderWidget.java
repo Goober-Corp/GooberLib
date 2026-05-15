@@ -29,7 +29,7 @@ public class EvilSliderWidget extends ClickableWidget.InactivityIndicatingWidget
 		this.value = d;
 	}
 
-	public EvilSliderWidget(Option opt, int i, int j, int k, int l) {
+	public EvilSliderWidget(Option<?> opt, int i, int j, int k, int l) {
 		super(i, j, k, l, opt.name());
 //        this.value = d;
 	}

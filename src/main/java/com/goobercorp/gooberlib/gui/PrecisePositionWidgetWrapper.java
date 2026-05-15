@@ -5,6 +5,7 @@ import net.minecraft.client.gui.navigation.GuiNavigation;
 import net.minecraft.client.gui.navigation.GuiNavigationPath;
 import net.minecraft.client.gui.navigation.NavigationDirection;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.input.CharInput;
 import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
@@ -13,7 +14,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.function.Function;
 
-public class PrecisePositionWidgetWrapper<T extends Drawable & Element & Selectable & Narratable> implements Drawable, Element, Selectable, Narratable {
+public class PrecisePositionWidgetWrapper<T extends ClickableWidget> implements Drawable, Element, Selectable, Narratable {
 	private final T wrapped;
 	private Text hoverMessage;
 	private double x;

@@ -21,7 +21,9 @@ import net.minecraft.client.gui.widget.TextWidget;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.apache.commons.io.function.Erase.rethrow;
 
@@ -144,11 +146,22 @@ public class GooberLibApi {
 		out.add(optionName, jo);
 	}
 
+	private static final Map<Class<? extends Option<?>>, WidgetProvider> widgetProviders = new HashMap<>();
+
+	static {
+		registerWidgetProvider(IntOption.class, (theOption, x, y, width, height) -> new EvilSliderWidget(theOption, x, y, (int) width, (int) height));
+	}
+
+	public static void registerWidgetProvider(Class<? extends Option<?>> optionClass, WidgetProvider widgetProvider) {
+		widgetProviders.put(optionClass, widgetProvider);
+	}
+
 	public static WidgetProvider getDefaultWidgetProvider(Class<? extends Option<?>> optionClass) {
-		if (optionClass == IntOption.class) {
-			return (theOption, x, y, width, height) -> new EvilSliderWidget(theOption, x, y, (int) width, (int) height);
+		if (widgetProviders.containsKey(optionClass)) {
+			return widgetProviders.get(optionClass);
 		}
 		return (theOption, x, y, width, height) -> new TextWidget(x, y, (int) width, (int) height, theOption.name(), MinecraftClient.getInstance().textRenderer);
+//		throw new IllegalArgumentException("No default widget provider for " + optionClass);
 	}
 
 //	static {
