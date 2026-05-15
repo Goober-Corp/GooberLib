@@ -117,9 +117,17 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 		} else {
 			Element element = optional.get();
 			if (element.mouseClicked(click, bl) && element.isClickable()) {
+				//TODO: this logic doesn't work for some reason after first opening screen
 				if (!element.isFocused()) {
 					this.setFocused(element);
-					this.targetX = (double) (-(100 * getCurrentTabIndex() + 1)) + tabNavWidth / 2 - 50;
+					int currentTabIndex = getCurrentTabIndex();
+					if (currentTabIndex == 0) {
+						this.targetX = 5d;
+					} else if (currentTabIndex == tabs.size() - 1) {
+						this.targetX = (double) tabNavWidth - 100 * tabs.size() - 5;
+					} else {
+						this.targetX = (double) (-(100 * currentTabIndex + 1)) + tabNavWidth / 2 - 50;
+					}
 				}
 				if (click.button() == 0) {
 					this.setDragging(true);
@@ -201,8 +209,8 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 		}
 
 		this.grid.refreshPositions();
-		this.grid.setX(MathHelper.roundUpToMultiple((this.tabNavWidth - i) / 2, 2));
-		this.targetX = (double) grid.getX();
+		this.grid.setX(5);
+		this.targetX = 5d;
 		this.grid.setY(0);
 		scrollTweener = new ScrollTweener(() -> (double) targetX, number -> targetX = number, -grid.getWidth() / 2F, grid.getWidth() / 2F);
 	}
