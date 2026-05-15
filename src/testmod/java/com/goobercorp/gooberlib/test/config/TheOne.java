@@ -1,19 +1,8 @@
 package com.goobercorp.gooberlib.test.config;
 
 import com.goobercorp.gooberlib.builder.ConfigCategory;
-import com.goobercorp.gooberlib.misc.Hotkey;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-
-import java.awt.*;
-import java.net.URI;
-import java.nio.file.Path;
+import com.goobercorp.gooberlib.builder.v3.individual.java.StringOption;
+import com.goobercorp.gooberlib.builder.v3.individual.primitive.*;
 
 public class TheOne {
 	/* commented out until all the options are implemented
@@ -86,6 +75,27 @@ public class TheOne {
 
 	public enum SomeEnum {OPTION_ONE, OPTION_TWO, OPTION_THREE}
 	*/
+
+	public static final ByteOption byteOption = new ByteOption("byte option", "byte description");
+	public static final ShortOption shortOption = new ShortOption("short option", "byte description");
+	public static final CharOption charOption = new CharOption("char option", "byte description");
+	public static final IntOption intOption = new IntOption("int option", "byte description");
+	public static final LongOption longOption = new LongOption("long option", "byte description");
+	public static final FloatOption floatOption = new FloatOption("float option", "byte description");
+	public static final DoubleOption doubleOption = new DoubleOption("double option", "byte description");
+
+	public static final StringOption stringOption = new StringOption("string option", "string description");
+
+	// @formatter:off
+	public static ConfigCategory category = ConfigCategory.builder("the one", "description of meow")
+			.section("primitive", "")
+				.options(byteOption, shortOption, charOption, intOption, longOption, floatOption, doubleOption)
+				.build()
+			.section("java", "")
+				.options(stringOption)
+				.build()
+		.buildCategory();
+	// @formatter:on
 }
 
 

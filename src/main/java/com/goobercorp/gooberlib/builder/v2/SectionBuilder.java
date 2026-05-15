@@ -30,6 +30,13 @@ public class SectionBuilder {
 		return optionContext;
 	}
 
+	public SectionBuilder options(Option<?>... options) {
+		for (Option<?> option : options) {
+			option(option);
+		}
+		return this;
+	}
+
 
 	public CategoryBuilder build() {
 		appender.append(new ConfigSection(new MetadataHolder.Metadata(name, description), options));

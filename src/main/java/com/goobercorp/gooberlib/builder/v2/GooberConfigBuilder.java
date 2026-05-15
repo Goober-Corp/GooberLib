@@ -40,63 +40,65 @@ import java.util.List;
      */
 
 public class GooberConfigBuilder {
-    private Text title;
+	private Text title;
 
-    private final List<ConfigCategory> categories = new ArrayList<>();
-    private final Class<?> configClass;
+	private final List<ConfigCategory> categories = new ArrayList<>();
 
-    private final GsonBuilder gsonBuilder = new GsonBuilder().setPrettyPrinting();
+	// TODO: remove
+	private final Class<?> configClass;
 
-    public GooberConfigBuilder() {
-        this.configClass = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
-                .walk(frames -> frames.skip(2)
-                        .findFirst()
-                        .orElseThrow()
-                        .getDeclaringClass());
-    }
+	private final GsonBuilder gsonBuilder = new GsonBuilder().setPrettyPrinting();
 
-    public GooberConfigBuilder title(Text title) {
-        this.title = title;
-        return this;
-    }
+	public GooberConfigBuilder() {
+		this.configClass = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+				.walk(frames -> frames.skip(2)
+						.findFirst()
+						.orElseThrow()
+						.getDeclaringClass());
+	}
 
-    void addCategory(ConfigCategory category) {
-        this.categories.add(category);
-    }
+	public GooberConfigBuilder title(Text title) {
+		this.title = title;
+		return this;
+	}
 
-    Class<?> getConfigClass() {
-        return configClass;
-    }
+	void addCategory(ConfigCategory category) {
+		this.categories.add(category);
+	}
 
-    public CategoryBuilder category(String name, String description) {
-        return category(Text.literal(name), Text.literal(description));
-    }
+	Class<?> getConfigClass() {
+		return configClass;
+	}
 
-    public CategoryBuilder category(Text name, Text description) {
-        return new CategoryBuilder(this)
-                .name(name)
-                .description(description);
-    }
+	public CategoryBuilder category(String name, String description) {
+		return category(Text.literal(name), Text.literal(description));
+	}
 
-    public CategoryBuilder category(Text name) {
-        return category(name, Text.empty());
-    }
+	public CategoryBuilder category(Text name, Text description) {
+		return new CategoryBuilder(this)
+				.name(name)
+				.description(description);
+	}
+
+	public CategoryBuilder category(Text name) {
+		return category(name, Text.empty());
+	}
 
 	public GooberConfigBuilder addBuiltCategory(ConfigCategory category) {
 		addCategory(category);
 		return this;
 	}
 
-    public GooberConfigBuilder typeAdapter(Type type, Object adapter) {
-        gsonBuilder.registerTypeAdapter(type, adapter);
-        return this;
-    }
+	public GooberConfigBuilder typeAdapter(Type type, Object adapter) {
+		gsonBuilder.registerTypeAdapter(type, adapter);
+		return this;
+	}
 
-    public BuiltConfig build() {
-        return new BuiltConfig(gsonBuilder.create(), title, categories);
-    }
+	public BuiltConfig build() {
+		return new BuiltConfig(gsonBuilder.create(), title, categories);
+	}
 
-    public static GooberConfigBuilder create() {
-        return new GooberConfigBuilder();
-    }
+	public static GooberConfigBuilder create() {
+		return new GooberConfigBuilder();
+	}
 }

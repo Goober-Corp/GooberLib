@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record OptionContext<P>(P parent, Option<?> option,
-                               List<OptionContext<?>> childOptionContexts) implements OptionHolderV3 {
+                               List<OptionContext<?>> childOptions) implements OptionHolderV3 {
 	public OptionContext(P parent, Option<?> option) {
 		this(parent, option, new ArrayList<>());
 	}
 
 	public OptionContext<P> child(Option<?> option) {
-		childOptionContexts.add(new OptionContext<>(this, option));
+		childOptions.add(new OptionContext<>(this, option));
 		return this;
 	}
 
@@ -19,7 +19,7 @@ public record OptionContext<P>(P parent, Option<?> option,
 	 */
 	public OptionContext<OptionContext<P>> nestedChild(Option<?> option) {
 		var optionContext = new OptionContext<>(this, option);
-		childOptionContexts.add(optionContext);
+		childOptions.add(optionContext);
 		return optionContext;
 	}
 
@@ -31,10 +31,5 @@ public record OptionContext<P>(P parent, Option<?> option,
 
 	public P build() {
 		return parent;
-	}
-
-	@Override
-	public List<OptionHolderV3> childOptions() {
-		return childOptionContexts.stream().map(OptionHolderV3.class::cast).toList();
 	}
 }

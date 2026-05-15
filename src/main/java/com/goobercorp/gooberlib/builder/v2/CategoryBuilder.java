@@ -30,6 +30,11 @@ public class CategoryBuilder {
 		return optionContext;
 	}
 
+	public CategoryBuilder options(Option<?>... options) {
+		for (Option<?> option : options) option(option);
+		return this;
+	}
+
 	public SectionBuilder section(String name, String description) {
 		return section(Text.literal(name), Text.literal(description));
 	}

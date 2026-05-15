@@ -2,7 +2,7 @@ package com.goobercorp.gooberlib.test.config;
 
 import com.goobercorp.gooberlib.annotations.GooberConfig;
 import com.goobercorp.gooberlib.builder.v2.GooberConfigBuilder;
-import com.goobercorp.gooberlib.builder.v3.individual.IntOption;
+import com.goobercorp.gooberlib.builder.v3.individual.primitive.IntOption;
 import net.minecraft.text.Text;
 
 @SuppressWarnings("unused")
@@ -49,8 +49,8 @@ public class TestConfig {
             .category("FOURTH ONE !!", "")
             .build()
             .category("FIFTH ONE !!", "")
-            .build();
-//			.addBuiltCategory(TheOne.category);
+            .build()
+			.addBuiltCategory(TheOne.category);
     // @formatter:on
 
 

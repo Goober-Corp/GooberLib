@@ -9,4 +9,11 @@ public record ConfigCategory(MetadataHolder.Metadata metadata, List<OptionHolder
 	public static CategoryBuilder builder() {
 		return new CategoryBuilder(null);
 	}
+
+	public static CategoryBuilder builder(String name, String description) {
+		var categoryBuilder = new CategoryBuilder(null);
+		categoryBuilder.name(name);
+		categoryBuilder.description(description);
+		return categoryBuilder;
+	}
 }

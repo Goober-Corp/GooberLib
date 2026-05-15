@@ -82,7 +82,7 @@ public class GooberScreen extends Screen {
 		evilLayout.put(pw, optionContext);
 		addY += VERTICAL_PADDING;
 
-		for (OptionContext<?> child : optionContext.childOptionContexts()) {
+		for (OptionContext<?> child : optionContext.childOptions()) {
 			addY += addOptionWithChildren(child, y + addY, x + CHILD_INSET);
 		}
 
