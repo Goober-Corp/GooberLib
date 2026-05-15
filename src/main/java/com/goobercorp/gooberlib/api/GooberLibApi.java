@@ -1,11 +1,18 @@
 package com.goobercorp.gooberlib.api;
 
-import com.goobercorp.gooberlib.builder.*;
+import com.goobercorp.gooberlib.builder.BuiltConfig;
+import com.goobercorp.gooberlib.builder.ConfigCategory;
+import com.goobercorp.gooberlib.builder.ConfigSection;
+import com.goobercorp.gooberlib.builder.MetadataHolder;
 import com.goobercorp.gooberlib.builder.v3.Option;
 import com.goobercorp.gooberlib.builder.v3.OptionContext;
+import com.goobercorp.gooberlib.builder.v3.individual.primitive.IntOption;
+import com.goobercorp.gooberlib.gui.EvilSliderWidget;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.util.ConfigDiscovery;
-import com.google.gson.*;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
@@ -138,6 +145,9 @@ public class GooberLibApi {
 	}
 
 	public static WidgetProvider getDefaultWidgetProvider(Class<? extends Option<?>> optionClass) {
+		if (optionClass == IntOption.class) {
+			return (theOption, x, y, width, height) -> new EvilSliderWidget(theOption, x, y, (int) width, (int) height);
+		}
 		return (theOption, x, y, width, height) -> new TextWidget(x, y, (int) width, (int) height, theOption.name(), MinecraftClient.getInstance().textRenderer);
 	}
 
