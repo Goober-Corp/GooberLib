@@ -20,7 +20,7 @@ public class EnumOption<T extends Enum<T>> extends BaseOption<EnumOption<T>> {
 
 	public EnumOption(Text name, Text description, T defaultValue, Class<T> enumClass, WidgetProvider provider, Function<T, Text> displayNameProvider) {
 		//noinspection unchecked FUCK GENERICS !!!!!!!!!
-		super(name, description, provider == null ? GooberLibApi.getDefaultWidgetProvider((Class<? extends Option<?>>) EnumOption.class) : provider);
+		super(name, description, provider == null ? GooberLibApi.getDefaultWidgetProvider((Class<? extends Option<?>>) (Class<?>) EnumOption.class) : provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 		this.enumConstants = enumClass.getEnumConstants();

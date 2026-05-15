@@ -8,43 +8,6 @@ import com.goobercorp.gooberlib.builder.v3.individual.primitive.*;
 
 public class TheOne {
 	/* commented out until all the options are implemented
-	public static ConfigCategory category = ConfigCategory.builder(TheOne.class)
-			.name("meow meow")
-			.description("wawaawa")
-			.section()
-			.name("primitives")
-			.description("primitive types")
-			.option("booleanOption").name("boolean option").build()
-			.option("byteOption").name("byte option").build()
-			.option("shortOption").name("short option").build()
-			.option("charOption").name("char option").build()
-			.option("intOption").name("int option").build()
-			.option("longOption").name("long option").build()
-			.option("floatOption").name("float option").build()
-			.option("doubleOption").name("double option").build()
-			.build()
-			.section()
-			.name("class")
-			.description("class types")
-			.option("StringOption").name("String option").build()
-			.option("ColorOption").name("Color option").build()
-			.option("EnumOption").name("Enum option").build()
-			.option("FileOption").name("File option").build()
-			.option("URLOption").name("URL option").build()
-			.build()
-			.section()
-			.name("minecraft")
-			.description("minecraft types")
-			.option("IdentifierOption").name("Identifier option").build()
-			.option("TextOption").name("Text option").build()
-			.build()
-			.section()
-			.name("gooberlib")
-			.description("gooberlib types")
-			.option("HotkeyOption").name("Hotkey option").build()
-			.build()
-			.buildCategory();
-
 //	public static boolean booleanOption;
 //	public static byte byteOption;
 //	public static short shortOption;
@@ -53,8 +16,6 @@ public class TheOne {
 //	public static long longOption;
 //	public static float floatOption;
 //	public static double doubleOption;
-	/*and boxed ones...*/
-	/*and arrays...*/
 	/*and lists...*/
 
 	/* commented out until all the options are implemented
