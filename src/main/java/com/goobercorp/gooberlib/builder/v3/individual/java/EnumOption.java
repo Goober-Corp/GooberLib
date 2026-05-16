@@ -1,8 +1,6 @@
 package com.goobercorp.gooberlib.builder.v3.individual.java;
 
-import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.builder.v3.BaseOption;
-import com.goobercorp.gooberlib.builder.v3.Option;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
@@ -19,8 +17,7 @@ public class EnumOption<T extends Enum<T>> extends BaseOption<EnumOption<T>> {
 	public T value;
 
 	public EnumOption(Text name, Text description, T defaultValue, Class<T> enumClass, WidgetProvider provider, Function<T, Text> displayNameProvider) {
-		//noinspection unchecked FUCK GENERICS !!!!!!!!!
-		super(name, description, provider == null ? GooberLibApi.getDefaultWidgetProvider((Class<? extends Option<?>>) (Class<?>) EnumOption.class) : provider);
+		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 		this.enumConstants = enumClass.getEnumConstants();

@@ -5,8 +5,12 @@ import com.goobercorp.gooberlib.builder.v3.individual.HotkeyOption;
 import com.goobercorp.gooberlib.builder.v3.individual.java.ColorOption;
 import com.goobercorp.gooberlib.builder.v3.individual.java.EnumOption;
 import com.goobercorp.gooberlib.builder.v3.individual.java.StringOption;
+import com.goobercorp.gooberlib.builder.v3.individual.minecraft.IdentifierOption;
 import com.goobercorp.gooberlib.builder.v3.individual.primitive.*;
+import net.minecraft.util.Identifier;
 
+
+// todo?: tests fpr all options
 public class TheOne {
 	/* commented out until all the options are implemented
 //	public static boolean booleanOption;
@@ -54,6 +58,8 @@ public class TheOne {
 	public static final ColorOption colorOption = new ColorOption("color option", "color description");
 	public static final EnumOption<SomeEnum> enumOption = new EnumOption<>("enum option", "enum description", SomeEnum.class);
 
+	public static final IdentifierOption identifierOption = new IdentifierOption("identifier option", "identifier description", Identifier.of("minecraft:stone"));
+
 	public static final HotkeyOption hotkeyOption = new HotkeyOption("hotkey option", "hotkey description", "g, c", 2, () -> System.out.println("meow meow"));
 
 	@SuppressWarnings("unused")
@@ -69,6 +75,9 @@ public class TheOne {
 				.build()
 			.section("java", "")
 				.options(stringOption, colorOption, enumOption)
+				.build()
+			.section("minecraft", "")
+				.options(identifierOption)
 				.build()
 			.section("goober", "")
 				.options(hotkeyOption)

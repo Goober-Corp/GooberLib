@@ -1,8 +1,6 @@
 package com.goobercorp.gooberlib.builder.v3.individual;
 
-import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.builder.v3.BaseOption;
-import com.goobercorp.gooberlib.builder.v3.individual.primitive.ByteOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.misc.HotkeySettings;
 import com.goobercorp.gooberlib.misc.HotkeySettings.Gui;
@@ -29,7 +27,7 @@ public class HotkeyOption extends BaseOption<HotkeyOption> {
 	}
 
 	public HotkeyOption(Text name, Text description, WidgetProvider provider, String defaultKeys, int maxKeyCount, OnPress onPress, HotkeySettings settings) {
-		super(name, description, provider == null ? GooberLibApi.getDefaultWidgetProvider(ByteOption.class) : provider);
+		super(name, description, provider);
 		String[] individualKeys = defaultKeys.replaceAll("\\s+", "").split(",");
 		if (individualKeys.length > maxKeyCount) {
 			throw new IllegalArgumentException("Default keys size (" + individualKeys.length + ") is more than provided max keys (" + maxKeyCount + ")");

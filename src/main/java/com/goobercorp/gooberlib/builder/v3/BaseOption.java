@@ -1,8 +1,10 @@
 package com.goobercorp.gooberlib.builder.v3;
 
+import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.interfaces.ValueChangeCallback;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseOption<V extends BaseOption<V>> implements Option<V> {
 	protected Text name;
@@ -10,10 +12,15 @@ public abstract class BaseOption<V extends BaseOption<V>> implements Option<V> {
 	private ValueChangeCallback<V> callback;
 	private final WidgetProvider provider;
 
-	protected BaseOption(Text name, Text description, WidgetProvider provider) {
+	protected BaseOption(Text name, Text description, @Nullable WidgetProvider provider) {
 		this.name = name;
 		this.description = description;
-		this.provider = provider;
+		// todo: this needs testing for EnumOption due to it being a generic class
+		@SuppressWarnings("unchecked")
+		var optionClass = (Class<? extends Option<?>>) this.getClass();
+		this.provider = provider == null
+				? GooberLibApi.getDefaultWidgetProvider(optionClass)
+				: provider;
 	}
 
 	@Override
@@ -39,6 +46,8 @@ public abstract class BaseOption<V extends BaseOption<V>> implements Option<V> {
 
 	@Override
 	public WidgetProvider getWidgetProvider() {
+		if (this.provider == null)
+			throw new IllegalStateException("??");
 		return this.provider;
 	}
 }

@@ -1,6 +1,5 @@
 package com.goobercorp.gooberlib.builder.v3.individual.java;
 
-import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.builder.v3.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
@@ -12,7 +11,7 @@ public class StringOption extends BaseOption<StringOption> {
 	public String value;
 
 	public StringOption(Text name, Text description, String defaultValue, WidgetProvider provider) {
-		super(name, description, provider == null ? GooberLibApi.getDefaultWidgetProvider(StringOption.class) : provider);
+		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}

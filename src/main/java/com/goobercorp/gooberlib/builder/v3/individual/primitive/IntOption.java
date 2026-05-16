@@ -1,6 +1,5 @@
 package com.goobercorp.gooberlib.builder.v3.individual.primitive;
 
-import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.builder.v3.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
@@ -15,7 +14,7 @@ public class IntOption extends BaseOption<IntOption> {
 	public int value;
 
 	public IntOption(Text name, Text description, int defaultValue, int min, int max, WidgetProvider provider) {
-		super(name, description, provider == null ? GooberLibApi.getDefaultWidgetProvider(IntOption.class) : provider);
+		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 		this.min = min;

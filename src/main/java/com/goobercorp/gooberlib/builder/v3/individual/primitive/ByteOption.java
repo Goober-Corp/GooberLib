@@ -1,6 +1,5 @@
 package com.goobercorp.gooberlib.builder.v3.individual.primitive;
 
-import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.builder.v3.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
@@ -14,7 +13,7 @@ public class ByteOption extends BaseOption<ByteOption> {
 	public byte value;
 
 	public ByteOption(Text name, Text description, byte defaultValue, byte min, byte max, WidgetProvider provider) {
-		super(name, description, provider == null ? GooberLibApi.getDefaultWidgetProvider(ByteOption.class) : provider);
+		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 		this.min = min;

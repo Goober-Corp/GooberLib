@@ -1,6 +1,5 @@
 package com.goobercorp.gooberlib.builder.v3.individual.primitive;
 
-import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.builder.v3.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
@@ -16,7 +15,7 @@ public class ShortOption extends BaseOption<ShortOption> {
 	//  also needs to be done for .getValueInt(), .setValueInt(), getMinInt() etc
 	//  also needs to be done for ByteOption, CharOption
 	public ShortOption(Text name, Text description, short defaultValue, short min, short max, WidgetProvider provider) {
-		super(name, description, provider == null ? GooberLibApi.getDefaultWidgetProvider(ShortOption.class) : provider);
+		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 		this.min = min;

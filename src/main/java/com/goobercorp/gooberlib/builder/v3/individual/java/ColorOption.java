@@ -1,6 +1,5 @@
 package com.goobercorp.gooberlib.builder.v3.individual.java;
 
-import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.builder.v3.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
@@ -15,7 +14,7 @@ public class ColorOption extends BaseOption<ColorOption> {
 	public int value;
 
 	public ColorOption(Text name, Text description, int defaultValue, WidgetProvider provider) {
-		super(name, description, provider == null ? GooberLibApi.getDefaultWidgetProvider(ColorOption.class) : provider);
+		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}

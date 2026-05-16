@@ -1,6 +1,5 @@
 package com.goobercorp.gooberlib.builder.v3.individual.primitive;
 
-import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.builder.v3.BaseOption;
 import com.goobercorp.gooberlib.builder.v3.individual.java.StringOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
@@ -13,7 +12,7 @@ public class BooleanOption extends BaseOption<StringOption> {
 	public boolean value;
 
 	public BooleanOption(Text name, Text description, boolean defaultValue, WidgetProvider provider) {
-		super(name, description, provider == null ? GooberLibApi.getDefaultWidgetProvider(BooleanOption.class) : provider);
+		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
