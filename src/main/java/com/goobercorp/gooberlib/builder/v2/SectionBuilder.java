@@ -8,6 +8,7 @@ import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class SectionBuilder {
 	private final CategoryBuilder parent;
@@ -70,4 +71,9 @@ public class SectionBuilder {
 		return description(Text.translatable(key));
 	}
 
+	public SectionBuilder optionMaker(Option<?> option, Consumer<OptionContext<SectionBuilder>> o) {
+		var optionContext = this.option(option);
+		o.accept(optionContext);
+		return optionContext.build();
+	}
 }

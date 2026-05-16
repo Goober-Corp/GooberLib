@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class CategoryBuilder {
 	private Text name;
@@ -91,4 +92,9 @@ public class CategoryBuilder {
 		return parent;
 	}
 
+	public CategoryBuilder sectionMaker(String name, String description, Consumer<SectionBuilder> categoryBuilderConsumer) {
+		SectionBuilder sectionBuilder = this.section(name, description);
+		categoryBuilderConsumer.accept(sectionBuilder);
+		return sectionBuilder.build();
+	}
 }

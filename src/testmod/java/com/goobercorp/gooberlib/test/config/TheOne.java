@@ -30,7 +30,7 @@ public class TheOne {
 	public static Path FileOption;
 	public static URI URLOption;
 
-	public static Identifier IdentifierOption;
+//	public static Identifier IdentifierOption;
 	public static Text TextOption;
 	public static BlockPos BlockPosOption;
 	public static Vec2f Vec2fOption;
@@ -39,7 +39,7 @@ public class TheOne {
 	public static Item ItemOption;
 	public static Block BlockOption;
 
-	public static Hotkey HotkeyOption;
+//	public static HotkeyOption HotkeyOption;
 
 	*/
 
@@ -68,6 +68,8 @@ public class TheOne {
 	// todo: this
 //	public static ConfigCategory category = ConfigCategory.ofClass(TheOne.class, "the one", "the description");
 
+	public static final IntOption testOption = new IntOption("test option", "test description");
+	public static final IntOption testChildOption = new IntOption("test child option", "test child description");
 	// @formatter:off
 	public static ConfigCategory category = ConfigCategory.builder("the one", "description of meow")
 			.section("primitive", "")
@@ -80,38 +82,17 @@ public class TheOne {
 				.options(identifierOption)
 				.build()
 			.section("goober", "")
-				.options(hotkeyOption)
-				.option(hotkeyOption).build()
+				.options(hotkeyOption, hotkeyOption, hotkeyOption, hotkeyOption)
 				.build()
-			// todo: this
-			/*.sectionMaker("my section", "", s -> {
-				// s is instance of SectionBuilder
+			.section("childOptionTest section", "")
+				.optionMaker(testOption, o -> o.child(testChildOption))
+				.build()
+			.sectionMaker("my section", "", s -> {
 				for (int i = 0; i < 5; i++) {
-					s.option(new IntOption("option " + i, "")); // youd have to keep track of them for it to be useful but ok
+					int finalI = i;
+					s.optionMaker(new IntOption("option " + i, ""), o -> o.child(new DoubleOption("child option " + finalI, "")));
 				}
-			})*/
+			})
 		.buildCategory();
 	// @formatter:on
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
