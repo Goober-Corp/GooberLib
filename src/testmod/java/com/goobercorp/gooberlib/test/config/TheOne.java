@@ -52,8 +52,6 @@ public class TheOne {
 	public static final FloatOption floatOption = new FloatOption("float option", "float description");
 	public static final DoubleOption doubleOption = new DoubleOption("double option", "double description");
 
-	// todo: this
-//	@Section("meow meow")
 	public static final StringOption stringOption = new StringOption("string option", "string description");
 	public static final ColorOption colorOption = new ColorOption("color option", "color description");
 	public static final EnumOption<SomeEnum> enumOption = new EnumOption<>("enum option", "enum description", SomeEnum.class);
@@ -64,9 +62,6 @@ public class TheOne {
 
 	@SuppressWarnings("unused")
 	public enum SomeEnum {OPTION_ONE, OPTION_TWO, OPTION_THREE}
-
-	// todo: this
-//	public static ConfigCategory category = ConfigCategory.ofClass(TheOne.class, "the one", "the description");
 
 	public static final IntOption testOption = new IntOption("test option", "test description");
 	public static final IntOption testChildOption = new IntOption("test child option", "test child description");

@@ -20,8 +20,7 @@ public class TestConfig {
     public static final IntOption int8 = new IntOption("yeah", "");
     public static final IntOption hotkey = new IntOption("nya gothkey", "");
 
-	// todo: this
-//	public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.ofCategories("the name of the config", TheOne.category, TestConfig.category);
+//	public static final GooberConfigBuilder BUILDER2 = GooberConfigBuilder.ofCategories("the name of the config", TheOne.category);
 
     public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.create()
             .title(Text.of("YEAH!!!"))
@@ -47,13 +46,9 @@ public class TestConfig {
                     .description("yah")
                     .build()
                 .build()
-            .category("THIRD ONE !!", "")
-            .build()
-            .category("FOURTH ONE !!", "")
-            .build()
-            .category("FIFTH ONE !!", "")
-            .build()
-			.addBuiltCategory(TheOne.category);
+			.addBuiltCategory(TheOne.category)
+		    .addBuiltCategory(Magic.category)
+		    .makeBuiltCategory(Magic2.class, "name 2", "description 2");
     // @formatter:on
 
 

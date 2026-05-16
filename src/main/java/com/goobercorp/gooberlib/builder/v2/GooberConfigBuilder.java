@@ -62,6 +62,10 @@ public class GooberConfigBuilder {
 		return this;
 	}
 
+	public GooberConfigBuilder title(String title) {
+		return title(Text.literal(title));
+	}
+
 	void addCategory(ConfigCategory category) {
 		this.categories.add(category);
 	}
@@ -100,5 +104,29 @@ public class GooberConfigBuilder {
 
 	public static GooberConfigBuilder create() {
 		return new GooberConfigBuilder();
+	}
+
+	public static GooberConfigBuilder ofCategories(Text title, ConfigCategory... categories) {
+		GooberConfigBuilder gooberConfigBuilder = create().title(title);
+		for (ConfigCategory category : categories) {
+			gooberConfigBuilder.addBuiltCategory(category);
+		}
+		return gooberConfigBuilder;
+	}
+
+	public static GooberConfigBuilder ofCategories(String title, ConfigCategory... categories) {
+		return ofCategories(Text.of(title), categories);
+	}
+
+	public GooberConfigBuilder makeBuiltCategory(Class<?> clazz, Text name, Text description) {
+		return this.addBuiltCategory(ConfigCategory.ofClass(clazz, name, description));
+	}
+
+	public GooberConfigBuilder makeBuiltCategory(Class<?> clazz, String name, String description) {
+		return this.makeBuiltCategory(clazz, Text.literal(name), Text.literal(description));
+	}
+
+	public GooberConfigBuilder makeBuiltCategory(Class<?> clazz, String name) {
+		return this.makeBuiltCategory(clazz, name, "");
 	}
 }
