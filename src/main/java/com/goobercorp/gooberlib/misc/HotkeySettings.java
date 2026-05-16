@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.misc;
 
+import com.goobercorp.gooberlib.builder.v3.individual.HotkeyOption;
 import net.minecraft.client.MinecraftClient;
 
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public class HotkeySettings {
 		return new HotkeySettings(gui, when, allowExtra, ordered);
 	}
 
-	public boolean matches(int keyAction, List<Integer> currentlyPressedKeys, Hotkey thisHotkey) {
+	public boolean matches(int keyAction, List<Integer> currentlyPressedKeys, HotkeyOption thisHotkey) {
 		boolean ret = true;
 
 		if (gui != Gui.BOTH) {

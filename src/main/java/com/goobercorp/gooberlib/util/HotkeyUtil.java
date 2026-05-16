@@ -1,6 +1,6 @@
 package com.goobercorp.gooberlib.util;
 
-import com.goobercorp.gooberlib.misc.Hotkey;
+import com.goobercorp.gooberlib.builder.v3.individual.HotkeyOption;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.client.input.KeyInput;
@@ -17,7 +17,7 @@ import static org.apache.commons.io.function.Erase.rethrow;
 
 public class HotkeyUtil {
 	public static final BiMap<Integer, String> MAP;
-	public static final List<Hotkey> ALL_HOTKEYS = new ArrayList<>();
+	public static final List<HotkeyOption> ALL_HOTKEYS = new ArrayList<>();
 	public static final List<Integer> PRESSED = new ArrayList<>();
 
 	public static @InputUtil.Keycode int fromName(String individualKey) {
@@ -29,7 +29,8 @@ public class HotkeyUtil {
 	public static void handleKeyboard(@KeyInput.KeyAction int keyAction, KeyInput keyInput) {
 		if (keyAction == 1) PRESSED.add(keyInput.getKeycode());
 		else PRESSED.removeIf(i -> i == keyInput.getKeycode());
-		main: for (Hotkey hotkey : ALL_HOTKEYS) {
+		main:
+		for (HotkeyOption hotkey : ALL_HOTKEYS) {
 			if (hotkey.settings.matches(keyAction, PRESSED, hotkey)) {
 				for (int key : hotkey.keyCodes) {
 					if (!isPressed(key)) continue main;
@@ -42,7 +43,8 @@ public class HotkeyUtil {
 	public static void handleMouse(int keyAction, MouseInput mouseInput) {
 		if (keyAction == 1) PRESSED.add(mouseInput.getKeycode());
 		else PRESSED.removeIf(i -> i == mouseInput.getKeycode());
-		main: for (Hotkey hotkey : ALL_HOTKEYS) {
+		main:
+		for (HotkeyOption hotkey : ALL_HOTKEYS) {
 			if (hotkey.settings.matches(keyAction, PRESSED, hotkey)) {
 				for (int key : hotkey.keyCodes) {
 					if (!isPressed(key)) continue main;
@@ -58,7 +60,7 @@ public class HotkeyUtil {
 	}
 
 	static {
-		BiMap<Integer, String > map = HashBiMap.create();
+		BiMap<Integer, String> map = HashBiMap.create();
 		try {
 			for (Field f : GLFW.class.getDeclaredFields()) {
 				int mods = f.getModifiers();

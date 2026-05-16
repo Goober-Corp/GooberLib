@@ -1,6 +1,7 @@
 package com.goobercorp.gooberlib.test.config;
 
 import com.goobercorp.gooberlib.builder.ConfigCategory;
+import com.goobercorp.gooberlib.builder.v3.individual.HotkeyOption;
 import com.goobercorp.gooberlib.builder.v3.individual.java.ColorOption;
 import com.goobercorp.gooberlib.builder.v3.individual.java.EnumOption;
 import com.goobercorp.gooberlib.builder.v3.individual.java.StringOption;
@@ -47,12 +48,19 @@ public class TheOne {
 	public static final FloatOption floatOption = new FloatOption("float option", "float description");
 	public static final DoubleOption doubleOption = new DoubleOption("double option", "double description");
 
+	// todo: this
+//	@Section("meow meow")
 	public static final StringOption stringOption = new StringOption("string option", "string description");
 	public static final ColorOption colorOption = new ColorOption("color option", "color description");
 	public static final EnumOption<SomeEnum> enumOption = new EnumOption<>("enum option", "enum description", SomeEnum.class);
 
+	public static final HotkeyOption hotkeyOption = new HotkeyOption("hotkey option", "hotkey description", "g, c", 2, () -> System.out.println("meow meow"));
+
 	@SuppressWarnings("unused")
 	public enum SomeEnum {OPTION_ONE, OPTION_TWO, OPTION_THREE}
+
+	// todo: this
+//	public static ConfigCategory category = ConfigCategory.ofClass(TheOne.class, "the one", "the description");
 
 	// @formatter:off
 	public static ConfigCategory category = ConfigCategory.builder("the one", "description of meow")
@@ -62,6 +70,17 @@ public class TheOne {
 			.section("java", "")
 				.options(stringOption, colorOption, enumOption)
 				.build()
+			.section("goober", "")
+				.options(hotkeyOption)
+				.option(hotkeyOption).build()
+				.build()
+			// todo: this
+			/*.sectionMaker("my section", "", s -> {
+				// s is instance of SectionBuilder
+				for (int i = 0; i < 5; i++) {
+					s.option(new IntOption("option " + i, "")); // youd have to keep track of them for it to be useful but ok
+				}
+			})*/
 		.buildCategory();
 	// @formatter:on
 }

@@ -20,6 +20,9 @@ public class TestConfig {
     public static final IntOption int8 = new IntOption("yeah", "");
     public static final IntOption hotkey = new IntOption("nya gothkey", "");
 
+	// todo: this
+//	public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.ofCategories("the name of the config", TheOne.category, TestConfig.category);
+
     public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.create()
             .title(Text.of("YEAH!!!"))
             .category("Int fields", "A description")
