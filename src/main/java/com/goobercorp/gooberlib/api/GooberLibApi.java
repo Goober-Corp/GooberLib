@@ -9,6 +9,7 @@ import com.goobercorp.gooberlib.builder.v3.OptionContext;
 import com.goobercorp.gooberlib.builder.v3.individual.primitive.IntOption;
 import com.goobercorp.gooberlib.gui.EvilSliderWidget;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
+import com.goobercorp.gooberlib.screen.GooberScreen;
 import com.goobercorp.gooberlib.util.ConfigDiscovery;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -16,6 +17,7 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextWidget;
 
 import java.io.IOException;
@@ -112,7 +114,7 @@ public class GooberLibApi {
 				Files.createDirectories(saveFilePath);
 			if (Files.notExists(saveFilePath.resolve("config.json")))
 				Files.createFile(saveFilePath.resolve("config.json"));
-			Files.writeString(saveFilePath.resolve("config.json"), config.gson().toJson(theObject));
+			Files.writeString(saveFilePath.resolve("config.json"), theObject.toString());
 		} catch (IOException e) {
 			System.out.println("Couldn't save config for " + config.title().getString() + ": " + e);
 			throw rethrow(e);
@@ -164,54 +166,12 @@ public class GooberLibApi {
 //		throw new IllegalArgumentException("No default widget provider for " + optionClass);
 	}
 
-//	static {
-//		// primitives
-//		registerHandler(byte.class, JsonPrimitive::new, JsonElement::getAsByte);
-//		registerHandler(short.class, JsonPrimitive::new, JsonElement::getAsShort);
-//		registerHandler(int.class, JsonPrimitive::new, JsonElement::getAsInt);
-//		registerHandler(long.class, JsonPrimitive::new, JsonElement::getAsLong);
-//		registerHandler(float.class, JsonPrimitive::new, JsonElement::getAsFloat);
-//		registerHandler(double.class, JsonPrimitive::new, JsonElement::getAsDouble);
-//		registerHandler(boolean.class, JsonPrimitive::new, JsonElement::getAsBoolean);
-//		registerHandler(char.class, (c) -> new JsonPrimitive(String.valueOf(c)), (element) -> element.getAsString().charAt(0));
-//		// boxed primitives
-//		registerHandler(Byte.class, JsonPrimitive::new, JsonElement::getAsByte);
-//		registerHandler(Short.class, JsonPrimitive::new, JsonElement::getAsShort);
-//		registerHandler(Integer.class, JsonPrimitive::new, JsonElement::getAsInt);
-//		registerHandler(Long.class, JsonPrimitive::new, JsonElement::getAsLong);
-//		registerHandler(Float.class, JsonPrimitive::new, JsonElement::getAsFloat);
-//		registerHandler(Double.class, JsonPrimitive::new, JsonElement::getAsDouble);
-//		registerHandler(Boolean.class, JsonPrimitive::new, JsonElement::getAsBoolean);
-//		registerHandler(Character.class, (c) -> new JsonPrimitive(String.valueOf(c)), (element) -> element.getAsString().charAt(0));
-//		// other
-//		registerHandler(String.class, JsonPrimitive::new, JsonElement::getAsString);
-//		registerHandler(List.class, list -> {
-//			JsonArray array = new JsonArray();
-//			for (Object o : list) {
-//				Saver s = getSaverFor(o);
-//				if (s != null) {
-//					JsonObject jsonObject = new JsonObject();
-//					jsonObject.add("value", s.save(o));
-//					jsonObject.addProperty("clazz", o.getClass().getName());
-//					array.add(jsonObject);
-//				} else {
-//					throw new IllegalStateException("No handler for " + o.getClass());
-//				}
-//			}
-//			return array;
-//		}, (element) -> {
-//			List list = new ArrayList();
-//			try {
-//				for (JsonElement inner : element.getAsJsonArray()) {
-//					JsonObject jsonObject = inner.getAsJsonObject();
-//					JsonElement value = jsonObject.get("value");
-//					JsonElement clazz = jsonObject.get("clazz");
-//					Class<?> theClass = Class.forName(clazz.getAsString());
-//					Loader loader = getLoaderFor(theClass);
-//				}
-//			} catch (ClassNotFoundException e) {
-//				throw new RuntimeException(e);
-//			}
-//		});
-//	}
+	public static GooberScreen getScreenFor(String modId, Screen parent) {
+		BuiltConfig config = getConfigFor(modId);
+		return config.getScreen(parent, modId);
+	}
+
+	private static BuiltConfig getConfigFor(String modId) {
+		return ConfigDiscovery.getConfigs().get(modId);
+	}
 }
