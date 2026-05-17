@@ -7,6 +7,7 @@
   ],
   "client": [
     "gui.ClickableWidgetAcessor",
+    "gui.GuiRendererMixin",
     "gui.InactivityFpsLimiterMixin",
     "gui.ScreenAccessor",
     "gui.TooltipAccessor",

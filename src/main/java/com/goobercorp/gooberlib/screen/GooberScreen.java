@@ -17,6 +17,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tab.GridScreenTab;
 import net.minecraft.client.gui.tab.Tab;
@@ -30,228 +31,249 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.ease;
+import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 public class GooberScreen extends Screen {
-	private static final int VERTICAL_PADDING = 32;
-	private static final int HORIZONTAL_PADDING = 32;
-	private static final int CHILD_INSET = 16;
-	private final BuiltConfig config;
-	private final Screen parent;
-	private Text descriptionText = Text.of("");
-	private float descriptionAnimationProgress = 0;
-	private float categoryHoverProgress = 1;
-	private float screenCategoryAnimationState = 0;
-	private EvilTabNavigationWidget tabNavigationWidget;
-	private int tabHoldTicks = 20;
-	private final TabManager tabManager = new TabManager(this::addDrawableChild, this::remove);
-	private double scrollProgress = 0;
-	private final Tweener scrollTweener = new Tweener(() -> scrollProgress);
-	private final Tweener categoryTweener = new Tweener(() -> screenCategoryAnimationState);
-	private final HashMap<OptionHolderV3, PrecisePositionWidgetWrapper<?>> evilLayout = new HashMap<>();
-	private final Tab[] tabs;
-	AtomicBoolean animate = new AtomicBoolean(false);
-	String modid;
+    private static final int VERTICAL_PADDING = 32;
+    private static final int CHILD_INSET = 16;
+    private final BuiltConfig config;
+    private final Screen parent;
+    private Text descriptionText = Text.of("");
+    private float descriptionAnimationProgress = 0;
+    private float categoryHoverProgress = 1;
+    private float screenCategoryAnimationState = 0;
+    private EvilTabNavigationWidget tabNavigationWidget;
+    private int tabHoldTicks = 20;
+    private final TabManager tabManager = new TabManager(this::addDrawableChild, this::remove);
+    private double scrollProgress = 0;
+    private final Tweener scrollTweener = new Tweener(() -> scrollProgress);
+    private final Tweener categoryTweener = new Tweener(() -> screenCategoryAnimationState);
+    private final HashMap<OptionHolderV3, PrecisePositionWidgetWrapper<?>> evilLayout = new HashMap<>();
+    private final Tab[] tabs;
+    private boolean animateHoverDescription = false;
+    public ScreenRect badbadbad;
 
-	public GooberScreen(BuiltConfig config, Screen parent, String modid) {
-		super(config.title());
-		this.config = config;
-		this.parent = parent;
-		this.modid = modid;
+    private final String modId;
 
-		this.tabs = new GridScreenTab[config.categories().size()];
-		for (int i = 0; i < config.categories().size(); i++) {
-			tabs[i] = new GridScreenTab(config.categories().get(i).metadata().name());
-		}
+    public GooberScreen(BuiltConfig config, Screen parent, String modId) {
+        super(config.title());
+        this.config = config;
+        this.parent = parent;
+        this.modId = modId;
 
-	}
+        this.tabs = new GridScreenTab[config.categories().size()];
+        for (int i = 0; i < config.categories().size(); i++) {
+            tabs[i] = new GridScreenTab(config.categories().get(i).metadata().name());
+        }
+    }
 
-	@Override
-	public void tick() {
-		tabHoldTicks = Math.clamp(tabHoldTicks - 1, 0, 100);
-	}
+    @Override
+    protected void init() {
+        evilLayout.clear();
 
-	private int addOptionWithChildren(OptionContext<?> optionContext, int y, int x) {
-		int addY = 0;
-		Option<?> option = optionContext.option();
-		ClickableWidget widget = option.getWidgetProvider().makeWidget(option, 0, 0, 125, VERTICAL_PADDING / 2.0);
+        this.tabNavigationWidget = this.addSelectableChild(EvilTabNavigationWidget.builder(tabManager, width)
+                .tabs(tabs)
+                .build());
+        this.tabNavigationWidget.init();
+        tabNavigationWidget.selectTab(0, false);
 
-		PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x, y + addY, option.description());
-		this.addDrawableChild(pw);
-		evilLayout.put(optionContext, pw);
-		addY += VERTICAL_PADDING;
+        for (ConfigCategory c : config.categories()) {
+            int x = MinecraftClient.getInstance().getWindow().getScaledWidth() * (config.categories().indexOf(c));
+            int y = VERTICAL_PADDING;
+            for (OptionHolderV3 o : c.elements()) {
+                if (o instanceof ConfigSection(
+                        MetadataHolder.Metadata metadata,
+                        List<OptionContext<?>> childOptionContexts
+                )) {
+                    GroupTextWidget t = new GroupTextWidget(
+                            metadata.name(),
+                            textRenderer
+                    );
+                    PrecisePositionWidgetWrapper<GroupTextWidget> widgetWrapper = new PrecisePositionWidgetWrapper<>(t, x + ((double) MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (double) textRenderer.getWidth(metadata.name()) / 2, y, metadata.description());
+                    evilLayout.put(o, widgetWrapper);
+                    addDrawableChild(widgetWrapper);
+                    y += VERTICAL_PADDING;
+                    for (OptionContext<?> yeah : childOptionContexts) {
+                        y += addOptionWithChildren(yeah, y, x + CHILD_INSET);
+                    }
+                } else {
+                    y += addOptionWithChildren((OptionContext<?>) o, y, x + CHILD_INSET);
+                }
+            }
+        }
+        //to prevent weirdness on resize
+        setWidgetOffsets();
+    }
 
-		for (OptionContext<?> child : optionContext.childOptions()) {
-			addY += addOptionWithChildren(child, y + addY, x + CHILD_INSET);
-		}
+    private void setWidgetOffsets() {
+        for (PrecisePositionWidgetWrapper<?> entry : evilLayout.values()) {
+            entry.setOffsetY(scrollTweener.get());
+            entry.setOffsetX(-width * categoryTweener.get());
+        }
+    }
 
-		return addY;
-	}
+    private int addOptionWithChildren(OptionContext<?> optionContext, int y, int x) {
+        int addY = 0;
+        Option<?> option = optionContext.option();
+        ClickableWidget widget = option.getWidgetProvider().makeWidget(option, 0, 0, 125, VERTICAL_PADDING / 2.0);
 
-	@Override
-	protected void init() {
-		this.tabNavigationWidget = this.addSelectableChild(EvilTabNavigationWidget.builder(tabManager, width)
-				.tabs(tabs)
-				.build());
-		this.tabNavigationWidget.init();
-		tabNavigationWidget.selectTab(0, false);
+        PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x, y + addY, option.description());
+        this.addDrawableChild(pw);
+        evilLayout.put(optionContext, pw);
+        addY += VERTICAL_PADDING;
 
-		for (ConfigCategory c : config.categories()) {
-			int x = (config.categories().indexOf(c) == 0 ? 0 : MinecraftClient.getInstance().getWindow().getScaledWidth() * (config.categories().indexOf(c)));
-			int y = VERTICAL_PADDING;
-			for (OptionHolderV3 o : c.elements()) {
-				if (o instanceof ConfigSection(
-						MetadataHolder.Metadata metadata,
-						List<OptionContext<?>> childOptionContexts
-				)) {
-					GroupTextWidget t = new GroupTextWidget(
-							metadata.name(),
-							textRenderer
-					);
-					PrecisePositionWidgetWrapper<GroupTextWidget> widgetWrapper = new PrecisePositionWidgetWrapper<>(t, x + ((double) MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (double) textRenderer.getWidth(metadata.name()) / 2, y, metadata.description());
-					evilLayout.put(o, widgetWrapper);
-					addDrawableChild(widgetWrapper);
-					y += VERTICAL_PADDING;
-					for (OptionContext<?> yeah : childOptionContexts) {
-						y += addOptionWithChildren(yeah, y, x + CHILD_INSET);
-					}
-				} else {
-					y += addOptionWithChildren((OptionContext<?>) o, y, x + CHILD_INSET);
-				}
-			}
-		}
-	}
+        for (OptionContext<?> child : optionContext.childOptions()) {
+            addY += addOptionWithChildren(child, y + addY, x + CHILD_INSET);
+        }
 
-	@Override
-	public void close() {
-		MinecraftClient.getInstance().setScreen(parent);
-		GooberLibApi.save(modid, config);
-	}
+        return addY;
+    }
 
-	@Override
-	public boolean mouseClicked(Click click, boolean bl) {
-		return super.mouseClicked(click, bl);
-	}
+    @Override
+    public void render(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
+//        int scaleFac = MinecraftClient.getInstance().getWindow().getScaleFactor();
+        updateTweeners();
 
-	@Override
-	public boolean mouseScrolled(double d, double e, double f, double g) {
-		if (!tabNavigationWidget.isMouseOver(d, e)) {
-			scrollProgress = MathHelper.clamp(scrollProgress + g * 15, -1000, 0);
-		}
-		return super.mouseScrolled(d, e, f, g);
-	}
+        drawContext.scissorStack.push(new ScreenRect(0, 0, 10, 10));
+        newMatrixScope(drawContext, matrix3x2fStack -> {
+            matrix3x2fStack.translate(0, -26 * (1 - categoryHoverProgress));
+            tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
+        });
+        drawContext.enableScissor(0, (int) (categoryHoverProgress * 26), width, height);
 
-	@Override
-	public void render(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
-//        mouseY -= (int) scrollProgress;
-//        mouseX -= (int) (-width * screenCategoryAnimationState);
-		//TODO: do something about tooltips not lining up
-		this.scrollTweener.update();
-		this.categoryTweener.update();
+        setWidgetOffsets();
+        evilLayout.values().forEach(entry -> entry.render(drawContext, mouseX, mouseY, tickDelta));
 
-		evilLayout.forEach((_, precisePositionWidgetWrapper) -> {
-			precisePositionWidgetWrapper.setOffsetY(scrollTweener.get());
-			precisePositionWidgetWrapper.setOffsetX(-width * categoryTweener.get());
-			precisePositionWidgetWrapper.render(drawContext, mouseX, mouseY, tickDelta);
-		});
-		drawContext.getMatrices().pushMatrix();
-		drawContext.getMatrices().translate((float) (-width * categoryTweener.get()), (float) scrollTweener.get());
-		drawLines(drawContext);
-		drawContext.getMatrices().popMatrix();
-		super.render(drawContext, mouseX, mouseY, tickDelta);
+        newMatrixScope(drawContext, matrix3x2fStack -> {
+            matrix3x2fStack.translate((float) (-width * categoryTweener.get()), (float) scrollTweener.get());
+            drawLines(drawContext);
+        });
 
-		for (PrecisePositionWidgetWrapper<?> yeah : evilLayout.values()) {
-			if (yeah.isMouseOver(mouseX, mouseY)) {
-				descriptionText = yeah.getHoverMessage();
-				animate.set(true);
-				break;
-			}
-			animate.set(false);
-		}
+        super.render(drawContext, mouseX, mouseY, tickDelta);
 
-		if (tabNavigationWidget.isMouseOver(mouseX, mouseY)) {
-			tabHoldTicks = 10;
-		}
-		categoryHoverProgress = (float) ease(categoryHoverProgress, tabHoldTicks > 0 ? 1 : 0, 15);
-		int yeah = ArrayUtils.indexOf(tabs, tabManager.getCurrentTab());
-		screenCategoryAnimationState = (float) ease(screenCategoryAnimationState, yeah == -1 ? 0 : yeah, 15);
+        for (PrecisePositionWidgetWrapper<?> yeah : evilLayout.values()) {
+            if (yeah.isMouseOver(mouseX, mouseY)) {
+                descriptionText = yeah.getHoverMessage();
+                animateHoverDescription = true;
+                break;
+            }
+            animateHoverDescription = false;
+        }
 
-		drawContext.getMatrices().pushMatrix();
-		drawContext.getMatrices().translate(0, -26 * (1 - categoryHoverProgress));
-		tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
-		drawContext.getMatrices().popMatrix();
+        if (tabNavigationWidget.isMouseOver(mouseX, mouseY)) {
+            tabHoldTicks = 10;
+        }
+        categoryHoverProgress = (float) ease(categoryHoverProgress, tabHoldTicks > 0 ? 1 : 0, 15);
+        int yeah = ArrayUtils.indexOf(tabs, tabManager.getCurrentTab());
+        screenCategoryAnimationState = (float) ease(screenCategoryAnimationState, yeah == -1 ? 0 : yeah, 15);
 
-		descriptionAnimationProgress = (float) ease(descriptionAnimationProgress, animate.get() ? 1 : 0, 15);
-		drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, drawContext.getScaledWindowWidth() / 2, (int) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))), ColorHelper.getWhite(descriptionAnimationProgress));
-	}
 
-	private void drawLines(DrawContext drawContext) {
-		for (ConfigCategory c : config.categories()) {
-			for (OptionHolderV3 o : c.elements()) {
-				if (!(o instanceof ConfigSection)) {
-					if (!o.childOptions().isEmpty()) {
-						drawLinesForOption(drawContext, o);
-					}
-				} else {
-					for (OptionHolderV3 opt : o.childOptions()) {
-						drawLinesForOption(drawContext, opt);
-					}
-				}
-			}
-		}
-	}
+        descriptionAnimationProgress = (float) ease(descriptionAnimationProgress, animateHoverDescription ? 1 : 0, 15);
+        drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, drawContext.getScaledWindowWidth() / 2, (int) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))), ColorHelper.getWhite(descriptionAnimationProgress));
+        drawContext.disableScissor();
+    }
 
-	private void drawLinesForOption(DrawContext drawContext, OptionHolderV3 o) {
-		if (o.childOptions().isEmpty()) return;
-		PrecisePositionWidgetWrapper<?> ppww = evilLayout.get(o);
-		PrecisePositionWidgetWrapper<?> last = evilLayout.get(o.childOptions().getLast());
-		RenderUtils.drawVerticalLine(drawContext, (float) ppww.getX() + 5, (float) ppww.getY() + ppww.getWrapped().getHeight() - 1, (float) last.getY() + (last.getWrapped().getHeight() / 2F), -1);
-		for (OptionHolderV3 opt : o.childOptions()) {
-			PrecisePositionWidgetWrapper<?> yeah = evilLayout.get(opt);
-			RenderUtils.drawHorizontalLine(drawContext, (float) ppww.getX() + 5, (float) evilLayout.get(opt).getX() - 1, (float) yeah.getY() + yeah.getWrapped().getHeight() / 2F, -1);
-			drawLinesForOption(drawContext, opt);
-		}
-	}
+    @Override
+    public void renderBackground(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
+        newMatrixScope(drawContext, stack -> {
+            stack.translate(-mouseX * 0.1F, -mouseY * 0.1F);
+            stack.translate(MinecraftClient.getInstance().getWindow().getScaledWidth() / 2F - 100, MinecraftClient.getInstance().getWindow().getScaledHeight() / 2F - 100);
+            stack.scale(2.5F, 2.5F);
+            drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, Identifier.of("gooberlib", "textures/him.png"), 0, 0, 100, 100, 100, 100, 100, 100);
+        });
 
-	@Override
-	public void resize(int i, int j) {
-		evilLayout.clear();
-		int selectedTab = tabNavigationWidget.getCurrentTabIndex();
-		super.resize(i, j);
-		tabNavigationWidget.selectTab(selectedTab == -1 ? 0 : selectedTab, false);
-	}
+        newMatrixScope(drawContext, matrix3x2fStack -> {
+            matrix3x2fStack.translate((float) (-width * categoryTweener.get()), (float) scrollTweener.get());
+            drawLines(drawContext);
+        });
 
-	@Override
-	public void renderBackground(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
-		//TODO: make this better
-//        mouseY -= (int) scrollProgress;
-//        mouseX -= (int) (-width * screenCategoryAnimationState);
-		drawContext.getMatrices().pushMatrix();
-		drawContext.getMatrices().translate(-mouseX * 0.1F, -mouseY * 0.1F);
-		drawContext.getMatrices().translate(MinecraftClient.getInstance().getWindow().getScaledWidth() / 2F - 100, MinecraftClient.getInstance().getWindow().getScaledHeight() / 2F - 100);
-		drawContext.getMatrices().scale(2.5F, 2.5F);
-		drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, Identifier.of("gooberlib", "textures/him.png"), 0, 0, 100, 100, 100, 100, 100, 100);
-		drawContext.getMatrices().popMatrix();
+        for (PrecisePositionWidgetWrapper<?> entry : evilLayout.values()) {
+            entry.render(drawContext, mouseX, mouseY, tickDelta);
+        }
 
-		drawContext.getMatrices().pushMatrix();
-//        drawContext.getMatrices().translate(-width * screenCategoryAnimationState, (float) scrollTweener.get());
-//        drawLines(drawContext);
-		evilLayout.forEach((optionHolderV3, precisePositionWidgetWrapper) -> {
-			precisePositionWidgetWrapper.render(drawContext, mouseX, mouseY, tickDelta);
-		});
-		drawContext.getMatrices().popMatrix();
+        newMatrixScope(drawContext, stack -> {
+            stack.translate(0, -26 * (1 - categoryHoverProgress));
+            tabNavigationWidget.renderForBackgroundLayer(drawContext);
+        });
 
-		drawContext.getMatrices().pushMatrix();
-		drawContext.getMatrices().translate(0, -26 * (1 - categoryHoverProgress));
-		tabNavigationWidget.renderForBackgroundLayer(drawContext);
-		drawContext.getMatrices().popMatrix();
+        drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, drawContext.getScaledWindowWidth() / 2, (int) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))), ColorHelper.getWhite(descriptionAnimationProgress));
+        drawContext.createNewRootLayer();
 
-		drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, drawContext.getScaledWindowWidth() / 2, (int) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))), ColorHelper.getWhite(descriptionAnimationProgress));
+        super.renderBackground(drawContext, mouseX, mouseY, tickDelta);
+    }
 
-		drawContext.createNewRootLayer();
-		super.renderBackground(drawContext, mouseX, mouseY, tickDelta);
-	}
+    private void drawLines(DrawContext drawContext) {
+        for (ConfigCategory c : config.categories()) {
+            for (OptionHolderV3 o : c.elements()) {
+                if (!(o instanceof ConfigSection)) {
+                    if (!o.childOptions().isEmpty()) {
+                        drawLinesForOption(drawContext, o);
+                    }
+                } else {
+                    for (OptionHolderV3 opt : o.childOptions()) {
+                        drawLinesForOption(drawContext, opt);
+                    }
+                }
+            }
+        }
+    }
+
+    private void drawLinesForOption(DrawContext drawContext, OptionHolderV3 o) {
+        if (o.childOptions().isEmpty()) return;
+        PrecisePositionWidgetWrapper<?> mainWidget = evilLayout.get(o);
+        PrecisePositionWidgetWrapper<?> lastChildWidget = evilLayout.get(o.childOptions().getLast());
+        //TODO: add shadow line
+        RenderUtils.drawVerticalLine(drawContext, (float) mainWidget.getX() + 5, (float) mainWidget.getY() + mainWidget.getWrapped().getHeight() - 1, (float) lastChildWidget.getY() + (lastChildWidget.getWrapped().getHeight() / 2F), -1);
+        for (OptionHolderV3 opt : o.childOptions()) {
+            PrecisePositionWidgetWrapper<?> optionWidget = evilLayout.get(opt);
+            RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getX() + 5, (float) evilLayout.get(opt).getX() - 1, (float) optionWidget.getY() + optionWidget.getWrapped().getHeight() / 2F, -1);
+            drawLinesForOption(drawContext, opt);
+        }
+    }
+
+    private void updateTweeners() {
+        this.scrollTweener.update();
+        this.categoryTweener.update();
+    }
+
+    @Override
+    public void tick() {
+        tabHoldTicks = Math.clamp(tabHoldTicks - 1, 0, 100);
+    }
+
+    @Override
+    public void close() {
+        MinecraftClient.getInstance().setScreen(parent);
+        GooberLibApi.save(modId, config);
+    }
+
+    @Override
+    public void resize(int i, int j) {
+        int selectedTab = tabNavigationWidget.getCurrentTabIndex();
+        super.resize(i, j);
+        tabNavigationWidget.selectTab(selectedTab == -1 ? 0 : selectedTab, false);
+    }
+
+    @Override
+    public boolean mouseClicked(Click click, boolean bl) {
+        return super.mouseClicked(click, bl);
+    }
+
+    @Override
+    public boolean mouseDragged(Click click, double d, double e) {
+        scrollProgress += e;
+        return super.mouseDragged(click, d, e);
+    }
+
+    @Override
+    public boolean mouseScrolled(double d, double e, double f, double g) {
+        if (!tabNavigationWidget.isMouseOver(d, e)) {
+            scrollProgress = MathHelper.clamp(scrollProgress + g * 15, -1000, 0);
+        }
+        return super.mouseScrolled(d, e, f, g);
+    }
+
 
 }

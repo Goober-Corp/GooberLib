@@ -5,57 +5,69 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.TextureSetup;
 import org.joml.Matrix3x2f;
+import org.joml.Matrix3x2fStack;
+
+import java.util.function.Consumer;
 
 import static java.lang.Math.exp;
 
 public class RenderUtils {
-    public static double ease(double start, double end, float speed) {
+	public static double ease(double start, double end, float speed) {
 		var dt = 1.0F / MinecraftClient.getInstance().getCurrentFps();
-        return start + (end - start) * (1 - exp(-dt * speed));
-    }
+		return start + (end - start) * (1 - exp(-dt * speed));
+	}
 
-    public static void drawHorizontalLine(DrawContext context, float x1, float x2, float y, int col) {
-        if (x2 < x1) {
-            float m = x1;
-            x1 = x2;
-            x2 = m;
-        }
+	public static void drawHorizontalLine(DrawContext context, float x1, float x2, float y, int col) {
+		if (x2 < x1) {
+			float m = x1;
+			x1 = x2;
+			x2 = m;
+		}
 
-        fillEvil(context, x1, y, x2 + 1, y + 1, col);
-    }public static void drawHorizontalLine(DrawContext context, float x1, float x2, float y, int col, int col2) {
-        if (x2 < x1) {
-            float m = x1;
-            x1 = x2;
-            x2 = m;
-        }
+		fillEvil(context, x1, y, x2 + 1, y + 1, col);
+	}
 
-        fillEvil(context, x1, y, x2 + 1, y + 1, col, col2);
-    }
+	public static void drawHorizontalLine(DrawContext context, float x1, float x2, float y, int col, int col2) {
+		if (x2 < x1) {
+			float m = x1;
+			x1 = x2;
+			x2 = m;
+		}
 
-    public static void drawVerticalLine(DrawContext context, float x, float y1, float y2, int col) {
-        if (y2 < y1) {
-            float m = y1;
-            y1 = y2;
-            y2 = m;
-        }
+		fillEvil(context, x1, y, x2 + 1, y + 1, col, col2);
+	}
 
-        fillEvil(context, x, y1 + 1, x + 1, y2, col);
-    }
+	public static void drawVerticalLine(DrawContext context, float x, float y1, float y2, int col) {
+		if (y2 < y1) {
+			float m = y1;
+			y1 = y2;
+			y2 = m;
+		}
 
-    public static void fillEvil(DrawContext context, float x, float y, float x2, float y2, int col) {
-        context.state
-                .addSimpleElement(
-                        new EvilColoredQuadGuiElementRenderState(
-                                RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), x, y, x2, y2, col, col, context.scissorStack.peekLast()
-                        )
-                );
-    }
-    public static void fillEvil(DrawContext context, float x, float y, float x2, float y2, int col, int col2) {
-        context.state
-                .addSimpleElement(
-                        new EvilColoredQuadGuiElementRenderState(
-                                RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), x, y, x2, y2, col, col2, context.scissorStack.peekLast()
-                        )
-                );
-    }
+		fillEvil(context, x, y1 + 1, x + 1, y2, col);
+	}
+
+	public static void fillEvil(DrawContext context, float x, float y, float x2, float y2, int col) {
+		context.state
+				.addSimpleElement(
+						new EvilColoredQuadGuiElementRenderState(
+								RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), x, y, x2, y2, col, col, context.scissorStack.peekLast()
+						)
+				);
+	}
+
+	public static void fillEvil(DrawContext context, float x, float y, float x2, float y2, int col, int col2) {
+		context.state
+				.addSimpleElement(
+						new EvilColoredQuadGuiElementRenderState(
+								RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), x, y, x2, y2, col, col2, context.scissorStack.peekLast()
+						)
+				);
+	}
+
+	public static void newMatrixScope(DrawContext context, Consumer<Matrix3x2fStack> function) {
+		context.getMatrices().pushMatrix();
+		function.accept(context.getMatrices());
+		context.getMatrices().popMatrix();
+	}
 }
