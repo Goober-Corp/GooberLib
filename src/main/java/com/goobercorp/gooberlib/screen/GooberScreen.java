@@ -53,7 +53,7 @@ public class GooberScreen extends Screen {
     private final HashMap<OptionHolderV3, PrecisePositionWidgetWrapper<?>> evilLayout = new HashMap<>();
     private final Tab[] tabs;
     private boolean animateHoverDescription = false;
-    public ScreenRect badbadbad;
+    public ScreenRect badbadbad = new ScreenRect(0, 0, 0, 0);
 
     private final String modId;
 
@@ -136,12 +136,12 @@ public class GooberScreen extends Screen {
 //        int scaleFac = MinecraftClient.getInstance().getWindow().getScaleFactor();
         updateTweeners();
 
-        drawContext.scissorStack.push(new ScreenRect(0, 0, 10, 10));
         newMatrixScope(drawContext, matrix3x2fStack -> {
             matrix3x2fStack.translate(0, -26 * (1 - categoryHoverProgress));
             tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
         });
-        drawContext.enableScissor(0, (int) (categoryHoverProgress * 26), width, height);
+//        drawContext.enableScissor(0, (int) (categoryHoverProgress * 26), width, height);
+        badbadbad = new ScreenRect(0, 0, (int) (categoryHoverProgress * 26), height);
 
         setWidgetOffsets();
         evilLayout.values().forEach(entry -> entry.render(drawContext, mouseX, mouseY, tickDelta));
@@ -172,7 +172,6 @@ public class GooberScreen extends Screen {
 
         descriptionAnimationProgress = (float) ease(descriptionAnimationProgress, animateHoverDescription ? 1 : 0, 15);
         drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, drawContext.getScaledWindowWidth() / 2, (int) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))), ColorHelper.getWhite(descriptionAnimationProgress));
-        drawContext.disableScissor();
     }
 
     @Override
