@@ -12,6 +12,7 @@ import com.goobercorp.gooberlib.gui.EvilTabNavigationWidget;
 import com.goobercorp.gooberlib.gui.GroupTextWidget;
 import com.goobercorp.gooberlib.gui.PrecisePositionWidgetWrapper;
 import com.goobercorp.gooberlib.util.RenderUtils;
+import com.goobercorp.gooberlib.util.ScrollTweener;
 import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
@@ -26,7 +27,6 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.MathHelper;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.HashMap;
@@ -48,7 +48,8 @@ public class GooberScreen extends Screen {
     private int tabHoldTicks = 20;
     private final TabManager tabManager = new TabManager(this::addDrawableChild, this::remove);
     private double scrollProgress = 0;
-    private final Tweener scrollTweener = new Tweener(() -> scrollProgress);
+    private final ScrollTweener scrollTweener = new ScrollTweener(() -> scrollProgress, aDouble -> scrollProgress = aDouble, -1000, 0);
+    private int lastScrollTicks = 0;
     private final Tweener categoryTweener = new Tweener(() -> screenCategoryAnimationState);
     private final HashMap<OptionHolderV3, PrecisePositionWidgetWrapper<?>> evilLayout = new HashMap<>();
     private final Tab[] tabs;
@@ -239,7 +240,12 @@ public class GooberScreen extends Screen {
 
     @Override
     public void tick() {
+        tabNavigationWidget.tick();
         tabHoldTicks = Math.clamp(tabHoldTicks - 1, 0, 100);
+        lastScrollTicks++;
+        if (lastScrollTicks > 4) {
+            scrollTweener.setInteractionState(false);
+        }
     }
 
     @Override
@@ -268,8 +274,14 @@ public class GooberScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double d, double e, double f, double g) {
+        lastScrollTicks = 0;
+        scrollTweener.setInteractionState(true);
         if (!tabNavigationWidget.isMouseOver(d, e)) {
-            scrollProgress = MathHelper.clamp(scrollProgress + g * 15, -1000, 0);
+            if (scrollProgress < -1000 || scrollProgress > 0) {
+                scrollProgress += g * 15 * Math.min(1 / Math.abs(scrollProgress - Math.clamp(scrollProgress, -1000, 0)), 1);
+            } else {
+                scrollProgress += g * 15;
+            }
         }
         return super.mouseScrolled(d, e, f, g);
     }

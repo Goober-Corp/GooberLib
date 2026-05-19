@@ -13,59 +13,60 @@ import net.minecraft.util.Identifier;
 // todo?: tests fpr all options
 public class TheOne {
 	/* commented out until all the options are implemented
+	loosely ordered in difficulty
+
 //	public static boolean booleanOption;
+//	public static HotkeyOption HotkeyOption;
+//	public static String StringOption;
+	public static URI URLOption;
+	public static Path FileOption;
+//	public static SomeEnum EnumOption;
+//	public static Identifier IdentifierOption;
+
 //	public static byte byteOption;
 //	public static short shortOption;
-//	public static char charOption;
 //	public static int intOption;
 //	public static long longOption;
 //	public static float floatOption;
 //	public static double doubleOption;
-	/*and lists...*/
 
-	/* commented out until all the options are implemented
-//	public static String StringOption;
-//	public static Color ColorOption;
-//	public static SomeEnum EnumOption;
-	public static Path FileOption;
-	public static URI URLOption;
-
-//	public static Identifier IdentifierOption;
-	public static Text TextOption;
+//	public static char charOption;
 	public static BlockPos BlockPosOption;
 	public static Vec2f Vec2fOption;
 	public static Vec3d Vec3dOption;
 	public static Vec3i Vec3iOption;
+
+
 	public static Item ItemOption;
 	public static Block BlockOption;
+	and lists...
+	public static Text TextOption;
+//	public static Color ColorOption;
+	 */
 
-//	public static HotkeyOption HotkeyOption;
+    public static final BooleanOption booleanOption = new BooleanOption("boolean option", "boolean description");
+    public static final StringOption stringOption = new StringOption("string option", "string description");
+    public static final ByteOption byteOption = new ByteOption("byte option", "byte description");
+    public static final ShortOption shortOption = new ShortOption("short option", "short description");
+    public static final IntOption intOption = new IntOption("int option", "int description");
+    public static final LongOption longOption = new LongOption("long option", "long description");
+    public static final FloatOption floatOption = new FloatOption("float option", "float description");
+    public static final DoubleOption doubleOption = new DoubleOption("double option", "double description");
+    public static final CharOption charOption = new CharOption("char option", "char description");
 
-	*/
+    public static final ColorOption colorOption = new ColorOption("color option", "color description");
+    public static final EnumOption<SomeEnum> enumOption = new EnumOption<>("enum option", "enum description", SomeEnum.class);
 
-	public static final BooleanOption booleanOption = new BooleanOption("boolean option", "boolean description");
-	public static final ByteOption byteOption = new ByteOption("byte option", "byte description");
-	public static final ShortOption shortOption = new ShortOption("short option", "short description");
-	public static final CharOption charOption = new CharOption("char option", "char description");
-	public static final IntOption intOption = new IntOption("int option", "int description");
-	public static final LongOption longOption = new LongOption("long option", "long description");
-	public static final FloatOption floatOption = new FloatOption("float option", "float description");
-	public static final DoubleOption doubleOption = new DoubleOption("double option", "double description");
+    public static final IdentifierOption identifierOption = new IdentifierOption("identifier option", "identifier description", Identifier.of("minecraft:stone"));
 
-	public static final StringOption stringOption = new StringOption("string option", "string description");
-	public static final ColorOption colorOption = new ColorOption("color option", "color description");
-	public static final EnumOption<SomeEnum> enumOption = new EnumOption<>("enum option", "enum description", SomeEnum.class);
+    public static final HotkeyOption hotkeyOption = new HotkeyOption("hotkey option", "hotkey description", "g, c", 2, () -> System.out.println("meow meow"));
 
-	public static final IdentifierOption identifierOption = new IdentifierOption("identifier option", "identifier description", Identifier.of("minecraft:stone"));
+    @SuppressWarnings("unused")
+    public enum SomeEnum {OPTION_ONE, OPTION_TWO, OPTION_THREE}
 
-	public static final HotkeyOption hotkeyOption = new HotkeyOption("hotkey option", "hotkey description", "g, c", 2, () -> System.out.println("meow meow"));
-
-	@SuppressWarnings("unused")
-	public enum SomeEnum {OPTION_ONE, OPTION_TWO, OPTION_THREE}
-
-	public static final IntOption testOption = new IntOption("test option", "test description");
-	public static final IntOption testChildOption = new IntOption("test child option", "test child description");
-	// @formatter:off
+    public static final IntOption testOption = new IntOption("test option", "test description");
+    public static final IntOption testChildOption = new IntOption("test child option", "test child description");
+    // @formatter:off
 	public static ConfigCategory category = ConfigCategory.builder("the one", "description of meow")
 			.section("primitive", "")
 				.options(booleanOption, byteOption, shortOption, charOption, intOption, longOption, floatOption, doubleOption)

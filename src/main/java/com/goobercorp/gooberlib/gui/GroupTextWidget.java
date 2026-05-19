@@ -16,99 +16,98 @@ import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
 public class GroupTextWidget extends AbstractTextWidget {
-	private int maxWidth = 0;
-	private int cachedWidth = 0;
-	private boolean cachedWidthDirty = true;
-	private GroupTextWidget.TextOverflow textOverflow = GroupTextWidget.TextOverflow.CLAMPED;
-	private float renderProgress = 0;
+    private int maxWidth = 0;
+    private int cachedWidth = 0;
+    private boolean cachedWidthDirty = true;
+    private GroupTextWidget.TextOverflow textOverflow = GroupTextWidget.TextOverflow.CLAMPED;
+    private float renderProgress = 0;
 
-	public GroupTextWidget(Text text, TextRenderer textRenderer) {
-		this(0, 0, textRenderer.getWidth(text.asOrderedText()), 9, text, textRenderer);
-	}
+    public GroupTextWidget(Text text, TextRenderer textRenderer) {
+        this(0, 0, textRenderer.getWidth(text.asOrderedText()), 9, text, textRenderer);
+    }
 
-	public GroupTextWidget(int i, int j, Text text, TextRenderer textRenderer) {
-		this(0, 0, i, j, text, textRenderer);
-	}
+    public GroupTextWidget(int i, int j, Text text, TextRenderer textRenderer) {
+        this(0, 0, i, j, text, textRenderer);
+    }
 
-	public GroupTextWidget(int i, int j, int k, int l, Text text, TextRenderer textRenderer) {
-		super(i, j, k, l, text, textRenderer);
-	}
+    public GroupTextWidget(int i, int j, int k, int l, Text text, TextRenderer textRenderer) {
+        super(i, j, k, l, text, textRenderer);
+    }
 
-	@Override
-	public void setMessage(Text text) {
-		super.setMessage(text);
-		this.cachedWidthDirty = true;
-	}
+    @Override
+    public void setMessage(Text text) {
+        super.setMessage(text);
+        this.cachedWidthDirty = true;
+    }
 
-	public GroupTextWidget setMaxWidth(int i) {
-		return this.setMaxWidth(i, GroupTextWidget.TextOverflow.CLAMPED);
-	}
+    public GroupTextWidget setMaxWidth(int i) {
+        return this.setMaxWidth(i, GroupTextWidget.TextOverflow.CLAMPED);
+    }
 
-	public GroupTextWidget setMaxWidth(int i, GroupTextWidget.TextOverflow textOverflow) {
-		this.maxWidth = i;
-		this.textOverflow = textOverflow;
-		return this;
-	}
+    public GroupTextWidget setMaxWidth(int i, GroupTextWidget.TextOverflow textOverflow) {
+        this.maxWidth = i;
+        this.textOverflow = textOverflow;
+        return this;
+    }
 
-	@Override
-	public int getWidth() {
-		if (this.maxWidth > 0) {
-			if (this.cachedWidthDirty) {
-				this.cachedWidth = Math.min(this.maxWidth, this.getTextRenderer().getWidth(this.getMessage().asOrderedText()));
-				this.cachedWidthDirty = false;
-			}
+    @Override
+    public int getWidth() {
+        if (this.maxWidth > 0) {
+            if (this.cachedWidthDirty) {
+                this.cachedWidth = Math.min(this.maxWidth, this.getTextRenderer().getWidth(this.getMessage().asOrderedText()));
+                this.cachedWidthDirty = false;
+            }
 
-			return this.cachedWidth;
-		} else {
-			return super.getWidth();
-		}
-	}
+            return this.cachedWidth;
+        } else {
+            return super.getWidth();
+        }
+    }
 
 
-	@Override
-	public void renderWidget(DrawContext drawContext, int i, int j, float f) {
-		super.renderWidget(drawContext, i, j, f);
-		//TODO: only when appears from offscreen
-		renderProgress = (float) RenderUtils.ease(renderProgress, 1, 15);
-		//this requires the widget to be centered. fuck
-		float yeah = this.getX() - drawContext.getScaledWindowWidth() / 2F + getTextRenderer().getWidth(message) / 2F;
-		RenderUtils.drawHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 3, 0, -1);
-		RenderUtils.drawHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah + 1, this.getX() - 1), this.getX() - 1, this.getY() + 4, 0, 0xFF3e3e3e);
-		int otherYeah = this.getX() + getTextRenderer().getWidth(message);
-		RenderUtils.drawHorizontalLine(drawContext, otherYeah, MathHelper.lerp(1 - renderProgress, this.getX() + getTextRenderer().getWidth(message) / 2 + drawContext.getScaledWindowWidth() / 2F - 1, otherYeah), this.getY() + 3, -1, 0);
-		RenderUtils.drawHorizontalLine(drawContext, otherYeah + 1, MathHelper.lerp(1 - renderProgress, this.getX() + getTextRenderer().getWidth(message) / 2 + drawContext.getScaledWindowWidth() / 2F - 1, otherYeah), this.getY() + 4, 0xFF3e3e3e, 0);
-	}
+    @Override
+    public void renderWidget(DrawContext drawContext, int i, int j, float f) {
+        super.renderWidget(drawContext, i, j, f);
+        renderProgress = (float) RenderUtils.ease(renderProgress, 1, 7.5F);
+        //this requires the widget to be centered. fuck
+        float yeah = this.getX() - drawContext.getScaledWindowWidth() / 2F + getTextRenderer().getWidth(message) / 2F;
+        RenderUtils.drawThinningHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 3, 0, -1);
+//        RenderUtils.drawHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah + 1, this.getX() - 1), this.getX() - 1, this.getY() + 4, 0, 0xFF3e3e3e);
+        int otherYeah = this.getX() + getTextRenderer().getWidth(message);
+        RenderUtils.drawHorizontalLine(drawContext, otherYeah, MathHelper.lerp(1 - renderProgress, this.getX() + getTextRenderer().getWidth(message) / 2 + drawContext.getScaledWindowWidth() / 2F - 1, otherYeah), this.getY() + 3, -1, 0);
+        RenderUtils.drawHorizontalLine(drawContext, otherYeah + 1, MathHelper.lerp(1 - renderProgress, this.getX() + getTextRenderer().getWidth(message) / 2 + drawContext.getScaledWindowWidth() / 2F - 1, otherYeah), this.getY() + 4, 0xFF3e3e3e, 0);
+    }
 
-	@Override
-	public void draw(DrawnTextConsumer drawnTextConsumer) {
-		Text text = this.getMessage();
-		TextRenderer textRenderer = this.getTextRenderer();
-		int i = this.maxWidth > 0 ? this.maxWidth : this.getWidth();
-		int j = textRenderer.getWidth(text);
-		int k = this.getX();
-		int l = this.getY() + (this.getHeight() - 9) / 2;
-		boolean bl = j > i;
-		if (bl) {
-			switch (this.textOverflow) {
-				case CLAMPED:
-					drawnTextConsumer.text(k, l, trim(text, textRenderer, i));
-					break;
-				case SCROLLING:
-					this.drawTextWithMargin(drawnTextConsumer, text, 2);
-			}
-		} else {
-			drawnTextConsumer.text(k, l, text.asOrderedText());
-		}
-	}
+    @Override
+    public void draw(DrawnTextConsumer drawnTextConsumer) {
+        Text text = this.getMessage();
+        TextRenderer textRenderer = this.getTextRenderer();
+        int i = this.maxWidth > 0 ? this.maxWidth : this.getWidth();
+        int j = textRenderer.getWidth(text);
+        int k = this.getX();
+        int l = this.getY() + (this.getHeight() - 9) / 2;
+        boolean bl = j > i;
+        if (bl) {
+            switch (this.textOverflow) {
+                case CLAMPED:
+                    drawnTextConsumer.text(k, l, trim(text, textRenderer, i));
+                    break;
+                case SCROLLING:
+                    this.drawTextWithMargin(drawnTextConsumer, text, 2);
+            }
+        } else {
+            drawnTextConsumer.text(k, l, text.asOrderedText());
+        }
+    }
 
-	public static OrderedText trim(Text text, TextRenderer textRenderer, int i) {
-		StringVisitable stringVisitable = textRenderer.trimToWidth(text, i - textRenderer.getWidth(ScreenTexts.ELLIPSIS));
-		return Language.getInstance().reorder(StringVisitable.concat(stringVisitable, ScreenTexts.ELLIPSIS));
-	}
+    public static OrderedText trim(Text text, TextRenderer textRenderer, int i) {
+        StringVisitable stringVisitable = textRenderer.trimToWidth(text, i - textRenderer.getWidth(ScreenTexts.ELLIPSIS));
+        return Language.getInstance().reorder(StringVisitable.concat(stringVisitable, ScreenTexts.ELLIPSIS));
+    }
 
-	@Environment(EnvType.CLIENT)
-	public enum TextOverflow {
-		CLAMPED,
-		SCROLLING;
-	}
+    @Environment(EnvType.CLIENT)
+    public enum TextOverflow {
+        CLAMPED,
+        SCROLLING;
+    }
 }

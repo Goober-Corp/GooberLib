@@ -8,14 +8,21 @@ public class Tweener {
     //TODO: add easings
     Supplier<Number> target;
     double value;
+    float speed = 15;
 
     public Tweener(Supplier<Number> target) {
         this.target = target;
-		value = target.get().doubleValue();
+        value = target.get().doubleValue();
+    }
+
+    public Tweener(Supplier<Number> target, float speed) {
+        this.target = target;
+        value = target.get().doubleValue();
+        this.speed = speed;
     }
 
     public void update() {
-        value = RenderUtils.ease(value, target.get().doubleValue(), 15);
+        value = RenderUtils.ease(value, target.get().doubleValue(), speed);
     }
 
     public double get() {
