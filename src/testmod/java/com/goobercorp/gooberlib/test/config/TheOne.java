@@ -3,6 +3,7 @@ package com.goobercorp.gooberlib.test.config;
 import com.goobercorp.gooberlib.builder.ConfigCategory;
 import com.goobercorp.gooberlib.builder.v3.individual.HotkeyOption;
 import com.goobercorp.gooberlib.builder.v3.individual.java.ColorOption;
+import com.goobercorp.gooberlib.builder.v3.individual.java.CycleOption;
 import com.goobercorp.gooberlib.builder.v3.individual.java.EnumOption;
 import com.goobercorp.gooberlib.builder.v3.individual.java.StringOption;
 import com.goobercorp.gooberlib.builder.v3.individual.minecraft.IdentifierOption;
@@ -55,6 +56,7 @@ public class TheOne {
 	public static final StringOption stringOption = new StringOption("string option", "string description");
 	public static final ColorOption colorOption = new ColorOption("color option", "color description");
 	public static final EnumOption<SomeEnum> enumOption = new EnumOption<>("enum option", "enum description", SomeEnum.class);
+	public static final CycleOption<String> cycleOption = new CycleOption<>("cycle option", "cycle description", "Option one", "Option two", "Option three");
 
 	public static final IdentifierOption identifierOption = new IdentifierOption("identifier option", "identifier description", Identifier.of("minecraft:stone"));
 
@@ -71,7 +73,7 @@ public class TheOne {
 				.options(booleanOption, byteOption, shortOption, charOption, intOption, longOption, floatOption, doubleOption)
 				.build()
 			.section("java", "")
-				.options(stringOption, colorOption, enumOption)
+				.options(stringOption, colorOption, enumOption, cycleOption)
 				.build()
 			.section("minecraft", "")
 				.options(identifierOption)
