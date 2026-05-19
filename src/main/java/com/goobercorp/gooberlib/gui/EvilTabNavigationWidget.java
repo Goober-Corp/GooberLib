@@ -62,14 +62,22 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 
     public void tick() {
         ticksSinceLastScroll++;
-        if (ticksSinceLastScroll > 4) {
+        if (ticksSinceLastScroll > 2) {
             scrollTweener.setInteractionState(false);
         }
     }
 
     @Override
     public boolean mouseDragged(Click click, double deltaX, double deltaY) {
-        this.targetX += (float) deltaX;
+        Optional<Element> optional = this.hoveredElement(click.comp_4798(), click.comp_4799());
+        if (optional.isPresent()) {
+            if (optional.get().isFocused()) {
+                //dragging stops if cursor goes off of selected tab. intended
+                //dragging continues if cursor goes back onto selected tab. unintended.
+                //tell kr1v this is why i like my own dragging impl
+                this.targetX += (float) deltaX;
+            }
+        }
         return super.mouseDragged(click, deltaX, deltaY);
     }
 

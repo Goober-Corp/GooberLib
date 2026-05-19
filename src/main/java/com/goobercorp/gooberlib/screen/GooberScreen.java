@@ -31,6 +31,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.ease;
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
@@ -137,12 +138,6 @@ public class GooberScreen extends Screen {
 //        int scaleFac = MinecraftClient.getInstance().getWindow().getScaleFactor();
         updateTweeners();
 
-        newMatrixScope(drawContext, matrix3x2fStack -> {
-            matrix3x2fStack.translate(0, -26 * (1 - categoryHoverProgress));
-            tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
-        });
-//        drawContext.enableScissor(0, (int) (categoryHoverProgress * 26), width, height);
-        badbadbad = new ScreenRect(0, 0, (int) (categoryHoverProgress * 26), height);
 
         setWidgetOffsets();
         evilLayout.values().forEach(entry -> entry.render(drawContext, mouseX, mouseY, tickDelta));
@@ -173,6 +168,11 @@ public class GooberScreen extends Screen {
 
         descriptionAnimationProgress = (float) ease(descriptionAnimationProgress, animateHoverDescription ? 1 : 0, 15);
         drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, drawContext.getScaledWindowWidth() / 2, (int) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))), ColorHelper.getWhite(descriptionAnimationProgress));
+
+        newMatrixScope(drawContext, matrix3x2fStack -> {
+            matrix3x2fStack.translate(0, -26 * (1 - categoryHoverProgress));
+            tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
+        });
     }
 
     @Override
@@ -204,30 +204,36 @@ public class GooberScreen extends Screen {
         super.renderBackground(drawContext, mouseX, mouseY, tickDelta);
     }
 
-    private void drawLines(DrawContext drawContext) {
+    private void forEachOption(Consumer<OptionHolderV3> consumer) {
+        //run a function for every option, including standalone options
         for (ConfigCategory c : config.categories()) {
             for (OptionHolderV3 o : c.elements()) {
-                if (!(o instanceof ConfigSection)) {
-                    if (!o.childOptions().isEmpty()) {
-                        drawLinesForOption(drawContext, o);
+                if (o instanceof ConfigSection) {
+                    for (OptionHolderV3 opt : o.childOptions()) {
+                        consumer.accept(opt);
                     }
                 } else {
-                    for (OptionHolderV3 opt : o.childOptions()) {
-                        drawLinesForOption(drawContext, opt);
+                    if (!o.childOptions().isEmpty()) {
+                        consumer.accept(o);
                     }
                 }
             }
         }
     }
 
+    private void drawLines(DrawContext drawContext) {
+        forEachOption(optionHolderV3 -> drawLinesForOption(drawContext, optionHolderV3));
+    }
+
     private void drawLinesForOption(DrawContext drawContext, OptionHolderV3 o) {
         if (o.childOptions().isEmpty()) return;
         PrecisePositionWidgetWrapper<?> mainWidget = evilLayout.get(o);
         PrecisePositionWidgetWrapper<?> lastChildWidget = evilLayout.get(o.childOptions().getLast());
-        //TODO: add shadow line
+        RenderUtils.drawVerticalLine(drawContext, (float) mainWidget.getX() + 6, (float) mainWidget.getY() + mainWidget.getWrapped().getHeight(), (float) lastChildWidget.getY() + (lastChildWidget.getWrapped().getHeight() / 2F) + 1, 0x80000000);
         RenderUtils.drawVerticalLine(drawContext, (float) mainWidget.getX() + 5, (float) mainWidget.getY() + mainWidget.getWrapped().getHeight() - 1, (float) lastChildWidget.getY() + (lastChildWidget.getWrapped().getHeight() / 2F), -1);
         for (OptionHolderV3 opt : o.childOptions()) {
             PrecisePositionWidgetWrapper<?> optionWidget = evilLayout.get(opt);
+            RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getX() + 6, (float) evilLayout.get(opt).getX(), (float) optionWidget.getY() + optionWidget.getWrapped().getHeight() / 2F + 1, 0x80000000);
             RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getX() + 5, (float) evilLayout.get(opt).getX() - 1, (float) optionWidget.getY() + optionWidget.getWrapped().getHeight() / 2F, -1);
             drawLinesForOption(drawContext, opt);
         }
@@ -243,7 +249,7 @@ public class GooberScreen extends Screen {
         tabNavigationWidget.tick();
         tabHoldTicks = Math.clamp(tabHoldTicks - 1, 0, 100);
         lastScrollTicks++;
-        if (lastScrollTicks > 4) {
+        if (lastScrollTicks > 2) {
             scrollTweener.setInteractionState(false);
         }
     }
@@ -268,7 +274,9 @@ public class GooberScreen extends Screen {
 
     @Override
     public boolean mouseDragged(Click click, double d, double e) {
-        scrollProgress += e;
+        if (click.button() == 0 && !tabNavigationWidget.isMouseOver(d, e)) {
+            scrollProgress += e;
+        }
         return super.mouseDragged(click, d, e);
     }
 

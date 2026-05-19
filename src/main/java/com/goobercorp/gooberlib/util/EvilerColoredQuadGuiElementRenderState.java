@@ -24,24 +24,26 @@ public record EvilerColoredQuadGuiElementRenderState(
         int col3,
         int col4,
         @Nullable ScreenRect comp_4069,
-        @Nullable ScreenRect comp_4274
+        @Nullable ScreenRect comp_4274,
+        boolean flip
 ) implements SimpleGuiElementRenderState {
     public EvilerColoredQuadGuiElementRenderState(
-            RenderPipeline renderPipeline, TextureSetup textureSetup, Matrix3x2fc matrix3x2fc, float i, float j, float k, float l, int m, int n, int o, int p, @Nullable ScreenRect screenRect
+            RenderPipeline renderPipeline, TextureSetup textureSetup, Matrix3x2fc matrix3x2fc, float i, float j, float k, float l, int m, int n, int o, int p, @Nullable ScreenRect screenRect, boolean flip
     ) {
-        this(renderPipeline, textureSetup, matrix3x2fc, i, j, k, l, m, n, o, p, screenRect, createBounds((int) i, (int) j, (int) k, (int) l, matrix3x2fc, screenRect));
+        this(renderPipeline, textureSetup, matrix3x2fc, i, j, k, l, m, n, o, p, screenRect, createBounds((int) i, (int) j, (int) k, (int) l, matrix3x2fc, screenRect), flip);
     }
 
     @Override
     public void setupVertices(VertexConsumer vertexConsumer) {
+        float val = (y() + y2()) / 2F;
         //top left
-        vertexConsumer.vertex(this.matrix(), this.x(), (y() + y2()) / 2F).color(col1);
+        vertexConsumer.vertex(this.matrix(), this.x(), flip ? y() : val).color(col1);
         //bottom left
-        vertexConsumer.vertex(this.matrix(), this.x(), (y() + y2()) / 2F).color(this.col2());
+        vertexConsumer.vertex(this.matrix(), this.x(), flip ? y2() : val).color(this.col2());
         //bottom right
-        vertexConsumer.vertex(this.matrix(), this.x2(), this.y2()).color(col3);
+        vertexConsumer.vertex(this.matrix(), this.x2(), flip ? val : y2()).color(col3);
         //top right
-        vertexConsumer.vertex(this.matrix(), this.x2(), this.y()).color(this.col4());
+        vertexConsumer.vertex(this.matrix(), this.x2(), flip ? val : y()).color(this.col4());
     }
 
     @Override

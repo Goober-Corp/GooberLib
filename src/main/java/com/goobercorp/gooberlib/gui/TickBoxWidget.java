@@ -10,6 +10,7 @@ import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.Vec2f;
 
 public class TickBoxWidget extends ClickableWidget {
     BooleanOption opt;
@@ -27,12 +28,20 @@ public class TickBoxWidget extends ClickableWidget {
 
     @Override
     protected void renderWidget(DrawContext drawContext, int i, int j, float f) {
+        //TODO: left shadow left red. need to figure out a theme
         t.update();
         RenderUtils.fillEvil(drawContext, getX(), getY(), getRight(), getBottom(), 0x80000000);
-        float width = (getBottom() - 2) - getY() + 2;
-        RenderUtils.drawBoxOutline(drawContext, getRight() - width + 1, getY() + 1, getRight() - 2, getBottom() - 2, -1);
-        if (opt.value) {
-            RenderUtils.fillEvil(drawContext, getRight() - width + 3, getY() + 3, getRight() - 3, getBottom() - 3, -1);
+        float widthAndHeight = (getHeight() - getY());
+        float midpoint = widthAndHeight / 2;
+        Vec2f center = new Vec2f(getRight() - midpoint, midpoint);
+        midpoint *= 0.75F;
+        RenderUtils.drawBoxOutline(drawContext, center.x - midpoint + 1, center.y - midpoint + 1, center.x + midpoint, center.y + midpoint, 0x80FF0000);
+        RenderUtils.drawBoxOutline(drawContext, center.x - midpoint, center.y - midpoint, center.x + midpoint - 1, center.y + midpoint - 1, -1);
+        if (t.get() > 0.1F) {
+            midpoint *= 0.75F;
+            midpoint *= (float) (t.get() * 0.9F);
+            RenderUtils.fillEvil(drawContext, center.x - midpoint + 1, center.y - midpoint + 1, center.x + midpoint + 1, center.y + midpoint + 1, 0x80FF0000);
+            RenderUtils.fillEvil(drawContext, center.x - midpoint, center.y - midpoint, center.x + midpoint, center.y + midpoint, -1);
         }
         drawContext.drawText(MinecraftClient.getInstance().textRenderer, this.message, getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, -1, true);
     }

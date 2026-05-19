@@ -52,14 +52,15 @@ public class RenderUtils {
         fillEvil(context, x1, y, x2 + 1, y + 1, col, col2);
     }
 
-    public static void drawThinningHorizontalLine(DrawContext context, float x1, float x2, float y, int col, int col2) {
+    //TODO: this sucks
+    public static void drawThinningHorizontalLine(DrawContext context, float x1, float x2, float y, int col, int col2, float thickness, boolean flip) {
         if (x2 < x1) {
             float m = x1;
             x1 = x2;
             x2 = m;
         }
 
-        fillEviler(context, x1, y - 10F, x2 + 1, y + 10F, col, col2);
+        fillEviler(context, x1, y - thickness, x2 + 1, y + thickness, col, col2, flip);
     }
 
     public static void drawHorizontalLine(DrawContext context, float x1, float x2, float y, int col, int col2, int col3, int col4) {
@@ -100,11 +101,11 @@ public class RenderUtils {
                 );
     }
 
-    public static void fillEviler(DrawContext context, float x, float y, float x2, float y2, int col, int col2) {
+    public static void fillEviler(DrawContext context, float x, float y, float x2, float y2, int col, int col2, boolean flip) {
         context.state
                 .addSimpleElement(
                         new EvilerColoredQuadGuiElementRenderState(
-                                RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), x, y, x2, y2, col, col, col2, col2, context.scissorStack.peekLast()
+                                RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), x, y, x2, y2, col, col, col2, col2, context.scissorStack.peekLast(), flip
                         )
                 );
     }

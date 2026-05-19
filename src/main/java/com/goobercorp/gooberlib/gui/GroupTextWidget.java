@@ -67,15 +67,16 @@ public class GroupTextWidget extends AbstractTextWidget {
 
     @Override
     public void renderWidget(DrawContext drawContext, int i, int j, float f) {
+        //TODO: this widget somehow needs to know if it's onscreen the first frame the screen is opened, and retain that state between window resizes
         super.renderWidget(drawContext, i, j, f);
         renderProgress = (float) RenderUtils.ease(renderProgress, 1, 7.5F);
         //this requires the widget to be centered. fuck
         float yeah = this.getX() - drawContext.getScaledWindowWidth() / 2F + getTextRenderer().getWidth(message) / 2F;
-        RenderUtils.drawThinningHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 3, 0, -1);
-//        RenderUtils.drawHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah + 1, this.getX() - 1), this.getX() - 1, this.getY() + 4, 0, 0xFF3e3e3e);
+        RenderUtils.drawThinningHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 4.5F, 0, 0x80000000, 2.25F, false);
+        RenderUtils.drawThinningHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 3.5F, 0, -1, 2.25F, false);
         int otherYeah = this.getX() + getTextRenderer().getWidth(message);
-        RenderUtils.drawHorizontalLine(drawContext, otherYeah, MathHelper.lerp(1 - renderProgress, this.getX() + getTextRenderer().getWidth(message) / 2 + drawContext.getScaledWindowWidth() / 2F - 1, otherYeah), this.getY() + 3, -1, 0);
-        RenderUtils.drawHorizontalLine(drawContext, otherYeah + 1, MathHelper.lerp(1 - renderProgress, this.getX() + getTextRenderer().getWidth(message) / 2 + drawContext.getScaledWindowWidth() / 2F - 1, otherYeah), this.getY() + 4, 0xFF3e3e3e, 0);
+        RenderUtils.drawThinningHorizontalLine(drawContext, otherYeah + 1, MathHelper.lerp(1 - renderProgress, this.getX() + getTextRenderer().getWidth(message) / 2 + drawContext.getScaledWindowWidth() / 2F - 1, otherYeah), this.getY() + 4.5F, 0xFF3e3e3e, 0, 2.25F, true);
+        RenderUtils.drawThinningHorizontalLine(drawContext, otherYeah, MathHelper.lerp(1 - renderProgress, this.getX() + getTextRenderer().getWidth(message) / 2 + drawContext.getScaledWindowWidth() / 2F - 1, otherYeah), this.getY() + 3.5F, -1, 0, 2.25F, true);
     }
 
     @Override
