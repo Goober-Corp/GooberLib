@@ -8,9 +8,10 @@ import com.goobercorp.gooberlib.builder.v3.individual.java.EnumOption;
 import com.goobercorp.gooberlib.builder.v3.individual.java.StringOption;
 import com.goobercorp.gooberlib.builder.v3.individual.minecraft.BlockPosOption;
 import com.goobercorp.gooberlib.builder.v3.individual.minecraft.IdentifierOption;
+import com.goobercorp.gooberlib.builder.v3.individual.minecraft.Vec2fOption;
+import com.goobercorp.gooberlib.builder.v3.individual.minecraft.Vec3dOption;
 import com.goobercorp.gooberlib.builder.v3.individual.primitive.*;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 
 
 // todo?: tests fpr all options
@@ -63,6 +64,8 @@ public class TheOne {
 
 	public static final IdentifierOption identifierOption = new IdentifierOption("identifier option", "identifier description", Identifier.of("minecraft:stone"));
 	public static final BlockPosOption blockPosOption = new BlockPosOption("blockpos option", "blockpos description");
+	public static final Vec2fOption vec2fOption = new Vec2fOption("vec2f option", "vec2f description");
+	public static final Vec3dOption vec3dOption = new Vec3dOption("vec3d option", "vec3d description");
 
 	public static final HotkeyOption hotkeyOption = new HotkeyOption("hotkey option", "hotkey description", "g, c", 2, () -> System.out.println("meow meow"));
 
@@ -80,7 +83,7 @@ public class TheOne {
 				.options(stringOption, colorOption, enumOption, cycleOption)
 				.build()
 			.section("minecraft", "")
-				.options(identifierOption)
+				.options(identifierOption, blockPosOption, vec2fOption, vec3dOption)
 				.build()
 			.section("goober", "")
 				.options(hotkeyOption, hotkeyOption, hotkeyOption, hotkeyOption)
