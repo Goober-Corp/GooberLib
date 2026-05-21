@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.builder;
 
+import com.goobercorp.gooberlib.builder.category.ConfigCategory;
 import com.goobercorp.gooberlib.screen.GooberScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;

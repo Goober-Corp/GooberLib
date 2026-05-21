@@ -3,7 +3,7 @@ package com.goobercorp.gooberlib.util;
 import com.goobercorp.gooberlib.GooberLibEntrypoint;
 import com.goobercorp.gooberlib.annotations.GooberConfig;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
-import com.goobercorp.gooberlib.builder.v2.GooberConfigBuilder;
+import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.google.common.reflect.ClassPath;
 import org.spongepowered.asm.mixin.transformer.ClassInfo;
 

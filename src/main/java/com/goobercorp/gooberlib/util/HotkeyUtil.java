@@ -1,6 +1,6 @@
 package com.goobercorp.gooberlib.util;
 
-import com.goobercorp.gooberlib.builder.v3.individual.HotkeyOption;
+import com.goobercorp.gooberlib.option.individual.hotkey.HotkeyOption;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.client.input.KeyInput;

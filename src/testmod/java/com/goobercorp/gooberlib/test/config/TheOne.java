@@ -1,10 +1,10 @@
 package com.goobercorp.gooberlib.test.config;
 
-import com.goobercorp.gooberlib.builder.ConfigCategory;
-import com.goobercorp.gooberlib.builder.v3.individual.HotkeyOption;
-import com.goobercorp.gooberlib.builder.v3.individual.java.*;
-import com.goobercorp.gooberlib.builder.v3.individual.minecraft.*;
-import com.goobercorp.gooberlib.builder.v3.individual.primitive.*;
+import com.goobercorp.gooberlib.builder.category.ConfigCategory;
+import com.goobercorp.gooberlib.option.individual.hotkey.HotkeyOption;
+import com.goobercorp.gooberlib.option.individual.java.*;
+import com.goobercorp.gooberlib.option.individual.minecraft.*;
+import com.goobercorp.gooberlib.option.individual.primitive.*;
 import net.minecraft.util.Identifier;
 
 

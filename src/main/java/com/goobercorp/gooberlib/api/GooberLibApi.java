@@ -2,15 +2,15 @@ package com.goobercorp.gooberlib.api;
 
 import com.goobercorp.gooberlib.GooberLibEntrypoint;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
-import com.goobercorp.gooberlib.builder.ConfigCategory;
-import com.goobercorp.gooberlib.builder.ConfigSection;
-import com.goobercorp.gooberlib.builder.MetadataHolder;
-import com.goobercorp.gooberlib.builder.v3.Option;
-import com.goobercorp.gooberlib.builder.v3.OptionContext;
-import com.goobercorp.gooberlib.builder.v3.OptionHolderV3;
-import com.goobercorp.gooberlib.builder.v3.individual.java.ColorOption;
-import com.goobercorp.gooberlib.builder.v3.individual.primitive.BooleanOption;
-import com.goobercorp.gooberlib.builder.v3.individual.primitive.IntOption;
+import com.goobercorp.gooberlib.builder.misc.Metadata;
+import com.goobercorp.gooberlib.builder.category.ConfigCategory;
+import com.goobercorp.gooberlib.builder.section.ConfigSection;
+import com.goobercorp.gooberlib.option.Option;
+import com.goobercorp.gooberlib.option.OptionContext;
+import com.goobercorp.gooberlib.builder.misc.OptionHolder;
+import com.goobercorp.gooberlib.option.individual.java.ColorOption;
+import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
+import com.goobercorp.gooberlib.option.individual.primitive.IntOption;
 import com.goobercorp.gooberlib.gui.ColorPickerWidget;
 import com.goobercorp.gooberlib.gui.EvilSliderWidget;
 import com.goobercorp.gooberlib.gui.TickBoxWidget;
@@ -68,13 +68,13 @@ public class GooberLibApi {
 			if (!theObject.has(objectName)) continue;
 			JsonObject object = theObject.get(objectName).getAsJsonObject();
 			for (var entry : object.asMap().entrySet()) {
-				for (OptionHolderV3 o : category.elements()) {
+				for (OptionHolder o : category.elements()) {
 					if (o instanceof OptionContext<?> optionContext) {
 						if (optionContext.option().name().getString().equals(entry.getKey())) {
 							deserializeOption(optionContext, entry.getValue().getAsJsonObject());
 						}
 					} else if (o instanceof ConfigSection(
-							MetadataHolder.Metadata metadata, List<OptionContext<?>> childOptions
+							Metadata metadata, List<OptionContext<?>> childOptions
 					)) {
 						if (metadata.name().getString().equals(entry.getKey())) {
 							JsonObject sectionObject = object.get(metadata.name().getString()).getAsJsonObject();
@@ -100,11 +100,11 @@ public class GooberLibApi {
 		JsonObject theObject = new JsonObject();
 		for (ConfigCategory category : config.categories()) {
 			JsonObject object = new JsonObject();
-			for (OptionHolderV3 o : category.elements()) {
+			for (OptionHolder o : category.elements()) {
 				if (o instanceof OptionContext<?> option) {
 					serializeOption(option, object);
 				} else if (o instanceof ConfigSection(
-						MetadataHolder.Metadata metadata,
+						Metadata metadata,
 						List<OptionContext<?>> options
 				)) {
 					JsonObject sectionObject = new JsonObject();

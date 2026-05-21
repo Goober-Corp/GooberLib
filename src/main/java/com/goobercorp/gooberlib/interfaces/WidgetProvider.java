@@ -1,6 +1,6 @@
 package com.goobercorp.gooberlib.interfaces;
 
-import com.goobercorp.gooberlib.builder.v3.Option;
+import com.goobercorp.gooberlib.option.Option;
 import net.minecraft.client.gui.widget.ClickableWidget;
 
 public interface WidgetProvider {

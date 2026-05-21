@@ -1,8 +1,8 @@
 package com.goobercorp.gooberlib.test.config;
 
 import com.goobercorp.gooberlib.annotations.GooberConfig;
-import com.goobercorp.gooberlib.builder.v2.GooberConfigBuilder;
-import com.goobercorp.gooberlib.builder.v3.individual.primitive.IntOption;
+import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
+import com.goobercorp.gooberlib.option.individual.primitive.IntOption;
 
 @SuppressWarnings("unused")
 @GooberConfig(modId = "testmod")

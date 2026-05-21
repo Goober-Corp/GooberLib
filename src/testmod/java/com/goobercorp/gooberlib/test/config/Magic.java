@@ -1,8 +1,8 @@
 package com.goobercorp.gooberlib.test.config;
 
 import com.goobercorp.gooberlib.annotations.Section;
-import com.goobercorp.gooberlib.builder.ConfigCategory;
-import com.goobercorp.gooberlib.builder.v3.individual.java.StringOption;
+import com.goobercorp.gooberlib.builder.category.ConfigCategory;
+import com.goobercorp.gooberlib.option.individual.java.StringOption;
 import net.minecraft.world.chunk.Chunk;
 
 public class Magic {
