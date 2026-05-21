@@ -10,7 +10,7 @@ public class IdentifierOption extends BaseOption<IdentifierOption> {
 	private final Identifier defaultValue;
 	private Identifier value;
 
-	protected IdentifierOption(Text name, Text description, Identifier defaultValue, WidgetProvider provider) {
+	public IdentifierOption(Text name, Text description, Identifier defaultValue, WidgetProvider provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -26,12 +26,12 @@ public class IdentifierOption extends BaseOption<IdentifierOption> {
 
 	@Override
 	public <S> S serialize(DynamicOps<S> ops) {
-		return ops.createString(value.getNamespace() + ":" + value.getPath());
+		return Identifier.CODEC.encodeStart(ops, this.value).getOrThrow();
 	}
 
 	@Override
 	public <S> void deserialize(DynamicOps<S> ops, S object) {
-		this.value = Identifier.of(ops.getStringValue(object).getOrThrow());
+		this.value = Identifier.CODEC.parse(ops, object).getOrThrow();
 	}
 
 	public Identifier getValue() {
