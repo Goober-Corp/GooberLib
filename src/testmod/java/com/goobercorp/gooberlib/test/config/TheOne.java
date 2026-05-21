@@ -2,14 +2,8 @@ package com.goobercorp.gooberlib.test.config;
 
 import com.goobercorp.gooberlib.builder.ConfigCategory;
 import com.goobercorp.gooberlib.builder.v3.individual.HotkeyOption;
-import com.goobercorp.gooberlib.builder.v3.individual.java.ColorOption;
-import com.goobercorp.gooberlib.builder.v3.individual.java.CycleOption;
-import com.goobercorp.gooberlib.builder.v3.individual.java.EnumOption;
-import com.goobercorp.gooberlib.builder.v3.individual.java.StringOption;
-import com.goobercorp.gooberlib.builder.v3.individual.minecraft.BlockPosOption;
-import com.goobercorp.gooberlib.builder.v3.individual.minecraft.IdentifierOption;
-import com.goobercorp.gooberlib.builder.v3.individual.minecraft.Vec2fOption;
-import com.goobercorp.gooberlib.builder.v3.individual.minecraft.Vec3dOption;
+import com.goobercorp.gooberlib.builder.v3.individual.java.*;
+import com.goobercorp.gooberlib.builder.v3.individual.minecraft.*;
 import com.goobercorp.gooberlib.builder.v3.individual.primitive.*;
 import net.minecraft.util.Identifier;
 
@@ -36,9 +30,9 @@ public class TheOne {
 
 //	public static char charOption;
 //	public static BlockPos BlockPosOption;
-	public static Vec2f Vec2fOption;
-	public static Vec3d Vec3dOption;
-	public static Vec3i Vec3iOption;
+//	public static Vec2f Vec2fOption;
+//	public static Vec3d Vec3dOption;
+//	public static Vec3i Vec3iOption;
 
 
 	public static Item ItemOption;
@@ -66,6 +60,7 @@ public class TheOne {
 	public static final BlockPosOption blockPosOption = new BlockPosOption("blockpos option", "blockpos description");
 	public static final Vec2fOption vec2fOption = new Vec2fOption("vec2f option", "vec2f description");
 	public static final Vec3dOption vec3dOption = new Vec3dOption("vec3d option", "vec3d description");
+	public static final Vec3iOption vec3iOption = new Vec3iOption("vec3i option", "vec3i description");
 
 	public static final HotkeyOption hotkeyOption = new HotkeyOption("hotkey option", "hotkey description", "g, c", 2, () -> System.out.println("meow meow"));
 
@@ -83,7 +78,7 @@ public class TheOne {
 				.options(stringOption, colorOption, enumOption, cycleOption)
 				.build()
 			.section("minecraft", "")
-				.options(identifierOption, blockPosOption, vec2fOption, vec3dOption)
+				.options(identifierOption, blockPosOption, vec2fOption, vec3dOption, vec3iOption)
 				.build()
 			.section("goober", "")
 				.options(hotkeyOption, hotkeyOption, hotkeyOption, hotkeyOption)
