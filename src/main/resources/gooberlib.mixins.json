@@ -12,7 +12,8 @@
     "gui.ScreenAccessor",
     "gui.TooltipAccessor",
     "hotkey.KeyboardMixin",
-    "hotkey.MouseMixin"
+    "hotkey.MouseMixin",
+    "init.MainMixin"
   ],
   "injectors": {
     "defaultRequire": 1
