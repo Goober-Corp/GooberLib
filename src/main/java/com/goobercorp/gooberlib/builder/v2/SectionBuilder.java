@@ -16,13 +16,15 @@ public class SectionBuilder {
 
 	private final List<OptionContext<?>> options = new ArrayList<>();
 
-	private Text name;
-	private Text description;
+	private final Text name;
+	private final Text description;
 
 
-	public SectionBuilder(CategoryBuilder parent, SectionAppender appender) {
+	public SectionBuilder(CategoryBuilder parent, SectionAppender appender, Text name, Text description) {
 		this.parent = parent;
 		this.appender = appender;
+		this.name = name;
+		this.description = description;
 	}
 
 	public OptionContext<SectionBuilder> option(Option<?> option) {
@@ -44,36 +46,13 @@ public class SectionBuilder {
 		return parent;
 	}
 
-
-	public SectionBuilder name(Text name) {
-		this.name = name;
-		return this;
-	}
-
-	public SectionBuilder name(String name) {
-		return name(Text.literal(name));
-	}
-
-	public SectionBuilder nameTranslation(String key) {
-		return name(Text.translatable(key));
-	}
-
-	public SectionBuilder description(Text description) {
-		this.description = description;
-		return this;
-	}
-
-	public SectionBuilder description(String description) {
-		return description(Text.literal(description));
-	}
-
-	public SectionBuilder descriptionTranslation(String key) {
-		return description(Text.translatable(key));
-	}
-
 	public SectionBuilder optionMaker(Option<?> option, Consumer<OptionContext<SectionBuilder>> o) {
 		var optionContext = this.option(option);
 		o.accept(optionContext);
 		return optionContext.build();
+	}
+
+	public SectionBuilder optionWithChildren(Option<?> option, Option<?>... children) {
+		return this.option(option).children(children).build();
 	}
 }

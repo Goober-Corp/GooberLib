@@ -13,16 +13,18 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class CategoryBuilder {
-	private Text name;
-	private Text description;
+	private final Text name;
+	private final Text description;
 
 	private final List<OptionHolderV3> elements = new ArrayList<>();
 
 	@Nullable
 	private final GooberConfigBuilder parent;
 
-	public CategoryBuilder(@Nullable GooberConfigBuilder parent) {
+	public CategoryBuilder(@Nullable GooberConfigBuilder parent, Text name, Text description) {
 		this.parent = parent;
+		this.name = name;
+		this.description = description;
 	}
 
 	public OptionContext<CategoryBuilder> option(Option<?> option) {
@@ -31,48 +33,30 @@ public class CategoryBuilder {
 		return optionContext;
 	}
 
+	public CategoryBuilder optionWithChildren(Option<?> option, Option<?>... childOptions) {
+		this.option(option).children(childOptions);
+		return this;
+	}
+
 	public CategoryBuilder options(Option<?>... options) {
 		for (Option<?> option : options) option(option);
 		return this;
+	}
+
+	public SectionBuilder section(Text name, Text description) {
+		return new SectionBuilder(this, elements::add, name, description);
 	}
 
 	public SectionBuilder section(String name, String description) {
 		return section(Text.literal(name), Text.literal(description));
 	}
 
-	public SectionBuilder section(Text name, Text description) {
-		return new SectionBuilder(this, elements::add)
-				.name(name).description(description);
-	}
-
 	public SectionBuilder section(Text name) {
 		return section(name, Text.empty());
 	}
 
-	public CategoryBuilder name(Text name) {
-		this.name = name;
-		return this;
-	}
-
-	public CategoryBuilder name(String name) {
-		return name(Text.literal(name));
-	}
-
-	public CategoryBuilder nameTranslation(String key) {
-		return name(Text.translatable(key));
-	}
-
-	public CategoryBuilder description(Text description) {
-		this.description = description;
-		return this;
-	}
-
-	public CategoryBuilder description(String description) {
-		return description(Text.literal(description));
-	}
-
-	public CategoryBuilder descriptionTranslation(String key) {
-		return description(Text.translatable(key));
+	public SectionBuilder section(String name) {
+		return section(Text.of(name), Text.empty());
 	}
 
 	public GooberConfigBuilder build() {
@@ -86,7 +70,7 @@ public class CategoryBuilder {
 		return new ConfigCategory(new MetadataHolder.Metadata(name, description), elements);
 	}
 
-	GooberConfigBuilder getParent() {
+	public GooberConfigBuilder getParent() {
 		if (parent == null)
 			throw new IllegalStateException("If you're trying to make a ConfigCategory, use buildCategory() instead!");
 		return parent;

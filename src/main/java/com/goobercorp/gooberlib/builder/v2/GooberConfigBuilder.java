@@ -11,20 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GooberConfigBuilder {
-	private Text title;
+	private final Text title;
 	private final List<ConfigCategory> categories = new ArrayList<>();
 	private TriFunction<BuiltConfig, Screen, String, GooberScreen> screenSupplier = GooberScreen::new;
 
-	public GooberConfigBuilder() {
-	}
-
-	public GooberConfigBuilder title(Text title) {
+	public GooberConfigBuilder(Text title) {
 		this.title = title;
-		return this;
-	}
-
-	public GooberConfigBuilder title(String title) {
-		return title(Text.literal(title));
 	}
 
 	void addCategory(ConfigCategory category) {
@@ -36,9 +28,7 @@ public class GooberConfigBuilder {
 	}
 
 	public CategoryBuilder category(Text name, Text description) {
-		return new CategoryBuilder(this)
-				.name(name)
-				.description(description);
+		return new CategoryBuilder(this, name, description);
 	}
 
 	// todo: test this, though should just work
@@ -51,6 +41,10 @@ public class GooberConfigBuilder {
 		return category(name, Text.empty());
 	}
 
+	public CategoryBuilder category(String name) {
+		return category(Text.of(name));
+	}
+
 	public GooberConfigBuilder addBuiltCategory(ConfigCategory category) {
 		addCategory(category);
 		return this;
@@ -60,12 +54,16 @@ public class GooberConfigBuilder {
 		return new BuiltConfig(title, categories, screenSupplier);
 	}
 
-	public static GooberConfigBuilder create() {
-		return new GooberConfigBuilder();
+	public static GooberConfigBuilder create(String title) {
+		return new GooberConfigBuilder(Text.of(title));
+	}
+
+	public static GooberConfigBuilder create(Text title) {
+		return new GooberConfigBuilder(title);
 	}
 
 	public static GooberConfigBuilder ofCategories(Text title, ConfigCategory... categories) {
-		GooberConfigBuilder gooberConfigBuilder = create().title(title);
+		GooberConfigBuilder gooberConfigBuilder = create(title);
 		for (ConfigCategory category : categories) {
 			gooberConfigBuilder.addBuiltCategory(category);
 		}
@@ -81,10 +79,10 @@ public class GooberConfigBuilder {
 	}
 
 	public GooberConfigBuilder makeBuiltCategory(Class<?> clazz, String name, String description) {
-		return this.makeBuiltCategory(clazz, Text.literal(name), Text.literal(description));
+		return this.makeBuiltCategory(clazz, Text.of(name), Text.of(description));
 	}
 
 	public GooberConfigBuilder makeBuiltCategory(Class<?> clazz, String name) {
-		return this.makeBuiltCategory(clazz, name, "");
+		return this.makeBuiltCategory(clazz, Text.of(name), Text.empty());
 	}
 }

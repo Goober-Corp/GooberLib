@@ -38,6 +38,7 @@ public class TheOne {
 	public static Item ItemOption;
 	public static Block BlockOption;
 	and lists...
+	and objects...
 	public static Text TextOption;
 //	public static Color ColorOption;
 	 */

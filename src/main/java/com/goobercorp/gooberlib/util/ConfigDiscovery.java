@@ -68,7 +68,7 @@ public class ConfigDiscovery {
 								// switch to magic
 								List<Class<?>> classesToMagic = new ArrayList<>(List.of(gooberConfig.additionalClasses()));
 								classesToMagic.add(configClass);
-								gooberConfigBuilder = GooberConfigBuilder.create().title(modId);
+								gooberConfigBuilder = GooberConfigBuilder.create(modId);
 								for (Class<?> clazz : classesToMagic) {
 									gooberConfigBuilder.makeBuiltCategory(clazz, clazz.getSimpleName());
 								}

@@ -7,6 +7,7 @@ import com.goobercorp.gooberlib.builder.ConfigSection;
 import com.goobercorp.gooberlib.builder.MetadataHolder;
 import com.goobercorp.gooberlib.builder.v3.Option;
 import com.goobercorp.gooberlib.builder.v3.OptionContext;
+import com.goobercorp.gooberlib.builder.v3.OptionHolderV3;
 import com.goobercorp.gooberlib.builder.v3.individual.java.ColorOption;
 import com.goobercorp.gooberlib.builder.v3.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.builder.v3.individual.primitive.IntOption;
@@ -67,7 +68,7 @@ public class GooberLibApi {
 			if (!theObject.has(objectName)) continue;
 			JsonObject object = theObject.get(objectName).getAsJsonObject();
 			for (var entry : object.asMap().entrySet()) {
-				for (Object o : category.elements()) {
+				for (OptionHolderV3 o : category.elements()) {
 					if (o instanceof OptionContext<?> optionContext) {
 						if (optionContext.option().name().getString().equals(entry.getKey())) {
 							deserializeOption(optionContext, entry.getValue().getAsJsonObject());
@@ -99,7 +100,7 @@ public class GooberLibApi {
 		JsonObject theObject = new JsonObject();
 		for (ConfigCategory category : config.categories()) {
 			JsonObject object = new JsonObject();
-			for (Object o : category.elements()) {
+			for (OptionHolderV3 o : category.elements()) {
 				if (o instanceof OptionContext<?> option) {
 					serializeOption(option, object);
 				} else if (o instanceof ConfigSection(

@@ -8,17 +8,15 @@ import net.minecraft.text.Text;
 public interface Option<T extends Option<T>> {
 	<S> S serialize(DynamicOps<S> ops);
 
-	// TODO: better error handling for deserialization errors
 	<S> void deserialize(DynamicOps<S> ops, S object);
 
-	default void onChange() {
-	}
+	void onChange();
 
 	Text name();
 
 	Text description();
 
-	void setOnValueChange(ValueChangeCallback<T> t);
+	T setOnValueChange(ValueChangeCallback<T> t);
 
 	WidgetProvider getWidgetProvider();
 }
