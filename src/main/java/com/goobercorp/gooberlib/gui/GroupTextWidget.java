@@ -20,7 +20,7 @@ public class GroupTextWidget extends AbstractTextWidget {
     private int cachedWidth = 0;
     private boolean cachedWidthDirty = true;
     private GroupTextWidget.TextOverflow textOverflow = GroupTextWidget.TextOverflow.CLAMPED;
-    private float renderProgress = 0;
+    public float renderProgress = 0;
 
     public GroupTextWidget(Text text, TextRenderer textRenderer) {
         this(0, 0, textRenderer.getWidth(text.asOrderedText()), 9, text, textRenderer);
@@ -67,9 +67,8 @@ public class GroupTextWidget extends AbstractTextWidget {
 
     @Override
     public void renderWidget(DrawContext drawContext, int i, int j, float f) {
-        //TODO: this widget somehow needs to know if it's onscreen the first frame the screen is opened, and retain that state between window resizes
         super.renderWidget(drawContext, i, j, f);
-        renderProgress = (float) RenderUtils.ease(renderProgress, 1, 7.5F);
+        renderProgress = (float) RenderUtils.ease(renderProgress, 1, 5F);
         //this requires the widget to be centered. fuck
         float yeah = this.getX() - drawContext.getScaledWindowWidth() / 2F + getTextRenderer().getWidth(message) / 2F;
         RenderUtils.drawThinningHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 4.5F, 0, 0x80000000, 2.25F, false);

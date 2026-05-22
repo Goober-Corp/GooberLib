@@ -1,5 +1,7 @@
 package com.goobercorp.gooberlib.gui;
 
+import com.goobercorp.gooberlib.util.RenderUtils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.navigation.GuiNavigation;
 import net.minecraft.client.gui.navigation.GuiNavigationPath;
@@ -19,6 +21,29 @@ public class PrecisePositionWidgetWrapper<T extends ClickableWidget> implements 
     private Text hoverMessage;
     private double x;
     private double y;
+    private float renderProgress = 0;
+    private float targetInset;
+
+    public void setHoverMessage(Text hoverMessage) {
+        this.hoverMessage = hoverMessage;
+    }
+
+    public float getRenderProgress() {
+        return renderProgress;
+    }
+
+    public void setRenderProgress(float renderProgress) {
+        this.renderProgress = renderProgress;
+    }
+
+
+    public float getTargetInset() {
+        return targetInset;
+    }
+
+    public void setTargetInset(float targetInset) {
+        this.targetInset = targetInset;
+    }
 
     public double getOffsetX() {
         return offsetX;
@@ -80,26 +105,24 @@ public class PrecisePositionWidgetWrapper<T extends ClickableWidget> implements 
         this.setY(theFunc.apply(this.getY()));
     }
 
-    public PrecisePositionWidgetWrapper(T wrapped, double x, double y) {
-        this.wrapped = wrapped;
-        this.x = x;
-        this.y = y;
-    }
-
     public PrecisePositionWidgetWrapper(T wrapped, double x, double y, Text description) {
         this.wrapped = wrapped;
-        this.x = x;
+        this.x = x - wrapped.getWidth() + 1;
+        this.targetInset = (float) x;
         this.y = y;
         if (description != null) {
             this.hoverMessage = description;
         } else {
             this.hoverMessage = Text.empty();
         }
+        renderProgress = new ScreenRect((int) getRealX(), (int) getRealY(), wrapped.getRight(), wrapped.getBottom()).overlaps(new ScreenRect(0, 0, MinecraftClient.getInstance().getWindow().getScaledWidth(), MinecraftClient.getInstance().getWindow().getScaledHeight())) ? 1 : 0;
     }
 
     @Override
     public void render(DrawContext drawContext, int i, int j, float f) {
         boolean isOnScreen = new ScreenRect((int) getRealX(), (int) getRealY(), wrapped.getRight(), wrapped.getBottom()).overlaps(new ScreenRect(0, 0, drawContext.getScaledWindowWidth(), drawContext.getScaledWindowHeight()));
+        this.x = RenderUtils.ease(this.x, isOnScreen ? targetInset : x, 10);
+        renderProgress = (float) RenderUtils.ease(renderProgress, isOnScreen ? 1 : 0, 15);
         if (isOnScreen) {
             drawContext.getMatrices().pushMatrix().translate((float) getRealX(), (float) getRealY());
             wrapped.render(drawContext, (int) Math.round(i - getRealX()), (int) Math.round(j - getRealY()), f);

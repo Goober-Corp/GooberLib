@@ -27,7 +27,6 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -97,6 +96,9 @@ public class GooberScreen extends Screen {
                     );
                     PrecisePositionWidgetWrapper<GroupTextWidget> widgetWrapper = new PrecisePositionWidgetWrapper<>(t, x + ((double) MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (double) textRenderer.getWidth(metadata.name()) / 2, y, metadata.description());
                     evilLayout.put(o, widgetWrapper);
+                    if (new ScreenRect((int) widgetWrapper.getRealX(), (int) widgetWrapper.getRealY(), widgetWrapper.getWrapped().getRight(), widgetWrapper.getWrapped().getBottom()).overlaps(new ScreenRect(0, 0, width, height))) {
+                        t.renderProgress = 1;
+                    }
                     addDrawableChild(widgetWrapper);
                     y += VERTICAL_PADDING;
                     for (OptionContext<?> yeah : childOptionContexts) {
@@ -116,15 +118,16 @@ public class GooberScreen extends Screen {
     private void setWidgetOffsets() {
         for (PrecisePositionWidgetWrapper<?> entry : evilLayout.values()) {
 
-            if (scrollTweener.get() < scrollTweener.min) {
-                //TODO: this is kinda busted???
-                entry.setOffsetY(scrollTweener.get() + (scrollTweener.get() * Math.abs(((scrollTweener.get() - scrollTweener.min) / entry.getY()))));
-            } else if (scrollTweener.get() > scrollTweener.max) {
-                entry.setOffsetY(scrollTweener.get() - (scrollTweener.get() * Math.abs(((scrollTweener.get() - scrollTweener.max) / entry.getY()))));
-//                entry.setOffsetY(scrollTweener.get() * (scrollTweener.get() / entry.getY()));
-            } else {
-                entry.setOffsetY(scrollTweener.get());
-            }
+//            if (scrollTweener.get() < scrollTweener.min) {
+//                //TODO: this is kinda busted???
+////                entry.setOffsetY(scrollTweener.get() * ((scrollTweener.get() - scrollTweener.min) / (entry.getY() - scrollTweener.min)));
+//                entry.setOffsetY(scrollTweener.get() - (scrollTweener.get() * Math.abs(((scrollTweener.get() - scrollTweener.min) / (-entry.getY())))));
+//            } else if (scrollTweener.get() > scrollTweener.max) {
+//                entry.setOffsetY(scrollTweener.get() + (scrollTweener.get() * Math.abs(((scrollTweener.get() - scrollTweener.max) / entry.getY()))));
+////                entry.setOffsetY(scrollTweener.get() * (scrollTweener.get() / entry.getY()));
+//            } else {
+//            }
+            entry.setOffsetY(scrollTweener.get());
             entry.setOffsetX(-width * categoryTweener.get());
         }
     }
@@ -148,17 +151,10 @@ public class GooberScreen extends Screen {
 
     @Override
     public void render(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
-//        int scaleFac = MinecraftClient.getInstance().getWindow().getScaleFactor();
         updateTweeners();
-
-
         setWidgetOffsets();
         evilLayout.values().forEach(entry -> entry.render(drawContext, mouseX, mouseY, tickDelta));
-
-//        newMatrixScope(drawContext, matrix3x2fStack -> {
-//            matrix3x2fStack.translate((float) (-width * categoryTweener.get()), (float) scrollTweener.get());
         drawLines(drawContext);
-//        });
 
         super.render(drawContext, mouseX, mouseY, tickDelta);
 
@@ -175,7 +171,7 @@ public class GooberScreen extends Screen {
             tabHoldTicks = 10;
         }
         categoryHoverProgress = (float) ease(categoryHoverProgress, tabHoldTicks > 0 ? 1 : 0, 15);
-        int yeah = ArrayUtils.indexOf(tabs, tabManager.getCurrentTab());
+        int yeah = tabNavigationWidget.getCurrentTabIndex();
         screenCategoryAnimationState = (float) ease(screenCategoryAnimationState, yeah == -1 ? 0 : yeah, 15);
 
 
@@ -198,10 +194,7 @@ public class GooberScreen extends Screen {
             drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, Identifier.of("gooberlib", "textures/him.png"), 0, 0, 100, 100, 100, 100, 100, 100);
         });
 
-//        newMatrixScope(drawContext, matrix3x2fStack -> {
-//            matrix3x2fStack.translate((float) (-width * categoryTweener.get()), (float) scrollTweener.get());
         drawLines(drawContext);
-//        });
 
         setWidgetOffsets();
         evilLayout.values().forEach(entry -> entry.render(drawContext, mouseX, mouseY, tickDelta));
@@ -218,7 +211,7 @@ public class GooberScreen extends Screen {
     }
 
     private void forEachOption(Consumer<OptionHolder> consumer) {
-        //run a function for every option, including standalone options
+        //run a function for every top-level option, including standalone options
         for (ConfigCategory c : config.categories()) {
             for (OptionHolder o : c.elements()) {
                 if (o instanceof ConfigSection) {
@@ -291,8 +284,8 @@ public class GooberScreen extends Screen {
         if (click.button() == 0 && !tabNavigationWidget.isMouseOver(d, e)) {
             lastScrollTicks = 0;
             scrollTweener.setInteractionState(true);
-            if (scrollProgress < scrollTweener.min || scrollProgress > scrollTweener.max) {
-                scrollProgress += e * Math.min(1 / Math.abs(scrollProgress - Math.clamp(scrollProgress, scrollTweener.min, scrollTweener.max)), 1);
+            if (scrollTweener.get() < scrollTweener.min || scrollTweener.get() > scrollTweener.max) {
+                scrollProgress += e * Math.min(1 / Math.abs(scrollTweener.get() - Math.clamp(scrollTweener.get(), scrollTweener.min, scrollTweener.max)), 1);
             } else {
                 scrollProgress += e;
             }
