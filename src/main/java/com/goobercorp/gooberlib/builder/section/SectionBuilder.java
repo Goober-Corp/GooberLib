@@ -79,7 +79,7 @@ public class SectionBuilder {
 	 * <p>
 	 * For example:
 	 * <pre><code>
-	 * builder.optionMaker(myIntOption, option -> {
+	 * builder.option(myIntOption, option -> {
 	 *         for (int i = 0; i < 5; i++) {
 	 *             option.child(new IntOption("option " + i, "description");
 	 *         }
@@ -91,7 +91,7 @@ public class SectionBuilder {
 	 * @param optionContextConsumer the option builder
 	 * @return this
 	 */
-	public SectionBuilder optionMaker(Option<?> option, Consumer<OptionContext<SectionBuilder>> optionContextConsumer) {
+	public SectionBuilder option(Option<?> option, Consumer<OptionContext<SectionBuilder>> optionContextConsumer) {
 		var optionContext = this.option(option);
 		optionContextConsumer.accept(optionContext);
 		return optionContext.build();

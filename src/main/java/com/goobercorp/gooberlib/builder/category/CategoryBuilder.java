@@ -105,6 +105,54 @@ public class CategoryBuilder {
 		return section(Text.of(name), Text.empty());
 	}
 
+	/**
+	 * Builds and registers a new section with the provided options
+	 *
+	 * @param name        the name
+	 * @param description the description
+	 * @param options     the options
+	 * @return the {@link SectionBuilder}
+	 */
+	public CategoryBuilder sectionWithOptions(Text name, Text description, Option<?>... options) {
+		var section = section(name, description);
+		section.options(options);
+		return section.build();
+	}
+
+	/**
+	 * Builds and registers a new section with the provided options
+	 *
+	 * @param name        the name
+	 * @param description the description
+	 * @param options     the options
+	 * @return the {@link SectionBuilder}
+	 */
+	public CategoryBuilder sectionWithOptions(String name, String description, Option<?>... options) {
+		return sectionWithOptions(Text.of(name), Text.of(description), options);
+	}
+
+	/**
+	 * Builds and registers a new section with the provided options
+	 *
+	 * @param name    the name
+	 * @param options the options
+	 * @return the {@link SectionBuilder}
+	 */
+	public CategoryBuilder sectionWithOptions(String name, Option<?>... options) {
+		return sectionWithOptions(Text.of(name), Text.empty(), options);
+	}
+
+	/**
+	 * Builds and registers a new section with the provided options
+	 *
+	 * @param name    the name
+	 * @param options the options
+	 * @return the {@link SectionBuilder}
+	 */
+	public CategoryBuilder sectionWithOptions(Text name, Option<?>... options) {
+		return sectionWithOptions(Text.of(name), Text.empty(), options);
+	}
+
 	// todo: be able to register/make a built section
 
 	/**
@@ -157,9 +205,33 @@ public class CategoryBuilder {
 	 * @param categoryBuilderConsumer the category builder
 	 * @return this
 	 */
-	public CategoryBuilder sectionMaker(String name, String description, Consumer<SectionBuilder> categoryBuilderConsumer) {
-		SectionBuilder sectionBuilder = this.section(name, description);
-		categoryBuilderConsumer.accept(sectionBuilder);
-		return sectionBuilder.build();
+	public CategoryBuilder section(Text name, Text description, Consumer<SectionBuilder> categoryBuilderConsumer) {
+		var section = section(name, description);
+		categoryBuilderConsumer.accept(section);
+		return section.build();
+	}
+
+	public CategoryBuilder section(String name, String description, Consumer<SectionBuilder> categoryBuilderConsumer) {
+		var section = section(name, description);
+		categoryBuilderConsumer.accept(section);
+		return section.build();
+	}
+
+	public CategoryBuilder section(Text name, Consumer<SectionBuilder> categoryBuilderConsumer) {
+		var section = section(name, Text.empty());
+		categoryBuilderConsumer.accept(section);
+		return section.build();
+	}
+
+	public CategoryBuilder section(String name, Consumer<SectionBuilder> categoryBuilderConsumer) {
+		var section = section(name, "");
+		categoryBuilderConsumer.accept(section);
+		return section.build();
+	}
+
+	public CategoryBuilder option(Option<?> option, Consumer<OptionContext<CategoryBuilder>> optionContextConsumer) {
+		var optionContext = option(option);
+		optionContextConsumer.accept(optionContext);
+		return optionContext.build();
 	}
 }

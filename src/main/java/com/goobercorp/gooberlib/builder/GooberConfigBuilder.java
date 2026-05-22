@@ -9,6 +9,7 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class GooberConfigBuilder {
 	private final Text title;
@@ -88,12 +89,22 @@ public class GooberConfigBuilder {
 		return new BuiltConfig(title, categories, screenSupplier);
 	}
 
-	public static GooberConfigBuilder create(String title) {
-		return new GooberConfigBuilder(Text.of(title));
-	}
-
 	public static GooberConfigBuilder create(Text title) {
 		return new GooberConfigBuilder(title);
+	}
+
+	public static GooberConfigBuilder create(String title) {
+		return create(Text.of(title));
+	}
+
+	public static GooberConfigBuilder create(String title, Consumer<GooberConfigBuilder> configBuilderConsumer) {
+		return create(Text.of(title), configBuilderConsumer);
+	}
+
+	public static GooberConfigBuilder create(Text title, Consumer<GooberConfigBuilder> configBuilderConsumer) {
+		var builder = create(title);
+		configBuilderConsumer.accept(builder);
+		return builder;
 	}
 
 	public static GooberConfigBuilder ofCategories(Text title, ConfigCategory... categories) {
@@ -118,5 +129,23 @@ public class GooberConfigBuilder {
 
 	public GooberConfigBuilder makeBuiltCategory(Class<?> clazz, String name) {
 		return this.makeBuiltCategory(clazz, Text.of(name), Text.empty());
+	}
+
+	public GooberConfigBuilder category(Text name, Text description, Consumer<CategoryBuilder> categoryBuilderConsumer) {
+		var builder = new CategoryBuilder(this, name, description);
+		categoryBuilderConsumer.accept(builder);
+		return builder.build();
+	}
+
+	public GooberConfigBuilder category(String name, String description, Consumer<CategoryBuilder> categoryBuilderConsumer) {
+		return category(Text.of(name), Text.of(description), categoryBuilderConsumer);
+	}
+
+	public GooberConfigBuilder category(String name, Consumer<CategoryBuilder> categoryBuilderConsumer) {
+		return category(Text.of(name), Text.empty(), categoryBuilderConsumer);
+	}
+
+	public GooberConfigBuilder category(Text name, Consumer<CategoryBuilder> categoryBuilderConsumer) {
+		return category(name, Text.empty(), categoryBuilderConsumer);
 	}
 }
