@@ -8,8 +8,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Section {
-	/// sectionName()
+	/// The sections name
 	String value();
 
+	/// The sections description
 	String sectionDescription() default "";
 }

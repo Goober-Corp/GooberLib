@@ -17,9 +17,9 @@ import com.goobercorp.gooberlib.gui.TickBoxWidget;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.screen.GooberScreen;
 import com.goobercorp.gooberlib.util.ConfigDiscovery;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
+import com.google.gson.internal.Streams;
+import com.google.gson.stream.JsonWriter;
 import com.mojang.serialization.JsonOps;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
@@ -36,10 +36,12 @@ import java.util.Map;
 import static org.apache.commons.io.function.Erase.rethrow;
 
 public class GooberLibApi {
+	/// Saves all registered GooberLib configs
 	public static void saveAll() {
 		ConfigDiscovery.getConfigs().forEach(GooberLibApi::save);
 	}
 
+	/// Loads all registered GooberLib configs
 	public static void loadAll() {
 		ConfigDiscovery.getConfigs().forEach(GooberLibApi::load);
 	}
@@ -48,6 +50,7 @@ public class GooberLibApi {
 		return FabricLoader.getInstance().getConfigDir().resolve(modId).resolve(config.title().getString());
 	}
 
+	/// Loads a BuiltConfig from disk
 	public static void load(String modId, BuiltConfig config) {
 		Path saveFilePath = getPath(modId, config).resolve("config.json");
 		if (!Files.exists(saveFilePath)) {
@@ -96,6 +99,7 @@ public class GooberLibApi {
 		}
 	}
 
+	/// Saves a BuiltConfig to disk
 	public static void save(String modId, BuiltConfig config) {
 		JsonObject theObject = new JsonObject();
 		for (ConfigCategory category : config.categories()) {
@@ -131,7 +135,7 @@ public class GooberLibApi {
 			jsonWriter.setFormattingStyle(FormattingStyle.PRETTY);
 			Streams.write(theObject, jsonWriter);
 			String str = stringBuilder.toString();
-			
+
 			Files.writeString(saveFilePath.resolve("config.json"), str);
 		} catch (IOException e) {
 			GooberLibEntrypoint.LOGGER.error("Couldn't save config for {}", config.title().getString(), e);
@@ -174,10 +178,23 @@ public class GooberLibApi {
 		registerWidgetProvider(BooleanOption.class, (theOption, x, y, width, height) -> new TickBoxWidget(x, y, (int) width, (int) height, (BooleanOption) theOption));
 	}
 
+	/**
+	 * Registers or replaces the default {@link WidgetProvider} for an option class. This provider gets used when no widget provider was supplier upon creating an instance of the option class
+	 *
+	 * @param optionClass    the option class
+	 * @param widgetProvider the default widget provider to use
+	 */
 	public static void registerWidgetProvider(Class<? extends Option<?>> optionClass, WidgetProvider widgetProvider) {
 		widgetProviders.put(optionClass, widgetProvider);
 	}
 
+	/**
+	 * Returns the default {@link WidgetProvider} for the option class
+	 *
+	 * @param optionClass the option class
+	 * @return the default {@link WidgetProvider} for the option class
+	 */
+//	 * @throws IllegalArgumentException if no default widget provider for the given option class was registered
 	public static WidgetProvider getDefaultWidgetProvider(Class<? extends Option<?>> optionClass) {
 		if (widgetProviders.containsKey(optionClass)) {
 			return widgetProviders.get(optionClass);
@@ -186,6 +203,13 @@ public class GooberLibApi {
 //		throw new IllegalArgumentException("No default widget provider for " + optionClass);
 	}
 
+	/**
+	 * Returns a GooberScreen instance
+	 *
+	 * @param modId  the mod id of the config that should be displayed
+	 * @param parent the parent that should be used
+	 * @return a GooberScreen instance
+	 */
 	public static GooberScreen getScreenFor(String modId, Screen parent) {
 		BuiltConfig config = getConfigFor(modId);
 		return config.getScreen(parent, modId);
