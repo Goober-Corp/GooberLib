@@ -11,8 +11,8 @@ public class ScrollTweener {
     Consumer<Double> targetWriter;
     boolean isBeingInteractedWith = false;
     double value;
-    double min;
-    double max;
+    public double min;
+    public double max;
 
 
     public ScrollTweener(Supplier<Double> target, Consumer<Double> targetWriter, double min, double max) {
