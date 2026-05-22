@@ -280,6 +280,8 @@ public class GooberScreen extends Screen {
 
 	@Override
 	public boolean mouseDragged(Click click, double d, double e) {
+		if (super.mouseDragged(click, d, e)) return true;
+
 		if (click.button() == 0 && !tabNavigationWidget.isMouseOver(d, e)) {
 			lastScrollTicks = 0;
 			scrollTweener.setInteractionState(true);
@@ -288,8 +290,9 @@ public class GooberScreen extends Screen {
 			} else {
 				scrollProgress += e;
 			}
+			return true;
 		}
-		return super.mouseDragged(click, d, e);
+		return false;
 	}
 
 	@Override
