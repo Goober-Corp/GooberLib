@@ -124,7 +124,15 @@ public class GooberLibApi {
 				Files.createDirectories(saveFilePath);
 			if (Files.notExists(saveFilePath.resolve("config.json")))
 				Files.createFile(saveFilePath.resolve("config.json"));
-			Files.writeString(saveFilePath.resolve("config.json"), theObject.toString());
+
+			StringBuilder stringBuilder = new StringBuilder();
+			JsonWriter jsonWriter = new JsonWriter(Streams.writerForAppendable(stringBuilder));
+			jsonWriter.setStrictness(Strictness.LENIENT);
+			jsonWriter.setFormattingStyle(FormattingStyle.PRETTY);
+			Streams.write(theObject, jsonWriter);
+			String str = stringBuilder.toString();
+			
+			Files.writeString(saveFilePath.resolve("config.json"), str);
 		} catch (IOException e) {
 			GooberLibEntrypoint.LOGGER.error("Couldn't save config for {}", config.title().getString(), e);
 			throw rethrow(e);
