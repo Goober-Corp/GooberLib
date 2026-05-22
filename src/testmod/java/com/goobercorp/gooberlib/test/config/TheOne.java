@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.test.config;
 
+import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
 import com.goobercorp.gooberlib.option.individual.hotkey.HotkeyOption;
 import com.goobercorp.gooberlib.option.individual.java.*;
@@ -70,27 +71,35 @@ public class TheOne {
 
 	public static final IntOption testOption = new IntOption("test option", "test description");
 	public static final IntOption testChildOption = new IntOption("test child option", "test child description");
+
+	public static final GooberConfigBuilder config = GooberConfigBuilder.create("test", config -> {
+		config.category("category name", category -> {
+			category.option(longOption, o -> {
+				o.child(colorOption);
+			});
+
+			category.section("section", section -> {
+				section.option(booleanOption, o -> {
+					o.child(intOption);
+				});
+				section.options(booleanOption, shortOption);
+			});
+		});
+	});
+
 	// @formatter:off
-	public static ConfigCategory category = ConfigCategory.builder("the one", "description of meow")
-			.section("primitive", "")
-				.options(booleanOption, byteOption, shortOption, charOption, intOption, longOption, floatOption, doubleOption)
-				.build()
-			.section("java", "")
-				.options(stringOption, colorOption, enumOption, cycleOption)
-				.build()
-			.section("minecraft", "")
-				.options(identifierOption, blockPosOption, vec2fOption, vec3dOption, vec3iOption)
-				.build()
-			.section("goober", "")
-				.options(hotkeyOption, hotkeyOption, hotkeyOption, hotkeyOption)
-				.build()
+	public static final ConfigCategory category = ConfigCategory.builder("the one", "description of meow")
+			.sectionWithOptions("primitive", booleanOption, byteOption, shortOption, charOption, intOption, longOption, floatOption, doubleOption)
+			.sectionWithOptions("java", stringOption, colorOption, enumOption, cycleOption)
+			.sectionWithOptions("minecraft", identifierOption, blockPosOption, vec2fOption, vec3dOption, vec3iOption)
+			.sectionWithOptions("goober", hotkeyOption, hotkeyOption, hotkeyOption, hotkeyOption)
 			.section("childOptionTest section", "")
-				.optionMaker(testOption, o -> o.child(testChildOption))
+				.option(testOption, o -> o.child(testChildOption))
 				.build()
-			.sectionMaker("my section", "", s -> {
+			.section("my section", "", s -> {
 				for (int i = 0; i < 5; i++) {
 					int finalI = i;
-					s.optionMaker(new IntOption("option " + i, ""), o -> o.child(new DoubleOption("child option " + finalI, "")));
+					s.option(new IntOption("option " + i, ""), o -> o.child(new DoubleOption("child option " + finalI, "")));
 				}
 			})
 		.buildCategory();
