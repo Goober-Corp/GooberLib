@@ -286,7 +286,7 @@ public class GooberScreen extends Screen {
             lastScrollTicks = 0;
             scrollTweener.setInteractionState(true);
             if ((scrollProgress < scrollTweener.min && e < 0) || (scrollProgress > scrollTweener.max && e > 0)) {
-                scrollProgress += e * Math.min(1 / Math.abs(scrollTweener.get() - Math.clamp(scrollTweener.get(), scrollTweener.min, scrollTweener.max)), 1);
+                scrollProgress += e * Math.min(1 / Math.abs(scrollProgress - Math.clamp(scrollProgress, scrollTweener.min, scrollTweener.max)), 1);
             } else {
                 scrollProgress += e;
             }
