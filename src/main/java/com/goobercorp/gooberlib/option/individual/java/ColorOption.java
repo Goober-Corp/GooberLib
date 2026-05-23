@@ -13,7 +13,7 @@ public class ColorOption extends BaseOption<ColorOption> {
 	/// @implNote Modifying this value directly will *not* trigger .onChange(). This is in ARGB
 	public int value;
 
-	public ColorOption(Text name, Text description, int defaultValue, WidgetProvider provider) {
+	public ColorOption(Text name, Text description, int defaultValue, WidgetProvider<ColorOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -23,7 +23,7 @@ public class ColorOption extends BaseOption<ColorOption> {
 		this(Text.literal(name), Text.literal(description), 0xFFFFFFFF, null);
 	}
 
-	public ColorOption(String name, String description, WidgetProvider provider) {
+	public ColorOption(String name, String description, WidgetProvider<ColorOption> provider) {
 		this(Text.literal(name), Text.literal(description), 0xFFFFFFFF, provider);
 	}
 

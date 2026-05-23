@@ -10,7 +10,7 @@ public class StringOption extends BaseOption<StringOption> {
 	/// @implNote Modifying this value directly will *not* trigger .onChange()
 	public String value;
 
-	public StringOption(Text name, Text description, String defaultValue, WidgetProvider provider) {
+	public StringOption(Text name, Text description, String defaultValue, WidgetProvider<StringOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -20,7 +20,7 @@ public class StringOption extends BaseOption<StringOption> {
 		this(Text.literal(name), Text.literal(description), "", null);
 	}
 
-	public StringOption(String name, String description, WidgetProvider provider) {
+	public StringOption(String name, String description, WidgetProvider<StringOption> provider) {
 		this(Text.literal(name), Text.literal(description), "", provider);
 	}
 

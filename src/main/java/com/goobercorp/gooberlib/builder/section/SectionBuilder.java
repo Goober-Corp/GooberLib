@@ -5,14 +5,15 @@ import com.goobercorp.gooberlib.builder.category.CategoryBuilder;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class SectionBuilder {
+	@Nullable
 	private final CategoryBuilder parent;
-	private final SectionAppender appender;
 
 	private final List<OptionContext<?>> options = new ArrayList<>();
 
@@ -20,9 +21,8 @@ public class SectionBuilder {
 	private final Text description;
 
 
-	public SectionBuilder(CategoryBuilder parent, SectionAppender appender, Text name, Text description) {
+	public SectionBuilder(@Nullable CategoryBuilder parent, Text name, Text description) {
 		this.parent = parent;
-		this.appender = appender;
 		this.name = name;
 		this.description = description;
 	}
@@ -70,8 +70,19 @@ public class SectionBuilder {
 	 * @return the parent
 	 */
 	public CategoryBuilder build() {
-		appender.append(new ConfigSection(new Metadata(name, description), options));
+		if (parent == null)
+			throw new IllegalStateException("If you are trying to make a ConfigSection, use buildSection() instead!");
+		parent.addBuiltSection(new ConfigSection(new Metadata(name, description), options));
 		return parent;
+	}
+
+	/**
+	 * Builds this {@link ConfigSection}
+	 *
+	 * @return the built {@link ConfigSection}
+	 */
+	public ConfigSection buildSection() {
+		return new ConfigSection(new Metadata(name, description), options);
 	}
 
 	/**

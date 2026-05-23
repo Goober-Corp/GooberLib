@@ -13,7 +13,7 @@ public class IntOption extends BaseOption<IntOption> {
 	private final int max;
 	public int value;
 
-	public IntOption(Text name, Text description, int defaultValue, int min, int max, WidgetProvider provider) {
+	public IntOption(Text name, Text description, int defaultValue, int min, int max, WidgetProvider<IntOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -25,7 +25,7 @@ public class IntOption extends BaseOption<IntOption> {
 		this(Text.literal(name), Text.literal(description), 0, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
 	}
 
-	public IntOption(String name, String description, WidgetProvider provider) {
+	public IntOption(String name, String description, WidgetProvider<IntOption> provider) {
 		this(Text.literal(name), Text.literal(description), 0, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
 	}
 

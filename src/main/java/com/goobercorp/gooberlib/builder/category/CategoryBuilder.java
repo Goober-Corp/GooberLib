@@ -3,6 +3,7 @@ package com.goobercorp.gooberlib.builder.category;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.goobercorp.gooberlib.builder.misc.Metadata;
 import com.goobercorp.gooberlib.builder.misc.OptionHolder;
+import com.goobercorp.gooberlib.builder.section.ConfigSection;
 import com.goobercorp.gooberlib.builder.section.SectionBuilder;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
@@ -71,7 +72,7 @@ public class CategoryBuilder {
 	 * @return the {@link SectionBuilder}
 	 */
 	public SectionBuilder section(Text name, Text description) {
-		return new SectionBuilder(this, elements::add, name, description);
+		return new SectionBuilder(this, name, description);
 	}
 
 	/**
@@ -153,8 +154,6 @@ public class CategoryBuilder {
 		return sectionWithOptions(Text.of(name), Text.empty(), options);
 	}
 
-	// todo: be able to register/make a built section
-
 	/**
 	 * Builds and registers this category to the parent
 	 *
@@ -192,7 +191,7 @@ public class CategoryBuilder {
 	 * <p>
 	 * For example:
 	 * <pre><code>
-	 * builder.sectionMaker("General", "General settings", sectionBuilder -> {
+	 * builder.sectionMaker(Text.of("General"), Text.of("General settings"), sectionBuilder -> {
 	 *         for (int i = 0; i < 5; i++) {
 	 *             sectionBuilder.option(new IntOption("option " + i, "description");
 	 *         }
@@ -211,27 +210,109 @@ public class CategoryBuilder {
 		return section.build();
 	}
 
+	/**
+	 * Allows you to build a section programmatically
+	 * <p>
+	 * For example:
+	 * <pre><code>
+	 * builder.sectionMaker("General", "General settings", sectionBuilder -> {
+	 *         for (int i = 0; i < 5; i++) {
+	 *             sectionBuilder.option(new IntOption("option " + i, "description");
+	 *         }
+	 *     }
+	 * );
+	 * </code></pre>
+	 *
+	 * @param name                    the name
+	 * @param description             the description
+	 * @param categoryBuilderConsumer the category builder
+	 * @return this
+	 */
 	public CategoryBuilder section(String name, String description, Consumer<SectionBuilder> categoryBuilderConsumer) {
 		var section = section(name, description);
 		categoryBuilderConsumer.accept(section);
 		return section.build();
 	}
 
+
+	/**
+	 * Allows you to build a section programmatically
+	 * <p>
+	 * For example:
+	 * <pre><code>
+	 * builder.sectionMaker(Text.of("General"), sectionBuilder -> {
+	 *         for (int i = 0; i < 5; i++) {
+	 *             sectionBuilder.option(new IntOption("option " + i, "description");
+	 *         }
+	 *     }
+	 * );
+	 * </code></pre>
+	 *
+	 * @param name                    the name
+	 * @param categoryBuilderConsumer the category builder
+	 * @return this
+	 */
 	public CategoryBuilder section(Text name, Consumer<SectionBuilder> categoryBuilderConsumer) {
 		var section = section(name, Text.empty());
 		categoryBuilderConsumer.accept(section);
 		return section.build();
 	}
 
+
+	/**
+	 * Allows you to build a section programmatically
+	 * <p>
+	 * For example:
+	 * <pre><code>
+	 * builder.sectionMaker("General", sectionBuilder -> {
+	 *         for (int i = 0; i < 5; i++) {
+	 *             sectionBuilder.option(new IntOption("option " + i, "description");
+	 *         }
+	 *     }
+	 * );
+	 * </code></pre>
+	 *
+	 * @param name                    the name
+	 * @param categoryBuilderConsumer the category builder
+	 * @return this
+	 */
 	public CategoryBuilder section(String name, Consumer<SectionBuilder> categoryBuilderConsumer) {
 		var section = section(name, "");
 		categoryBuilderConsumer.accept(section);
 		return section.build();
 	}
 
+	/**
+	 * Allows you to build an option programmatically
+	 * <p>
+	 * For example:
+	 * <pre><code>
+	 * builder.option(myIntOption, option -> {
+	 *         for (int i = 0; i < 5; i++) {
+	 *             option.child(new IntOption("option " + i, "description");
+	 *         }
+	 *     }
+	 * );
+	 * </code></pre>
+	 *
+	 * @param option                the option
+	 * @param optionContextConsumer the option builder
+	 * @return this
+	 */
 	public CategoryBuilder option(Option<?> option, Consumer<OptionContext<CategoryBuilder>> optionContextConsumer) {
 		var optionContext = option(option);
 		optionContextConsumer.accept(optionContext);
 		return optionContext.build();
+	}
+
+	/**
+	 * Adds a {@link ConfigSection} to this category
+	 *
+	 * @param section the section
+	 * @return this
+	 */
+	public CategoryBuilder addBuiltSection(ConfigSection section) {
+		this.elements.add(section);
+		return this;
 	}
 }

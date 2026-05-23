@@ -1,6 +1,5 @@
 package com.goobercorp.gooberlib.gui;
 
-import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.individual.primitive.IntOption;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import net.fabricmc.api.EnvType;
@@ -20,28 +19,21 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
-public class EvilSliderWidget extends ClickableWidget.InactivityIndicatingWidget {
+public class EvilSliderWidget extends ClickableWidget {
 	protected double value;
 	protected boolean sliderFocused;
 	private boolean dragging;
-	private IntOption opt;
+	private final IntOption opt;
 
-	public EvilSliderWidget(int i, int j, int k, int l, Text text, double d) {
-		super(i, j, k, l, text);
-		this.value = d;
-	}
-
-	public EvilSliderWidget(Option<?> opt, int i, int j, int k, int l) {
-		super(i, j, k, l, opt.name());
-		//TODO: yeah...
-		this.opt = (IntOption) opt;
-		this.value = getInterpolatedValue(((IntOption) opt).getValue(), ((IntOption) opt).getMin(), ((IntOption) opt).getMax());
+	public EvilSliderWidget(IntOption opt, int x, int y, double width, double height) {
+		super(x, y, (int) width, (int) height, opt.name());
+		this.opt = opt;
+		this.value = getInterpolatedValue(opt.getValue(), opt.getMin(), opt.getMax());
 	}
 
 	public static float getInterpolatedValue(float val, float min, float max) {
 		return (val - min) / (max - min);
 	}
-
 
 	@Override
 	protected MutableText getNarrationMessage() {

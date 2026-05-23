@@ -3,21 +3,22 @@ package com.goobercorp.gooberlib.option;
 import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.interfaces.ValueChangeCallback;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class BaseOption<V extends BaseOption<V>> implements Option<V> {
+public abstract class BaseOption<T extends BaseOption<T>> implements Option<T> {
 	protected Text name;
 	protected Text description;
-	private ValueChangeCallback<V> callback;
-	private final WidgetProvider provider;
+	private ValueChangeCallback<T> callback;
+	private final WidgetProvider<T> provider;
 
-	protected BaseOption(Text name, Text description, @Nullable WidgetProvider provider) {
+	protected BaseOption(Text name, Text description, @Nullable WidgetProvider<T> provider) {
 		this.name = name;
 		this.description = description;
 		// todo: this needs testing for EnumOption due to it being a generic class
 		@SuppressWarnings("unchecked")
-		var optionClass = (Class<? extends Option<?>>) this.getClass();
+		Class<T> optionClass = (Class<T>) this.getClass();
 		this.provider = provider == null
 				? GooberLibApi.getDefaultWidgetProvider(optionClass)
 				: provider;
@@ -36,22 +37,30 @@ public abstract class BaseOption<V extends BaseOption<V>> implements Option<V> {
 	@Override
 	public void onChange() {
 		if (callback != null) {
-			//noinspection unchecked
-			this.callback.onValueChanged((V) this);
+			this.callback.onValueChanged(thisT());
 		}
 	}
 
 	@Override
-	public V setOnValueChange(ValueChangeCallback<V> t) {
+	public T setOnValueChange(ValueChangeCallback<T> t) {
 		this.callback = t;
-		//noinspection unchecked
-		return (V) this;
+		return thisT();
 	}
 
 	@Override
-	public WidgetProvider getWidgetProvider() {
+	public WidgetProvider<T> getWidgetProvider() {
 		if (this.provider == null)
 			throw new IllegalStateException("??");
 		return this.provider;
+	}
+
+	@Override
+	public ClickableWidget makeWidget(int x, int y, double width, double height) {
+		return this.getWidgetProvider().makeWidget(thisT(), x, y, width, height);
+	}
+
+	private T thisT() {
+		//noinspection unchecked
+		return (T) this;
 	}
 }

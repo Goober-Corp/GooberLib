@@ -15,5 +15,5 @@ public class Magic {
 	public static final Chunk meow = null;
 	public static final StringOption thirdStringOption = new StringOption("third string option", "third string description");
 
-	public static ConfigCategory category = ConfigCategory.ofClass(Magic.class, "magic 1", "magic 1 meow");
+	public static final ConfigCategory category = ConfigCategory.ofClass(Magic.class, "magic 1", "magic 1 meow");
 }

@@ -4,16 +4,21 @@
   "version": "1.0",
   "name": "GooberLibTest",
   "description": "GooberLib test mod",
-  "authors": ["NG5M", "Tektonikal", "kr1v"],
+  "authors": [
+    "NG5M",
+    "Tektonikal",
+    "kr1v"
+  ],
   "contact": {},
   "license": "LGPL-3.0",
   "icon": "icon.png",
   "environment": "client",
   "entrypoints": {
-    "main": [ "com.goobercorp.gooberlib.test.GooberLibTest" ]
+    "main": [
+      "com.goobercorp.gooberlib.test.GooberLibTest"
+    ]
   },
   "mixins": [
-    "testmod.mixins.json"
   ],
   "depends": {
     "gooberlib": "*"

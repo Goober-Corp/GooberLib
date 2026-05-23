@@ -10,7 +10,7 @@ public class IdentifierOption extends BaseOption<IdentifierOption> {
 	private final Identifier defaultValue;
 	private Identifier value;
 
-	public IdentifierOption(Text name, Text description, Identifier defaultValue, WidgetProvider provider) {
+	public IdentifierOption(Text name, Text description, Identifier defaultValue, WidgetProvider<IdentifierOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -20,7 +20,7 @@ public class IdentifierOption extends BaseOption<IdentifierOption> {
 		this(Text.literal(name), Text.literal(description), defaultValue, null);
 	}
 
-	public IdentifierOption(String name, String description, Identifier defaultValue, WidgetProvider provider) {
+	public IdentifierOption(String name, String description, Identifier defaultValue, WidgetProvider<IdentifierOption> provider) {
 		this(Text.literal(name), Text.literal(description), defaultValue, provider);
 	}
 

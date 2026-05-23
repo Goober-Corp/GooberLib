@@ -11,7 +11,7 @@ public class CharOption extends BaseOption<CharOption> {
 	private final char max;
 	public char value;
 
-	public CharOption(Text name, Text description, char defaultValue, char min, char max, WidgetProvider provider) {
+	public CharOption(Text name, Text description, char defaultValue, char min, char max, WidgetProvider<CharOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -23,7 +23,7 @@ public class CharOption extends BaseOption<CharOption> {
 		this(Text.literal(name), Text.literal(description), (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, null);
 	}
 
-	public CharOption(String name, String description, WidgetProvider provider) {
+	public CharOption(String name, String description, WidgetProvider<CharOption> provider) {
 		this(Text.literal(name), Text.literal(description), (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, provider);
 	}
 
