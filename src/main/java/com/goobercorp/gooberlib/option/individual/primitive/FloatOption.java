@@ -13,7 +13,7 @@ public class FloatOption extends BaseOption<FloatOption> {
 	private final float max;
 	public float value;
 
-	public FloatOption(Text name, Text description, float defaultValue, float min, float max, WidgetProvider provider) {
+	public FloatOption(Text name, Text description, float defaultValue, float min, float max, WidgetProvider<FloatOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -25,7 +25,7 @@ public class FloatOption extends BaseOption<FloatOption> {
 		this(Text.literal(name), Text.literal(description), 0, Float.MIN_VALUE, Float.MAX_VALUE, null);
 	}
 
-	public FloatOption(String name, String description, WidgetProvider provider) {
+	public FloatOption(String name, String description, WidgetProvider<FloatOption> provider) {
 		this(Text.literal(name), Text.literal(description), 0, Float.MIN_VALUE, Float.MAX_VALUE, provider);
 	}
 

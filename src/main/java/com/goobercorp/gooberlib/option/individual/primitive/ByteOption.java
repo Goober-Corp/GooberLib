@@ -12,7 +12,7 @@ public class ByteOption extends BaseOption<ByteOption> {
 	/// @implNote Modifying this value directly will *not* trigger .onChange()
 	public byte value;
 
-	public ByteOption(Text name, Text description, byte defaultValue, byte min, byte max, WidgetProvider provider) {
+	public ByteOption(Text name, Text description, byte defaultValue, byte min, byte max, WidgetProvider<ByteOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -24,7 +24,7 @@ public class ByteOption extends BaseOption<ByteOption> {
 		this(Text.literal(name), Text.literal(description), (byte) 0, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
 	}
 
-	public ByteOption(String name, String description, WidgetProvider provider) {
+	public ByteOption(String name, String description, WidgetProvider<ByteOption> provider) {
 		this(Text.literal(name), Text.literal(description), (byte) 0, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
 	}
 

@@ -1,21 +1,16 @@
 package com.goobercorp.gooberlib.gui;
 
-import com.goobercorp.gooberlib.option.Option;
+import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.Text;
 
 public class ColorPickerWidget extends ClickableWidget {
-	Option<?> option;
+	private final ColorOption option;
 
-	public ColorPickerWidget(int i, int j, int k, int l, Text text) {
-		super(i, j, k, l, text);
-	}
-
-	public ColorPickerWidget(Option<?> theOption, int x, int y, int width, int height) {
-		super(x, y, width, height, theOption.name());
+	public ColorPickerWidget(ColorOption theOption, int x, int y, double width, double height) {
+		super(x, y, (int) width, (int) height, theOption.name());
 		option = theOption;
 	}
 

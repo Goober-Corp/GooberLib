@@ -13,7 +13,7 @@ public class DoubleOption extends BaseOption<DoubleOption> {
 	private final double max;
 	public double value;
 
-	public DoubleOption(Text name, Text description, double defaultValue, double min, double max, WidgetProvider provider) {
+	public DoubleOption(Text name, Text description, double defaultValue, double min, double max, WidgetProvider<DoubleOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -25,7 +25,7 @@ public class DoubleOption extends BaseOption<DoubleOption> {
 		this(Text.literal(name), Text.literal(description), 0, Double.MIN_VALUE, Double.MAX_VALUE, null);
 	}
 
-	public DoubleOption(String name, String description, WidgetProvider provider) {
+	public DoubleOption(String name, String description, WidgetProvider<DoubleOption> provider) {
 		this(Text.literal(name), Text.literal(description), 0, Double.MIN_VALUE, Double.MAX_VALUE, provider);
 	}
 

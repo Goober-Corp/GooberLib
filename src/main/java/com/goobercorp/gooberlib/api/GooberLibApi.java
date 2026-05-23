@@ -170,12 +170,12 @@ public class GooberLibApi {
 		out.add(optionName, jo);
 	}
 
-	private static final Map<Class<? extends Option<?>>, WidgetProvider> widgetProviders = new HashMap<>();
+	private static final Map<Class<? extends Option<?>>, WidgetProvider<?>> widgetProviders = new HashMap<>();
 
 	static {
-		registerWidgetProvider(IntOption.class, (theOption, x, y, width, height) -> new EvilSliderWidget(theOption, x, y, (int) width, (int) height));
-		registerWidgetProvider(ColorOption.class, (theOption, x, y, width, height) -> new ColorPickerWidget(theOption, x, y, (int) width, (int) height));
-		registerWidgetProvider(BooleanOption.class, (theOption, x, y, width, height) -> new TickBoxWidget(x, y, (int) width, (int) height, (BooleanOption) theOption));
+		registerWidgetProvider(IntOption.class, EvilSliderWidget::new);
+		registerWidgetProvider(ColorOption.class, ColorPickerWidget::new);
+		registerWidgetProvider(BooleanOption.class, TickBoxWidget::new);
 	}
 
 	/**
@@ -184,7 +184,7 @@ public class GooberLibApi {
 	 * @param optionClass    the option class
 	 * @param widgetProvider the default widget provider to use
 	 */
-	public static void registerWidgetProvider(Class<? extends Option<?>> optionClass, WidgetProvider widgetProvider) {
+	public static <T extends Option<T>> void registerWidgetProvider(Class<T> optionClass, WidgetProvider<T> widgetProvider) {
 		widgetProviders.put(optionClass, widgetProvider);
 	}
 
@@ -195,9 +195,10 @@ public class GooberLibApi {
 	 * @return the default {@link WidgetProvider} for the option class
 	 */
 //	 * @throws IllegalArgumentException if no default widget provider for the given option class was registered
-	public static WidgetProvider getDefaultWidgetProvider(Class<? extends Option<?>> optionClass) {
+	public static <T extends Option<T>> WidgetProvider<T> getDefaultWidgetProvider(Class<T> optionClass) {
 		if (widgetProviders.containsKey(optionClass)) {
-			return widgetProviders.get(optionClass);
+			//noinspection unchecked
+			return (WidgetProvider<T>) widgetProviders.get(optionClass);
 		}
 		return (theOption, x, y, width, height) -> new TextWidget(x, y, (int) width, (int) height, theOption.name(), MinecraftClient.getInstance().textRenderer);
 //		throw new IllegalArgumentException("No default widget provider for " + optionClass);

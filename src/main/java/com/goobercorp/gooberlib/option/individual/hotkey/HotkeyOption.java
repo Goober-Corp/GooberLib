@@ -25,7 +25,7 @@ public class HotkeyOption extends BaseOption<HotkeyOption> {
 		}, HotkeySettings.BOTH_PRESS);
 	}
 
-	public HotkeyOption(Text name, Text description, WidgetProvider provider, String defaultKeys, int maxKeyCount, OnPress onPress, HotkeySettings settings) {
+	public HotkeyOption(Text name, Text description, WidgetProvider<HotkeyOption> provider, String defaultKeys, int maxKeyCount, OnPress onPress, HotkeySettings settings) {
 		super(name, description, provider);
 		String[] individualKeys = defaultKeys.replaceAll("\\s+", "").split(",");
 		if (individualKeys.length > maxKeyCount) {

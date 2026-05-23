@@ -3,6 +3,7 @@ package com.goobercorp.gooberlib.option;
 import com.goobercorp.gooberlib.interfaces.ValueChangeCallback;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 
 public interface Option<T extends Option<T>> {
@@ -18,5 +19,7 @@ public interface Option<T extends Option<T>> {
 
 	T setOnValueChange(ValueChangeCallback<T> t);
 
-	WidgetProvider getWidgetProvider();
+	WidgetProvider<T> getWidgetProvider();
+
+	ClickableWidget makeWidget(int x, int y, double width, double height);
 }

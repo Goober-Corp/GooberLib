@@ -69,7 +69,6 @@ public class GooberConfigBuilder {
 	 * @param screenSupplier the screen supplier
 	 * @return this
 	 */
-	// todo: test this, though should just work
 	public GooberConfigBuilder screenSupplier(TriFunction<BuiltConfig, Screen, String, GooberScreen> screenSupplier) {
 		this.screenSupplier = screenSupplier;
 		return this;

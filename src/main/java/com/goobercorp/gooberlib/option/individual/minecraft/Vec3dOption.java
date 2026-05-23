@@ -10,7 +10,7 @@ public class Vec3dOption extends BaseOption<Vec3dOption> {
 	private final Vec3d defaultValue;
 	private Vec3d value;
 
-	public Vec3dOption(Text name, Text description, Vec3d defaultValue, WidgetProvider provider) {
+	public Vec3dOption(Text name, Text description, Vec3d defaultValue, WidgetProvider<Vec3dOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -24,7 +24,7 @@ public class Vec3dOption extends BaseOption<Vec3dOption> {
 		this(Text.literal(name), Text.literal(description), Vec3d.ZERO, null);
 	}
 
-	public Vec3dOption(String name, String description, Vec3d defaultValue, WidgetProvider provider) {
+	public Vec3dOption(String name, String description, Vec3d defaultValue, WidgetProvider<Vec3dOption> provider) {
 		this(Text.literal(name), Text.literal(description), defaultValue, provider);
 	}
 

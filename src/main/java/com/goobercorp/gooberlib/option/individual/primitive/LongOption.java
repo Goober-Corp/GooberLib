@@ -13,7 +13,7 @@ public class LongOption extends BaseOption<LongOption> {
 	private final long max;
 	public long value;
 
-	public LongOption(Text name, Text description, long defaultValue, long min, long max, WidgetProvider provider) {
+	public LongOption(Text name, Text description, long defaultValue, long min, long max, WidgetProvider<LongOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -25,7 +25,7 @@ public class LongOption extends BaseOption<LongOption> {
 		this(Text.literal(name), Text.literal(description), 0, Long.MIN_VALUE, Long.MAX_VALUE, null);
 	}
 
-	public LongOption(String name, String description, WidgetProvider provider) {
+	public LongOption(String name, String description, WidgetProvider<LongOption> provider) {
 		this(Text.literal(name), Text.literal(description), 0, Long.MIN_VALUE, Long.MAX_VALUE, provider);
 	}
 

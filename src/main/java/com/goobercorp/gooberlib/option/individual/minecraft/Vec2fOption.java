@@ -10,7 +10,7 @@ public class Vec2fOption extends BaseOption<Vec2fOption> {
 	private final Vec2f defaultValue;
 	private Vec2f value;
 
-	public Vec2fOption(Text name, Text description, Vec2f defaultValue, WidgetProvider provider) {
+	public Vec2fOption(Text name, Text description, Vec2f defaultValue, WidgetProvider<Vec2fOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -24,7 +24,7 @@ public class Vec2fOption extends BaseOption<Vec2fOption> {
 		this(Text.literal(name), Text.literal(description), Vec2f.ZERO, null);
 	}
 
-	public Vec2fOption(String name, String description, Vec2f defaultValue, WidgetProvider provider) {
+	public Vec2fOption(String name, String description, Vec2f defaultValue, WidgetProvider<Vec2fOption> provider) {
 		this(Text.literal(name), Text.literal(description), defaultValue, provider);
 	}
 

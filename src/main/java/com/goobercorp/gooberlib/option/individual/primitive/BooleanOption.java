@@ -1,17 +1,16 @@
 package com.goobercorp.gooberlib.option.individual.primitive;
 
 import com.goobercorp.gooberlib.option.BaseOption;
-import com.goobercorp.gooberlib.option.individual.java.StringOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 
-public class BooleanOption extends BaseOption<StringOption> {
+public class BooleanOption extends BaseOption<BooleanOption> {
 	private final boolean defaultValue;
 	/// @implNote Modifying this value directly will *not* trigger
 	public boolean value;
 
-	public BooleanOption(Text name, Text description, boolean defaultValue, WidgetProvider provider) {
+	public BooleanOption(Text name, Text description, boolean defaultValue, WidgetProvider<BooleanOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -21,7 +20,7 @@ public class BooleanOption extends BaseOption<StringOption> {
 		this(Text.literal(name), Text.literal(description), false, null);
 	}
 
-	public BooleanOption(String name, String description, WidgetProvider provider) {
+	public BooleanOption(String name, String description, WidgetProvider<BooleanOption> provider) {
 		this(Text.literal(name), Text.literal(description), false, provider);
 	}
 

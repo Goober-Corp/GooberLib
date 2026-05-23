@@ -14,7 +14,7 @@ public class ShortOption extends BaseOption<ShortOption> {
 	// TODO overloads for taking in default, min and max as ints, and making sure they're within bound, so the user doesn't need to do (short) 0, and can instead just do 0
 	//  also needs to be done for .getValueInt(), .setValueInt(), getMinInt() etc
 	//  also needs to be done for ByteOption, CharOption
-	public ShortOption(Text name, Text description, short defaultValue, short min, short max, WidgetProvider provider) {
+	public ShortOption(Text name, Text description, short defaultValue, short min, short max, WidgetProvider<ShortOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -26,7 +26,7 @@ public class ShortOption extends BaseOption<ShortOption> {
 		this(Text.literal(name), Text.literal(description), (short) 0, Short.MIN_VALUE, Short.MAX_VALUE, null);
 	}
 
-	public ShortOption(String name, String description, WidgetProvider provider) {
+	public ShortOption(String name, String description, WidgetProvider<ShortOption> provider) {
 		this(Text.literal(name), Text.literal(description), (short) 0, Short.MIN_VALUE, Short.MAX_VALUE, provider);
 	}
 
