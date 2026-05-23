@@ -7,13 +7,15 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Function;
+
 public abstract class BaseOption<T extends BaseOption<T>> implements Option<T> {
 	protected Text name;
-	protected Text description;
+	protected Function<T, Text> description;
 	private ValueChangeCallback<T> callback;
 	private final WidgetProvider<T> provider;
 
-	protected BaseOption(Text name, Text description, @Nullable WidgetProvider<T> provider) {
+	protected BaseOption(Text name, Function<T, Text> description, @Nullable WidgetProvider<T> provider) {
 		this.name = name;
 		this.description = description;
 		// todo: this needs testing for EnumOption due to it being a generic class
@@ -30,8 +32,13 @@ public abstract class BaseOption<T extends BaseOption<T>> implements Option<T> {
 	}
 
 	@Override
-	public Text description() {
+	public Function<T, Text> description() {
 		return description;
+	}
+
+	@Override
+	public Text getDescription() {
+		return description.apply(thisT());
 	}
 
 	@Override

@@ -16,7 +16,7 @@ public class CycleOption<T> extends BaseOption<CycleOption<T>> {
 	/// @implNote Modifying this value directly will *not* trigger .onChange()
 	public T value;
 
-	public CycleOption(Text name, Text description, T defaultValue, List<T> options, WidgetProvider<CycleOption<T>> provider, @NotNull Function<T, Text> displayNameProvider) {
+	public CycleOption(Text name, Function<CycleOption<T>, Text> description, T defaultValue, List<T> options, WidgetProvider<CycleOption<T>> provider, @NotNull Function<T, Text> displayNameProvider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -26,7 +26,7 @@ public class CycleOption<T> extends BaseOption<CycleOption<T>> {
 
 	@SafeVarargs
 	public CycleOption(String name, String description, Function<T, String> displayNameProvider, T... options) {
-		this(Text.literal(name), Text.literal(description), options[0], List.of(options), null, s -> Text.of(displayNameProvider.apply(s)));
+		this(Text.literal(name), _ -> Text.literal(description), options[0], List.of(options), null, s -> Text.of(displayNameProvider.apply(s)));
 	}
 
 

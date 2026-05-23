@@ -5,13 +5,15 @@ import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 
+import java.util.function.Function;
+
 public class CharOption extends BaseOption<CharOption> {
 	private final char defaultValue;
 	private final char min;
 	private final char max;
 	public char value;
 
-	public CharOption(Text name, Text description, char defaultValue, char min, char max, WidgetProvider<CharOption> provider) {
+	public CharOption(Text name, Function<CharOption, Text> description, char defaultValue, char min, char max, WidgetProvider<CharOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -20,11 +22,11 @@ public class CharOption extends BaseOption<CharOption> {
 	}
 
 	public CharOption(String name, String description) {
-		this(Text.literal(name), Text.literal(description), (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, null);
+		this(Text.literal(name), _ -> Text.literal(description), (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, null);
 	}
 
 	public CharOption(String name, String description, WidgetProvider<CharOption> provider) {
-		this(Text.literal(name), Text.literal(description), (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, provider);
+		this(Text.literal(name), _ -> Text.literal(description), (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, provider);
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import com.goobercorp.gooberlib.option.individual.hotkey.HotkeyOption;
 import com.goobercorp.gooberlib.option.individual.java.*;
 import com.goobercorp.gooberlib.option.individual.minecraft.*;
 import com.goobercorp.gooberlib.option.individual.primitive.*;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 
@@ -73,20 +74,20 @@ public class TheOne {
 	public static final IntOption testOption = new IntOption("test option", "test description");
 	public static final IntOption testChildOption = new IntOption("test child option", "test child description");
 
-	public static final GooberConfigBuilder config = GooberConfigBuilder.create("test", config -> {
-		config.category("category name", category -> {
-			category.option(longOption, o -> {
-				o.child(colorOption);
-			});
+	public static final GooberConfigBuilder config = GooberConfigBuilder.create("test", config ->
+			config.category("category name", category -> {
+				category.option(longOption, o ->
+						o.child(colorOption)
+				);
 
-			category.section("section", section -> {
-				section.option(booleanOption, o -> {
-					o.child(intOption);
+				category.section("section", section -> {
+					section.option(booleanOption, o ->
+							o.child(intOption)
+					);
+					section.options(booleanOption, shortOption);
 				});
-				section.options(booleanOption, shortOption);
-			});
-		});
-	});
+			})
+	);
 
 	public static final ConfigSection testSection = ConfigSection.builder("test section", "this tests if meow meow").options(new IntOption("meow", "mrp")).buildSection();
 
@@ -105,6 +106,7 @@ public class TheOne {
 					s.option(new IntOption("option " + i, ""), o -> o.child(new DoubleOption("child option " + finalI, "")));
 				}
 			})
+			.options(new IntOption(Text.of("meoww"), o -> Text.of("meow: " + o.getValue()), 0, 0, 1000, null))
 			.addBuiltSection(testSection)
 		.buildCategory();
 	// @formatter:on

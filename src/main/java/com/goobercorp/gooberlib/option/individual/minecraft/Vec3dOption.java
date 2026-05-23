@@ -6,26 +6,28 @@ import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.function.Function;
+
 public class Vec3dOption extends BaseOption<Vec3dOption> {
 	private final Vec3d defaultValue;
 	private Vec3d value;
 
-	public Vec3dOption(Text name, Text description, Vec3d defaultValue, WidgetProvider<Vec3dOption> provider) {
+	public Vec3dOption(Text name, Function<Vec3dOption, Text> description, Vec3d defaultValue, WidgetProvider<Vec3dOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
 
 	public Vec3dOption(String name, String description, Vec3d defaultValue) {
-		this(Text.literal(name), Text.literal(description), defaultValue, null);
+		this(Text.literal(name), _ -> Text.of(description), defaultValue, null);
 	}
 
 	public Vec3dOption(String name, String description) {
-		this(Text.literal(name), Text.literal(description), Vec3d.ZERO, null);
+		this(Text.literal(name), _ -> Text.literal(description), Vec3d.ZERO, null);
 	}
 
 	public Vec3dOption(String name, String description, Vec3d defaultValue, WidgetProvider<Vec3dOption> provider) {
-		this(Text.literal(name), Text.literal(description), defaultValue, provider);
+		this(Text.literal(name), _ -> Text.literal(description), defaultValue, provider);
 	}
 
 	@Override

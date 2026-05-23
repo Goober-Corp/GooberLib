@@ -6,6 +6,7 @@ import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 
 import java.awt.*;
+import java.util.function.Function;
 
 public class ColorOption extends BaseOption<ColorOption> {
 	/// @implNote This is in ARGB
@@ -13,18 +14,18 @@ public class ColorOption extends BaseOption<ColorOption> {
 	/// @implNote Modifying this value directly will *not* trigger .onChange(). This is in ARGB
 	public int value;
 
-	public ColorOption(Text name, Text description, int defaultValue, WidgetProvider<ColorOption> provider) {
+	public ColorOption(Text name, Function<ColorOption, Text> description, int defaultValue, WidgetProvider<ColorOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
 
 	public ColorOption(String name, String description) {
-		this(Text.literal(name), Text.literal(description), 0xFFFFFFFF, null);
+		this(Text.literal(name), _ -> Text.literal(description), 0xFFFFFFFF, null);
 	}
 
 	public ColorOption(String name, String description, WidgetProvider<ColorOption> provider) {
-		this(Text.literal(name), Text.literal(description), 0xFFFFFFFF, provider);
+		this(Text.literal(name), _ -> Text.literal(description), 0xFFFFFFFF, provider);
 	}
 
 	@Override

@@ -5,6 +5,8 @@ import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 
+import java.util.function.Function;
+
 public class ByteOption extends BaseOption<ByteOption> {
 	private final byte defaultValue;
 	private final byte min;
@@ -12,7 +14,7 @@ public class ByteOption extends BaseOption<ByteOption> {
 	/// @implNote Modifying this value directly will *not* trigger .onChange()
 	public byte value;
 
-	public ByteOption(Text name, Text description, byte defaultValue, byte min, byte max, WidgetProvider<ByteOption> provider) {
+	public ByteOption(Text name, Function<ByteOption, Text> description, byte defaultValue, byte min, byte max, WidgetProvider<ByteOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -21,11 +23,11 @@ public class ByteOption extends BaseOption<ByteOption> {
 	}
 
 	public ByteOption(String name, String description) {
-		this(Text.literal(name), Text.literal(description), (byte) 0, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
+		this(Text.literal(name), _ -> Text.literal(description), (byte) 0, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
 	}
 
 	public ByteOption(String name, String description, WidgetProvider<ByteOption> provider) {
-		this(Text.literal(name), Text.literal(description), (byte) 0, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
+		this(Text.literal(name), _ -> Text.literal(description), (byte) 0, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
 	}
 
 	@Override

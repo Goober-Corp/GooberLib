@@ -5,6 +5,8 @@ import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 
+import java.util.function.Function;
+
 import static java.lang.Math.clamp;
 
 public class DoubleOption extends BaseOption<DoubleOption> {
@@ -13,7 +15,7 @@ public class DoubleOption extends BaseOption<DoubleOption> {
 	private final double max;
 	public double value;
 
-	public DoubleOption(Text name, Text description, double defaultValue, double min, double max, WidgetProvider<DoubleOption> provider) {
+	public DoubleOption(Text name, Function<DoubleOption, Text> description, double defaultValue, double min, double max, WidgetProvider<DoubleOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -22,11 +24,11 @@ public class DoubleOption extends BaseOption<DoubleOption> {
 	}
 
 	public DoubleOption(String name, String description) {
-		this(Text.literal(name), Text.literal(description), 0, Double.MIN_VALUE, Double.MAX_VALUE, null);
+		this(Text.literal(name), _ -> Text.literal(description), 0, Double.MIN_VALUE, Double.MAX_VALUE, null);
 	}
 
 	public DoubleOption(String name, String description, WidgetProvider<DoubleOption> provider) {
-		this(Text.literal(name), Text.literal(description), 0, Double.MIN_VALUE, Double.MAX_VALUE, provider);
+		this(Text.literal(name), _ -> Text.literal(description), 0, Double.MIN_VALUE, Double.MAX_VALUE, provider);
 	}
 
 	@Override

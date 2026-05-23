@@ -6,22 +6,24 @@ import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import java.util.function.Function;
+
 public class IdentifierOption extends BaseOption<IdentifierOption> {
 	private final Identifier defaultValue;
 	private Identifier value;
 
-	public IdentifierOption(Text name, Text description, Identifier defaultValue, WidgetProvider<IdentifierOption> provider) {
+	public IdentifierOption(Text name, Function<IdentifierOption, Text> description, Identifier defaultValue, WidgetProvider<IdentifierOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
 
 	public IdentifierOption(String name, String description, Identifier defaultValue) {
-		this(Text.literal(name), Text.literal(description), defaultValue, null);
+		this(Text.literal(name), _ -> Text.literal(description), defaultValue, null);
 	}
 
 	public IdentifierOption(String name, String description, Identifier defaultValue, WidgetProvider<IdentifierOption> provider) {
-		this(Text.literal(name), Text.literal(description), defaultValue, provider);
+		this(Text.literal(name), _ -> Text.literal(description), defaultValue, provider);
 	}
 
 	@Override

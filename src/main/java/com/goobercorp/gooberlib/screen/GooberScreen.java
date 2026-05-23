@@ -94,7 +94,7 @@ public class GooberScreen extends Screen {
 							metadata.name(),
 							textRenderer
 					);
-					PrecisePositionWidgetWrapper<GroupTextWidget> widgetWrapper = new PrecisePositionWidgetWrapper<>(t, x + ((double) MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (double) textRenderer.getWidth(metadata.name()) / 2, y, metadata.description());
+					PrecisePositionWidgetWrapper<GroupTextWidget> widgetWrapper = new PrecisePositionWidgetWrapper<>(t, x + ((double) MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (double) textRenderer.getWidth(metadata.name()) / 2, y, metadata::description);
 					evilLayout.put(o, widgetWrapper);
 					if (new ScreenRect((int) widgetWrapper.getRealX(), (int) widgetWrapper.getRealY(), widgetWrapper.getWrapped().getRight(), widgetWrapper.getWrapped().getBottom()).overlaps(new ScreenRect(0, 0, width, height))) {
 						t.renderProgress = 1;
@@ -137,7 +137,7 @@ public class GooberScreen extends Screen {
 		Option<?> option = optionContext.option();
 		ClickableWidget widget = option.makeWidget(0, 0, 125, VERTICAL_PADDING / 2.0);
 
-		PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x, y + addY, option.description());
+		PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x, y + addY, option::getDescription);
 		this.addDrawableChild(pw);
 		evilLayout.put(optionContext, pw);
 		addY += VERTICAL_PADDING;
@@ -160,7 +160,7 @@ public class GooberScreen extends Screen {
 
 		for (PrecisePositionWidgetWrapper<?> yeah : evilLayout.values()) {
 			if (yeah.isMouseOver(mouseX, mouseY)) {
-				descriptionText = yeah.getHoverMessage();
+				descriptionText = yeah.getHoverMessage().get();
 				animateHoverDescription = true;
 				break;
 			}

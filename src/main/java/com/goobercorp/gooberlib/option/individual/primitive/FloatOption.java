@@ -5,6 +5,8 @@ import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 
+import java.util.function.Function;
+
 import static java.lang.Math.clamp;
 
 public class FloatOption extends BaseOption<FloatOption> {
@@ -13,7 +15,7 @@ public class FloatOption extends BaseOption<FloatOption> {
 	private final float max;
 	public float value;
 
-	public FloatOption(Text name, Text description, float defaultValue, float min, float max, WidgetProvider<FloatOption> provider) {
+	public FloatOption(Text name, Function<FloatOption, Text> description, float defaultValue, float min, float max, WidgetProvider<FloatOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -22,11 +24,11 @@ public class FloatOption extends BaseOption<FloatOption> {
 	}
 
 	public FloatOption(String name, String description) {
-		this(Text.literal(name), Text.literal(description), 0, Float.MIN_VALUE, Float.MAX_VALUE, null);
+		this(Text.literal(name), _ -> Text.literal(description), 0, Float.MIN_VALUE, Float.MAX_VALUE, null);
 	}
 
 	public FloatOption(String name, String description, WidgetProvider<FloatOption> provider) {
-		this(Text.literal(name), Text.literal(description), 0, Float.MIN_VALUE, Float.MAX_VALUE, provider);
+		this(Text.literal(name), _ -> Text.literal(description), 0, Float.MIN_VALUE, Float.MAX_VALUE, provider);
 	}
 
 	@Override

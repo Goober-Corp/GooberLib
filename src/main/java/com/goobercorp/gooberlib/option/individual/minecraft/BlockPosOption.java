@@ -6,18 +6,20 @@ import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.function.Function;
+
 public class BlockPosOption extends BaseOption<BlockPosOption> {
 	private final BlockPos defaultValue;
 	private BlockPos value;
 
-	public BlockPosOption(Text name, Text description, BlockPos defaultValue, WidgetProvider<BlockPosOption> provider) {
+	public BlockPosOption(Text name, Function<BlockPosOption, Text> description, BlockPos defaultValue, WidgetProvider<BlockPosOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
 
 	public BlockPosOption(String name, String description) {
-		this(Text.of(name), Text.of(description), BlockPos.ORIGIN, null);
+		this(Text.of(name), _ -> Text.of(description), BlockPos.ORIGIN, null);
 	}
 
 	@Override
