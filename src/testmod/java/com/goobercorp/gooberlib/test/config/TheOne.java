@@ -2,6 +2,7 @@ package com.goobercorp.gooberlib.test.config;
 
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
+import com.goobercorp.gooberlib.builder.section.ConfigSection;
 import com.goobercorp.gooberlib.option.individual.hotkey.HotkeyOption;
 import com.goobercorp.gooberlib.option.individual.java.*;
 import com.goobercorp.gooberlib.option.individual.minecraft.*;
@@ -87,6 +88,8 @@ public class TheOne {
 		});
 	});
 
+	public static final ConfigSection testSection = ConfigSection.builder("test section", "this tests if meow meow").options(new IntOption("meow", "mrp")).buildSection();
+
 	// @formatter:off
 	public static final ConfigCategory category = ConfigCategory.builder("the one", "description of meow")
 			.sectionWithOptions("primitive", booleanOption, byteOption, shortOption, charOption, intOption, longOption, floatOption, doubleOption)
@@ -102,6 +105,7 @@ public class TheOne {
 					s.option(new IntOption("option " + i, ""), o -> o.child(new DoubleOption("child option " + finalI, "")));
 				}
 			})
+			.addBuiltSection(testSection)
 		.buildCategory();
 	// @formatter:on
 }
