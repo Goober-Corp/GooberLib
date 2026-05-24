@@ -2,8 +2,6 @@ package com.goobercorp.gooberlib.gui;
 
 import com.goobercorp.gooberlib.option.individual.primitive.IntOption;
 import com.goobercorp.gooberlib.util.RenderUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
@@ -18,7 +16,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
-@Environment(EnvType.CLIENT)
 public class EvilSliderWidget extends ClickableWidget {
 	protected double value;
 	protected boolean sliderFocused;
@@ -111,13 +108,7 @@ public class EvilSliderWidget extends ClickableWidget {
 	}
 
 	protected void setValue(double d) {
-		double e = this.value;
 		this.value = MathHelper.clamp(d, 0.0, 1.0);
-		if (e != this.value) {
-			this.applyValue();
-		}
-
-		this.updateMessage();
 		opt.setValue(MathHelper.floor(MathHelper.lerp(value, opt.getMin(), opt.getMax())));
 	}
 
@@ -135,13 +126,5 @@ public class EvilSliderWidget extends ClickableWidget {
 	public void onRelease(Click click) {
 		this.dragging = false;
 		super.playDownSound(MinecraftClient.getInstance().getSoundManager());
-	}
-
-	protected void updateMessage() {
-
-	}
-
-	protected void applyValue() {
-
 	}
 }

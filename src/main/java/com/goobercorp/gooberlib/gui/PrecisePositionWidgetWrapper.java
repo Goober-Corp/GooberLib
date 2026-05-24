@@ -121,13 +121,15 @@ public class PrecisePositionWidgetWrapper<T extends ClickableWidget> implements 
 
 	@Override
 	public void render(DrawContext drawContext, int i, int j, float f) {
+		// todo: move this outside of this class (not related to a precise position wrapper gui element; should extend this or be handled in the screen)
 		boolean isOnScreen = new ScreenRect((int) getRealX(), (int) getRealY(), wrapped.getRight(), wrapped.getBottom()).overlaps(new ScreenRect(0, 0, drawContext.getScaledWindowWidth(), drawContext.getScaledWindowHeight()));
 		this.x = RenderUtils.ease(this.x, isOnScreen ? targetInset : x, 10);
 		renderProgress = (float) RenderUtils.ease(renderProgress, isOnScreen ? 1 : 0, 15);
 		if (isOnScreen) {
-			drawContext.getMatrices().pushMatrix().translate((float) getRealX(), (float) getRealY());
-			wrapped.render(drawContext, (int) Math.round(i - getRealX()), (int) Math.round(j - getRealY()), f);
-			drawContext.getMatrices().popMatrix();
+			RenderUtils.newMatrixScope(drawContext, matrix3x2fStack -> {
+				matrix3x2fStack.translate((float) getRealX(), (float) getRealY());
+				wrapped.render(drawContext, (int) Math.round(i - getRealX()), (int) Math.round(j - getRealY()), f);
+			});
 		}
 	}
 

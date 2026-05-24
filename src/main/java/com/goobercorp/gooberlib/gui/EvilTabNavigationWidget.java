@@ -72,6 +72,7 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 				//dragging stops if cursor goes off of selected tab. intended
 				//dragging continues if cursor goes back onto selected tab. unintended.
 				//tell kr1v this is why i like my own dragging impl
+				// kr1v: glup
 				this.targetX += (float) deltaX;
 			}
 		}
