@@ -22,8 +22,8 @@ public class EvilSliderWidget extends ClickableWidget {
 	private boolean dragging;
 	private final IntOption opt;
 
-	public EvilSliderWidget(IntOption opt, int x, int y, double width, double height) {
-		super(x, y, (int) width, (int) height, opt.name());
+	public EvilSliderWidget(IntOption opt, int x, int y, int width, int height) {
+		super(x, y, width, height, opt.name());
 		this.opt = opt;
 		this.value = getInterpolatedValue(opt.getValue(), opt.getMin(), opt.getMax());
 	}

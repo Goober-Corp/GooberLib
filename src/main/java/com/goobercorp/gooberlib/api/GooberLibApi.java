@@ -200,7 +200,7 @@ public class GooberLibApi {
 			//noinspection unchecked
 			return (WidgetProvider<T>) widgetProviders.get(optionClass);
 		}
-		return (theOption, x, y, width, height) -> new TextWidget(x, y, (int) width, (int) height, theOption.name(), MinecraftClient.getInstance().textRenderer);
+		return (theOption, x, y, width, height) -> new TextWidget(x, y, width, height, theOption.name(), MinecraftClient.getInstance().textRenderer);
 //		throw new IllegalArgumentException("No default widget provider for " + optionClass);
 	}
 

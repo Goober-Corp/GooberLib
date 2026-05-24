@@ -15,8 +15,8 @@ public class TickBoxWidget extends ClickableWidget {
 	BooleanOption opt;
 	Tweener t;
 
-	public TickBoxWidget(BooleanOption opt, int x, int y, double width, double height) {
-		super(x, y, (int) width, (int) height, opt.name());
+	public TickBoxWidget(BooleanOption opt, int x, int y, int width, int height) {
+		super(x, y, width, height, opt.name());
 		this.opt = opt;
 		t = new Tweener(() -> opt.value ? 1 : this.isHovered() ? 0.25 : 0);
 	}

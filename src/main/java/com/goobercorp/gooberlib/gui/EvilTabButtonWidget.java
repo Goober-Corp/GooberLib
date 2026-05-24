@@ -49,6 +49,7 @@ public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWid
 		RenderUtils.drawVerticalLine(context, this.getX() + 1, this.getY() + (isCurrentTab() ? 0 : 1), this.height - 1 - yeah, ohyeah);
 		RenderUtils.drawVerticalLine(context, getRight() - 2, this.getY() + (isCurrentTab() ? 0 : 1), this.height - 1 - yeah, ohyeah);
 		//bottom bullshit
+		// kr1v: :pleading_face:
 		if (isCurrentTab()) {
 			context.drawVerticalLine(getRight() - 1, getY() + 2, getY(), 0x33FFFFFF);
 			context.drawVerticalLine(getX(), getY() + 2, getY(), 0x33FFFFFF);

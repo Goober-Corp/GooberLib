@@ -25,6 +25,6 @@ public interface Option<T extends Option<T>> {
 
 	WidgetProvider<T> getWidgetProvider();
 
-	ClickableWidget makeWidget(int x, int y, double width, double height);
+	ClickableWidget makeWidget(int x, int y, int width, int height);
 
 }

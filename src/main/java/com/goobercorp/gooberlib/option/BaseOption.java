@@ -62,7 +62,7 @@ public abstract class BaseOption<T extends BaseOption<T>> implements Option<T> {
 	}
 
 	@Override
-	public ClickableWidget makeWidget(int x, int y, double width, double height) {
+	public ClickableWidget makeWidget(int x, int y, int width, int height) {
 		return this.getWidgetProvider().makeWidget(thisT(), x, y, width, height);
 	}
 

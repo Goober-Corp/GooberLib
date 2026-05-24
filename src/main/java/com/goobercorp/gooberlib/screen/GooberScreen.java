@@ -135,7 +135,7 @@ public class GooberScreen extends Screen {
 	private int addOptionWithChildren(OptionContext<?> optionContext, int y, int x) {
 		int addY = 0;
 		Option<?> option = optionContext.option();
-		ClickableWidget widget = option.makeWidget(0, 0, 125, VERTICAL_PADDING / 2.0);
+		ClickableWidget widget = option.makeWidget(0, 0, 125, VERTICAL_PADDING / 2);
 
 		PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x, y + addY, option::getDescription);
 		this.addDrawableChild(pw);

@@ -9,8 +9,8 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 public class ColorPickerWidget extends ClickableWidget {
 	private final ColorOption option;
 
-	public ColorPickerWidget(ColorOption theOption, int x, int y, double width, double height) {
-		super(x, y, (int) width, (int) height, theOption.name());
+	public ColorPickerWidget(ColorOption theOption, int x, int y, int width, int height) {
+		super(x, y, width, height, theOption.name());
 		option = theOption;
 	}
 
