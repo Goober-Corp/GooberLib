@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.gui;
 
+import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.util.ScrollTweener;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.*;
@@ -19,33 +20,49 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
+import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
+
 public class EvilTabNavigationWidget extends AbstractParentElement implements Drawable, Selectable {
 	private static final Text USAGE_NARRATION_TEXT = Text.translatable("narration.tab_navigation.usage");
 	private final DirectionalLayoutWidget grid = DirectionalLayoutWidget.horizontal();
 	private int tabNavWidth;
 	private final TabManager tabManager;
 	private final ImmutableList<Tab> tabs;
-	private final ImmutableList<EvilTabButtonWidget> tabButtons;
-	private Double targetX = 0d;
+	private final ArrayList<EvilTabButtonWidget> tabButtons = new ArrayList<>();
+	private double targetX = 0d;
 	private ScrollTweener scrollTweener;
 	private int ticksSinceLastScroll = 0;
+	private int page = 0;
 
 	EvilTabNavigationWidget(int i, TabManager tabManager, Iterable<Tab> iterable) {
 		this.tabNavWidth = i;
 		this.tabManager = tabManager;
 		this.tabs = ImmutableList.copyOf(iterable);
 		this.grid.getMainPositioner().alignHorizontalCenter();
-		ImmutableList.Builder<EvilTabButtonWidget> builder = ImmutableList.builder();
 
 		for (Tab tab : iterable) {
-			builder.add(this.grid.add(new EvilTabButtonWidget(tabManager, tab, 0, 24)));
+			tabButtons.add(this.grid.add(new EvilTabButtonWidget(tabManager, tab, 0, 24)));
 		}
 
-		this.tabButtons = builder.build();
 	}
 
-	public static EvilTabNavigationWidget.Builder builder(TabManager tabManager, int i) {
-		return new EvilTabNavigationWidget.Builder(tabManager, i);
+	public void init() {
+		int i = tabNavWidth - 10;
+//		int j = MathHelper.roundUpToMultiple(i / this.tabs.size(), 2);
+
+		for (EvilTabButtonWidget tabButtonWidget : this.tabButtons) {
+			tabButtonWidget.setWidth(100);
+		}
+
+		this.grid.refreshPositions();
+		this.grid.setX(5);
+		this.targetX = 5d;
+		this.grid.setY(0);
+		scrollTweener = new ScrollTweener(() -> targetX, number -> targetX = number, -grid.getWidth() / 2F, grid.getWidth() / 2F);
+	}
+
+	public static Builder builder(TabManager tabManager, int i) {
+		return new Builder(tabManager, i);
 	}
 
 	public void setWidth(int i) {
@@ -82,7 +99,7 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 	@Override
 	public void setFocused(boolean bl) {
 		super.setFocused(bl);
-		// todo: possible bug? if this gets focussed (bl == true) then no tab will be selected
+		// todo: possible bug? if this gets focused (bl == true) then no tab will be selected
 		if (this.getFocused() != null) {
 			this.setFocused(null);
 		}
@@ -120,7 +137,7 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 	}
 
 	@Override
-	public Selectable.SelectionType getType() {
+	public SelectionType getType() {
 		return this.tabButtons.stream().map(ClickableWidget::getType).max(Comparator.naturalOrder()).orElse(SelectionType.NONE);
 	}
 
@@ -190,20 +207,41 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 
 	@Override
 	public void render(DrawContext drawContext, int i, int j, float f) {
+		if (MainConfig.ENABLE_INFINITE_TAB_SCROLLING.value) {
+			scrollTweener.min = -10000;
+			scrollTweener.max = 10000;
+		}
+//		drawContext.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(page) + " " + String.valueOf(tabButtons.size()), 20, 20, -1, true);
+		page = (int) (scrollTweener.get() / (tabNavWidth + 20));
+		if ((grid.getX() + grid.getWidth()) < tabNavWidth + 20) {
+			tabs.forEach(tab -> {
+				EvilTabButtonWidget widget = new EvilTabButtonWidget(tabManager, tab, 0, 24);
+				widget.setWidth(100);
+				tabButtons.add(grid.add(widget));
+			});
+			grid.refreshPositions();
+		}
+		if (tabButtons.size() > tabs.size() * 2 && scrollTweener.get() < tabNavWidth) {
+			tabs.forEach(_ ->
+					tabButtons.removeFirst()
+			);
+		}
+
+
 		scrollTweener.update();
 		this.grid.setX((int) scrollTweener.get());
-		drawContext.getMatrices().pushMatrix();
-		drawContext.getMatrices().translate((float) (scrollTweener.get() - (int) scrollTweener.get()), 0);
-		drawContext.drawHorizontalLine(0, tabButtons.get(getCurrentTabIndex()).getX() - 1, this.grid.getY() + 1, 0x33FFFFFF);
-		drawContext.drawHorizontalLine(0, tabButtons.get(getCurrentTabIndex()).getX() - 1, this.grid.getY(), 0xBF000000);
+		newMatrixScope(drawContext, stack -> {
+			stack.translate((float) (scrollTweener.get() - (int) scrollTweener.get()), 0);
+			drawContext.drawHorizontalLine(0, tabButtons.get(getCurrentTabIndex()).getX() - 1, this.grid.getY() + 1, 0x33FFFFFF);
+			drawContext.drawHorizontalLine(0, tabButtons.get(getCurrentTabIndex()).getX() - 1, this.grid.getY(), 0xBF000000);
 
-		drawContext.drawHorizontalLine(tabButtons.get(getCurrentTabIndex()).getRight(), tabNavWidth, this.grid.getY() + 1, 0x33FFFFFF);
-		drawContext.drawHorizontalLine(tabButtons.get(getCurrentTabIndex()).getRight(), tabNavWidth, this.grid.getY(), 0xBF000000);
+			drawContext.drawHorizontalLine(tabButtons.get(getCurrentTabIndex()).getRight(), tabNavWidth, this.grid.getY() + 1, 0x33FFFFFF);
+			drawContext.drawHorizontalLine(tabButtons.get(getCurrentTabIndex()).getRight(), tabNavWidth, this.grid.getY(), 0xBF000000);
 
-		for (EvilTabButtonWidget tabButtonWidget : this.tabButtons) {
-			tabButtonWidget.render(drawContext, i, j, f);
-		}
-		drawContext.getMatrices().popMatrix();
+			for (EvilTabButtonWidget tabButtonWidget : this.tabButtons) {
+				tabButtonWidget.render(drawContext, i, j, f);
+			}
+		});
 	}
 
 	public void renderForBackgroundLayer(DrawContext drawContext) {
@@ -222,21 +260,6 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 	@Override
 	public ScreenRect getNavigationFocus() {
 		return this.grid.getNavigationFocus();
-	}
-
-	public void init() {
-		int i = tabNavWidth - 10;
-//        int j = MathHelper.roundUpToMultiple(i / this.tabs.size(), 2);
-
-		for (EvilTabButtonWidget tabButtonWidget : this.tabButtons) {
-			tabButtonWidget.setWidth(100);
-		}
-
-		this.grid.refreshPositions();
-		this.grid.setX(5);
-		this.targetX = 5d;
-		this.grid.setY(0);
-		scrollTweener = new ScrollTweener(() -> targetX, number -> targetX = number, -grid.getWidth() / 2F, grid.getWidth() / 2F);
 	}
 
 	public void selectTab(int i, boolean bl) {
@@ -277,8 +300,8 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 	public boolean mouseScrolled(double d, double e, double f, double g) {
 		ticksSinceLastScroll = 0;
 		scrollTweener.setInteractionState(true);
-		if (targetX > grid.getWidth() / 2F || targetX < -grid.getWidth() / 2F) {
-			targetX += (float) (g * 10 * Math.min(1 / Math.abs(targetX - Math.clamp(targetX, -grid.getWidth() / 2F, grid.getWidth() / 2F)), 1));
+		if (targetX > scrollTweener.max || targetX < scrollTweener.min) {
+			targetX += (float) (g * 10 * Math.min(1 / Math.abs(targetX - Math.clamp(targetX, scrollTweener.min, scrollTweener.max)), 1));
 		} else {
 			targetX += (float) (g * 10);
 		}
@@ -324,7 +347,7 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 			this.width = i;
 		}
 
-		public EvilTabNavigationWidget.Builder tabs(Tab... tabs) {
+		public Builder tabs(Tab... tabs) {
 			Collections.addAll(this.tabs, tabs);
 			return this;
 		}
