@@ -16,16 +16,26 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
+import java.util.function.Function;
+
+// todo: make option widgets widget
+//  widget? i think you meant wider
 public class EvilSliderWidget extends ClickableWidget {
 	protected double value;
+	private final Function<IntOption, Text> valueFormatter;
 	protected boolean sliderFocused;
 	private boolean dragging;
 	private final IntOption opt;
 
-	public EvilSliderWidget(IntOption opt, int x, int y, int width, int height) {
+	public EvilSliderWidget(IntOption opt, int x, int y, int width, int height, Function<IntOption, Text> valueFormatter) {
 		super(x, y, width, height, opt.name());
 		this.opt = opt;
 		this.value = getInterpolatedValue(opt.getValue(), opt.getMin(), opt.getMax());
+		this.valueFormatter = valueFormatter;
+	}
+
+	public EvilSliderWidget(IntOption opt, int x, int y, int width, int height) {
+		this(opt, x, y, width, height, o -> o.name().copy().append(Text.of(": " + o.getValue())));
 	}
 
 	public static float getInterpolatedValue(float val, float min, float max) {
@@ -58,7 +68,7 @@ public class EvilSliderWidget extends ClickableWidget {
 		//TODO: properly center
 		RenderUtils.fillEvil(drawContext, this.getX(), this.getY(), getRight() + 4, getBottom(), 0x80000000);
 		RenderUtils.fillEvil(drawContext, (float) (getX() + (this.value * (this.width))), (float) getY(), (float) (getX() + (this.value * (this.width)) + 4), getBottom(), 0xFFFF0080);
-		drawContext.drawText(MinecraftClient.getInstance().textRenderer, this.message, getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, -1, true);
+		drawContext.drawText(MinecraftClient.getInstance().textRenderer, this.valueFormatter.apply(this.opt), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, -1, true);
 		if (this.isHovered()) {
 			drawContext.setCursor(this.dragging ? StandardCursors.RESIZE_EW : StandardCursors.POINTING_HAND);
 		}

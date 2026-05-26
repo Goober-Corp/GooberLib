@@ -18,7 +18,7 @@ public class MinecraftClientMixin {
 	void yeah(MinecraftClient instance, boolean bl, Operation<Void> original) {
 		try {
 			original.call(instance, bl);
-		} catch (Throwable e) {
+		} catch (Throwable e) { // todo: catching Throwable bad bad bad
 			if (MinecraftClient.getInstance().currentScreen instanceof GooberScreen g && FabricLoaderImpl.INSTANCE.isDevelopmentEnvironment()) {
 				GooberLibEntrypoint.LOGGER.warn("Error while in GooberScreen! Screen closed to avoid relaunch!", e);
 				g.close();

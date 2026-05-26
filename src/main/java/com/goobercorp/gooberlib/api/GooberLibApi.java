@@ -1,6 +1,8 @@
 package com.goobercorp.gooberlib.api;
 
 import com.goobercorp.gooberlib.GooberLibEntrypoint;
+import com.goobercorp.gooberlib.api.widgets.BooleanWidgetProviders;
+import com.goobercorp.gooberlib.api.widgets.IntWidgetProviders;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
 import com.goobercorp.gooberlib.builder.misc.Metadata;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
@@ -12,8 +14,6 @@ import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.option.individual.primitive.IntOption;
 import com.goobercorp.gooberlib.gui.ColorPickerWidget;
-import com.goobercorp.gooberlib.gui.EvilSliderWidget;
-import com.goobercorp.gooberlib.gui.TickBoxWidget;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.screen.GooberScreen;
 import com.goobercorp.gooberlib.util.ConfigDiscovery;
@@ -173,9 +173,9 @@ public class GooberLibApi {
 	private static final Map<Class<? extends Option<?>>, WidgetProvider<?>> widgetProviders = new HashMap<>();
 
 	static {
-		registerWidgetProvider(IntOption.class, EvilSliderWidget::new);
+		registerWidgetProvider(IntOption.class, IntWidgetProviders.slider());
 		registerWidgetProvider(ColorOption.class, ColorPickerWidget::new);
-		registerWidgetProvider(BooleanOption.class, TickBoxWidget::new);
+		registerWidgetProvider(BooleanOption.class, BooleanWidgetProviders.tickBox());
 	}
 
 	/**
