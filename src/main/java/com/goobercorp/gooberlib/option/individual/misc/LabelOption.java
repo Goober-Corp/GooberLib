@@ -1,7 +1,6 @@
-package com.goobercorp.gooberlib.option.individual.minecraft;
+package com.goobercorp.gooberlib.option.individual.misc;
 
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
-import com.goobercorp.gooberlib.option.individual.misc.DummyOption;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
