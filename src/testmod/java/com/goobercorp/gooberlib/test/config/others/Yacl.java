@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.test.config.others;
 
+import com.goobercorp.gooberlib.annotations.GooberConfig;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.goobercorp.gooberlib.builder.category.CategoryBuilder;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 // todo: overloads
+@GooberConfig(modId = "java")
 public class Yacl {
 	/*	public static final BooleanOption booleanToggle = new BooleanOption(Text.of("Boolean Toggle"), _ -> Text.empty()
 				.append(Text.literal("a").styled(style -> style.withHoverEvent(new HoverEvent.ShowText(Text.literal("a")))))
