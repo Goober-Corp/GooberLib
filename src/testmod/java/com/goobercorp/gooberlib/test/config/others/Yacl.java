@@ -1,14 +1,24 @@
 package com.goobercorp.gooberlib.test.config.others;
 
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
+import com.goobercorp.gooberlib.builder.category.CategoryBuilder;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.option.individual.java.CycleOption;
 import com.goobercorp.gooberlib.option.individual.java.EnumOption;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
+import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
+import com.goobercorp.gooberlib.option.individual.misc.LabelOption;
+import com.goobercorp.gooberlib.option.individual.misc.ListOption;
 import com.goobercorp.gooberlib.option.individual.primitive.*;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
+import java.net.URI;
+import java.util.List;
+import java.util.function.Consumer;
 
 // todo: overloads
 public class Yacl {
@@ -48,8 +58,8 @@ public class Yacl {
 	//	public static final ItemOption item = new ItemOption("Item Dropdown", ""); // todo: option
 	public static final EnumOption<Formatting> formattingOption = new EnumOption<>("Enum Dropdown", "", Formatting.class);
 
-//	public static final ListOption<StringOption> stringList = new ListOption<>("", ""); // todo: option
-//	public static final ListOption<IntOption> intList = new ListOption<>("", ""); // todo: option
+	public static final ListOption<StringOption> stringList = new ListOption<>("String List", List.of(), () -> new StringOption("", ""));
+	public static final ListOption<IntOption> intList = new ListOption<>("Slider List", List.of(), () -> new IntOption(Text.of(""), _ -> Text.empty(), 0, 0, 10, null));
 
 	public static final BooleanOption groupTestRoot = new BooleanOption("Root Test", "");
 	public static final BooleanOption groupTestFirstGroup = new BooleanOption("First Group Test 1", "");
@@ -90,8 +100,13 @@ public class Yacl {
 				section.option(formattingOption);
 			});
 			cat.section("Options that aren't really options", section -> {
-//				section.option(new ButtonOption("Button \"Option\""), opt -> opt.setAvailable(false)); // todo option
-//				section.option(new LabelOption(/*...*/)); // todo option
+				section.option(new ButtonOption("Button \"Option\"", /*opt -> opt.setAvailable(false)*/() -> System.out.println("Click!")));
+				section.option(new LabelOption(Text.empty()
+						.append(Text.literal("a").styled(style -> style.withHoverEvent(new HoverEvent.ShowText(Text.literal("a")))))
+						.append(Text.literal("b").styled(style -> style.withHoverEvent(new HoverEvent.ShowText(Text.literal("b")))))
+						.append(Text.literal("c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c").styled(style -> style.withHoverEvent(new HoverEvent.ShowText(Text.literal("c")))))
+						.append(Text.literal("e").styled(style -> style.withHoverEvent(new HoverEvent.ShowText(Text.literal("e")))))
+						.append(Text.literal("click me").styled(style -> style.withClickEvent(new ClickEvent.OpenUrl(URI.create("https://isxander.dev")))))));
 			});
 			cat.sectionWithOptions("Minecraft Bindings", "YACL can also bind Minecraft options!", new BooleanOption("Minecraft AutoJump", "You can even bind minecraft options!") {
 				@Override
@@ -116,9 +131,9 @@ public class Yacl {
 			});
 		});
 		config.category("List Test", cat -> {
-//			cat.option(stringList);
-//			cat.option(intList);
-//			cat.option(new ListOption<LabelOption>("Useless Label List", List.of(new LabelOption("It's quite impressive that literally every single controller works, without problem.")))); // todo: fuckery
+			cat.option(stringList);
+			cat.option(intList);
+			cat.option(new ListOption<>("Useless Label List", List.of(new LabelOption("It's quite impressive that literally every single controller works, without problem.")), () -> new LabelOption("Initial label")));
 		});
 		config.category("Group test", cat -> {
 			cat.option(groupTestRoot);
@@ -133,21 +148,15 @@ public class Yacl {
 			cat.option(alphaColorOption);
 			cat.options(buttonColorOption, alternativePreviewOutline, anotherAlphaColorOption);
 		});
-		config.category("Category Test", _ -> {
-			// todo: label options
-		});
-		config.category("Category Test", _ -> {
-		});
-		config.category("Category Test", _ -> {
-		});
-		config.category("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", _ -> {
-		});
-		config.category("Category Test", _ -> {
-		});
-		config.category("Category Test", _ -> {
-		});
-		config.category("Category Test", _ -> {
-		});
+		Consumer<CategoryBuilder> testCategoryMaker = cat -> cat.option(new LabelOption("This is a test category!"));
+
+		config.category("Category Test", cat -> cat.option(new LabelOption("This is a test category!")));
+		config.category("Category Test", cat -> cat.option(new LabelOption("This is a test category!")));
+		config.category("Category Test", testCategoryMaker);
+		config.category("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", testCategoryMaker);
+		for (int i = 0; i < 3; i++) {
+			config.category("Category Test", testCategoryMaker);
+		}
 		config.category("Placeholder Category", _ -> {
 			// todo: custom screens for certain categories
 		});

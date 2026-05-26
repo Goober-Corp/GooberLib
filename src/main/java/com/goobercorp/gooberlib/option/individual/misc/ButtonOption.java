@@ -22,6 +22,10 @@ public class ButtonOption extends DummyOption<ButtonOption> {
 		this(Text.of(name), _ -> Text.of(description), r, null);
 	}
 
+	public ButtonOption(String name, Runnable r) {
+		this(Text.of(name), _ -> Text.empty(), r, null);
+	}
+
 	public void execute() {
 		r.run();
 	}
