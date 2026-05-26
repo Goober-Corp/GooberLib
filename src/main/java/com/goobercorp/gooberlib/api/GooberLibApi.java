@@ -4,17 +4,19 @@ import com.goobercorp.gooberlib.GooberLibEntrypoint;
 import com.goobercorp.gooberlib.api.widgets.BooleanWidgetProviders;
 import com.goobercorp.gooberlib.api.widgets.IntWidgetProviders;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
-import com.goobercorp.gooberlib.builder.misc.Metadata;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
+import com.goobercorp.gooberlib.builder.misc.Metadata;
+import com.goobercorp.gooberlib.builder.misc.OptionHolder;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
+import com.goobercorp.gooberlib.gui.ColorPickerWidget;
+import com.goobercorp.gooberlib.gui.EvilButtonWidget;
+import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
-import com.goobercorp.gooberlib.builder.misc.OptionHolder;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
+import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.option.individual.primitive.IntOption;
-import com.goobercorp.gooberlib.gui.ColorPickerWidget;
-import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.screen.GooberScreen;
 import com.goobercorp.gooberlib.util.ConfigDiscovery;
 import com.google.gson.*;
@@ -176,6 +178,7 @@ public class GooberLibApi {
 		registerWidgetProvider(IntOption.class, IntWidgetProviders.slider());
 		registerWidgetProvider(ColorOption.class, ColorPickerWidget::new);
 		registerWidgetProvider(BooleanOption.class, BooleanWidgetProviders.tickBox());
+		registerWidgetProvider(ButtonOption.class, EvilButtonWidget::new);
 	}
 
 	/**

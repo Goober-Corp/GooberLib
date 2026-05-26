@@ -1,8 +1,10 @@
 package com.goobercorp.gooberlib.gui;
 
+import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.DrawnTextConsumer;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -71,33 +73,34 @@ public class GroupTextWidget extends AbstractTextWidget {
 		renderProgress = (float) RenderUtils.ease(renderProgress, 1, 5F);
 		//this requires the widget to be centered. fuck
 		float yeah = this.getX() - drawContext.getScaledWindowWidth() / 2F + getTextRenderer().getWidth(message) / 2F;
-		RenderUtils.drawThinningHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 4.5F, 0, 0x80000000, 2.25F, false);
-		RenderUtils.drawThinningHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 3.5F, 0, -1, 2.25F, false);
+		RenderUtils.drawThinningHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 4.5F, 0, MainConfig.shadowCol, 2.25F, false);
+		RenderUtils.drawThinningHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 3.5F, 0, MainConfig.primaryCol, 2.25F, false);
 		int otherYeah = this.getX() + getTextRenderer().getWidth(message);
-		RenderUtils.drawThinningHorizontalLine(drawContext, otherYeah + 1, MathHelper.lerp(1 - renderProgress, this.getX() + getTextRenderer().getWidth(message) / 2f + drawContext.getScaledWindowWidth() / 2F - 1, otherYeah), this.getY() + 4.5F, 0xFF3e3e3e, 0, 2.25F, true);
-		RenderUtils.drawThinningHorizontalLine(drawContext, otherYeah, MathHelper.lerp(1 - renderProgress, this.getX() + getTextRenderer().getWidth(message) / 2f + drawContext.getScaledWindowWidth() / 2F - 1, otherYeah), this.getY() + 3.5F, -1, 0, 2.25F, true);
+		RenderUtils.drawThinningHorizontalLine(drawContext, otherYeah + 1, MathHelper.lerp(1 - renderProgress, this.getX() + getTextRenderer().getWidth(message) / 2f + drawContext.getScaledWindowWidth() / 2F - 1, otherYeah), this.getY() + 4.5F, MainConfig.shadowCol, 0, 2.25F, true);
+		RenderUtils.drawThinningHorizontalLine(drawContext, otherYeah, MathHelper.lerp(1 - renderProgress, this.getX() + getTextRenderer().getWidth(message) / 2f + drawContext.getScaledWindowWidth() / 2F - 1, otherYeah), this.getY() + 3.5F, MainConfig.primaryCol, 0, 2.25F, true);
+		drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, message, MinecraftClient.getInstance().textRenderer.getWidth(message) / 2, 0, MainConfig.primaryCol);
 	}
 
 	@Override
 	public void draw(DrawnTextConsumer drawnTextConsumer) {
-		Text text = this.getMessage();
-		TextRenderer textRenderer = this.getTextRenderer();
-		int i = this.maxWidth > 0 ? this.maxWidth : this.getWidth();
-		int j = textRenderer.getWidth(text);
-		int k = this.getX();
-		int l = this.getY() + (this.getHeight() - 9) / 2;
-		boolean bl = j > i;
-		if (bl) {
-			switch (this.textOverflow) {
-				case CLAMPED:
-					drawnTextConsumer.text(k, l, trim(text, textRenderer, i));
-					break;
-				case SCROLLING:
-					this.drawTextWithMargin(drawnTextConsumer, text, 2);
-			}
-		} else {
-			drawnTextConsumer.text(k, l, text.asOrderedText());
-		}
+//		Text text = this.getMessage();
+//		TextRenderer textRenderer = this.getTextRenderer();
+//		int i = this.maxWidth > 0 ? this.maxWidth : this.getWidth();
+//		int j = textRenderer.getWidth(text);
+//		int k = this.getX();
+//		int l = this.getY() + (this.getHeight() - 9) / 2;
+//		boolean bl = j > i;
+//		if (bl) {
+//			switch (this.textOverflow) {
+//				case CLAMPED:
+//					drawnTextConsumer.text(k, l, trim(text, textRenderer, i));
+//					break;
+//				case SCROLLING:
+//					this.drawTextWithMargin(drawnTextConsumer, text, 2);
+//			}
+//		} else {
+//			drawnTextConsumer.text(k, l, text.asOrderedText());
+//		}
 	}
 
 	public static OrderedText trim(Text text, TextRenderer textRenderer, int i) {

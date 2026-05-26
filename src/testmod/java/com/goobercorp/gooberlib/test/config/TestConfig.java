@@ -2,6 +2,7 @@ package com.goobercorp.gooberlib.test.config;
 
 import com.goobercorp.gooberlib.annotations.GooberConfig;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
+import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import com.goobercorp.gooberlib.option.individual.primitive.IntOption;
 
 @SuppressWarnings("unused")
@@ -17,6 +18,7 @@ public class TestConfig {
 	public static final IntOption int7 = new IntOption("yeah", "");
 	public static final IntOption int8 = new IntOption("yeah", "");
 	public static final IntOption hotkey = new IntOption("nya gothkey", "");
+	public static final ButtonOption evilButtonOpt = new ButtonOption("yeah", "yeah", () -> System.out.println("YEAH!!!"));
 
 	// @formatter:off
     public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.create("YEAH!!!")
@@ -29,7 +31,7 @@ public class TestConfig {
 			        .optionWithChildren(int5, int6, hotkey)
                     .build()
                 .section("second section yknow how it be")
-                    .options(int7)
+                    .options(int7, evilButtonOpt)
                     .build()
                 .build()
             .category("second category")

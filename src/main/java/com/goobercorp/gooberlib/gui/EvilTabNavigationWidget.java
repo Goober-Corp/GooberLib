@@ -1,6 +1,7 @@
 package com.goobercorp.gooberlib.gui;
 
 import com.goobercorp.gooberlib.config.MainConfig;
+import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.ScrollTweener;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.*;
@@ -232,11 +233,11 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 		this.grid.setX((int) scrollTweener.get());
 		newMatrixScope(drawContext, stack -> {
 			stack.translate((float) (scrollTweener.get() - (int) scrollTweener.get()), 0);
-			drawContext.drawHorizontalLine(0, tabButtons.get(getCurrentTabIndex()).getX() - 1, this.grid.getY() + 1, 0x33FFFFFF);
-			drawContext.drawHorizontalLine(0, tabButtons.get(getCurrentTabIndex()).getX() - 1, this.grid.getY(), 0xBF000000);
+			RenderUtils.drawHorizontalLine(drawContext, -1, tabButtons.get(getCurrentTabIndex()).getX() - 1, this.grid.getY() + 1, 0x33FFFFFF);
+			RenderUtils.drawHorizontalLine(drawContext, -1, tabButtons.get(getCurrentTabIndex()).getX() - 1, this.grid.getY(), 0xBF000000);
 
-			drawContext.drawHorizontalLine(tabButtons.get(getCurrentTabIndex()).getRight(), tabNavWidth, this.grid.getY() + 1, 0x33FFFFFF);
-			drawContext.drawHorizontalLine(tabButtons.get(getCurrentTabIndex()).getRight(), tabNavWidth, this.grid.getY(), 0xBF000000);
+			RenderUtils.drawHorizontalLine(drawContext, tabButtons.get(getCurrentTabIndex()).getRight(), tabNavWidth, this.grid.getY() + 1, 0x33FFFFFF);
+			RenderUtils.drawHorizontalLine(drawContext, tabButtons.get(getCurrentTabIndex()).getRight(), tabNavWidth, this.grid.getY(), 0xBF000000);
 
 			for (EvilTabButtonWidget tabButtonWidget : this.tabButtons) {
 				tabButtonWidget.render(drawContext, i, j, f);
