@@ -33,9 +33,9 @@ public class Yacl {
 	public static final BooleanOption tickbox = new BooleanOption("Tick Box", "There are even alternate methods of displaying the same data type!");
 
 	public static final IntOption intSlider = new IntOption(Text.of("Int Slider"), _ -> Text.empty(), 1, 0, 3, null);
-	public static final DoubleOption doubleSlider = new DoubleOption(Text.of("Double Slider"), _ -> Text.empty(), 0.05, 0, 3, null); // todo: widget
-	public static final FloatOption floatSlider = new FloatOption(Text.of("Double Slider"), _ -> Text.empty(), 0.1f, 0, 3, null); // todo: widget
-	public static final LongOption longSlider = new LongOption(Text.of("Double Slider"), _ -> Text.empty(), 100, 0, 1_000_000, null); // todo: widget
+	public static final DoubleOption doubleSlider = new DoubleOption(Text.of("Double Slider"), _ -> Text.empty(), 0.05, 0, 3, null);
+	public static final FloatOption floatSlider = new FloatOption(Text.of("Double Slider"), _ -> Text.empty(), 0.1f, 0, 3, null);
+	public static final LongOption longSlider = new LongOption(Text.of("Double Slider"), _ -> Text.empty(), 100, 0, 1_000_000, null);
 	public static final StringOption textField = new StringOption("Component Option", ""); // todo: widget
 	public static final ColorOption colorOption = new ColorOption("Color Option", ""); // todo: widget
 

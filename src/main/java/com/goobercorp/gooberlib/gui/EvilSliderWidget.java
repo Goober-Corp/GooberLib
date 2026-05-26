@@ -1,6 +1,6 @@
 package com.goobercorp.gooberlib.gui;
 
-import com.goobercorp.gooberlib.option.individual.primitive.IntOption;
+import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Click;
@@ -17,28 +17,29 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 // todo: make option widgets widget
 //  widget? i think you meant wider
 public class EvilSliderWidget extends ClickableWidget {
 	protected double value;
-	private final Function<IntOption, Text> valueFormatter;
+	private final Supplier<Text> valueFormatter;
 	protected boolean sliderFocused;
 	private boolean dragging;
-	private final IntOption opt;
+	private final NumberOption<?> numberOption;
 
-	public EvilSliderWidget(IntOption opt, int x, int y, int width, int height, Function<IntOption, Text> valueFormatter) {
-		super(x, y, width, height, opt.name());
-		this.opt = opt;
-		this.value = getInterpolatedValue(opt.getValue(), opt.getMin(), opt.getMax());
-		this.valueFormatter = valueFormatter;
+	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height, Function<T, Text> valueFormatter) {
+		super(x, y, width, height, numberOption.name());
+		this.numberOption = numberOption;
+		this.value = getInterpolatedValue(numberOption.getDoubleValue().doubleValue(), numberOption.getDoubleMin(), numberOption.getDoubleMax());
+		this.valueFormatter = () -> valueFormatter.apply(numberOption);
 	}
 
-	public EvilSliderWidget(IntOption opt, int x, int y, int width, int height) {
-		this(opt, x, y, width, height, o -> o.name().copy().append(Text.of(": " + o.getValue())));
+	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height) {
+		this(numberOption, x, y, width, height, t -> t.name().copy().append(": " + t.getDoubleValue()));
 	}
 
-	public static float getInterpolatedValue(float val, float min, float max) {
+	public static double getInterpolatedValue(double val, double min, double max) {
 		return (val - min) / (max - min);
 	}
 
@@ -68,7 +69,7 @@ public class EvilSliderWidget extends ClickableWidget {
 		//TODO: properly center
 		RenderUtils.fillEvil(drawContext, this.getX(), this.getY(), getRight() + 4, getBottom(), 0x80000000);
 		RenderUtils.fillEvil(drawContext, (float) (getX() + (this.value * (this.width))), (float) getY(), (float) (getX() + (this.value * (this.width)) + 4), getBottom(), 0xFFFF0080);
-		drawContext.drawText(MinecraftClient.getInstance().textRenderer, this.valueFormatter.apply(this.opt), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, -1, true);
+		drawContext.drawText(MinecraftClient.getInstance().textRenderer, this.valueFormatter.get(), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, -1, true);
 		if (this.isHovered()) {
 			drawContext.setCursor(this.dragging ? StandardCursors.RESIZE_EW : StandardCursors.POINTING_HAND);
 		}
@@ -119,7 +120,7 @@ public class EvilSliderWidget extends ClickableWidget {
 
 	protected void setValue(double d) {
 		this.value = MathHelper.clamp(d, 0.0, 1.0);
-		opt.setValue(MathHelper.floor(MathHelper.lerp(value, opt.getMin(), opt.getMax())));
+		numberOption.setDoubleValue((1.0 - value) * numberOption.getDoubleMin() + value * numberOption.getDoubleMax());
 	}
 
 	@Override

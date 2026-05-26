@@ -7,7 +7,7 @@ import net.minecraft.text.Text;
 
 import java.util.function.Function;
 
-public class CharOption extends BaseOption<CharOption> {
+public class CharOption extends BaseOption<CharOption> implements NumberOption<CharOption> {
 	private final char defaultValue;
 	private final char min;
 	private final char max;
@@ -69,5 +69,25 @@ public class CharOption extends BaseOption<CharOption> {
 
 	public char getMax() {
 		return max;
+	}
+
+	@Override
+	public Number getDoubleValue() {
+		return (int) this.value;
+	}
+
+	@Override
+	public void setDoubleValue(double n) {
+		this.value = (char) n;
+	}
+
+	@Override
+	public double getDoubleMin() {
+		return this.getMin();
+	}
+
+	@Override
+	public double getDoubleMax() {
+		return this.getMax();
 	}
 }

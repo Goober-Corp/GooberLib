@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 import static java.lang.Math.clamp;
 
-public class FloatOption extends BaseOption<FloatOption> {
+public class FloatOption extends BaseOption<FloatOption> implements NumberOption<FloatOption> {
 	private final float defaultValue;
 	private final float min;
 	private final float max;
@@ -24,11 +24,11 @@ public class FloatOption extends BaseOption<FloatOption> {
 	}
 
 	public FloatOption(String name, String description) {
-		this(Text.literal(name), _ -> Text.literal(description), 0, Float.MIN_VALUE, Float.MAX_VALUE, null);
+		this(Text.literal(name), _ -> Text.literal(description), 0, -Float.MAX_VALUE, Float.MAX_VALUE, null);
 	}
 
 	public FloatOption(String name, String description, WidgetProvider<FloatOption> provider) {
-		this(Text.literal(name), _ -> Text.literal(description), 0, Float.MIN_VALUE, Float.MAX_VALUE, provider);
+		this(Text.literal(name), _ -> Text.literal(description), 0, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
 	}
 
 	@Override
@@ -71,5 +71,25 @@ public class FloatOption extends BaseOption<FloatOption> {
 
 	public float getMax() {
 		return max;
+	}
+
+	@Override
+	public Number getDoubleValue() {
+		return this.value;
+	}
+
+	@Override
+	public void setDoubleValue(double n) {
+		this.value = (float) n;
+	}
+
+	@Override
+	public double getDoubleMin() {
+		return this.getMin();
+	}
+
+	@Override
+	public double getDoubleMax() {
+		return this.getMax();
 	}
 }

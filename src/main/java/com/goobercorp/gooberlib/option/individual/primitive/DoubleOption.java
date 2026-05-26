@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 import static java.lang.Math.clamp;
 
-public class DoubleOption extends BaseOption<DoubleOption> {
+public class DoubleOption extends BaseOption<DoubleOption> implements NumberOption<DoubleOption> {
 	private final double defaultValue;
 	private final double min;
 	private final double max;
@@ -24,11 +24,11 @@ public class DoubleOption extends BaseOption<DoubleOption> {
 	}
 
 	public DoubleOption(String name, String description) {
-		this(Text.literal(name), _ -> Text.literal(description), 0, Double.MIN_VALUE, Double.MAX_VALUE, null);
+		this(Text.literal(name), _ -> Text.literal(description), 0, -Double.MAX_VALUE, Double.MAX_VALUE, null);
 	}
 
 	public DoubleOption(String name, String description, WidgetProvider<DoubleOption> provider) {
-		this(Text.literal(name), _ -> Text.literal(description), 0, Double.MIN_VALUE, Double.MAX_VALUE, provider);
+		this(Text.literal(name), _ -> Text.literal(description), 0, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
 	}
 
 	@Override
@@ -71,5 +71,25 @@ public class DoubleOption extends BaseOption<DoubleOption> {
 
 	public double getMax() {
 		return max;
+	}
+
+	@Override
+	public Number getDoubleValue() {
+		return this.value;
+	}
+
+	@Override
+	public void setDoubleValue(double n) {
+		this.value = n;
+	}
+
+	@Override
+	public double getDoubleMin() {
+		return this.getMin();
+	}
+
+	@Override
+	public double getDoubleMax() {
+		return this.getMax();
 	}
 }

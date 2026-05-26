@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 import static java.lang.Math.clamp;
 
-public class LongOption extends BaseOption<LongOption> {
+public class LongOption extends BaseOption<LongOption> implements NumberOption<LongOption> {
 	private final long defaultValue;
 	private final long min;
 	private final long max;
@@ -71,5 +71,25 @@ public class LongOption extends BaseOption<LongOption> {
 
 	public long getMax() {
 		return max;
+	}
+
+	@Override
+	public Number getDoubleValue() {
+		return this.value;
+	}
+
+	@Override
+	public void setDoubleValue(double n) {
+		this.value = (long) n;
+	}
+
+	@Override
+	public double getDoubleMin() {
+		return this.getMin();
+	}
+
+	@Override
+	public double getDoubleMax() {
+		return this.getMax();
 	}
 }

@@ -2,21 +2,21 @@ package com.goobercorp.gooberlib.api;
 
 import com.goobercorp.gooberlib.GooberLibEntrypoint;
 import com.goobercorp.gooberlib.api.widgets.BooleanWidgetProviders;
-import com.goobercorp.gooberlib.api.widgets.IntWidgetProviders;
+import com.goobercorp.gooberlib.api.widgets.NumberWidgetProviders;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
-import com.goobercorp.gooberlib.builder.category.ConfigCategory;
 import com.goobercorp.gooberlib.builder.misc.Metadata;
-import com.goobercorp.gooberlib.builder.misc.OptionHolder;
+import com.goobercorp.gooberlib.builder.category.ConfigCategory;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
-import com.goobercorp.gooberlib.gui.ColorPickerWidget;
 import com.goobercorp.gooberlib.gui.EvilButtonWidget;
-import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
+import com.goobercorp.gooberlib.builder.misc.OptionHolder;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
-import com.goobercorp.gooberlib.option.individual.primitive.IntOption;
+import com.goobercorp.gooberlib.gui.ColorPickerWidget;
+import com.goobercorp.gooberlib.interfaces.WidgetProvider;
+import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
 import com.goobercorp.gooberlib.screen.GooberScreen;
 import com.goobercorp.gooberlib.util.ConfigDiscovery;
 import com.google.gson.*;
@@ -27,13 +27,13 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextWidget;
+import oshi.util.tuples.Pair;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.apache.commons.io.function.Erase.rethrow;
 
@@ -172,10 +172,11 @@ public class GooberLibApi {
 		out.add(optionName, jo);
 	}
 
-	private static final Map<Class<? extends Option<?>>, WidgetProvider<?>> widgetProviders = new HashMap<>();
+	private static final List<Pair<Class<? extends Option<?>>, WidgetProvider<?>>> widgetProviders = new ArrayList<>();
 
 	static {
-		registerWidgetProvider(IntOption.class, IntWidgetProviders.slider());
+		//noinspection unchecked
+		registerWidgetProvider(NumberOption.class, NumberWidgetProviders.slider());
 		registerWidgetProvider(ColorOption.class, ColorPickerWidget::new);
 		registerWidgetProvider(BooleanOption.class, BooleanWidgetProviders.tickBox());
 		registerWidgetProvider(ButtonOption.class, EvilButtonWidget::new);
@@ -188,7 +189,7 @@ public class GooberLibApi {
 	 * @param widgetProvider the default widget provider to use
 	 */
 	public static <T extends Option<T>> void registerWidgetProvider(Class<T> optionClass, WidgetProvider<T> widgetProvider) {
-		widgetProviders.put(optionClass, widgetProvider);
+		widgetProviders.add(new Pair<>(optionClass, widgetProvider));
 	}
 
 	/**
@@ -199,9 +200,11 @@ public class GooberLibApi {
 	 */
 //	 * @throws IllegalArgumentException if no default widget provider for the given option class was registered
 	public static <T extends Option<T>> WidgetProvider<T> getDefaultWidgetProvider(Class<T> optionClass) {
-		if (widgetProviders.containsKey(optionClass)) {
-			//noinspection unchecked
-			return (WidgetProvider<T>) widgetProviders.get(optionClass);
+		for (Pair<Class<? extends Option<?>>, WidgetProvider<?>> widgetProvider : widgetProviders) {
+			if (widgetProvider.getA().isAssignableFrom(optionClass)) {
+				//noinspection unchecked
+				return (WidgetProvider<T>) widgetProvider.getB();
+			}
 		}
 		return (theOption, x, y, width, height) -> new TextWidget(x, y, width, height, theOption.name(), MinecraftClient.getInstance().textRenderer);
 //		throw new IllegalArgumentException("No default widget provider for " + optionClass);

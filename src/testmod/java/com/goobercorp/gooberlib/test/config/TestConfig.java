@@ -4,12 +4,13 @@ import com.goobercorp.gooberlib.annotations.GooberConfig;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import com.goobercorp.gooberlib.option.individual.primitive.IntOption;
+import net.minecraft.text.Text;
 
 @SuppressWarnings("unused")
 @GooberConfig(modId = "testmod")
 public class TestConfig {
 
-	public static final IntOption int1 = new IntOption("Standalone field", "meow");
+	public static final IntOption int1 = new IntOption(Text.of("Standalone field"), _ -> Text.of("meow"), 0, 0, 25, null);
 	public static final IntOption int2 = new IntOption("standalone child", "");
 	public static final IntOption int3 = new IntOption("second standalone child", "");
 	public static final IntOption int4 = new IntOption("nested child", "");

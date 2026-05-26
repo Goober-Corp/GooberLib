@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 import static java.lang.Math.clamp;
 
-public class IntOption extends BaseOption<IntOption> {
+public class IntOption extends BaseOption<IntOption> implements NumberOption<IntOption> {
 	private final int defaultValue;
 	private final int min;
 	private final int max;
@@ -71,5 +71,25 @@ public class IntOption extends BaseOption<IntOption> {
 
 	public int getMax() {
 		return max;
+	}
+
+	@Override
+	public Number getDoubleValue() {
+		return this.value;
+	}
+
+	@Override
+	public void setDoubleValue(double n) {
+		this.value = (int) n;
+	}
+
+	@Override
+	public double getDoubleMin() {
+		return this.getMin();
+	}
+
+	@Override
+	public double getDoubleMax() {
+		return this.getMax();
 	}
 }

@@ -7,7 +7,7 @@ import net.minecraft.text.Text;
 
 import java.util.function.Function;
 
-public class ByteOption extends BaseOption<ByteOption> {
+public class ByteOption extends BaseOption<ByteOption> implements NumberOption<ByteOption> {
 	private final byte defaultValue;
 	private final byte min;
 	private final byte max;
@@ -70,5 +70,25 @@ public class ByteOption extends BaseOption<ByteOption> {
 
 	public byte getMax() {
 		return max;
+	}
+
+	@Override
+	public Number getDoubleValue() {
+		return this.value;
+	}
+
+	@Override
+	public void setDoubleValue(double n) {
+		this.value = (byte) n;
+	}
+
+	@Override
+	public double getDoubleMin() {
+		return this.getMin();
+	}
+
+	@Override
+	public double getDoubleMax() {
+		return this.getMax();
 	}
 }

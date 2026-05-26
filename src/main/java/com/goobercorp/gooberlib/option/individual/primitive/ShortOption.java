@@ -7,7 +7,7 @@ import net.minecraft.text.Text;
 
 import java.util.function.Function;
 
-public class ShortOption extends BaseOption<ShortOption> {
+public class ShortOption extends BaseOption<ShortOption> implements NumberOption<ShortOption> {
 	private final short defaultValue;
 	private final short min;
 	private final short max;
@@ -72,5 +72,25 @@ public class ShortOption extends BaseOption<ShortOption> {
 
 	public short getMax() {
 		return max;
+	}
+
+	@Override
+	public Number getDoubleValue() {
+		return this.value;
+	}
+
+	@Override
+	public void setDoubleValue(double n) {
+		this.value = (short) n;
+	}
+
+	@Override
+	public double getDoubleMin() {
+		return this.getMin();
+	}
+
+	@Override
+	public double getDoubleMax() {
+		return this.getMax();
 	}
 }
