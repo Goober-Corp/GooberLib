@@ -278,6 +278,7 @@ public class GooberScreen extends Screen {
 
 	@Override
 	public void close() {
+		setFocused(null);
 		MinecraftClient.getInstance().setScreen(parent);
 		GooberLibApi.save(modId, config);
 	}
@@ -287,11 +288,16 @@ public class GooberScreen extends Screen {
 		int selectedTab = tabNavigationWidget.getCurrentTabIndex();
 		super.resize(i, j);
 		tabNavigationWidget.selectTab(selectedTab == -1 ? 0 : selectedTab, false);
+		setFocused(null);
 	}
 
 	@Override
 	public boolean mouseClicked(Click click, boolean bl) {
-		return super.mouseClicked(click, bl);
+		boolean b = super.mouseClicked(click, bl);
+		if (!b) {
+			setFocused(null);
+		}
+		return b;
 	}
 
 	@Override

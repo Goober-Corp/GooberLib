@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
+
 public class PrecisePositionWidgetWrapper<T extends ClickableWidget> implements Drawable, Element, Selectable, Narratable {
 	private final T wrapped;
 	private Supplier<Text> hoverMessage;
@@ -108,6 +110,7 @@ public class PrecisePositionWidgetWrapper<T extends ClickableWidget> implements 
 
 	public PrecisePositionWidgetWrapper(T wrapped, double x, double y, Supplier<Text> description) {
 		this.wrapped = wrapped;
+		renderProgress = new ScreenRect((int) getRealX(), (int) getRealY(), wrapped.getRight(), wrapped.getBottom()).overlaps(new ScreenRect(0, 0, MinecraftClient.getInstance().getWindow().getScaledWidth(), MinecraftClient.getInstance().getWindow().getScaledHeight())) ? 1 : 0;
 		this.x = x - wrapped.getWidth() + 1;
 		this.targetInset = (float) x;
 		this.y = y;
@@ -116,7 +119,6 @@ public class PrecisePositionWidgetWrapper<T extends ClickableWidget> implements 
 		} else {
 			this.hoverMessage = Text::empty;
 		}
-		renderProgress = new ScreenRect((int) getRealX(), (int) getRealY(), wrapped.getRight(), wrapped.getBottom()).overlaps(new ScreenRect(0, 0, MinecraftClient.getInstance().getWindow().getScaledWidth(), MinecraftClient.getInstance().getWindow().getScaledHeight())) ? 1 : 0;
 	}
 
 	@Override
@@ -126,7 +128,7 @@ public class PrecisePositionWidgetWrapper<T extends ClickableWidget> implements 
 		this.x = RenderUtils.ease(this.x, isOnScreen ? targetInset : x, 10);
 		renderProgress = (float) RenderUtils.ease(renderProgress, isOnScreen ? 1 : 0, 15);
 		if (isOnScreen) {
-			RenderUtils.newMatrixScope(drawContext, matrix3x2fStack -> {
+			newMatrixScope(drawContext, matrix3x2fStack -> {
 				matrix3x2fStack.translate((float) getRealX(), (float) getRealY());
 				wrapped.render(drawContext, (int) Math.round(i - getRealX()), (int) Math.round(j - getRealY()), f);
 			});

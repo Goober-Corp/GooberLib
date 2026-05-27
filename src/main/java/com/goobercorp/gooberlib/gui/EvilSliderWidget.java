@@ -1,5 +1,7 @@
 package com.goobercorp.gooberlib.gui;
 
+import com.goobercorp.gooberlib.config.MainConfig;
+import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import net.minecraft.client.MinecraftClient;
@@ -9,7 +11,6 @@ import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.navigation.GuiNavigationType;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
-import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.text.MutableText;
@@ -19,9 +20,11 @@ import net.minecraft.util.math.MathHelper;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
+
 // todo: make option widgets widget
 //  widget? i think you meant wider
-public class EvilSliderWidget extends ClickableWidget {
+public class EvilSliderWidget extends EvilBaseWidget {
 	protected double value;
 	private final Supplier<Text> valueFormatter;
 	protected boolean sliderFocused;
@@ -29,7 +32,7 @@ public class EvilSliderWidget extends ClickableWidget {
 	private final NumberOption<?> numberOption;
 
 	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height, Function<T, Text> valueFormatter) {
-		super(x, y, width, height, numberOption.name());
+		super((BaseOption<?>) numberOption, x, y, width, height);
 		this.numberOption = numberOption;
 		this.value = getInterpolatedValue(numberOption.getDoubleValue().doubleValue(), numberOption.getDoubleMin(), numberOption.getDoubleMax());
 		this.valueFormatter = () -> valueFormatter.apply(numberOption);
@@ -37,6 +40,12 @@ public class EvilSliderWidget extends ClickableWidget {
 
 	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height) {
 		this(numberOption, x, y, width, height, t -> t.name().copy().append(": " + t.getDoubleValue()));
+	}
+
+	@Override
+	protected void drawText(DrawContext drawContext) {
+		drawContext.drawText(MinecraftClient.getInstance().textRenderer, this.valueFormatter.get(), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, -1, true);
+//		super.drawText(drawContext);
 	}
 
 	public static double getInterpolatedValue(double val, double min, double max) {
@@ -66,13 +75,17 @@ public class EvilSliderWidget extends ClickableWidget {
 
 	@Override
 	public void renderWidget(DrawContext drawContext, int i, int j, float f) {
-		//TODO: properly center
-		RenderUtils.fillEvil(drawContext, this.getX(), this.getY(), getRight() + 4, getBottom(), 0x80000000);
-		RenderUtils.fillEvil(drawContext, (float) (getX() + (this.value * (this.width))), (float) getY(), (float) (getX() + (this.value * (this.width)) + 4), getBottom(), 0xFFFF0080);
-		drawContext.drawText(MinecraftClient.getInstance().textRenderer, this.valueFormatter.get(), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, -1, true);
-		if (this.isHovered()) {
-			drawContext.setCursor(this.dragging ? StandardCursors.RESIZE_EW : StandardCursors.POINTING_HAND);
-		}
+		newMatrixScope(drawContext, stack -> {
+//			stack.translate(horizontalPosOffset, verticalPosOffset);
+			//TODO: properly center
+//			RenderUtils.fillEvil(drawContext, this.getX(), this.getY(), getRight() + 4, getBottom(), MainConfig.bgColor);
+			super.renderWidget(drawContext, i, j, f);
+			RenderUtils.fillEvil(drawContext, (float) (getX() + (this.value * (this.width))), (float) getY(), (float) (getX() + (this.value * (this.width)) + 4), getBottom(), MainConfig.primaryCol);
+//			drawContext.drawText(MinecraftClient.getInstance().textRenderer, this.valueFormatter.get(), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, -1, true);
+			if (this.isHovered()) {
+				drawContext.setCursor(this.dragging ? StandardCursors.RESIZE_EW : StandardCursors.POINTING_HAND);
+			}
+		});
 	}
 
 	@Override
@@ -128,6 +141,7 @@ public class EvilSliderWidget extends ClickableWidget {
 		this.setValueFromMouse(click);
 		super.onDrag(click, d, e);
 	}
+
 
 	@Override
 	public void playDownSound(SoundManager soundManager) {
