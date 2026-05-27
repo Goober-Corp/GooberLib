@@ -28,6 +28,10 @@ public class Tweener {
 		return value;
 	}
 
+	public boolean isAtTarget() {
+		return Math.abs(target.get().doubleValue() - value) < 0.001;
+	}
+
 	public double getLerped(double start, double end) {
 		return MathHelper.lerp(value, start, end);
 	}

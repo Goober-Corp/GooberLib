@@ -8,10 +8,12 @@ import com.goobercorp.gooberlib.builder.misc.Metadata;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
 import com.goobercorp.gooberlib.gui.EvilButtonWidget;
+import com.goobercorp.gooberlib.gui.EvilStringWidget;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
 import com.goobercorp.gooberlib.builder.misc.OptionHolder;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
+import com.goobercorp.gooberlib.option.individual.java.StringOption;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.gui.ColorPickerWidget;
@@ -39,6 +41,7 @@ import static org.apache.commons.io.function.Erase.rethrow;
 
 public class GooberLibApi {
 	/// Saves all registered GooberLib configs
+	@SuppressWarnings("unused")
 	public static void saveAll() {
 		ConfigDiscovery.getConfigs().forEach(GooberLibApi::save);
 	}
@@ -180,6 +183,7 @@ public class GooberLibApi {
 		registerWidgetProvider(ColorOption.class, ColorPickerWidget::new);
 		registerWidgetProvider(BooleanOption.class, BooleanWidgetProviders.tickBox());
 		registerWidgetProvider(ButtonOption.class, EvilButtonWidget::new);
+		registerWidgetProvider(StringOption.class, ((theOption, x, y, width, height) -> new EvilStringWidget(theOption.name(), x, y, width, height, theOption::setValue, theOption.value)));
 	}
 
 	/**

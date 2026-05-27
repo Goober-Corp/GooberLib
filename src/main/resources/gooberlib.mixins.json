@@ -9,6 +9,7 @@
     "gui.GuiRendererMixin",
     "gui.InactivityFpsLimiterMixin",
     "gui.MinecraftClientMixin",
+    "gui.TextFieldWidgetMixin",
     "hotkey.KeyboardMixin",
     "hotkey.MouseMixin",
     "init.MainMixin"
