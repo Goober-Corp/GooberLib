@@ -183,7 +183,7 @@ public class GooberLibApi {
 		registerWidgetProvider(ColorOption.class, ColorPickerWidget::new);
 		registerWidgetProvider(BooleanOption.class, BooleanWidgetProviders.tickBox());
 		registerWidgetProvider(ButtonOption.class, EvilButtonWidget::new);
-		registerWidgetProvider(StringOption.class, ((theOption, x, y, width, height) -> new EvilStringWidget(theOption.name(), x, y, width, height, theOption::setValue, theOption.value)));
+		registerWidgetProvider(StringOption.class, ((theOption, x, y, width, height) -> new EvilStringWidget(theOption.name(), x, y, width, height, theOption::setValue, _ -> true, theOption.value)));
 	}
 
 	/**

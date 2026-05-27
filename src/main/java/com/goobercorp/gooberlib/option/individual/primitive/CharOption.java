@@ -6,6 +6,7 @@ import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class CharOption extends BaseOption<CharOption> implements NumberOption<CharOption> {
 	private final char defaultValue;
@@ -89,5 +90,18 @@ public class CharOption extends BaseOption<CharOption> implements NumberOption<C
 	@Override
 	public double getDoubleMax() {
 		return this.getMax();
+	}
+
+	@Override
+	public void setFromString(String s) {
+		try {
+			this.setValue(s.charAt(0));
+		} catch (NumberFormatException _) {
+		}
+	}
+
+	@Override
+	public Predicate<String> getPredicate() {
+		return s -> s.length() == 1;
 	}
 }

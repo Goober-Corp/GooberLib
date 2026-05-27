@@ -6,6 +6,7 @@ import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class ShortOption extends BaseOption<ShortOption> implements NumberOption<ShortOption> {
 	private final short defaultValue;
@@ -92,5 +93,25 @@ public class ShortOption extends BaseOption<ShortOption> implements NumberOption
 	@Override
 	public double getDoubleMax() {
 		return this.getMax();
+	}
+
+	@Override
+	public void setFromString(String s) {
+		try {
+			this.setValue(Short.parseShort(s));
+		} catch (NumberFormatException _) {
+		}
+	}
+
+	@Override
+	public Predicate<String> getPredicate() {
+		return s -> {
+			try {
+				Short.parseShort(s);
+				return true;
+			} catch (NumberFormatException | NullPointerException _) {
+				return false;
+			}
+		};
 	}
 }

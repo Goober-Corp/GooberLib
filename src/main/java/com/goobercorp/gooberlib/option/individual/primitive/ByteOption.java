@@ -6,6 +6,7 @@ import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class ByteOption extends BaseOption<ByteOption> implements NumberOption<ByteOption> {
 	private final byte defaultValue;
@@ -90,5 +91,25 @@ public class ByteOption extends BaseOption<ByteOption> implements NumberOption<B
 	@Override
 	public double getDoubleMax() {
 		return this.getMax();
+	}
+
+	@Override
+	public void setFromString(String s) {
+		try {
+			this.setValue(Byte.parseByte(s));
+		} catch (NumberFormatException _) {
+		}
+	}
+
+	@Override
+	public Predicate<String> getPredicate() {
+		return s -> {
+			try {
+				Byte.parseByte(s);
+				return true;
+			} catch (NumberFormatException | NullPointerException _) {
+				return false;
+			}
+		};
 	}
 }

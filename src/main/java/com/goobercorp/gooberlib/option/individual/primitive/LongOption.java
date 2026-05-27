@@ -6,6 +6,7 @@ import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static java.lang.Math.clamp;
 
@@ -91,5 +92,25 @@ public class LongOption extends BaseOption<LongOption> implements NumberOption<L
 	@Override
 	public double getDoubleMax() {
 		return this.getMax();
+	}
+
+	@Override
+	public void setFromString(String s) {
+		try {
+			this.setValue(Long.parseLong(s));
+		} catch (NumberFormatException _) {
+		}
+	}
+
+	@Override
+	public Predicate<String> getPredicate() {
+		return s -> {
+			try {
+				Long.parseLong(s);
+				return true;
+			} catch (NumberFormatException | NullPointerException _) {
+				return false;
+			}
+		};
 	}
 }
