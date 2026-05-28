@@ -9,7 +9,7 @@ import com.goobercorp.gooberlib.builder.misc.Metadata;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
 import com.goobercorp.gooberlib.gui.EvilButtonWidget;
-import com.goobercorp.gooberlib.gui.EvilStringWidget;
+import com.goobercorp.gooberlib.gui.EvilStringWidgetWithName;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
 import com.goobercorp.gooberlib.builder.misc.OptionHolder;
@@ -188,7 +188,7 @@ public class GooberLibApi {
 		registerWidgetProvider(ColorOption.class, ColorPickerWidget::new);
 		registerWidgetProvider(BooleanOption.class, BooleanWidgetProviders.tickBox());
 		registerWidgetProvider(ButtonOption.class, EvilButtonWidget::new);
-		registerWidgetProvider(StringOption.class, ((theOption, x, y, width, height) -> new EvilStringWidget(theOption.name(), x, y, width, height, theOption::setValue, _ -> true, theOption.value)));
+		registerWidgetProvider(StringOption.class, ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, _ -> true, theOption.value)));
 		registerWidgetProvider(IdentifierOption.class, IdentifierWidgetProviders.twoFields());
 	}
 
