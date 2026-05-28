@@ -13,7 +13,7 @@ public class EvilStringWidgetWithName extends EvilStringWidget {
 	private final int x;
 
 	public EvilStringWidgetWithName(Text name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, String initial) {
-		super(Text.empty(), x + MinecraftClient.getInstance().textRenderer.getWidth(name) + 2, y, width - MinecraftClient.getInstance().textRenderer.getWidth(name) - 2, height, changedListener, predicate, initial);
+		super(Text.empty(), x + MinecraftClient.getInstance().textRenderer.getWidth(name) + 2, y, width - MinecraftClient.getInstance().textRenderer.getWidth(name), height, changedListener, predicate, initial);
 		this.name = name;
 		this.x = x;
 	}

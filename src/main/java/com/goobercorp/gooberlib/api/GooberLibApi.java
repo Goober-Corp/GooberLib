@@ -10,11 +10,10 @@ import com.goobercorp.gooberlib.gui.EvilButtonWidget;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
 import com.goobercorp.gooberlib.builder.misc.OptionHolder;
-import com.goobercorp.gooberlib.option.individual.java.ColorOption;
-import com.goobercorp.gooberlib.option.individual.java.StringOption;
-import com.goobercorp.gooberlib.option.individual.minecraft.IdentifierOption;
-import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
-import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
+import com.goobercorp.gooberlib.option.individual.java.*;
+import com.goobercorp.gooberlib.option.individual.minecraft.*;
+import com.goobercorp.gooberlib.option.individual.misc.*;
+import com.goobercorp.gooberlib.option.individual.primitive.*;
 import com.goobercorp.gooberlib.gui.ColorPickerWidget;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.individual.primitive.CharOption;
@@ -187,6 +186,9 @@ public class GooberLibApi {
 		registerWidgetProvider(ButtonOption.class, EvilButtonWidget::new);
 		registerWidgetProvider(StringOption.class, WidgetProviders.stringField());
 		registerWidgetProvider(IdentifierOption.class, WidgetProviders.identifierTwoFields());
+		registerWidgetProvider(BlockPosOption.class, WidgetProviders.blockPosFields());
+		registerWidgetProvider(Vec3iOption.class, WidgetProviders.vec3iFields());
+		registerWidgetProvider(Vec3dOption.class, WidgetProviders.vec3dFields());
 	}
 
 	/**

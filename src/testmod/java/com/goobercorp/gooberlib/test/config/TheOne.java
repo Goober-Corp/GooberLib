@@ -83,9 +83,9 @@ public class TheOne {
 	public static final ColorOption colorOption = new ColorOption("color option", "color description");
 	public static final EnumOption<SomeEnum> enumOption = new EnumOption<>("enum option", "enum description", SomeEnum.class);
 	public static final CycleOption<String> cycleOption = new CycleOption<>("cycle option", "cycle description", "Option one", "Option two", "Option three");
-	public static final IdentifierOption identifierOptionOne = new IdentifierOption("identifier option one field", "identifier description", Identifier.of("minecraft:stone"), WidgetProviders.identifierOneField());
-	public static final IdentifierOption identifierOptionTwo = new IdentifierOption("identifier option two fields", "identifier description", Identifier.of("minecraft:stone"), WidgetProviders.identifierTwoFields());
-	public static final BlockPosOption blockPosOption = new BlockPosOption("blockpos option", "blockpos description");
+	public static final IdentifierOption identifierOptionOne = new IdentifierOption("c", "identifier description", Identifier.of("minecraft:stone"), WidgetProviders.identifierOneField());
+	public static final IdentifierOption identifierOptionTwo = new IdentifierOption("b", "identifier description", Identifier.of("minecraft:stone"), WidgetProviders.identifierTwoFields());
+	public static final BlockPosOption blockPosOption = new BlockPosOption("a", "blockpos description");
 	public static final Vec2fOption vec2fOption = new Vec2fOption("vec2f option", "vec2f description");
 	public static final Vec3dOption vec3dOption = new Vec3dOption("vec3d option", "vec3d description");
 	public static final Vec3iOption vec3iOption = new Vec3iOption("vec3i option", "vec3i description");
