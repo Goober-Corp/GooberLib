@@ -1,7 +1,7 @@
 package com.goobercorp.gooberlib.test.config.others;
 
 import com.goobercorp.gooberlib.annotations.GooberConfig;
-import com.goobercorp.gooberlib.api.widgets.NumberWidgetProviders;
+import com.goobercorp.gooberlib.api.widgets.WidgetProviders;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.goobercorp.gooberlib.builder.category.CategoryBuilder;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
@@ -49,10 +49,10 @@ public class Yacl {
 	public static final ColorOption alternativePreviewOutline = new ColorOption("Alternative Color Outline", "This helps users who don't know about the color picker discover it, even if a developer chooses a lighter color"); // todo: widget
 	public static final ColorOption anotherAlphaColorOption = new ColorOption("Alpha Color Option 2", "Yay!!!!!!"); // todo: widget
 
-	public static final DoubleOption doubleField = new DoubleOption("Double Field", "", NumberWidgetProviders.field());
-	public static final FloatOption floatField = new FloatOption("Float Field", "", NumberWidgetProviders.field());
-	public static final IntOption intField = new IntOption("Integer Field", "", NumberWidgetProviders.field());
-	public static final LongOption longField = new LongOption("Long Field", "", NumberWidgetProviders.field());
+	public static final DoubleOption doubleField = new DoubleOption("Double Field", "", WidgetProviders.numberField());
+	public static final FloatOption floatField = new FloatOption("Float Field", "", WidgetProviders.numberField());
+	public static final IntOption intField = new IntOption("Integer Field", "", WidgetProviders.numberField());
+	public static final LongOption longField = new LongOption("Long Field", "", WidgetProviders.numberField());
 
 	public static final EnumOption<Alphabet> enumOption = new EnumOption<>("Enum Cycler", "", Alphabet.class); // todo: widget
 	public static final CycleOption<String> stringOptions = new CycleOption<>("String Dropdown", "", "Apple", "Banana", "Cherry", "Date"); // todo: widget

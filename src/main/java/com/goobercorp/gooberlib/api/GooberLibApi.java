@@ -1,15 +1,12 @@
 package com.goobercorp.gooberlib.api;
 
 import com.goobercorp.gooberlib.GooberLibEntrypoint;
-import com.goobercorp.gooberlib.api.widgets.BooleanWidgetProviders;
-import com.goobercorp.gooberlib.api.widgets.IdentifierWidgetProviders;
-import com.goobercorp.gooberlib.api.widgets.NumberWidgetProviders;
+import com.goobercorp.gooberlib.api.widgets.WidgetProviders;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
 import com.goobercorp.gooberlib.builder.misc.Metadata;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
 import com.goobercorp.gooberlib.gui.EvilButtonWidget;
-import com.goobercorp.gooberlib.gui.EvilStringWidgetWithName;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
 import com.goobercorp.gooberlib.builder.misc.OptionHolder;
@@ -182,14 +179,14 @@ public class GooberLibApi {
 	private static final List<Pair<Class<? extends Option<?>>, WidgetProvider<?>>> widgetProviders = new ArrayList<>();
 
 	static {
-		registerWidgetProvider(CharOption.class, NumberWidgetProviders.field());
+		registerWidgetProvider(CharOption.class, WidgetProviders.numberField());
 		//noinspection unchecked
-		registerWidgetProvider(NumberOption.class, NumberWidgetProviders.slider());
+		registerWidgetProvider(NumberOption.class, WidgetProviders.numberSlider());
 		registerWidgetProvider(ColorOption.class, ColorPickerWidget::new);
-		registerWidgetProvider(BooleanOption.class, BooleanWidgetProviders.tickBox());
+		registerWidgetProvider(BooleanOption.class, WidgetProviders.booleanTickBox());
 		registerWidgetProvider(ButtonOption.class, EvilButtonWidget::new);
-		registerWidgetProvider(StringOption.class, ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, _ -> true, theOption.value)));
-		registerWidgetProvider(IdentifierOption.class, IdentifierWidgetProviders.twoFields());
+		registerWidgetProvider(StringOption.class, WidgetProviders.stringField());
+		registerWidgetProvider(IdentifierOption.class, WidgetProviders.identifierTwoFields());
 	}
 
 	/**

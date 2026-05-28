@@ -1,8 +1,7 @@
 package com.goobercorp.gooberlib.test.config;
 
 import com.goobercorp.gooberlib.annotations.Section;
-import com.goobercorp.gooberlib.api.widgets.IdentifierWidgetProviders;
-import com.goobercorp.gooberlib.api.widgets.NumberWidgetProviders;
+import com.goobercorp.gooberlib.api.widgets.WidgetProviders;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
@@ -54,38 +53,38 @@ public class TheOne {
 
 	@Section("field test")
 	public static final StringOption stringOption = new StringOption("string option", "string description");
-	public static final ByteOption byteOption = new ByteOption("byte option field", "byte description", NumberWidgetProviders.field());
-	public static final ShortOption shortOption = new ShortOption("short option field", "short description", NumberWidgetProviders.field());
-	public static final IntOption intOption = new IntOption("int option field", "int description", NumberWidgetProviders.field());
-	public static final LongOption longOption = new LongOption("long option field", "long description", NumberWidgetProviders.field());
-	public static final FloatOption floatOption = new FloatOption("float option field", "float description", NumberWidgetProviders.field());
-	public static final DoubleOption doubleOption = new DoubleOption("double option field", "double description", NumberWidgetProviders.field());
-	public static final CharOption charOption = new CharOption("char option field", "char description", NumberWidgetProviders.field());
+	public static final ByteOption byteOption = new ByteOption("byte option field", "byte description", WidgetProviders.numberField());
+	public static final ShortOption shortOption = new ShortOption("short option field", "short description", WidgetProviders.numberField());
+	public static final IntOption intOption = new IntOption("int option field", "int description", WidgetProviders.numberField());
+	public static final LongOption longOption = new LongOption("long option field", "long description", WidgetProviders.numberField());
+	public static final FloatOption floatOption = new FloatOption("float option field", "float description", WidgetProviders.numberField());
+	public static final DoubleOption doubleOption = new DoubleOption("double option field", "double description", WidgetProviders.numberField());
+	public static final CharOption charOption = new CharOption("char option field", "char description", WidgetProviders.numberField());
 
 	@Section("slider test")
-	public static final ByteOption byteOptionSlider = new ByteOption("byte option slider", "byte description", NumberWidgetProviders.slider());
-	public static final ShortOption shortOptionSlider = new ShortOption("short option slider", "short description", NumberWidgetProviders.slider());
-	public static final IntOption intOptionSlider = new IntOption("int option slider", "int description", NumberWidgetProviders.slider());
-	public static final LongOption longOptionSlider = new LongOption("long option slider", "long description", NumberWidgetProviders.slider());
-	public static final FloatOption floatOptionSlider = new FloatOption("float option slider", "float description", NumberWidgetProviders.slider());
-	public static final DoubleOption doubleOptionSlider = new DoubleOption("double option slider", "double description", NumberWidgetProviders.slider());
-	public static final CharOption charOptionSlider = new CharOption("char option slider", "char description", NumberWidgetProviders.slider());
+	public static final ByteOption byteOptionSlider = new ByteOption("byte option slider", "byte description", WidgetProviders.numberSlider());
+	public static final ShortOption shortOptionSlider = new ShortOption("short option slider", "short description", WidgetProviders.numberSlider());
+	public static final IntOption intOptionSlider = new IntOption("int option slider", "int description", WidgetProviders.numberSlider());
+	public static final LongOption longOptionSlider = new LongOption("long option slider", "long description", WidgetProviders.numberSlider());
+	public static final FloatOption floatOptionSlider = new FloatOption("float option slider", "float description", WidgetProviders.numberSlider());
+	public static final DoubleOption doubleOptionSlider = new DoubleOption("double option slider", "double description", WidgetProviders.numberSlider());
+	public static final CharOption charOptionSlider = new CharOption("char option slider", "char description", WidgetProviders.numberSlider());
 
 	@Section("slider test w/ value formatter")
-	public static final ByteOption byteOptionSliderFormatter = new ByteOption("byte option slider", "byte description", NumberWidgetProviders.sliderWithFormatter(t -> t.name().copy().append("!!! with: " + t.getValue())));
-	public static final ShortOption shortOptionSliderFormatter = new ShortOption("short option slider", "short description", NumberWidgetProviders.sliderWithFormatter(t -> t.name().copy().append("!!! with: " + t.getValue())));
-	public static final IntOption intOptionSliderFormatter = new IntOption("int option slider", "int description", NumberWidgetProviders.sliderWithFormatter(t -> t.name().copy().append("!!! with: " + t.getValue())));
-	public static final LongOption longOptionSliderFormatter = new LongOption("long option slider", "long description", NumberWidgetProviders.sliderWithFormatter(t -> t.name().copy().append("!!! with: " + t.getValue())));
-	public static final FloatOption floatOptionSliderFormatter = new FloatOption("float option slider", "float description", NumberWidgetProviders.sliderWithFormatter(t -> t.name().copy().append("!!! with: " + t.getValue())));
-	public static final DoubleOption doubleOptionSliderFormatter = new DoubleOption("double option slider", "double description", NumberWidgetProviders.sliderWithFormatter(t -> t.name().copy().append("!!! with: " + t.getValue())));
-	public static final CharOption charOptionSliderFormatter = new CharOption("char option slider", "char description", NumberWidgetProviders.sliderWithFormatter(t -> t.name().copy().append("!!! with: " + t.getValue())));
+	public static final ByteOption byteOptionSliderFormatter = new ByteOption("byte option slider", "byte description", WidgetProviders.numberSliderWithFormatter(t -> t.name().copy().append("!!! with: " + t.getValue())));
+	public static final ShortOption shortOptionSliderFormatter = new ShortOption("short option slider", "short description", WidgetProviders.numberSliderWithFormatter(t -> t.name().copy().append("!!! with: " + t.getValue())));
+	public static final IntOption intOptionSliderFormatter = new IntOption("int option slider", "int description", WidgetProviders.numberSliderWithFormatter(t -> t.name().copy().append("!!! with: " + t.getValue())));
+	public static final LongOption longOptionSliderFormatter = new LongOption("long option slider", "long description", WidgetProviders.numberSliderWithFormatter(t -> t.name().copy().append("!!! with: " + t.getValue())));
+	public static final FloatOption floatOptionSliderFormatter = new FloatOption("float option slider", "float description", WidgetProviders.numberSliderWithFormatter(t -> t.name().copy().append("!!! with: " + t.getValue())));
+	public static final DoubleOption doubleOptionSliderFormatter = new DoubleOption("double option slider", "double description", WidgetProviders.numberSliderWithFormatter(t -> t.name().copy().append("!!! with: " + t.getValue())));
+	public static final CharOption charOptionSliderFormatter = new CharOption("char option slider", "char description", WidgetProviders.numberSliderWithFormatter(t -> t.name().copy().append("!!! with: " + t.getValue())));
 
 	@Section("misc options")
 	public static final ColorOption colorOption = new ColorOption("color option", "color description");
 	public static final EnumOption<SomeEnum> enumOption = new EnumOption<>("enum option", "enum description", SomeEnum.class);
 	public static final CycleOption<String> cycleOption = new CycleOption<>("cycle option", "cycle description", "Option one", "Option two", "Option three");
-	public static final IdentifierOption identifierOptionOne = new IdentifierOption("identifier option one field", "identifier description", Identifier.of("minecraft:stone"), IdentifierWidgetProviders.oneField());
-	public static final IdentifierOption identifierOptionTwo = new IdentifierOption("identifier option two fields", "identifier description", Identifier.of("minecraft:stone"), IdentifierWidgetProviders.twoFields());
+	public static final IdentifierOption identifierOptionOne = new IdentifierOption("identifier option one field", "identifier description", Identifier.of("minecraft:stone"), WidgetProviders.identifierOneField());
+	public static final IdentifierOption identifierOptionTwo = new IdentifierOption("identifier option two fields", "identifier description", Identifier.of("minecraft:stone"), WidgetProviders.identifierTwoFields());
 	public static final BlockPosOption blockPosOption = new BlockPosOption("blockpos option", "blockpos description");
 	public static final Vec2fOption vec2fOption = new Vec2fOption("vec2f option", "vec2f description");
 	public static final Vec3dOption vec3dOption = new Vec3dOption("vec3d option", "vec3d description");
