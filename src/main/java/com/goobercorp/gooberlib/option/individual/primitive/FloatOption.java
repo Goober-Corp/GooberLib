@@ -75,7 +75,7 @@ public class FloatOption extends BaseOption<FloatOption> implements NumberOption
 	}
 
 	@Override
-	public Number getDoubleValue() {
+	public Number getNumberValue() {
 		return this.value;
 	}
 

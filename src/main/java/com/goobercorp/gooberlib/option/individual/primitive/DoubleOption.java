@@ -75,7 +75,7 @@ public class DoubleOption extends BaseOption<DoubleOption> implements NumberOpti
 	}
 
 	@Override
-	public Number getDoubleValue() {
+	public Number getNumberValue() {
 		return this.value;
 	}
 

@@ -75,7 +75,7 @@ public class IntOption extends BaseOption<IntOption> implements NumberOption<Int
 	}
 
 	@Override
-	public Number getDoubleValue() {
+	public Number getNumberValue() {
 		return this.value;
 	}
 

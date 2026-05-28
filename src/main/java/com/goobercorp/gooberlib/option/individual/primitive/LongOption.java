@@ -75,7 +75,7 @@ public class LongOption extends BaseOption<LongOption> implements NumberOption<L
 	}
 
 	@Override
-	public Number getDoubleValue() {
+	public Number getNumberValue() {
 		return this.value;
 	}
 

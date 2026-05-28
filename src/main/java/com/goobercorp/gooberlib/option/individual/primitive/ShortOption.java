@@ -76,7 +76,7 @@ public class ShortOption extends BaseOption<ShortOption> implements NumberOption
 	}
 
 	@Override
-	public Number getDoubleValue() {
+	public Number getNumberValue() {
 		return this.value;
 	}
 

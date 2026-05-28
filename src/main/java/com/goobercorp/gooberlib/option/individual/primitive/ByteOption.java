@@ -74,7 +74,7 @@ public class ByteOption extends BaseOption<ByteOption> implements NumberOption<B
 	}
 
 	@Override
-	public Number getDoubleValue() {
+	public Number getNumberValue() {
 		return this.value;
 	}
 

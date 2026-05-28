@@ -34,12 +34,12 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height, Function<T, Text> valueFormatter) {
 		super((BaseOption<?>) numberOption, x, y, width, height);
 		this.numberOption = numberOption;
-		this.value = getInterpolatedValue(numberOption.getDoubleValue().doubleValue(), numberOption.getDoubleMin(), numberOption.getDoubleMax());
+		this.value = getInterpolatedValue(numberOption.getNumberValue().doubleValue(), numberOption.getDoubleMin(), numberOption.getDoubleMax());
 		this.valueFormatter = () -> valueFormatter.apply(numberOption);
 	}
 
 	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height) {
-		this(numberOption, x, y, width, height, t -> t.name().copy().append(": " + t.getDoubleValue()));
+		this(numberOption, x, y, width, height, t -> t.name().copy().append(": " + t.getNumberValue()));
 	}
 
 	@Override

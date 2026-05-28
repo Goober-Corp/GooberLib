@@ -18,6 +18,6 @@ public class NumberWidgetProviders {
 	}
 
 	public static <T extends NumberOption<T>> WidgetProvider<T> field() {
-		return ((theOption, x, y, width, height) -> new EvilStringWidget(theOption.name(), x, y, width, height, theOption::setFromString, theOption.getPredicate(), theOption.getDoubleValue().toString()));
+		return ((theOption, x, y, width, height) -> new EvilStringWidget(theOption.name(), x, y, width, height, theOption::setFromString, theOption.getPredicate(), theOption.getNumberValue().toString()));
 	}
 }

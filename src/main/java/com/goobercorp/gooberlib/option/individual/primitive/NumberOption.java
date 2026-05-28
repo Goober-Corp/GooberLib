@@ -5,7 +5,7 @@ import com.goobercorp.gooberlib.option.Option;
 import java.util.function.Predicate;
 
 public interface NumberOption<T extends Option<T>> extends Option<T> {
-	Number getDoubleValue();
+	Number getNumberValue();
 
 	void setDoubleValue(double n);
 

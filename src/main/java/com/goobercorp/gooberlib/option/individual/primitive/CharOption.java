@@ -73,7 +73,7 @@ public class CharOption extends BaseOption<CharOption> implements NumberOption<C
 	}
 
 	@Override
-	public Number getDoubleValue() {
+	public Number getNumberValue() {
 		return (int) this.value;
 	}
 
@@ -94,14 +94,26 @@ public class CharOption extends BaseOption<CharOption> implements NumberOption<C
 
 	@Override
 	public void setFromString(String s) {
-		try {
+		if (s.length() == 1) {
 			this.setValue(s.charAt(0));
-		} catch (NumberFormatException _) {
+		} else {
+			try {
+				this.setValue((char) Integer.parseInt(s));
+			} catch (NumberFormatException _) {
+			}
 		}
 	}
 
 	@Override
 	public Predicate<String> getPredicate() {
-		return s -> s.length() == 1;
+		return s -> {
+			if (s.length() == 1) return true;
+			try {
+				Integer.parseInt(s);
+				return true;
+			} catch (NumberFormatException _) {
+				return false;
+			}
+		};
 	}
 }

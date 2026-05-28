@@ -2,6 +2,7 @@ package com.goobercorp.gooberlib.api;
 
 import com.goobercorp.gooberlib.GooberLibEntrypoint;
 import com.goobercorp.gooberlib.api.widgets.BooleanWidgetProviders;
+import com.goobercorp.gooberlib.api.widgets.IdentifierWidgetProviders;
 import com.goobercorp.gooberlib.api.widgets.NumberWidgetProviders;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
 import com.goobercorp.gooberlib.builder.misc.Metadata;
@@ -14,10 +15,12 @@ import com.goobercorp.gooberlib.option.OptionContext;
 import com.goobercorp.gooberlib.builder.misc.OptionHolder;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
+import com.goobercorp.gooberlib.option.individual.minecraft.IdentifierOption;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.gui.ColorPickerWidget;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
+import com.goobercorp.gooberlib.option.individual.primitive.CharOption;
 import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
 import com.goobercorp.gooberlib.screen.GooberScreen;
 import com.goobercorp.gooberlib.util.ConfigDiscovery;
@@ -39,6 +42,7 @@ import java.util.List;
 
 import static org.apache.commons.io.function.Erase.rethrow;
 
+// glappy
 public class GooberLibApi {
 	/// Saves all registered GooberLib configs
 	@SuppressWarnings("unused")
@@ -178,12 +182,14 @@ public class GooberLibApi {
 	private static final List<Pair<Class<? extends Option<?>>, WidgetProvider<?>>> widgetProviders = new ArrayList<>();
 
 	static {
+		registerWidgetProvider(CharOption.class, NumberWidgetProviders.field());
 		//noinspection unchecked
 		registerWidgetProvider(NumberOption.class, NumberWidgetProviders.slider());
 		registerWidgetProvider(ColorOption.class, ColorPickerWidget::new);
 		registerWidgetProvider(BooleanOption.class, BooleanWidgetProviders.tickBox());
 		registerWidgetProvider(ButtonOption.class, EvilButtonWidget::new);
 		registerWidgetProvider(StringOption.class, ((theOption, x, y, width, height) -> new EvilStringWidget(theOption.name(), x, y, width, height, theOption::setValue, _ -> true, theOption.value)));
+		registerWidgetProvider(IdentifierOption.class, IdentifierWidgetProviders.twoFields());
 	}
 
 	/**
