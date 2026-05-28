@@ -77,7 +77,7 @@ public class EvilStringWidget extends ClickableWidget {
 	private int x;
 	private Predicate<String> predicate;
 	private String lastAccepted;
-	private int targetCursorX;
+	private int targetCursorX = this.getX();
 	private final Tweener cursorPosTweener = new Tweener(() -> targetCursorX, 10);
 	private int targetCursorWidth;
 	private final Tweener cursorWidthTweener = new Tweener(() -> targetCursorWidth, 10);

@@ -38,6 +38,7 @@ public class IdentifierWidgetProviders {
 		return IdentifiersWidget::new;
 	}
 
+	// todo: colon in between the text field widgets
 	public static class IdentifiersWidget extends ClickableParentWidget {
 		private final EvilStringWidget namespace;
 		private final EvilStringWidget path;
