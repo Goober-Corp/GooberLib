@@ -84,8 +84,8 @@ public class TheOne {
 	public static final ColorOption colorOption = new ColorOption("color option", "color description");
 	public static final EnumOption<SomeEnum> enumOption = new EnumOption<>("enum option", "enum description", SomeEnum.class);
 	public static final CycleOption<String> cycleOption = new CycleOption<>("cycle option", "cycle description", "Option one", "Option two", "Option three");
-	public static final IdentifierOption identifierOptionOne = new IdentifierOption("identifier option", "identifier description", Identifier.of("minecraft:stone"), IdentifierWidgetProviders.oneField());
-	public static final IdentifierOption identifierOptionTwo = new IdentifierOption("identifier option", "identifier description", Identifier.of("minecraft:stone"), IdentifierWidgetProviders.twoFields());
+	public static final IdentifierOption identifierOptionOne = new IdentifierOption("identifier option one field", "identifier description", Identifier.of("minecraft:stone"), IdentifierWidgetProviders.oneField());
+	public static final IdentifierOption identifierOptionTwo = new IdentifierOption("identifier option two fields", "identifier description", Identifier.of("minecraft:stone"), IdentifierWidgetProviders.twoFields());
 	public static final BlockPosOption blockPosOption = new BlockPosOption("blockpos option", "blockpos description");
 	public static final Vec2fOption vec2fOption = new Vec2fOption("vec2f option", "vec2f description");
 	public static final Vec3dOption vec3dOption = new Vec3dOption("vec3d option", "vec3d description");
