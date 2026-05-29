@@ -107,7 +107,7 @@ public class GooberScreen extends Screen {
 						y += addOptionWithChildren(yeah, y, x + CHILD_INSET);
 					}
 				} else {
-					y += addOptionWithChildren((OptionContext<?>) o, y, x + CHILD_INSET);
+					y += addOptionWithChildren((OptionContext<?>) o, y, x + 5);
 				}
 				// TODO: maybe store scroll height for each category?
 				heights[config.categories().indexOf(c)] = Math.max(y - height, 0);
@@ -319,15 +319,18 @@ public class GooberScreen extends Screen {
 
 	@Override
 	public boolean mouseScrolled(double d, double e, double f, double g) {
-		lastScrollTicks = 0;
-		scrollTweener.setInteractionState(true);
-		if (!tabNavigationWidget.isMouseOver(d, e)) {
-			if ((scrollProgress < scrollTweener.min && g < 0) || (scrollProgress > scrollTweener.max && g > 0)) {
-				scrollProgress += g * 15 * Math.min(1 / Math.abs(scrollProgress - Math.clamp(scrollProgress, scrollTweener.min, scrollTweener.max)), 1);
-			} else {
-				scrollProgress += g * 15;
+		boolean yeah = super.mouseScrolled(d, e, f, g);
+		if (!yeah) {
+			lastScrollTicks = 0;
+			scrollTweener.setInteractionState(true);
+			if (!tabNavigationWidget.isMouseOver(d, e)) {
+				if ((scrollProgress < scrollTweener.min && g < 0) || (scrollProgress > scrollTweener.max && g > 0)) {
+					scrollProgress += g * 15 * Math.min(1 / Math.abs(scrollProgress - Math.clamp(scrollProgress, scrollTweener.min, scrollTweener.max)), 1);
+				} else {
+					scrollProgress += g * 15;
+				}
 			}
 		}
-		return super.mouseScrolled(d, e, f, g);
+		return yeah;
 	}
 }

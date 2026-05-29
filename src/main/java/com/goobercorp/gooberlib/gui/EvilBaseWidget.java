@@ -40,14 +40,20 @@ public class EvilBaseWidget extends ClickableWidget {
 
 	@Override
 	public boolean mouseClicked(Click click, boolean bl) {
-		mouseDown = true;
-		return super.mouseClicked(click, bl);
+		boolean yeah = super.mouseClicked(click, bl);
+		if (yeah) {
+			mouseDown = true;
+		}
+		return yeah;
 	}
 
 	@Override
 	public boolean mouseReleased(Click click) {
-		mouseDown = false;
-		return super.mouseReleased(click);
+		boolean yeah = super.mouseReleased(click);
+		if (yeah) {
+			mouseDown = false;
+		}
+		return yeah;
 	}
 
 	@Override

@@ -40,14 +40,7 @@ public class EvilStringWidget extends ClickableWidget {
 	private static final ButtonTextures TEXTURES = new ButtonTextures(
 			Identifier.ofVanilla("widget/text_field"), Identifier.ofVanilla("widget/text_field_highlighted")
 	);
-	public static final int field_32194 = -1;
-	public static final int field_32195 = 1;
-	private static final int field_32197 = 1;
-	private static final String HORIZONTAL_CURSOR = "_";
-	public static final int DEFAULT_EDITABLE_COLOR = -2039584;
 	public static final Style PLACEHOLDER_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);
-	public static final Style SEARCH_STYLE = Style.EMPTY.withFormatting(Formatting.GRAY, Formatting.ITALIC);
-	private static final int field_45354 = 300;
 	private final TextRenderer textRenderer;
 	private String text = "";
 	private int maxLength = 32;
@@ -73,6 +66,7 @@ public class EvilStringWidget extends ClickableWidget {
 	private long lastSwitchFocusTime = Util.getMeasuringTimeMs();
 	private int textX;
 	private int textY;
+	//TODO: kr1v you can figure out the name removal part
 	private Text name;
 	private int x;
 	private Predicate<String> predicate;

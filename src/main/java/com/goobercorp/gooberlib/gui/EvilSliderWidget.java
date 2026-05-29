@@ -4,6 +4,7 @@ import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
 import com.goobercorp.gooberlib.util.RenderUtils;
+import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
@@ -30,6 +31,7 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	protected boolean sliderFocused;
 	private boolean dragging;
 	private final NumberOption<?> numberOption;
+	private final Tweener valTweener = new Tweener(() -> value);
 
 	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height, Function<T, Text> valueFormatter) {
 		super((BaseOption<?>) numberOption, x, y, width, height);
@@ -44,7 +46,7 @@ public class EvilSliderWidget extends EvilBaseWidget {
 
 	@Override
 	protected void drawText(DrawContext drawContext) {
-		drawContext.drawText(MinecraftClient.getInstance().textRenderer, this.valueFormatter.get(), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, -1, true);
+		drawContext.drawText(MinecraftClient.getInstance().textRenderer, this.valueFormatter.get(), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, MainConfig.primaryCol, true);
 //		super.drawText(drawContext);
 	}
 
@@ -75,17 +77,24 @@ public class EvilSliderWidget extends EvilBaseWidget {
 
 	@Override
 	public void renderWidget(DrawContext drawContext, int i, int j, float f) {
+		valTweener.update();
 		newMatrixScope(drawContext, stack -> {
-//			stack.translate(horizontalPosOffset, verticalPosOffset);
-			//TODO: properly center
-//			RenderUtils.fillEvil(drawContext, this.getX(), this.getY(), getRight() + 4, getBottom(), MainConfig.bgColor);
+			stack.translate(horizontalPosOffset, verticalPosOffset);
 			super.renderWidget(drawContext, i, j, f);
-			RenderUtils.fillEvil(drawContext, (float) (getX() + (this.value * (this.width))), (float) getY(), (float) (getX() + (this.value * (this.width)) + 4), getBottom(), MainConfig.primaryCol);
-//			drawContext.drawText(MinecraftClient.getInstance().textRenderer, this.valueFormatter.get(), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, -1, true);
+			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (valTweener.get() / 2 * (this.width - 5)) - 0.5) + 1, (float) getY() + 4, getBottom() - 2, MainConfig.shadowCol);
+			RenderUtils.drawHorizontalLine(drawContext, (getX() + (this.width - 5) / 2F) - 0.5F + 1, this.getRight() - 5.5F + 1, this.getY() + getHeight() / 2F + 1, MainConfig.shadowCol);
+			RenderUtils.drawHorizontalLine(drawContext, (getX() + (this.width - 5) / 2F) - 0.5F, this.getRight() - 5.5F, this.getY() + getHeight() / 2F, MainConfig.primaryCol);
+			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (valTweener.get() / 2 * (this.width - 5)) - 0.5), (float) getY() + 3, getBottom() - 3, MainConfig.primaryCol);
 			if (this.isHovered()) {
 				drawContext.setCursor(this.dragging ? StandardCursors.RESIZE_EW : StandardCursors.POINTING_HAND);
 			}
 		});
+	}
+
+	@Override
+	public boolean mouseScrolled(double d, double e, double f, double g) {
+		this.setValue(this.value + g / (this.width - 8));
+		return true;
 	}
 
 	@Override
@@ -128,7 +137,7 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	}
 
 	private void setValueFromMouse(Click click) {
-		this.setValue((click.comp_4798() - (this.getX() + 4)) / (this.width - 8));
+		this.setValue((click.comp_4798() - (this.getX() + ((this.width - 5) / 2F))) / (this.width - 5) * 2);
 	}
 
 	protected void setValue(double d) {
@@ -152,4 +161,5 @@ public class EvilSliderWidget extends EvilBaseWidget {
 		this.dragging = false;
 		super.playDownSound(MinecraftClient.getInstance().getSoundManager());
 	}
+
 }
