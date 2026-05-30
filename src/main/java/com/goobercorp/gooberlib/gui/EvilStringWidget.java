@@ -2,8 +2,6 @@ package com.goobercorp.gooberlib.gui;
 
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
@@ -13,8 +11,6 @@ import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.input.CharInput;
 import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.sound.SoundManager;
@@ -29,14 +25,11 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import org.jspecify.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-@Environment(EnvType.CLIENT)
-public class EvilStringWidget extends ClickableWidget {
+public class EvilStringWidget extends EvilBaseWidget {
 	private static final ButtonTextures TEXTURES = new ButtonTextures(
 			Identifier.ofVanilla("widget/text_field"), Identifier.ofVanilla("widget/text_field_highlighted")
 	);
@@ -60,16 +53,13 @@ public class EvilStringWidget extends ClickableWidget {
 	@Nullable
 	private Consumer<String> changedListener;
 	private Predicate<String> textPredicate = Objects::nonNull;
-	private final List<EvilStringWidget.Formatter> formatters = new ArrayList();
 	@Nullable
 	private Text placeholder;
 	private long lastSwitchFocusTime = Util.getMeasuringTimeMs();
 	private int textX;
 	private int textY;
-	//TODO: kr1v you can figure out the name removal part
-	private Text name;
-	private int x;
-	private Predicate<String> predicate;
+	private final int x;
+	private final Predicate<String> predicate;
 	private String lastAccepted;
 	private int targetCursorX = this.getX();
 	private final Tweener cursorPosTweener = new Tweener(() -> targetCursorX, 10);
@@ -79,13 +69,9 @@ public class EvilStringWidget extends ClickableWidget {
 	private final Tweener cursorHeightTweener = new Tweener(() -> targetCursorHeight, 10);
 	private boolean isFirstAfterAtTarget = false;
 
-	public EvilStringWidget(TextRenderer textRenderer, int i, int j, int k, int l, Text text) {
-		this(textRenderer, i, j, k, l, null, text);
-	}
-
 	public EvilStringWidget(Text name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, String initial) {
-		this(font(), x + font().getWidth(name) + 3, y, width - font().getWidth(name) - 3, height, name);
-		this.name = name;
+		super(Text.empty(), x + font().getWidth(name) + 3, y, width - font().getWidth(name) - 3, height);
+		this.textRenderer = font();
 		this.x = x;
 		this.setText(initial);
 		this.setChangedListener(changedListener);
@@ -98,21 +84,8 @@ public class EvilStringWidget extends ClickableWidget {
 		return MinecraftClient.getInstance().textRenderer;
 	}
 
-	public EvilStringWidget(TextRenderer textRenderer, int i, int j, int k, int l, @Nullable TextFieldWidget textFieldWidget, Text text) {
-		super(i, j, k, l, text);
-		this.textRenderer = textRenderer;
-		if (textFieldWidget != null) {
-			this.setText(textFieldWidget.getText());
-		}
-		this.updateTextPosition();
-	}
-
 	public void setChangedListener(Consumer<String> consumer) {
 		this.changedListener = consumer;
-	}
-
-	public void addFormatter(EvilStringWidget.Formatter formatter) {
-		this.formatters.add(formatter);
 	}
 
 	@Override
@@ -243,6 +216,7 @@ public class EvilStringWidget extends ClickableWidget {
 		return this.getWordSkipPosition(i, j, true);
 	}
 
+	// despair
 	private int getWordSkipPosition(int i, int j, boolean bl) {
 		int k = j;
 		boolean bl2 = i < 0;
@@ -307,6 +281,7 @@ public class EvilStringWidget extends ClickableWidget {
 	public boolean keyPressed(KeyInput keyInput) {
 		if (this.isInteractable() && this.isFocused()) {
 			switch (keyInput.comp_4795()) {
+				// todo rename these to GLFW.KEY_...
 				case 259:
 					if (this.editable) {
 						this.erase(-1, keyInput.hasCtrlOrCmd());
@@ -318,32 +293,6 @@ public class EvilStringWidget extends ClickableWidget {
 				case 265:
 				case 266:
 				case 267:
-				default:
-					if (keyInput.isSelectAll()) {
-						this.setCursorToEnd(false);
-						this.setSelectionEnd(0);
-						return true;
-					} else if (keyInput.isCopy()) {
-						MinecraftClient.getInstance().keyboard.setClipboard(this.getSelectedText());
-						return true;
-					} else if (keyInput.isPaste()) {
-						if (this.isEditable()) {
-							this.write(MinecraftClient.getInstance().keyboard.getClipboard());
-						}
-
-						return true;
-					} else {
-						if (keyInput.isCut()) {
-							MinecraftClient.getInstance().keyboard.setClipboard(this.getSelectedText());
-							if (this.isEditable()) {
-								this.write("");
-							}
-
-							return true;
-						}
-
-						return false;
-					}
 				case 261:
 					if (this.editable) {
 						this.erase(1, keyInput.hasCtrlOrCmd());
@@ -372,6 +321,32 @@ public class EvilStringWidget extends ClickableWidget {
 				case 269:
 					this.setCursorToEnd(keyInput.hasShift());
 					return true;
+				default:
+					if (keyInput.isSelectAll()) {
+						this.setCursorToEnd(false);
+						this.setSelectionEnd(0);
+						return true;
+					} else if (keyInput.isCopy()) {
+						MinecraftClient.getInstance().keyboard.setClipboard(this.getSelectedText());
+						return true;
+					} else if (keyInput.isPaste()) {
+						if (this.isEditable()) {
+							this.write(MinecraftClient.getInstance().keyboard.getClipboard());
+						}
+
+						return true;
+					} else {
+						if (keyInput.isCut()) {
+							MinecraftClient.getInstance().keyboard.setClipboard(this.getSelectedText());
+							if (this.isEditable()) {
+								this.write("");
+							}
+
+							return true;
+						}
+
+						return false;
+					}
 			}
 		} else {
 			return false;
@@ -455,7 +430,7 @@ public class EvilStringWidget extends ClickableWidget {
 			int n = MathHelper.clamp(this.selectionEnd - this.firstCharacterIndex, 0, string.length());
 			if (!string.isEmpty()) {
 				String string2 = bl ? string.substring(0, l) : string;
-				OrderedText orderedText = this.format(string2, this.firstCharacterIndex);
+				OrderedText orderedText = this.format(string2);
 				drawContext.drawText(this.textRenderer, orderedText, m, this.textY, k, this.textShadow);
 				m += this.textRenderer.getWidth(orderedText) + 1;
 			}
@@ -470,7 +445,7 @@ public class EvilStringWidget extends ClickableWidget {
 			}
 
 			if (!string.isEmpty() && bl && l < string.length()) {
-				drawContext.drawText(this.textRenderer, this.format(string.substring(l), this.selectionStart), m, this.textY, k, this.textShadow);
+				drawContext.drawText(this.textRenderer, this.format(string.substring(l)), m, this.textY, k, this.textShadow);
 			}
 
 			if (this.placeholder != null && string.isEmpty() && !this.isFocused()) {
@@ -505,14 +480,7 @@ public class EvilStringWidget extends ClickableWidget {
 		}
 	}
 
-	private OrderedText format(String string, int i) {
-		for (EvilStringWidget.Formatter formatter : this.formatters) {
-			OrderedText orderedText = formatter.format(string, i);
-			if (orderedText != null) {
-				return orderedText;
-			}
-		}
-
+	private OrderedText format(String string) {
 		return OrderedText.styledForwardsVisitedString(string, Style.EMPTY);
 	}
 
@@ -581,7 +549,9 @@ public class EvilStringWidget extends ClickableWidget {
 			this.setSelectionEnd(0);
 			this.setSelectionStart(0);
 			if (this.predicate.test(this.getText())) {
-				this.changedListener.accept(this.getText());
+				if (this.changedListener != null) {
+					this.changedListener.accept(this.getText());
+				}
 				this.lastAccepted = this.getText();
 			} else {
 				this.setText(lastAccepted);
@@ -659,13 +629,6 @@ public class EvilStringWidget extends ClickableWidget {
 
 	public void setPlaceholder(Text text) {
 		boolean bl = text.getStyle().equals(Style.EMPTY);
-		this.placeholder = (Text) (bl ? text.copy().fillStyle(PLACEHOLDER_STYLE) : text);
-	}
-
-	@FunctionalInterface
-	@Environment(EnvType.CLIENT)
-	public interface Formatter {
-		@Nullable
-		OrderedText format(String string, int i);
+		this.placeholder = bl ? text.copy().fillStyle(PLACEHOLDER_STYLE) : text;
 	}
 }

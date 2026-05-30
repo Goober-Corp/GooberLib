@@ -14,7 +14,7 @@ public class EvilButtonWidget extends EvilBaseWidget {
 	private final ButtonOption opt;
 
 	public EvilButtonWidget(ButtonOption opt, int x, int y, int width, int height, Function<BaseOption<?>, Text> valueFormatter) {
-		super(opt, x, y, width, height, BaseOption::name);
+		super(opt.name(), x, y, width, height, valueFormatter);
 		this.opt = opt;
 	}
 

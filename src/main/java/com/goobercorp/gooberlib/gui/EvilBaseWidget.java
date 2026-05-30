@@ -25,17 +25,19 @@ public class EvilBaseWidget extends ClickableWidget {
 	protected float verticalPosOffset = 0;
 	protected float horizontalPosOffset = 0;
 	protected Tweener clickTweener;
-	private Text name;
+	private final Text name;
+	private final Function<BaseOption<?>, Text> valueFormatter;
 
-	public EvilBaseWidget(BaseOption<?> opt, int x, int y, int width, int height, Function<BaseOption<?>, Text> valueFormatter) {
-		super(x, y, width, height, opt.name());
-		name = opt.name();
+	public EvilBaseWidget(Text name, int x, int y, int width, int height, Function<BaseOption<?>, Text> valueFormatter) {
+		super(x, y, width, height, name);
+		this.name = name;
+		this.valueFormatter = valueFormatter;
 		hoverTweener = new Tweener(() -> this.hovered || mouseDown ? 1 : 0, 10);
 		clickTweener = new Tweener(() -> this.mouseDown ? 1 : 0);
 	}
 
-	public EvilBaseWidget(BaseOption<?> opt, int x, int y, int width, int height) {
-		this(opt, x, y, width, height, BaseOption::name);
+	public EvilBaseWidget(Text name, int x, int y, int width, int height) {
+		this(name, x, y, width, height, BaseOption::name);
 	}
 
 	@Override
@@ -86,5 +88,9 @@ public class EvilBaseWidget extends ClickableWidget {
 		this.verticalPosOffset += (float) e * 0.025F * Math.min(1 / Math.abs(verticalPosOffset) / 2, 1);
 		this.horizontalPosOffset += (float) d * 0.025F * Math.min(1 / Math.abs(horizontalPosOffset) / 2, 1);
 		return super.mouseDragged(click, d, e);
+	}
+
+	public Function<BaseOption<?>, Text> getValueFormatter() {
+		return valueFormatter;
 	}
 }

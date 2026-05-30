@@ -17,7 +17,7 @@ public class TickBoxWidget extends EvilBaseWidget {
 	Tweener t;
 
 	public TickBoxWidget(BooleanOption opt, int x, int y, int width, int height) {
-		super(opt, x, y, width, height);
+		super(opt.name(), x, y, width, height);
 		this.opt = opt;
 		t = new Tweener(() -> {
 			if (opt.value) {
@@ -56,10 +56,5 @@ public class TickBoxWidget extends EvilBaseWidget {
 			opt.setValue(!opt.value);
 		}
 		return super.mouseClicked(click, bl);
-	}
-
-	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder narrationMessageBuilder) {
-
 	}
 }
