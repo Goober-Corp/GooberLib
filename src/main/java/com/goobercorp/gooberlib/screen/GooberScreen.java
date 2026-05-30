@@ -297,7 +297,9 @@ public class GooberScreen extends Screen {
 			selectedTab = tabNavigationWidget.getCurrentTabIndex();
 		}
 		super.resize(i, j);
-		tabNavigationWidget.selectTab(selectedTab == -1 ? 0 : selectedTab, false);
+		if (this.tabs.length > 1) {
+			tabNavigationWidget.selectTab(selectedTab == -1 ? 0 : selectedTab, false);
+		}
 		setFocused(null);
 	}
 
