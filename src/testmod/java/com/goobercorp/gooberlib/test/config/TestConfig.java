@@ -19,7 +19,7 @@ public class TestConfig {
 	public static final IntOption int7 = new IntOption("yeah", "");
 	public static final IntOption int8 = new IntOption("yeah", "");
 	public static final IntOption hotkey = new IntOption("nya gothkey", "");
-	public static final ButtonOption evilButtonOpt = new ButtonOption("yeah", "yeah", () -> System.out.println("YEAH!!!"));
+	public static final ButtonOption evilButtonOpt = new ButtonOption("yeah2", "yeah", () -> System.out.println("YEAH!!!"));
 
 	// @formatter:off
     public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.create("YEAH!!!")
