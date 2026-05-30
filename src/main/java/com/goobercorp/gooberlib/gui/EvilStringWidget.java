@@ -69,19 +69,15 @@ public class EvilStringWidget extends EvilBaseWidget {
 	private final Tweener cursorHeightTweener = new Tweener(() -> targetCursorHeight, 10);
 	private boolean isFirstAfterAtTarget = false;
 
-	public EvilStringWidget(Text name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, String initial) {
-		super(Text.empty(), x + font().getWidth(name) + 3, y, width - font().getWidth(name) - 3, height);
-		this.textRenderer = font();
+	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, String initial) {
+		super(Text.empty(), x, y, width, height);
+		this.textRenderer = MinecraftClient.getInstance().textRenderer;
 		this.x = x;
 		this.setText(initial);
 		this.setChangedListener(changedListener);
 		this.changedListener = changedListener;
 		this.predicate = predicate;
 		this.lastAccepted = initial;
-	}
-
-	public static TextRenderer font() {
-		return MinecraftClient.getInstance().textRenderer;
 	}
 
 	public void setChangedListener(Consumer<String> consumer) {

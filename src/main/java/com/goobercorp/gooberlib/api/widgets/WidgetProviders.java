@@ -61,9 +61,9 @@ public class WidgetProviders {
 		return ((theOption, x, y, width, height) -> {
 			var widgetX = font().getWidth(theOption.name()) + 2;
 			var widgetWidth = width - font().getWidth(theOption.name());
-			var xWidget = new EvilStringWidget(Text.empty(), widgetX, y, widgetWidth / 3, height, null, Predicates.INTEGER, "" + theOption.getX());
-			var yWidget = new EvilStringWidget(Text.empty(), widgetX + widgetWidth / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, "" + theOption.getY());
-			var zWidget = new EvilStringWidget(Text.empty(), widgetX + widgetWidth * 2 / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, "" + theOption.getZ());
+			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.INTEGER, "" + theOption.getX());
+			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, "" + theOption.getY());
+			var zWidget = new EvilStringWidget(widgetX + widgetWidth * 2 / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, "" + theOption.getZ());
 			Consumer<String> changedListener = _ -> {
 				try {
 					theOption.setValue(new BlockPos(Integer.parseInt(xWidget.getText()), Integer.parseInt(yWidget.getText()), Integer.parseInt(zWidget.getText())));
@@ -82,9 +82,9 @@ public class WidgetProviders {
 		return ((theOption, x, y, width, height) -> {
 			var widgetX = font().getWidth(theOption.name()) + 2;
 			var widgetWidth = width - font().getWidth(theOption.name());
-			var xWidget = new EvilStringWidget(Text.empty(), widgetX, y, widgetWidth / 3, height, null, Predicates.INTEGER, "" + theOption.getX());
-			var yWidget = new EvilStringWidget(Text.empty(), widgetX + widgetWidth / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, "" + theOption.getY());
-			var zWidget = new EvilStringWidget(Text.empty(), widgetX + widgetWidth * 2 / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, "" + theOption.getZ());
+			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.INTEGER, "" + theOption.getX());
+			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, "" + theOption.getY());
+			var zWidget = new EvilStringWidget(widgetX + widgetWidth * 2 / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, "" + theOption.getZ());
 			Consumer<String> changedListener = _ -> {
 				try {
 					theOption.setValue(new Vec3i(Integer.parseInt(xWidget.getText()), Integer.parseInt(yWidget.getText()), Integer.parseInt(zWidget.getText())));
@@ -103,9 +103,9 @@ public class WidgetProviders {
 		return ((theOption, x, y, width, height) -> {
 			var widgetX = font().getWidth(theOption.name()) + 2;
 			var widgetWidth = width - font().getWidth(theOption.name());
-			var xWidget = new EvilStringWidget(Text.empty(), widgetX, y, widgetWidth / 3, height, null, Predicates.DOUBLE, "" + theOption.getX());
-			var yWidget = new EvilStringWidget(Text.empty(), widgetX + widgetWidth / 3, y, widgetWidth / 3, height, null, Predicates.DOUBLE, "" + theOption.getY());
-			var zWidget = new EvilStringWidget(Text.empty(), widgetX + widgetWidth * 2 / 3, y, widgetWidth / 3, height, null, Predicates.DOUBLE, "" + theOption.getZ());
+			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.DOUBLE, "" + theOption.getX());
+			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, widgetWidth / 3, height, null, Predicates.DOUBLE, "" + theOption.getY());
+			var zWidget = new EvilStringWidget(widgetX + widgetWidth * 2 / 3, y, widgetWidth / 3, height, null, Predicates.DOUBLE, "" + theOption.getZ());
 			Consumer<String> changedListener = _ -> {
 				try {
 					theOption.setValue(new Vec3d(Double.parseDouble(xWidget.getText()), Double.parseDouble(yWidget.getText()), Double.parseDouble(zWidget.getText())));
@@ -148,8 +148,8 @@ public class WidgetProviders {
 			var widgetX = font().getWidth(theOption.name()) + 2;
 			var widgetWidth = width - font().getWidth(theOption.name());
 
-			var namespace = new EvilStringWidget(Text.empty(), widgetX, y, widgetWidth / 2, height, null, Predicates.IDENTIFIER, theOption.getValue().getNamespace());
-			var path = new EvilStringWidget(Text.empty(), widgetX + widgetWidth / 2, y, widgetWidth / 2, height, null, Predicates.IDENTIFIER, theOption.getValue().getNamespace());
+			var namespace = new EvilStringWidget(widgetX, y, widgetWidth / 2, height, null, Predicates.IDENTIFIER, theOption.getValue().getNamespace());
+			var path = new EvilStringWidget(widgetX + widgetWidth / 2, y, widgetWidth / 2, height, null, Predicates.IDENTIFIER, theOption.getValue().getNamespace());
 
 			Consumer<String> changedListener = _ -> {
 				try {
