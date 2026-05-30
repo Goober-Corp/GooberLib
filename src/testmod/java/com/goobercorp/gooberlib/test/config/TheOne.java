@@ -8,9 +8,15 @@ import com.goobercorp.gooberlib.builder.section.ConfigSection;
 import com.goobercorp.gooberlib.option.individual.hotkey.HotkeyOption;
 import com.goobercorp.gooberlib.option.individual.java.*;
 import com.goobercorp.gooberlib.option.individual.minecraft.*;
+import com.goobercorp.gooberlib.option.individual.misc.ListOption;
+import com.goobercorp.gooberlib.option.individual.misc.ObjectOption;
 import com.goobercorp.gooberlib.option.individual.primitive.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.joml.Vector4i;
+
+import java.util.List;
+import java.util.function.Supplier;
 
 
 // todo?: tests fpr all options
@@ -90,6 +96,41 @@ public class TheOne {
 	public static final Vec3dOption vec3dOption = new Vec3dOption("vec3d option", "vec3d description");
 	public static final Vec3iOption vec3iOption = new Vec3iOption("vec3i option", "vec3i description");
 	public static final HotkeyOption hotkeyOption = new HotkeyOption("hotkey option", "hotkey description", "g, c", 2, () -> System.out.println("meow meow"));
+
+	public static class InstanceMeow {
+		public final StringOption s = new StringOption("Wow!", "");
+	}
+
+	@Section("object")
+	public static final ObjectOption<InstanceMeow> o = new ObjectOption<>("instance meow object", new InstanceMeow(), "");
+	private static final Supplier<ObjectOption<InstanceMeow>> supplier = () -> new ObjectOption<>("instance meow", new InstanceMeow(), "");
+
+	public static final ListOption<ObjectOption<InstanceMeow>> list = new ListOption<>("list object", List.of(supplier.get(), supplier.get()), supplier);
+	public static final Vec4iOption vec4iOption = new Vec4iOption("vec4i option", "");
+
+	public static class Vec4iOption extends ObjectOption<Vec4iOption.Vec4iModel> {
+		public Vec4iOption(String name, String description) {
+			super(Text.of(name), new Vec4iModel(), _ -> Text.of(description), null); // TOdo: pretend it has a custom widget provider
+		}
+
+		public Vector4i getValue() {
+			return new Vector4i(getInstance().x.value, getInstance().y.value, getInstance().z.value, getInstance().w.value);
+		}
+
+		public void setValue(Vector4i pos) {
+			getInstance().x.setValue(pos.x);
+			getInstance().y.setValue(pos.y);
+			getInstance().z.setValue(pos.z);
+			getInstance().w.setValue(pos.w);
+		}
+
+		public static class Vec4iModel {
+			public final IntOption x = new IntOption("x", "");
+			public final IntOption y = new IntOption("y", "");
+			public final IntOption z = new IntOption("z", "");
+			public final IntOption w = new IntOption("w", "");
+		}
+	}
 
 	@SuppressWarnings("unused")
 	public enum SomeEnum {OPTION_ONE, OPTION_TWO, OPTION_THREE}
