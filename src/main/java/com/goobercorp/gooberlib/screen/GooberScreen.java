@@ -77,25 +77,20 @@ public class GooberScreen extends Screen {
 	@Override
 	protected void init() {
 		evilLayout.clear();
-
-		this.tabNavigationWidget = this.addSelectableChild(EvilTabNavigationWidget.builder(tabManager, width)
-				.tabs(tabs)
-				.build());
-		this.tabNavigationWidget.init();
-		tabNavigationWidget.selectTab(0, false);
+		if (this.tabs.length > 1) {
+			this.tabNavigationWidget = this.addSelectableChild(EvilTabNavigationWidget.builder(tabManager, width).tabs(tabs).build());
+			this.tabNavigationWidget.init();
+			tabNavigationWidget.selectTab(0, false);
+		}
 
 		for (ConfigCategory c : config.categories()) {
 			int x = MinecraftClient.getInstance().getWindow().getScaledWidth() * (config.categories().indexOf(c));
 			int y = VERTICAL_PADDING;
 			for (OptionHolder o : c.elements()) {
 				if (o instanceof ConfigSection(
-						Metadata metadata,
-						List<OptionContext<?>> childOptionContexts
+						Metadata metadata, List<OptionContext<?>> childOptionContexts
 				)) {
-					GroupTextWidget t = new GroupTextWidget(
-							metadata.name(),
-							textRenderer
-					);
+					GroupTextWidget t = new GroupTextWidget(metadata.name(), textRenderer);
 					PrecisePositionWidgetWrapper<GroupTextWidget> widgetWrapper = new PrecisePositionWidgetWrapper<>(t, x + ((double) MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (double) textRenderer.getWidth(metadata.name()) / 2, y, metadata::description);
 					evilLayout.put(o, widgetWrapper);
 					if (new ScreenRect((int) widgetWrapper.getRealX(), (int) widgetWrapper.getRealY(), widgetWrapper.getWrapped().getRight(), widgetWrapper.getWrapped().getBottom()).overlaps(new ScreenRect(0, 0, width, height))) {
@@ -168,23 +163,30 @@ public class GooberScreen extends Screen {
 			}
 			animateHoverDescription = false;
 		}
-
-		if (tabNavigationWidget.isMouseOver(mouseX, mouseY)) {
-			tabHoldTicks = 10;
+		if (this.tabs.length > 1) {
+			if (tabNavigationWidget.isMouseOver(mouseX, mouseY)) {
+				tabHoldTicks = 10;
+			}
 		}
 		categoryHoverProgress = (float) ease(categoryHoverProgress, tabHoldTicks > 0 ? 1 : 0, 15);
-		int yeah = tabNavigationWidget.getCurrentTabIndex();
+		int yeah = 0;
+		if (this.tabs.length > 1) {
+			yeah = tabNavigationWidget.getCurrentTabIndex();
+		}
 		screenCategoryAnimationState = (float) ease(screenCategoryAnimationState, yeah == -1 ? 0 : yeah, 15);
 
 
 		descriptionAnimationProgress = (float) ease(descriptionAnimationProgress, animateHoverDescription ? 1 : 0, 15);
 		drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, drawContext.getScaledWindowWidth() / 2, (int) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))), MainConfig.primaryCol);
-
-		newMatrixScope(drawContext, matrix3x2fStack -> {
-			matrix3x2fStack.translate(0, -26 * (1 - categoryHoverProgress));
-			tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
-		});
-		scrollTweener.min = -heights[tabNavigationWidget.getCurrentTabIndex()];
+		if (this.tabs.length > 1) {
+			newMatrixScope(drawContext, matrix3x2fStack -> {
+				matrix3x2fStack.translate(0, -26 * (1 - categoryHoverProgress));
+				tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
+			});
+		}
+		if (this.tabs.length > 1) {
+			scrollTweener.min = -heights[tabNavigationWidget.getCurrentTabIndex()];
+		}
 	}
 
 	@Override
@@ -207,10 +209,13 @@ public class GooberScreen extends Screen {
 		setWidgetOffsets();
 		evilLayout.values().forEach(entry -> entry.render(drawContext, mouseX, mouseY, tickDelta));
 
-		newMatrixScope(drawContext, stack -> {
-			stack.translate(0, -26 * (1 - categoryHoverProgress));
-			tabNavigationWidget.renderForBackgroundLayer(drawContext);
-		});
+		if (this.tabs.length > 1) {
+			newMatrixScope(drawContext, stack -> {
+				stack.translate(0, -26 * (1 - categoryHoverProgress));
+
+				tabNavigationWidget.renderForBackgroundLayer(drawContext);
+			});
+		}
 
 		drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, drawContext.getScaledWindowWidth() / 2, (int) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))), MainConfig.primaryCol);
 		drawContext.createNewRootLayer();
@@ -268,7 +273,9 @@ public class GooberScreen extends Screen {
 
 	@Override
 	public void tick() {
-		tabNavigationWidget.tick();
+		if (this.tabs.length > 1) {
+			tabNavigationWidget.tick();
+		}
 		tabHoldTicks = Math.clamp(tabHoldTicks - 1, 0, 100);
 		lastScrollTicks++;
 		if (lastScrollTicks > 2) {
@@ -285,7 +292,10 @@ public class GooberScreen extends Screen {
 
 	@Override
 	public void resize(int i, int j) {
-		int selectedTab = tabNavigationWidget.getCurrentTabIndex();
+		int selectedTab = 0;
+		if (this.tabs.length > 1) {
+			selectedTab = tabNavigationWidget.getCurrentTabIndex();
+		}
 		super.resize(i, j);
 		tabNavigationWidget.selectTab(selectedTab == -1 ? 0 : selectedTab, false);
 		setFocused(null);
@@ -304,7 +314,7 @@ public class GooberScreen extends Screen {
 	public boolean mouseDragged(Click click, double d, double e) {
 		if (super.mouseDragged(click, d, e)) return true;
 
-		if (click.button() == 0 && !tabNavigationWidget.isMouseOver(d, e)) {
+		if (tabNavigationWidget != null && click.button() == 0 && !tabNavigationWidget.isMouseOver(d, e)) {
 			lastScrollTicks = 0;
 			scrollTweener.setInteractionState(true);
 			if ((scrollProgress < scrollTweener.min && e < 0) || (scrollProgress > scrollTweener.max && e > 0)) {
@@ -323,7 +333,7 @@ public class GooberScreen extends Screen {
 		if (!yeah) {
 			lastScrollTicks = 0;
 			scrollTweener.setInteractionState(true);
-			if (!tabNavigationWidget.isMouseOver(d, e)) {
+			if (tabNavigationWidget != null && !tabNavigationWidget.isMouseOver(d, e)) {
 				if ((scrollProgress < scrollTweener.min && g < 0) || (scrollProgress > scrollTweener.max && g > 0)) {
 					scrollProgress += g * 15 * Math.min(1 / Math.abs(scrollProgress - Math.clamp(scrollProgress, scrollTweener.min, scrollTweener.max)), 1);
 				} else {

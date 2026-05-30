@@ -155,13 +155,14 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 				if (!element.isFocused()) {
 					this.setFocused(element);
 					int currentTabIndex = getCurrentTabIndex();
-					if (currentTabIndex == 0) {
-						this.targetX = 5d;
-					} else if (currentTabIndex == tabs.size() - 1) {
-						this.targetX = (double) tabNavWidth - 100 * tabs.size() - 5;
-					} else {
-						this.targetX = (double) (-(100 * currentTabIndex + 1)) + tabNavWidth / 2 - 50;
-					}
+					//the world isn't ready for this one yet
+//					if (currentTabIndex == 0) {
+//						this.targetX = 5d;
+//					} else if (currentTabIndex == tabs.size() - 1) {
+//						this.targetX = (double) tabNavWidth - 100 * tabs.size() - 5;
+//					} else {
+					this.targetX = (double) (-(100 * currentTabIndex + 1)) + tabNavWidth / 2 - 50;
+//					}
 				}
 				if (click.button() == 0) {
 					this.setDragging(true);
@@ -211,23 +212,21 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 		if (MainConfig.ENABLE_INFINITE_TAB_SCROLLING.value) {
 			scrollTweener.min = -10000;
 			scrollTweener.max = 10000;
+			page = (int) (scrollTweener.get() / (tabNavWidth + 20));
+			if ((grid.getX() + grid.getWidth()) < tabNavWidth + 20) {
+				tabs.forEach(tab -> {
+					EvilTabButtonWidget widget = new EvilTabButtonWidget(tabManager, tab, 0, 24);
+					widget.setWidth(100);
+					tabButtons.add(grid.add(widget));
+				});
+				grid.refreshPositions();
+			}
+			if (tabButtons.size() > tabs.size() * 2 && scrollTweener.get() < tabNavWidth) {
+				tabs.forEach(_ ->
+						tabButtons.removeFirst()
+				);
+			}
 		}
-//		drawContext.drawText(MinecraftClient.getInstance().textRenderer, String.valueOf(page) + " " + String.valueOf(tabButtons.size()), 20, 20, -1, true);
-		page = (int) (scrollTweener.get() / (tabNavWidth + 20));
-		if ((grid.getX() + grid.getWidth()) < tabNavWidth + 20) {
-			tabs.forEach(tab -> {
-				EvilTabButtonWidget widget = new EvilTabButtonWidget(tabManager, tab, 0, 24);
-				widget.setWidth(100);
-				tabButtons.add(grid.add(widget));
-			});
-			grid.refreshPositions();
-		}
-		if (tabButtons.size() > tabs.size() * 2 && scrollTweener.get() < tabNavWidth) {
-			tabs.forEach(_ ->
-					tabButtons.removeFirst()
-			);
-		}
-
 
 		scrollTweener.update();
 		this.grid.setX((int) scrollTweener.get());
