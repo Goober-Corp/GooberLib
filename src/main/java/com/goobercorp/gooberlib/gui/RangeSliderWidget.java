@@ -168,10 +168,8 @@ public class RangeSliderWidget extends EvilBaseWidget {
 
 	@Override
 	protected void onDrag(Click click, double d, double e) {
-		if (RenderUtils.isInBounds(click.comp_4798(), click.comp_4799(), new ScreenRect(this.getX() + this.getWidth() / 2, this.getY(), this.getRight() - 5, this.getBottom()))) {
-			this.setValueFromMouse(click);
-			super.onDrag(click, d, e);
-		}
+		this.setValueFromMouse(click);
+		super.onDrag(click, d, e);
 	}
 
 
