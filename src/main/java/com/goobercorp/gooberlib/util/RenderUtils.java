@@ -93,6 +93,15 @@ public class RenderUtils {
 				);
 	}
 
+	public static void fillEvil(DrawContext context, float x, float y, float x2, float y2, int col, RenderPipeline pipeline) {
+		context.state
+				.addSimpleElement(
+						new EvilColoredQuadGuiElementRenderState(
+								pipeline, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), x, y, x2, y2, col, col, col, col, context.scissorStack.peekLast()
+						)
+				);
+	}
+
 	public static void fillEvil(DrawContext context, float x, float y, float x2, float y2, int col, int col2) {
 		context.state
 				.addSimpleElement(

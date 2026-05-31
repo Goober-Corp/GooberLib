@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.gui;
 
+import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.MinecraftClient;
@@ -29,6 +30,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
+
 public class EvilStringWidget extends EvilBaseWidget {
 	private static final ButtonTextures TEXTURES = new ButtonTextures(
 			Identifier.ofVanilla("widget/text_field"), Identifier.ofVanilla("widget/text_field_highlighted")
@@ -46,7 +49,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 	private int firstCharacterIndex;
 	private int selectionStart;
 	private int selectionEnd;
-	private int editableColor = -2039584;
+	private int editableColor = MainConfig.primaryCol;
 	private int uneditableColor = -9408400;
 	@Nullable
 	private String suggestion;
@@ -78,6 +81,12 @@ public class EvilStringWidget extends EvilBaseWidget {
 		this.changedListener = changedListener;
 		this.predicate = predicate;
 		this.lastAccepted = initial;
+	}
+
+	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, String initial, int colorOverride) {
+		this(x, y, width, height, changedListener, predicate, initial);
+		//TODO: automatically calculate good selection color. blue text here means it's just white when selected.
+		this.editableColor = colorOverride;
 	}
 
 	public void setChangedListener(Consumer<String> consumer) {
@@ -401,79 +410,82 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	public void renderWidget(DrawContext drawContext, int i, int j, float f) {
-		if (this.isVisible()) {
-			if (this.drawsBackground()) {
-				Identifier identifier = TEXTURES.get(this.isInteractable(), this.isFocused());
-				drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED, identifier, this.getX(), this.getY(), this.getWidth(), this.getHeight());
-			}
+	public void renderWidget(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
+		newMatrixScope(drawContext, stack -> {
+			stack.translate(horizontalPosOffset, verticalPosOffset);
+			super.renderWidget(drawContext, mouseX, mouseY, tickDelta);
+			if (this.isVisible()) {
+				int k = this.editable ? this.editableColor : this.uneditableColor;
+				int l = this.selectionStart - this.firstCharacterIndex;
+				String string = this.textRenderer.trimToWidth(this.text.substring(this.firstCharacterIndex), this.getInnerWidth());
+				boolean bl = l >= 0 && l <= string.length();
 
-			int k = this.editable ? this.editableColor : this.uneditableColor;
-			int l = this.selectionStart - this.firstCharacterIndex;
-			String string = this.textRenderer.trimToWidth(this.text.substring(this.firstCharacterIndex), this.getInnerWidth());
-			boolean bl = l >= 0 && l <= string.length();
+				long measuringTimeMs = Util.getMeasuringTimeMs();
+				if (!cursorPosTweener.isAtTarget()) {
+					isFirstAfterAtTarget = true;
+					measuringTimeMs = this.lastSwitchFocusTime;
+				} else if (isFirstAfterAtTarget) {
+					isFirstAfterAtTarget = false;
+					this.lastSwitchFocusTime = Util.getMeasuringTimeMs();
+				}
+				boolean bl2 = this.isFocused() && (measuringTimeMs - this.lastSwitchFocusTime) / 300L % 2L == 0L && bl;
+				int m = this.textX;
+				int n = MathHelper.clamp(this.selectionEnd - this.firstCharacterIndex, 0, string.length());
+				if (!string.isEmpty()) {
+					String string2 = bl ? string.substring(0, l) : string;
+					OrderedText orderedText = this.format(string2);
+					drawContext.drawText(this.textRenderer, orderedText, m, this.textY, k, this.textShadow);
+					m += this.textRenderer.getWidth(orderedText) + 1;
+				}
 
-			long measuringTimeMs = Util.getMeasuringTimeMs();
-			if (!cursorPosTweener.isAtTarget()) {
-				isFirstAfterAtTarget = true;
-				measuringTimeMs = this.lastSwitchFocusTime;
-			} else if (isFirstAfterAtTarget) {
-				isFirstAfterAtTarget = false;
-				this.lastSwitchFocusTime = Util.getMeasuringTimeMs();
-			}
-			boolean bl2 = this.isFocused() && (measuringTimeMs - this.lastSwitchFocusTime) / 300L % 2L == 0L && bl;
-			int m = this.textX;
-			int n = MathHelper.clamp(this.selectionEnd - this.firstCharacterIndex, 0, string.length());
-			if (!string.isEmpty()) {
-				String string2 = bl ? string.substring(0, l) : string;
-				OrderedText orderedText = this.format(string2);
-				drawContext.drawText(this.textRenderer, orderedText, m, this.textY, k, this.textShadow);
-				m += this.textRenderer.getWidth(orderedText) + 1;
-			}
+				boolean bl3 = this.selectionStart < this.text.length() || this.text.length() >= this.getMaxLength();
+				int o = m;
+				if (!bl) {
+					o = l > 0 ? this.textX + this.width : this.textX;
+				} else if (bl3) {
+					o = m - 1;
+					m--;
+				}
 
-			boolean bl3 = this.selectionStart < this.text.length() || this.text.length() >= this.getMaxLength();
-			int o = m;
-			if (!bl) {
-				o = l > 0 ? this.textX + this.width : this.textX;
-			} else if (bl3) {
-				o = m - 1;
-				m--;
-			}
+				if (!string.isEmpty() && bl && l < string.length()) {
+					drawContext.drawText(this.textRenderer, this.format(string.substring(l)), m, this.textY, k, this.textShadow);
+				}
 
-			if (!string.isEmpty() && bl && l < string.length()) {
-				drawContext.drawText(this.textRenderer, this.format(string.substring(l)), m, this.textY, k, this.textShadow);
-			}
+				if (this.placeholder != null && string.isEmpty() && !this.isFocused()) {
+					drawContext.drawTextWithShadow(this.textRenderer, this.placeholder, m, this.textY, k);
+				}
 
-			if (this.placeholder != null && string.isEmpty() && !this.isFocused()) {
-				drawContext.drawTextWithShadow(this.textRenderer, this.placeholder, m, this.textY, k);
-			}
+				if (!bl3 && this.suggestion != null) {
+					drawContext.drawText(this.textRenderer, this.suggestion, o - 1, this.textY, -8355712, this.textShadow);
+				}
 
-			if (!bl3 && this.suggestion != null) {
-				drawContext.drawText(this.textRenderer, this.suggestion, o - 1, this.textY, -8355712, this.textShadow);
-			}
+				if (n != l) {
+					int p = this.textX + this.textRenderer.getWidth(string.substring(0, n));
+//					drawContext.drawSelection(
+//							Math.min(o, this.getX() + this.width), this.textY - 1, Math.min(p - 1, this.getX() + this.width), this.textY + 1 + 9, this.invertSelectionBackground
+//					);
+					if (this.invertSelectionBackground) {
+						RenderUtils.fillEvil(drawContext, Math.min(o, this.getX() + this.width), this.textY - 1, Math.min(p - 1, this.getX() + this.width), this.textY + 1 + 9, -1, RenderPipelines.GUI_INVERT);
+					}
+					RenderUtils.fillEvil(drawContext, Math.min(o, this.getX() + this.width), this.textY - 1, Math.min(p - 1, this.getX() + this.width), this.textY + 1 + 9, -16776961, RenderPipelines.GUI_TEXT_HIGHLIGHT);
+				}
 
-			if (n != l) {
-				int p = this.textX + this.textRenderer.getWidth(string.substring(0, n));
-				drawContext.drawSelection(
-						Math.min(o, this.getX() + this.width), this.textY - 1, Math.min(p - 1, this.getX() + this.width), this.textY + 1 + 9, this.invertSelectionBackground
-				);
-			}
+				if (bl2) {
+					targetCursorX = o;
+					targetCursorWidth = bl3 ? 1 : 5;
+					//This one is range 0-1  because like. it goes in both directions ???
+					targetCursorHeight = bl3 ? 1 : 0;
+					cursorPosTweener.update();
+					cursorHeightTweener.update();
+					cursorWidthTweener.update();
+					RenderUtils.fillEvil(drawContext, (float) cursorPosTweener.get(), (float) MathHelper.lerp(cursorHeightTweener.get(), (float) (this.textY + 7), (float) (this.textY - 1)), (float) (cursorPosTweener.get() + cursorWidthTweener.get()), (float) MathHelper.lerp(cursorHeightTweener.get(), this.textY + 8, this.textY + 1 + 9), k);
+				}
 
-			if (bl2) {
-				targetCursorX = o;
-				targetCursorWidth = bl3 ? 1 : 5;
-				//This one is range 0-1  because like. it goes in both directions ???
-				targetCursorHeight = bl3 ? 1 : 0;
-				cursorPosTweener.update();
-				cursorHeightTweener.update();
-				cursorWidthTweener.update();
-				RenderUtils.fillEvil(drawContext, (float) cursorPosTweener.get(), (float) MathHelper.lerp(cursorHeightTweener.get(), (float) (this.textY + 7), (float) (this.textY - 1)), (float) (cursorPosTweener.get() + cursorWidthTweener.get()), (float) MathHelper.lerp(cursorHeightTweener.get(), this.textY + 8, this.textY + 1 + 9), k);
+				if (this.isHovered()) {
+					drawContext.setCursor(this.isEditable() ? StandardCursors.IBEAM : StandardCursors.NOT_ALLOWED);
+				}
 			}
-
-			if (this.isHovered()) {
-				drawContext.setCursor(this.isEditable() ? StandardCursors.IBEAM : StandardCursors.NOT_ALLOWED);
-			}
-		}
+		});
 	}
 
 	private OrderedText format(String string) {

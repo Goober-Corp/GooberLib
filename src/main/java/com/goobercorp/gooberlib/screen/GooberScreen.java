@@ -177,7 +177,10 @@ public class GooberScreen extends Screen {
 
 
 		descriptionAnimationProgress = (float) ease(descriptionAnimationProgress, animateHoverDescription ? 1 : 0, 15);
-		drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, drawContext.getScaledWindowWidth() / 2, (int) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))), MainConfig.primaryCol);
+		newMatrixScope(drawContext, stack -> {
+			stack.translate((float) (drawContext.getScaledWindowWidth() / 2), (float) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))));
+			drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, 0, 0, MainConfig.primaryCol);
+		});
 		if (this.tabs.length > 1) {
 			newMatrixScope(drawContext, matrix3x2fStack -> {
 				matrix3x2fStack.translate(0, -26 * (1 - categoryHoverProgress));
@@ -195,7 +198,7 @@ public class GooberScreen extends Screen {
 		mX = MinecraftClient.getInstance().mouse.getScaledX(MinecraftClient.getInstance().getWindow());
 		mY = MinecraftClient.getInstance().mouse.getScaledY(MinecraftClient.getInstance().getWindow());
 		//TODO: this sucks
-		RenderUtils.fillEvil(drawContext, (float) mX, (float) mY, (float) (mX + 2.5f), (float) (mY + 2.5F), -1);
+		RenderUtils.fillEvil(drawContext, (float) mX, (float) mY, (float) (mX + 2.5f), (float) (mY + 2.5F), MainConfig.primaryCol);
 
 		newMatrixScope(drawContext, stack -> {
 			stack.translate(-mouseX * 0.1F, -mouseY * 0.1F);
@@ -216,8 +219,10 @@ public class GooberScreen extends Screen {
 				tabNavigationWidget.renderForBackgroundLayer(drawContext);
 			});
 		}
-
-		drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, drawContext.getScaledWindowWidth() / 2, (int) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))), MainConfig.primaryCol);
+		newMatrixScope(drawContext, stack -> {
+			stack.translate((float) (drawContext.getScaledWindowWidth() / 2), (float) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))));
+			drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, 0, 0, MainConfig.primaryCol);
+		});
 		drawContext.createNewRootLayer();
 
 		super.renderBackground(drawContext, mouseX, mouseY, tickDelta);

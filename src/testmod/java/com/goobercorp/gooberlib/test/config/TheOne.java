@@ -6,8 +6,12 @@ import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
 import com.goobercorp.gooberlib.option.individual.hotkey.HotkeyOption;
-import com.goobercorp.gooberlib.option.individual.java.*;
+import com.goobercorp.gooberlib.option.individual.java.ColorOption;
+import com.goobercorp.gooberlib.option.individual.java.CycleOption;
+import com.goobercorp.gooberlib.option.individual.java.EnumOption;
+import com.goobercorp.gooberlib.option.individual.java.StringOption;
 import com.goobercorp.gooberlib.option.individual.minecraft.*;
+import com.goobercorp.gooberlib.option.individual.misc.FloatRangeOption;
 import com.goobercorp.gooberlib.option.individual.misc.ListOption;
 import com.goobercorp.gooberlib.option.individual.misc.ObjectOption;
 import com.goobercorp.gooberlib.option.individual.primitive.*;
@@ -96,6 +100,7 @@ public class TheOne {
 	public static final Vec3dOption vec3dOption = new Vec3dOption("vec3d option", "vec3d description");
 	public static final Vec3iOption vec3iOption = new Vec3iOption("vec3i option", "vec3i description");
 	public static final HotkeyOption hotkeyOption = new HotkeyOption("hotkey option", "hotkey description", "g, c", 2, () -> System.out.println("meow meow"));
+	public static final FloatRangeOption floatRangeOption = new FloatRangeOption(Text.of("float range option"), floatRangeOption1 -> Text.of("desc"), 2, 4, 0, 10, WidgetProviders.rangeOption());
 
 	public static class InstanceMeow {
 		public final StringOption s = new StringOption("Wow!", "");

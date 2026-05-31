@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.gui;
 
+import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.MinecraftClient;
@@ -17,6 +18,7 @@ import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.fillEvil;
+import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWidget {
 	private final TabManager tabManager;
@@ -29,7 +31,7 @@ public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWid
 		this.tabManager = tabManager;
 		this.tab = tab;
 
-		this.currentTabProgress = new Tweener(() -> isCurrentTab() ? 1 : 0);
+		this.currentTabProgress = new Tweener(() -> isCurrentTab() ? 1 : isHovered() ? 0.5F : 0);
 		this.isSelectedProgress = new Tweener(() -> isSelected() ? 1 : 0);
 	}
 
@@ -39,9 +41,9 @@ public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWid
 		isSelectedProgress.update();
 
 		float yeah = (float) currentTabProgress.getLerped(4, 0);
-		int ohyeah = ColorHelper.lerp((float) isSelectedProgress.get(), 0x33FFFFFF, 0xFFFFFFFF);
-		int specialCol = ColorHelper.lerp((float) isSelectedProgress.get(), 0x00000000, 0xFFFFFFFF);
-		int ough = ColorHelper.lerp((float) currentTabProgress.get(), 0xDB000000, 0x40000000);
+		int ohyeah = ColorHelper.lerp((float) isSelectedProgress.get(), 0x33FFFFFF, MainConfig.primaryCol);
+		int specialCol = ColorHelper.lerp((float) isSelectedProgress.get(), 0x00000000, MainConfig.primaryCol);
+		int ough = ColorHelper.lerp((float) currentTabProgress.get(), 0xB0000000, 0x40000000);
 		//outer black line
 		drawOutsideBorder(context, yeah);
 
@@ -57,7 +59,7 @@ public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWid
 			context.drawHorizontalLine(this.getRight() - 1, this.getRight() - 2, getY(), 0xBF000000);
 		}
 		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-		int k = this.active ? -1 : -6250336;
+		int k = this.active ? MainConfig.primaryCol : -6250336;
 		fillEvil(context, this.getX() + 2, this.getY() + (isCurrentTab() ? 0 : 2), getRight() - 2, getBottom() - 1 - yeah, ough);
 		if (!isCurrentTab() && !MathHelper.approximatelyEquals(isSelectedProgress.get(), 0)) {
 			context.drawHorizontalLine(this.getX() + 2, getRight() - 3, getY() + 2, specialCol);
@@ -65,10 +67,11 @@ public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWid
 		if (this.isCurrentTab()) {
 			this.drawCurrentTabLine(context, textRenderer, k);
 		}
-		context.getMatrices().pushMatrix();
-		context.getMatrices().translate(0, (float) currentTabProgress.getLerped(0, 3));
-		this.drawMessage(context.getHoverListener(this, DrawContext.HoverType.NONE));
-		context.getMatrices().popMatrix();
+		newMatrixScope(context, stack -> {
+			stack.translate(0, (float) currentTabProgress.getLerped(0, 3));
+			context.drawCenteredTextWithShadow(textRenderer, this.getMessage(), (getRight() - 2) - this.getWidth() / 2 + 2, this.getY() + 5, MainConfig.primaryCol);
+		});
+//		this.drawMessage(context.getHoverListener(this, DrawContext.HoverType.NONE));
 		this.setCursor(context);
 	}
 
@@ -115,5 +118,13 @@ public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWid
 		RenderUtils.drawHorizontalLine(context, this.getX(), getRight() - 1, getBottom() - yeah, 0xBF000000);
 		RenderUtils.drawVerticalLine(context, this.getX(), this.getY() + 1, this.height - yeah, 0xBF000000);
 		RenderUtils.drawVerticalLine(context, getRight() - 1, this.getY() + 1, this.height - yeah, 0xBF000000);
+		newMatrixScope(context, stack -> {
+			stack.translate(0, (float) currentTabProgress.getLerped(0, 3));
+			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, this.getMessage(), (getRight() - 2) - this.getWidth() / 2 + 2, this.getY() + 5, MainConfig.primaryCol);
+		});
+		int k = this.active ? MainConfig.primaryCol : -6250336;
+		if (this.isCurrentTab()) {
+			this.drawCurrentTabLine(context, MinecraftClient.getInstance().textRenderer, k);
+		}
 	}
 }

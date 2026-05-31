@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.gui;
 
+import com.goobercorp.gooberlib.config.MainConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -25,7 +26,7 @@ public class EvilStringWidgetWithName extends EvilStringWidget {
 
 	@Override
 	public void renderWidget(DrawContext drawContext, int i, int j, float f) {
-		drawContext.drawText(font(), name, x, getY() + 3, 0xFFFFFFFF, true);
+		drawContext.drawText(font(), name, x, getY() + 3, MainConfig.primaryCol, true);
 		super.renderWidget(drawContext, i, j, f);
 	}
 }

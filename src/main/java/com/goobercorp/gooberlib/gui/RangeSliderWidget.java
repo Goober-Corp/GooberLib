@@ -1,12 +1,14 @@
 package com.goobercorp.gooberlib.gui;
 
 import com.goobercorp.gooberlib.config.MainConfig;
+import com.goobercorp.gooberlib.option.individual.misc.FloatRangeOption;
 import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.cursor.StandardCursors;
 import net.minecraft.client.gui.navigation.GuiNavigationType;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -15,7 +17,6 @@ import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.function.Function;
@@ -25,30 +26,34 @@ import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 // todo: make option widgets widget
 //  widget? i think you meant wider
-public class EvilSliderWidget extends EvilBaseWidget {
-	protected double value;
+public class RangeSliderWidget extends EvilBaseWidget {
+	protected double minValue;
+	protected double maxValue;
 	private final Supplier<Text> valueFormatter;
 	protected boolean sliderFocused;
 	private boolean dragging;
-	private final NumberOption<?> numberOption;
-	private final Tweener valTweener = new Tweener(() -> value);
+	private final FloatRangeOption numberOption;
+	private final Tweener minValTweener = new Tweener(() -> minValue);
+	private final Tweener maxValTweener = new Tweener(() -> maxValue);
 
-	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height, Function<T, Text> valueFormatter) {
+	public <T extends NumberOption<T>> RangeSliderWidget(T numberOption, int x, int y, int width, int height, Function<T, Text> valueFormatter) {
 		super(numberOption.name(), x, y, width, height);
-		this.numberOption = numberOption;
-		this.value = getInterpolatedValue(numberOption.getNumberValue().doubleValue(), numberOption.getDoubleMin(), numberOption.getDoubleMax());
+		//TODO: kr1v you need to make this range thing generic. i'm too stupid to do it myself. it works for now
+		this.numberOption = (FloatRangeOption) numberOption;
+		this.minValue = getInterpolatedValue(((FloatRangeOption) numberOption).minValue, numberOption.getDoubleMin(), numberOption.getDoubleMax());
+		this.maxValue = getInterpolatedValue(((FloatRangeOption) numberOption).maxValue, numberOption.getDoubleMin(), numberOption.getDoubleMax());
 		this.valueFormatter = () -> valueFormatter.apply(numberOption);
 	}
 
-	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height) {
-		this(numberOption, x, y, width, height, t -> Text.of(t.getNumberValue().toString()));
+	public <T extends NumberOption<T>> RangeSliderWidget(T numberOption, int x, int y, int width, int height) {
+		this(numberOption, x, y, width, height, t -> Text.of(((FloatRangeOption) numberOption).minValue + "-" + ((FloatRangeOption) numberOption).maxValue));
 	}
 
 	@Override
 	protected void drawText(DrawContext drawContext) {
 		newMatrixScope(drawContext, stack -> {
 //			stack.scale(0.5F, 0.5F);
-			drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, numberOption.getNumberValue().toString(), (int) ((getX() + (this.width - 5) / 2F) + (valTweener.get() / 2 * (this.width - 5))) + 1, this.getY() - 10, ColorHelper.withAlpha(((float) clickTweener.get()), MainConfig.primaryCol));
+//			drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, numberOption.getNumberValue().toString(), (int) ((getX() + (this.width - 5) / 2F) + (valTweener.get() / 2 * (this.width - 5))) + 1, this.getY() - 10, ColorHelper.withAlpha(((float) clickTweener.get()), MainConfig.primaryCol));
 		});
 		drawContext.drawText(MinecraftClient.getInstance().textRenderer, this.valueFormatter.get(), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, MainConfig.primaryCol, true);
 //		super.drawText(drawContext);
@@ -84,15 +89,18 @@ public class EvilSliderWidget extends EvilBaseWidget {
 		double mX, mY;
 		mX = MinecraftClient.getInstance().mouse.getScaledX(MinecraftClient.getInstance().getWindow());
 		mY = MinecraftClient.getInstance().mouse.getScaledY(MinecraftClient.getInstance().getWindow());
-		valTweener.update();
+		minValTweener.update();
+		maxValTweener.update();
 		newMatrixScope(drawContext, stack -> {
 			stack.translate(horizontalPosOffset, verticalPosOffset);
 			super.renderWidget(drawContext, i, j, f);
-			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (valTweener.get() / 2 * (this.width - 5)) - 0.5) + 1, (float) getY() + 4, getBottom() - 2, MainConfig.shadowCol);
-			RenderUtils.drawHorizontalLine(drawContext, (getX() + (this.width - 5) / 2F) - 0.5F + 1, this.getRight() - 5.5F + 1, this.getY() + getHeight() / 2F + 1, MainConfig.shadowCol);
 			RenderUtils.drawHorizontalLine(drawContext, (getX() + (this.width - 5) / 2F) - 0.5F, this.getRight() - 5.5F, this.getY() + getHeight() / 2F, MainConfig.primaryCol);
-			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (valTweener.get() / 2 * (this.width - 5)) - 0.5), (float) getY() + 3, getBottom() - 3, MainConfig.primaryCol);
-			if (this.isHovered()) {
+			RenderUtils.drawHorizontalLine(drawContext, (getX() + (this.width - 5) / 2F) - 0.5F + 1, this.getRight() - 5.5F + 1, this.getY() + getHeight() / 2F + 1, MainConfig.shadowCol);
+			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (maxValTweener.get() / 2 * (this.width - 5)) - 0.5), (float) getY() + 3, getBottom() - 3, MainConfig.primaryCol);
+			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (minValTweener.get() / 2 * (this.width - 5)) - 0.5), (float) getY() + 3, getBottom() - 3, MainConfig.primaryCol);
+			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (maxValTweener.get() / 2 * (this.width - 5)) - 0.5) + 1, (float) getY() + 4, getBottom() - 2, MainConfig.shadowCol);
+			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (minValTweener.get() / 2 * (this.width - 5)) - 0.5) + 1, (float) getY() + 4, getBottom() - 2, MainConfig.shadowCol);
+			if (RenderUtils.isInBounds(mX, mY, new ScreenRect(this.getX() + this.getWidth() / 2, this.getY(), this.getRight() - 5, this.getBottom()))) {
 				drawContext.setCursor(this.dragging ? StandardCursors.RESIZE_EW : StandardCursors.POINTING_HAND);
 			}
 		});
@@ -100,8 +108,9 @@ public class EvilSliderWidget extends EvilBaseWidget {
 
 	@Override
 	public boolean mouseScrolled(double d, double e, double f, double g) {
-		this.setValue(this.value + g / (this.width - 8));
-		return true;
+//		this.setValue(this.value + g / (this.width - 8));
+		//TODO: make it move the nearest one? idk
+		return false;
 	}
 
 	@Override
@@ -129,15 +138,15 @@ public class EvilSliderWidget extends EvilBaseWidget {
 			this.sliderFocused = !this.sliderFocused;
 			return true;
 		} else {
-			if (this.sliderFocused) {
-				boolean bl = keyInput.isLeft();
-				boolean bl2 = keyInput.isRight();
-				if (bl || bl2) {
-					float f = bl ? -1.0F : 1.0F;
-					this.setValue(this.value + f / (this.width - 8));
-					return true;
-				}
-			}
+//			if (this.sliderFocused) {
+//				boolean bl = keyInput.isLeft();
+//				boolean bl2 = keyInput.isRight();
+//				if (bl || bl2) {
+//					float f = bl ? -1.0F : 1.0F;
+//					this.setValue(this.value + f / (this.width - 8));
+//					return true;
+//				}
+//			}
 
 			return false;
 		}
@@ -148,14 +157,21 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	}
 
 	protected void setValue(double d) {
-		this.value = MathHelper.clamp(d, 0.0, 1.0);
-		numberOption.setDoubleValue((1.0 - value) * numberOption.getDoubleMin() + value * numberOption.getDoubleMax());
+		if (Math.abs(getInterpolatedValue(d, numberOption.getDoubleMin(), numberOption.getDoubleMax()) - getInterpolatedValue(minValue, numberOption.getDoubleMin(), numberOption.getDoubleMax())) < Math.abs((getInterpolatedValue(d, numberOption.getDoubleMin(), numberOption.getDoubleMax()) - getInterpolatedValue(maxValue, numberOption.getDoubleMin(), numberOption.getDoubleMax())))) {
+			this.minValue = MathHelper.clamp(d, 0, 1);
+			numberOption.setMinValue((float) ((1.0 - minValue) * numberOption.getDoubleMin() + minValue * numberOption.getDoubleMax()));
+		} else {
+			this.maxValue = MathHelper.clamp(d, 0, 1);
+			numberOption.setMaxValue((float) ((1.0 - maxValue) * numberOption.getDoubleMin() + maxValue * numberOption.getDoubleMax()));
+		}
 	}
 
 	@Override
 	protected void onDrag(Click click, double d, double e) {
-		this.setValueFromMouse(click);
-		super.onDrag(click, d, e);
+		if (RenderUtils.isInBounds(click.comp_4798(), click.comp_4799(), new ScreenRect(this.getX() + this.getWidth() / 2, this.getY(), this.getRight() - 5, this.getBottom()))) {
+			this.setValueFromMouse(click);
+			super.onDrag(click, d, e);
+		}
 	}
 
 

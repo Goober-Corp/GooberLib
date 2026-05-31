@@ -21,11 +21,10 @@ public class GooberLibEntrypoint implements ModInitializer {
 
 	public static void init() {
 		try {
-			LOGGER.info("lib init");
 			long start = System.nanoTime();
 
 			builtConfigMap = ConfigDiscovery.discover();
-
+			//TODO make this async
 			LOGGER.info("Discovered {} configs in {}ms", builtConfigMap.size(), Duration.ofNanos(System.nanoTime() - start).toMillis());
 
 			GooberLibApi.loadAll();

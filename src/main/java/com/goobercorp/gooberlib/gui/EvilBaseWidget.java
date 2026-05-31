@@ -67,7 +67,7 @@ public class EvilBaseWidget extends ClickableWidget {
 		hoverTweener.update();
 		clickTweener.update();
 //		stack.translate(horizontalPosOffset, verticalPosOffset);
-		drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED, Identifier.of("gooberlib", "widget/button"), 0, 0, this.getRight(), this.getBottom(), 0x80808080);
+		drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED, Identifier.of("gooberlib", "widget/button"), this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0x80808080);
 		drawText(drawContext);
 		RenderUtils.drawBoxOutline(drawContext, (float) (this.getX() + clickTweener.get()), (float) (this.getY() + clickTweener.get()), (float) (this.getRight() - 1 - clickTweener.get()), (float) (this.getBottom() - 1 - clickTweener.get()), ColorHelper.lerp((float) hoverTweener.get(), 0xFF000000, MainConfig.primaryCol));
 	}
