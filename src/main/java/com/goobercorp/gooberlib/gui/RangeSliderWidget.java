@@ -1,8 +1,7 @@
 package com.goobercorp.gooberlib.gui;
 
 import com.goobercorp.gooberlib.config.MainConfig;
-import com.goobercorp.gooberlib.option.individual.misc.FloatRangeOption;
-import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
+import com.goobercorp.gooberlib.option.individual.primitive.range.NumberRangeOption;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.MinecraftClient;
@@ -32,21 +31,20 @@ public class RangeSliderWidget extends EvilBaseWidget {
 	private final Supplier<Text> valueFormatter;
 	protected boolean sliderFocused;
 	private boolean dragging;
-	private final FloatRangeOption numberOption;
+	private final NumberRangeOption<?> numberOption;
 	private final Tweener minValTweener = new Tweener(() -> minValue);
 	private final Tweener maxValTweener = new Tweener(() -> maxValue);
 
-	public <T extends NumberOption<T>> RangeSliderWidget(T numberOption, int x, int y, int width, int height, Function<T, Text> valueFormatter) {
+	public <T extends NumberRangeOption<T>> RangeSliderWidget(T numberOption, int x, int y, int width, int height, Function<T, Text> valueFormatter) {
 		super(numberOption.name(), x, y, width, height);
-		//TODO: kr1v you need to make this range thing generic. i'm too stupid to do it myself. it works for now
-		this.numberOption = (FloatRangeOption) numberOption;
-		this.minValue = getInterpolatedValue(((FloatRangeOption) numberOption).minValue, numberOption.getDoubleMin(), numberOption.getDoubleMax());
-		this.maxValue = getInterpolatedValue(((FloatRangeOption) numberOption).maxValue, numberOption.getDoubleMin(), numberOption.getDoubleMax());
+		this.numberOption = numberOption;
+		this.minValue = getInterpolatedValue(numberOption.getNumberMinValue().doubleValue(), numberOption.getDoubleMin(), numberOption.getDoubleMax());
+		this.maxValue = getInterpolatedValue(numberOption.getNumberMaxValue().doubleValue(), numberOption.getDoubleMin(), numberOption.getDoubleMax());
 		this.valueFormatter = () -> valueFormatter.apply(numberOption);
 	}
 
-	public <T extends NumberOption<T>> RangeSliderWidget(T numberOption, int x, int y, int width, int height) {
-		this(numberOption, x, y, width, height, t -> Text.of(((FloatRangeOption) numberOption).minValue + "-" + ((FloatRangeOption) numberOption).maxValue));
+	public <T extends NumberRangeOption<T>> RangeSliderWidget(T numberOption, int x, int y, int width, int height) {
+		this(numberOption, x, y, width, height, _ -> Text.of((numberOption).getNumberMinValue() + "-" + (numberOption.getNumberMaxValue())));
 	}
 
 	@Override
@@ -159,10 +157,10 @@ public class RangeSliderWidget extends EvilBaseWidget {
 	protected void setValue(double d) {
 		if (Math.abs(getInterpolatedValue(d, numberOption.getDoubleMin(), numberOption.getDoubleMax()) - getInterpolatedValue(minValue, numberOption.getDoubleMin(), numberOption.getDoubleMax())) < Math.abs((getInterpolatedValue(d, numberOption.getDoubleMin(), numberOption.getDoubleMax()) - getInterpolatedValue(maxValue, numberOption.getDoubleMin(), numberOption.getDoubleMax())))) {
 			this.minValue = MathHelper.clamp(d, 0, 1);
-			numberOption.setMinValue((float) ((1.0 - minValue) * numberOption.getDoubleMin() + minValue * numberOption.getDoubleMax()));
+			numberOption.setMinDoubleValue((float) ((1.0 - minValue) * numberOption.getDoubleMin() + minValue * numberOption.getDoubleMax()));
 		} else {
 			this.maxValue = MathHelper.clamp(d, 0, 1);
-			numberOption.setMaxValue((float) ((1.0 - maxValue) * numberOption.getDoubleMin() + maxValue * numberOption.getDoubleMax()));
+			numberOption.setMaxDoubleValue((float) ((1.0 - maxValue) * numberOption.getDoubleMin() + maxValue * numberOption.getDoubleMax()));
 		}
 	}
 

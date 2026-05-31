@@ -1,8 +1,8 @@
-package com.goobercorp.gooberlib.option.individual.misc;
+package com.goobercorp.gooberlib.option.individual.primitive.range;
 
+import com.goobercorp.gooberlib.api.widgets.WidgetProviders;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
-import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
 import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec2f;
@@ -10,7 +10,7 @@ import net.minecraft.util.math.Vec2f;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class FloatRangeOption extends BaseOption<FloatRangeOption> implements NumberOption<FloatRangeOption> {
+public class FloatRangeOption extends BaseOption<FloatRangeOption> implements NumberRangeOption<FloatRangeOption> {
 	private final float defaultValueMin;
 	private final float defaultValueMax;
 	private final float min;
@@ -28,22 +28,12 @@ public class FloatRangeOption extends BaseOption<FloatRangeOption> implements Nu
 		this.max = max;
 	}
 
-	@Override
-	public Number getNumberValue() {
-		return null;
-	}
-
-	public Number getMinValue() {
+	public float getMinValue() {
 		return minValue;
 	}
 
-	public Number getMaxValue() {
+	public float getMaxValue() {
 		return maxValue;
-	}
-
-	@Override
-	public void setDoubleValue(double n) {
-
 	}
 
 	public void setMinValue(float value) {
@@ -70,13 +60,44 @@ public class FloatRangeOption extends BaseOption<FloatRangeOption> implements Nu
 	}
 
 	@Override
-	public void setFromString(String s) {
-		//no.
+	public Number getNumberMinValue() {
+		return this.minValue;
+	}
+
+	@Override
+	public Number getNumberMaxValue() {
+		return this.maxValue;
+	}
+
+	@Override
+	public void setMinFromString(String s) {
+		try {
+			this.setMinValue(Float.parseFloat(s));
+		} catch (NumberFormatException _) {
+		}
+	}
+
+	@Override
+	public void setMaxFromString(String s) {
+		try {
+			this.setMaxValue(Float.parseFloat(s));
+		} catch (NumberFormatException _) {
+		}
 	}
 
 	@Override
 	public Predicate<String> getPredicate() {
-		return null;
+		return WidgetProviders.Predicates.FLOAT;
+	}
+
+	@Override
+	public void setMaxDoubleValue(double v) {
+		this.maxValue = (float) v;
+	}
+
+	@Override
+	public void setMinDoubleValue(double v) {
+		this.minValue = (float) v;
 	}
 
 	@Override
