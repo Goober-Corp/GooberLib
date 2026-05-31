@@ -12,15 +12,15 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class FloatRangeOption extends BaseOption<FloatRangeOption> implements NumberRangeOption<FloatRangeOption> {
-	private final float defaultValueMin;
-	private final float defaultValueMax;
-	private final float min;
-	private final float max;
-	public float minValue;
-	public float maxValue;
+public class IntRangeOption extends BaseOption<IntRangeOption> implements NumberRangeOption<IntRangeOption> {
+	private final int defaultValueMin;
+	private final int defaultValueMax;
+	private final int min;
+	private final int max;
+	public int minValue;
+	public int maxValue;
 
-	public FloatRangeOption(Text name, Function<FloatRangeOption, Text> description, float defaultValueMin, float defaultValueMax, float min, float max, WidgetProvider<FloatRangeOption> provider) {
+	public IntRangeOption(Text name, Function<IntRangeOption, Text> description, int defaultValueMin, int defaultValueMax, int min, int max, WidgetProvider<IntRangeOption> provider) {
 		super(name, description, provider);
 		this.minValue = defaultValueMin;
 		this.maxValue = defaultValueMax;
@@ -30,19 +30,19 @@ public class FloatRangeOption extends BaseOption<FloatRangeOption> implements Nu
 		this.max = max;
 	}
 
-	public float getMinValue() {
+	public int getMinValue() {
 		return minValue;
 	}
 
-	public float getMaxValue() {
+	public int getMaxValue() {
 		return maxValue;
 	}
 
-	public void setMinValue(float value) {
+	public void setMinValue(int value) {
 		this.minValue = value;
 	}
 
-	public void setMaxValue(float value) {
+	public void setMaxValue(int value) {
 		this.maxValue = value;
 	}
 
@@ -74,7 +74,7 @@ public class FloatRangeOption extends BaseOption<FloatRangeOption> implements Nu
 	@Override
 	public void setMinFromString(String s) {
 		try {
-			this.setMinValue(Float.parseFloat(s));
+			this.setMinValue(Integer.parseInt(s));
 		} catch (NumberFormatException _) {
 		}
 	}
@@ -82,35 +82,35 @@ public class FloatRangeOption extends BaseOption<FloatRangeOption> implements Nu
 	@Override
 	public void setMaxFromString(String s) {
 		try {
-			this.setMaxValue(Float.parseFloat(s));
+			this.setMaxValue(Integer.parseInt(s));
 		} catch (NumberFormatException _) {
 		}
 	}
 
 	@Override
 	public Predicate<String> getPredicate() {
-		return WidgetProviders.Predicates.FLOAT;
+		return WidgetProviders.Predicates.INTEGER;
 	}
 
 	@Override
 	public void setMaxDoubleValue(double v) {
-		this.maxValue = (float) v;
+		this.maxValue = (int) v;
 	}
 
 	@Override
 	public void setMinDoubleValue(double v) {
-		this.minValue = (float) v;
+		this.minValue = (int) v;
 	}
 
 	@Override
 	public <S> S serialize(DynamicOps<S> ops) {
-		return ops.createMap(Map.of(ops.createString("min"), ops.createFloat(this.minValue), ops.createString("max"), ops.createFloat(this.maxValue)));
+		return ops.createMap(Map.of(ops.createString("min"), ops.createInt(this.minValue), ops.createString("max"), ops.createInt(this.maxValue)));
 	}
 
 	@Override
 	public <S> void deserialize(DynamicOps<S> ops, S object) {
 		Map<S, S> map = ops.getMapValues(object).getOrThrow().collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
-		this.minValue = ops.getNumberValue(map.get(ops.createString("min"))).getOrThrow().floatValue();
-		this.maxValue = ops.getNumberValue(map.get(ops.createString("max"))).getOrThrow().floatValue();
+		this.minValue = ops.getNumberValue(map.get(ops.createString("min"))).getOrThrow().intValue();
+		this.maxValue = ops.getNumberValue(map.get(ops.createString("max"))).getOrThrow().intValue();
 	}
 }

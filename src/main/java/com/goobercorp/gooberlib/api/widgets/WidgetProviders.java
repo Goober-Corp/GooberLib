@@ -29,6 +29,8 @@ import java.util.function.Predicate;
 public class WidgetProviders {
 	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public static class Predicates {
+
+
 		private static Predicate<String> falseIfException(Consumer<String> sEr, Class<? extends Throwable> clazz) {
 			return s -> {
 				try {
@@ -48,6 +50,9 @@ public class WidgetProviders {
 		public static final Predicate<String> INTEGER = falseIfException(Integer::parseInt, NumberFormatException.class);
 		public static final Predicate<String> DOUBLE = falseIfException(Double::parseDouble, NumberFormatException.class);
 		public static final Predicate<String> FLOAT = falseIfException(Float::parseFloat, NumberFormatException.class);
+		public static final Predicate<String> LONG = falseIfException(Long::parseLong, NumberFormatException.class);
+		public static final Predicate<String> SHORT = falseIfException(Short::parseShort, NumberFormatException.class);
+		public static final Predicate<String> BYTE = falseIfException(Byte::parseByte, NumberFormatException.class);
 	}
 
 	private static TextRenderer font() {

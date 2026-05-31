@@ -11,7 +11,7 @@ import com.goobercorp.gooberlib.option.individual.java.CycleOption;
 import com.goobercorp.gooberlib.option.individual.java.EnumOption;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
 import com.goobercorp.gooberlib.option.individual.minecraft.*;
-import com.goobercorp.gooberlib.option.individual.primitive.range.FloatRangeOption;
+import com.goobercorp.gooberlib.option.individual.primitive.range.*;
 import com.goobercorp.gooberlib.option.individual.misc.ListOption;
 import com.goobercorp.gooberlib.option.individual.misc.ObjectOption;
 import com.goobercorp.gooberlib.option.individual.primitive.*;
@@ -102,7 +102,12 @@ public class TheOne {
 	public static final HotkeyOption hotkeyOption = new HotkeyOption("hotkey option", "hotkey description", "g, c", 2, () -> System.out.println("meow meow"));
 
 	@Section("range options")
-	public static final FloatRangeOption floatRangeOption = new FloatRangeOption(Text.of("float range option"), floatRangeOption1 -> Text.of("desc"), 2, 4, 0, 10, WidgetProviders.rangeOption());
+	public static final ByteRangeOption byteRangeOption = new ByteRangeOption(Text.of("float range option"), floatRangeOption1 -> Text.of("float range description"), (byte) 2, (byte) 4, (byte) 0, (byte) 10, WidgetProviders.rangeOption());
+	public static final ShortRangeOption shortRangeOption = new ShortRangeOption(Text.of("float range option"), floatRangeOption1 -> Text.of("float range description"), (short) 2, (short) 4, (short) 0, (short) 10, WidgetProviders.rangeOption());
+	public static final IntRangeOption intRangeOption = new IntRangeOption(Text.of("float range option"), floatRangeOption1 -> Text.of("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
+	public static final LongRangeOption longRangeOption = new LongRangeOption(Text.of("float range option"), floatRangeOption1 -> Text.of("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
+	public static final FloatRangeOption floatRangeOption = new FloatRangeOption(Text.of("float range option"), floatRangeOption1 -> Text.of("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
+	public static final DoubleRangeOption doubleRangeOption = new DoubleRangeOption(Text.of("double range option"), floatRangeOption1 -> Text.of("double range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
 
 	public static class InstanceMeow {
 		public final StringOption s = new StringOption("Wow!", "");
