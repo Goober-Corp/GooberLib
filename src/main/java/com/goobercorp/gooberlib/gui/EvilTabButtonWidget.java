@@ -41,9 +41,9 @@ public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWid
 		isSelectedProgress.update();
 
 		float yeah = (float) currentTabProgress.getLerped(4, 0);
-		int ohyeah = ColorHelper.lerp((float) isSelectedProgress.get(), 0x33FFFFFF, MainConfig.primaryCol);
-		int specialCol = ColorHelper.lerp((float) isSelectedProgress.get(), 0x00000000, MainConfig.primaryCol);
-		int ough = ColorHelper.lerp((float) currentTabProgress.get(), 0xB0000000, 0x40000000);
+		int ohyeah = ColorHelper.lerp(isSelectedProgress.getF(), 0x33FFFFFF, MainConfig.primaryCol);
+		int specialCol = ColorHelper.lerp(isSelectedProgress.getF(), 0x00000000, MainConfig.primaryCol);
+		int ough = ColorHelper.lerp(currentTabProgress.getF(), 0xB0000000, 0x40000000);
 		//outer black line
 		drawOutsideBorder(context, yeah);
 
@@ -85,10 +85,10 @@ public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWid
 	}
 
 	private void drawCurrentTabLine(DrawContext drawContext, TextRenderer textRenderer, int i) {
-		float j = (float) (Math.min(textRenderer.getWidth(this.getMessage()), this.getWidth() - 4) * currentTabProgress.get());
+		float j = (Math.min(textRenderer.getWidth(this.getMessage()), this.getWidth() - 4) * currentTabProgress.getF());
 		float k = this.getX() + (this.getWidth() - j) / 2F;
 		float l = (this.getY());
-		fillEvil(drawContext, k, l, k + j, (float) (l + 1 - (1 - currentTabProgress.get())), i);
+		fillEvil(drawContext, k, l, k + j, (l + 1 - (1 - currentTabProgress.getF())), i);
 	}
 
 	@Override

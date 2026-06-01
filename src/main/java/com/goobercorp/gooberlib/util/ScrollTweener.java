@@ -38,6 +38,18 @@ public class ScrollTweener {
 		return value;
 	}
 
+	public float getF() {
+		return (float) value;
+	}
+
+	public int getI() {
+		return (int) value;
+	}
+
+	public float getFloatingRemainder() {
+		return this.getF() - (int) this.get();
+	}
+
 	public double getLerped(double start, double end) {
 		return MathHelper.lerp(value, start, end);
 	}

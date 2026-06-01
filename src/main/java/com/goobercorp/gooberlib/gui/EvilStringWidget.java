@@ -478,7 +478,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 					cursorPosTweener.update();
 					cursorHeightTweener.update();
 					cursorWidthTweener.update();
-					RenderUtils.fillEvil(drawContext, (float) cursorPosTweener.get(), (float) MathHelper.lerp(cursorHeightTweener.get(), (float) (this.textY + 7), (float) (this.textY - 1)), (float) (cursorPosTweener.get() + cursorWidthTweener.get()), (float) MathHelper.lerp(cursorHeightTweener.get(), this.textY + 8, this.textY + 1 + 9), k);
+					RenderUtils.fillEvil(drawContext, cursorPosTweener.getF(), MathHelper.lerp(cursorHeightTweener.getF(), (this.textY + 7), (this.textY - 1)), (cursorPosTweener.getF() + cursorWidthTweener.getF()), MathHelper.lerp(cursorHeightTweener.getF(), this.textY + 8, this.textY + 1 + 9), k);
 				}
 
 				if (this.isHovered()) {

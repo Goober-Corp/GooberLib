@@ -48,10 +48,10 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	protected void drawText(DrawContext drawContext) {
 		newMatrixScope(drawContext, stack -> {
 //			stack.scale(0.5F, 0.5F);
-			drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, numberOption.getNumberValue().toString(), (int) ((getX() + (this.width - 5) / 2F) + (valTweener.get() / 2 * (this.width - 5))) + 1, this.getY() - 10, ColorHelper.withAlpha(((float) clickTweener.get()), MainConfig.primaryCol));
+			stack.translate(((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2 * (this.width - 5))) + 1, this.getY() - 10);
+			drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, numberOption.getNumberValue().toString(), 0, 0, ColorHelper.withAlpha(clickTweener.getF(), MainConfig.primaryCol));
 		});
 		drawContext.drawText(MinecraftClient.getInstance().textRenderer, numberOption.name(), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, MainConfig.primaryCol, true);
-//		super.drawText(drawContext);
 	}
 
 	public static double getInterpolatedValue(double val, double min, double max) {
@@ -88,10 +88,10 @@ public class EvilSliderWidget extends EvilBaseWidget {
 		newMatrixScope(drawContext, stack -> {
 			stack.translate(horizontalPosOffset, verticalPosOffset);
 			super.renderWidget(drawContext, i, j, f);
-			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (valTweener.get() / 2 * (this.width - 5)) - 0.5) + 1, (float) getY() + 4, getBottom() - 2, MainConfig.shadowCol);
-			RenderUtils.drawHorizontalLine(drawContext, (getX() + (this.width - 5) / 2F) - 0.5F + 1, this.getRight() - 5.5F + 1, this.getY() + getHeight() / 2F + 1, MainConfig.shadowCol);
-			RenderUtils.drawHorizontalLine(drawContext, (getX() + (this.width - 5) / 2F) - 0.5F, this.getRight() - 5.5F, this.getY() + getHeight() / 2F, MainConfig.primaryCol);
-			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (valTweener.get() / 2 * (this.width - 5)) - 0.5), (float) getY() + 3, getBottom() - 3, MainConfig.primaryCol);
+			RenderUtils.drawVerticalLine(drawContext, ((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2F * (this.width - 5)) - 0.5F) + 1, getY() + 4, getBottom() - 2, MainConfig.shadowCol);
+			RenderUtils.drawHorizontalLine(drawContext, (getX() + (this.width - 5) / 2F) - 0.5F + 1, this.getRight() - 5.5F + 1, getY() + getHeight() / 2F + 1, MainConfig.shadowCol);
+			RenderUtils.drawHorizontalLine(drawContext, (getX() + (this.width - 5) / 2F) - 0.5F, this.getRight() - 5.5F, getY() + getHeight() / 2F, MainConfig.primaryCol);
+			RenderUtils.drawVerticalLine(drawContext, ((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2 * (this.width - 5)) - 0.5F), getY() + 3, getBottom() - 3, MainConfig.primaryCol);
 			if (this.isHovered()) {
 				drawContext.setCursor(this.dragging ? StandardCursors.RESIZE_EW : StandardCursors.POINTING_HAND);
 			}

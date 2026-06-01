@@ -212,7 +212,7 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 		if (MainConfig.ENABLE_INFINITE_TAB_SCROLLING.value) {
 			scrollTweener.min = -10000;
 			scrollTweener.max = 10000;
-			page = (int) (scrollTweener.get() / (tabNavWidth + 20));
+			page = scrollTweener.getI() / (tabNavWidth + 20);
 			if ((grid.getX() + grid.getWidth()) < tabNavWidth + 20) {
 				tabs.forEach(tab -> {
 					EvilTabButtonWidget widget = new EvilTabButtonWidget(tabManager, tab, 0, 24);
@@ -229,9 +229,9 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 		}
 
 		scrollTweener.update();
-		this.grid.setX((int) scrollTweener.get());
+		this.grid.setX(scrollTweener.getI());
 		newMatrixScope(drawContext, stack -> {
-			stack.translate((float) (scrollTweener.get() - (int) scrollTweener.get()), 0);
+			stack.translate(scrollTweener.getFloatingRemainder(), 0);
 			RenderUtils.drawHorizontalLine(drawContext, -1, tabButtons.get(getCurrentTabIndex()).getX() - 1, this.grid.getY() + 1, 0x33FFFFFF);
 			RenderUtils.drawHorizontalLine(drawContext, -1, tabButtons.get(getCurrentTabIndex()).getX() - 1, this.grid.getY(), 0xBF000000);
 
@@ -247,7 +247,7 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 	public void renderForBackgroundLayer(DrawContext drawContext) {
 
 		drawContext.getMatrices().pushMatrix();
-		drawContext.getMatrices().translate((float) (scrollTweener.get() - (int) scrollTweener.get()), 0);
+		drawContext.getMatrices().translate(scrollTweener.getFloatingRemainder(), 0);
 		drawContext.drawHorizontalLine(0, tabButtons.getFirst().getX() - 1, this.grid.getY(), 0xBF000000);
 		drawContext.drawHorizontalLine(tabButtons.getLast().getRight(), tabNavWidth, this.grid.getY(), 0xBF000000);
 

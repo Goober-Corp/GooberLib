@@ -52,7 +52,7 @@ public class RangeSliderWidget extends EvilBaseWidget {
 	protected void drawText(DrawContext drawContext) {
 		newMatrixScope(drawContext, stack -> {
 //			stack.scale(0.5F, 0.5F);
-			drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, valueFormatter.get(), this.getRight() - this.getWidth() / 4, this.getY() - 10, ColorHelper.withAlpha(((float) clickTweener.get()), MainConfig.primaryCol));
+			drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, valueFormatter.get(), this.getRight() - this.getWidth() / 4, this.getY() - 10, ColorHelper.withAlpha(clickTweener.getF(), MainConfig.primaryCol));
 		});
 		drawContext.drawText(MinecraftClient.getInstance().textRenderer, numberOption.name(), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, MainConfig.primaryCol, true);
 //		super.drawText(drawContext);
@@ -93,13 +93,14 @@ public class RangeSliderWidget extends EvilBaseWidget {
 		newMatrixScope(drawContext, stack -> {
 			stack.translate(horizontalPosOffset, verticalPosOffset);
 			super.renderWidget(drawContext, i, j, f);
-			RenderUtils.drawHorizontalLine(drawContext, (getX() + (this.width - 5) / 2F) - 0.5F, this.getRight() - 5.5F, this.getY() + getHeight() / 2F, MainConfig.primaryCol);
-			RenderUtils.drawHorizontalLine(drawContext, (getX() + (this.width - 5) / 2F) - 0.5F + 1, this.getRight() - 5.5F + 1, this.getY() + getHeight() / 2F + 1, MainConfig.shadowCol);
-			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (maxValTweener.get() / 2 * (this.width - 5)) - 0.5), (float) getY() + 3, getBottom() - 3, MainConfig.primaryCol);
-			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (minValTweener.get() / 2 * (this.width - 5)) - 0.5), (float) getY() + 3, getBottom() - 3, MainConfig.primaryCol);
-			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (maxValTweener.get() / 2 * (this.width - 5)) - 0.5) + 1, (float) getY() + 4, getBottom() - 2, MainConfig.shadowCol);
-			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (minValTweener.get() / 2 * (this.width - 5)) - 0.5) + 1, (float) getY() + 4, getBottom() - 2, MainConfig.shadowCol);
-			RenderUtils.fillEvil(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (minValTweener.get() / 2 * (this.width - 5)) - 0.5) + 1, getY() + 6, (float) ((getX() + (this.width - 5) / 2F) + (maxValTweener.get() / 2 * (this.width - 5)) - 0.5), getBottom() - 5, ColorHelper.withAlpha(0.5F, MainConfig.shadowCol));
+			float minX = getX() + (this.width - 5) / 2F;
+			RenderUtils.drawHorizontalLine(drawContext, minX - 0.5F, this.getRight() - 5.5F, this.getY() + getHeight() / 2F, MainConfig.primaryCol);
+			RenderUtils.drawHorizontalLine(drawContext, minX - 0.5F + 1, this.getRight() - 5.5F + 1, this.getY() + getHeight() / 2F + 1, MainConfig.shadowCol);
+			RenderUtils.drawVerticalLine(drawContext, minX + (maxValTweener.getF() / 2 * (this.width - 5)) - 0.5F, getY() + 3, getBottom() - 3, MainConfig.primaryCol);
+			RenderUtils.drawVerticalLine(drawContext, minX + (minValTweener.getF() / 2 * (this.width - 5)) - 0.5F, getY() + 3, getBottom() - 3, MainConfig.primaryCol);
+			RenderUtils.drawVerticalLine(drawContext, (minX + (maxValTweener.getF() / 2 * (this.width - 5)) - 0.5F) + 1, getY() + 4, getBottom() - 2, MainConfig.shadowCol);
+			RenderUtils.drawVerticalLine(drawContext, (minX + (minValTweener.getF() / 2 * (this.width - 5)) - 0.5F) + 1, getY() + 4, getBottom() - 2, MainConfig.shadowCol);
+			RenderUtils.fillEvil(drawContext, (minX + (minValTweener.getF() / 2 * (this.width - 5)) - 0.5F) + 1, getY() + 6, (minX + (maxValTweener.getF() / 2 * (this.width - 5)) - 0.5F), getBottom() - 5, ColorHelper.withAlpha(0.5F, MainConfig.shadowCol));
 			if (RenderUtils.isInBounds(mX, mY, new ScreenRect(this.getX() + this.getWidth() / 2, this.getY(), this.getRight() - 5, this.getBottom()))) {
 				drawContext.setCursor(this.dragging ? StandardCursors.RESIZE_EW : StandardCursors.POINTING_HAND);
 			}
@@ -159,10 +160,10 @@ public class RangeSliderWidget extends EvilBaseWidget {
 	protected void setValue(double d) {
 		if (Math.abs(getInterpolatedValue(d, numberOption.getDoubleMin(), numberOption.getDoubleMax()) - getInterpolatedValue(minValue, numberOption.getDoubleMin(), numberOption.getDoubleMax())) < Math.abs((getInterpolatedValue(d, numberOption.getDoubleMin(), numberOption.getDoubleMax()) - getInterpolatedValue(maxValue, numberOption.getDoubleMin(), numberOption.getDoubleMax())))) {
 			this.minValue = MathHelper.clamp(d, 0, 1);
-			numberOption.setMinDoubleValue((float) ((1.0 - minValue) * numberOption.getDoubleMin() + minValue * numberOption.getDoubleMax()));
+			numberOption.setMinDoubleValue(((1.0 - minValue) * numberOption.getDoubleMin() + minValue * numberOption.getDoubleMax()));
 		} else {
 			this.maxValue = MathHelper.clamp(d, 0, 1);
-			numberOption.setMaxDoubleValue((float) ((1.0 - maxValue) * numberOption.getDoubleMin() + maxValue * numberOption.getDoubleMax()));
+			numberOption.setMaxDoubleValue(((1.0 - maxValue) * numberOption.getDoubleMin() + maxValue * numberOption.getDoubleMax()));
 		}
 	}
 

@@ -150,15 +150,12 @@ public class GooberScreen extends Screen {
 	@Override
 	public void render(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
 		updateTweeners();
-		setWidgetOffsets();
-		evilLayout.values().forEach(entry -> entry.render(drawContext, mouseX, mouseY, tickDelta));
-		drawLines(drawContext);
-
+		drawCommon(drawContext, mouseX, mouseY, tickDelta);
 		super.render(drawContext, mouseX, mouseY, tickDelta);
 
-		for (PrecisePositionWidgetWrapper<?> yeah : evilLayout.values()) {
-			if (yeah.isMouseOver(mouseX, mouseY)) {
-				descriptionText = yeah.getHoverMessage().get();
+		for (PrecisePositionWidgetWrapper<?> ppww : evilLayout.values()) {
+			if (ppww.isMouseOver(mouseX, mouseY)) {
+				descriptionText = ppww.getHoverMessage().get();
 				animateHoverDescription = true;
 				break;
 			}
@@ -169,22 +166,11 @@ public class GooberScreen extends Screen {
 				tabHoldTicks = 10;
 			}
 		}
-		categoryHoverProgress = (float) ease(categoryHoverProgress, tabHoldTicks > 0 ? 1 : 0, 15);
-		int yeah = 0;
-		if (this.tabs.length > 1) {
-			yeah = tabNavigationWidget.getCurrentTabIndex();
-		}
-		screenCategoryAnimationState = (float) ease(screenCategoryAnimationState, yeah == -1 ? 0 : yeah, 15);
 
 
-		descriptionAnimationProgress = (float) ease(descriptionAnimationProgress, animateHoverDescription ? 1 : 0, 15);
-		newMatrixScope(drawContext, stack -> {
-			stack.translate((float) (drawContext.getScaledWindowWidth() / 2), (float) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))));
-			drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, 0, 0, MainConfig.primaryCol);
-		});
 		if (this.tabs.length > 1) {
 			newMatrixScope(drawContext, matrix3x2fStack -> {
-				matrix3x2fStack.translate(0, -26 * (1 - categoryHoverProgress));
+				matrix3x2fStack.translate(0, -26 * categoryHoverProgress);
 				tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
 			});
 		}
@@ -195,12 +181,12 @@ public class GooberScreen extends Screen {
 
 	@Override
 	public void renderBackground(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
+		//TODO: this sucks, and also lags behind by a frame ?
 		double mX, mY;
 		mX = MinecraftClient.getInstance().mouse.getScaledX(MinecraftClient.getInstance().getWindow());
 		mY = MinecraftClient.getInstance().mouse.getScaledY(MinecraftClient.getInstance().getWindow());
-		//TODO: this sucks
+		//Cursor glow
 		RenderUtils.fillEvil(drawContext, (float) mX, (float) mY, (float) (mX + 2.5f), (float) (mY + 2.5F), MainConfig.primaryCol);
-
 		newMatrixScope(drawContext, stack -> {
 			stack.translate(-mouseX * 0.1F, -mouseY * 0.1F);
 			stack.translate(MinecraftClient.getInstance().getWindow().getScaledWidth() / 2F - 100, MinecraftClient.getInstance().getWindow().getScaledHeight() / 2F - 100);
@@ -208,25 +194,28 @@ public class GooberScreen extends Screen {
 			drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, Identifier.of("gooberlib", "textures/him.png"), 0, 0, 100, 100, 100, 100, 100, 100);
 		});
 
-		drawLines(drawContext);
 
-		setWidgetOffsets();
-		evilLayout.values().forEach(entry -> entry.render(drawContext, mouseX, mouseY, tickDelta));
+		drawCommon(drawContext, mouseX, mouseY, tickDelta);
 
 		if (this.tabs.length > 1) {
 			newMatrixScope(drawContext, stack -> {
-				stack.translate(0, -26 * (1 - categoryHoverProgress));
+				stack.translate(0, -26 * categoryHoverProgress);
 
 				tabNavigationWidget.renderForBackgroundLayer(drawContext);
 			});
 		}
+		drawContext.createNewRootLayer();
+		super.renderBackground(drawContext, mouseX, mouseY, tickDelta);
+	}
+
+	private void drawCommon(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
+		drawLines(drawContext);
+		setWidgetOffsets();
+		evilLayout.values().forEach(entry -> entry.render(drawContext, mouseX, mouseY, tickDelta));
 		newMatrixScope(drawContext, stack -> {
 			stack.translate((float) (drawContext.getScaledWindowWidth() / 2), (float) (drawContext.getScaledWindowHeight() * (1.05F + (-0.1 * descriptionAnimationProgress))));
 			drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, 0, 0, MainConfig.primaryCol);
 		});
-		drawContext.createNewRootLayer();
-
-		super.renderBackground(drawContext, mouseX, mouseY, tickDelta);
 	}
 
 	private void forEachOption(Consumer<OptionHolder> consumer) {
@@ -275,6 +264,11 @@ public class GooberScreen extends Screen {
 	private void updateTweeners() {
 		this.scrollTweener.update();
 		this.categoryTweener.update();
+		//TODO: convert to tweeners
+		categoryHoverProgress = (float) ease(categoryHoverProgress, tabHoldTicks > 0 ? 0 : 1, 15);
+		int yeah = tabs.length > 1 ? tabNavigationWidget.getCurrentTabIndex() : 0;
+		screenCategoryAnimationState = (float) ease(screenCategoryAnimationState, yeah == -1 ? 0 : yeah, 15);
+		descriptionAnimationProgress = (float) ease(descriptionAnimationProgress, animateHoverDescription ? 1 : 0, 15);
 	}
 
 	@Override

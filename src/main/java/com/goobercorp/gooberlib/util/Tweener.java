@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 public class Tweener {
 	//TODO: add easings
+	//TODO: have some sort of common interface for Tweener and ScrollTweener
 	Supplier<Number> target;
 	double value;
 	float speed;
@@ -28,8 +29,20 @@ public class Tweener {
 		return value;
 	}
 
+	public float getF() {
+		return (float) value;
+	}
+
+	public int getI() {
+		return (int) value;
+	}
+
+	public float getFloatingRemainder() {
+		return this.getF() - (int) this.get();
+	}
+
 	public boolean isAtTarget() {
-		return Math.abs(target.get().doubleValue() - value) < 0.001;
+		return MathHelper.approximatelyEquals(value, target.get().doubleValue());
 	}
 
 	public double getLerped(double start, double end) {

@@ -7,7 +7,6 @@ import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.util.math.Vec2f;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
@@ -42,7 +41,7 @@ public class TickBoxWidget extends EvilBaseWidget {
 			RenderUtils.drawBoxOutline(drawContext, center.x - midpoint, center.y - midpoint, center.x + midpoint - 1, center.y + midpoint - 1, MainConfig.primaryCol);
 			if (t.get() > 0.05F) {
 				midpoint *= 0.65F;
-				midpoint *= (float) (t.get() * 0.9F);
+				midpoint *= t.getF() * 0.9F;
 				RenderUtils.fillEvil(drawContext, center.x - midpoint + 1, center.y - midpoint + 1, center.x + midpoint + 1, center.y + midpoint + 1, MainConfig.shadowCol);
 				RenderUtils.fillEvil(drawContext, center.x - midpoint, center.y - midpoint, center.x + midpoint, center.y + midpoint, MainConfig.primaryCol);
 			}

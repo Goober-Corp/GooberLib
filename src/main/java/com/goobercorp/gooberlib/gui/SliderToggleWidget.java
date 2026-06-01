@@ -38,9 +38,9 @@ public class SliderToggleWidget extends EvilBaseWidget {
 			RenderUtils.drawBoxOutline(drawContext, center.x - midpoint * 2 + 1, center.y - midpoint + 1, center.x + midpoint, center.y + midpoint, MainConfig.shadowCol);
 			RenderUtils.drawBoxOutline(drawContext, center.x - midpoint * 2, center.y - midpoint, center.x + midpoint - 1, center.y + midpoint - 1, MainConfig.primaryCol);
 			float finalMidpoint = midpoint;
-			float yeah = (float) (midpoint * 0.5F * boxHoverTweener.get());
+			float yeah = (midpoint * 0.5F * boxHoverTweener.getF());
 			newMatrixScope(drawContext, stack1 -> {
-				stack1.translate((float) (-finalMidpoint * tweener.get()), 0);
+				stack1.translate((-finalMidpoint * tweener.getF()), 0);
 				RenderUtils.fillEvil(drawContext, center.x - yeah + 1, center.y - yeah + 1, center.x + yeah + 1, center.y + yeah + 1, MainConfig.shadowCol);
 				RenderUtils.fillEvil(drawContext, center.x - yeah, center.y - yeah, center.x + yeah, center.y + yeah, MainConfig.primaryCol);
 			});
