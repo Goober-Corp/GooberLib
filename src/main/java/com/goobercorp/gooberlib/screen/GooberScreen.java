@@ -124,6 +124,7 @@ public class GooberScreen extends Screen {
 //                /*entry.setOffsetY(scrollTweener.get() * (scrollTweener.get() / entry.getY()));*/
 //            } else {
 //            }
+			//TODO: sticky groups
 			entry.setOffsetY(scrollTweener.get());
 			entry.setOffsetX(-width * categoryTweener.get());
 		}
@@ -258,7 +259,7 @@ public class GooberScreen extends Screen {
 		for (OptionHolder opt : o.childOptions()) {
 			PrecisePositionWidgetWrapper<?> optionWidget = evilLayout.get(opt);
 			RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getRealX() + 6, (float) evilLayout.get(opt).getRealX(), (float) optionWidget.getRealY() + optionWidget.getWrapped().getHeight() / 2F + 1, MainConfig.bgColor);
-			RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getRealX() + 5, (float) evilLayout.get(opt).getRealX() - 1, (float) optionWidget.getRealY() + optionWidget.getWrapped().getHeight() / 2F, MainConfig.primaryCol);
+			RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getRealX() + 5, (float) evilLayout.get(opt).getRealX(), (float) optionWidget.getRealY() + optionWidget.getWrapped().getHeight() / 2F, MainConfig.primaryCol);
 			drawLinesForOption(drawContext, opt);
 		}
 	}

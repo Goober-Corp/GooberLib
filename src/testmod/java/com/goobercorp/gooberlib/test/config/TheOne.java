@@ -5,16 +5,17 @@ import com.goobercorp.gooberlib.api.widgets.WidgetProviders;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
+import com.goobercorp.gooberlib.gui.SliderToggleWidget;
 import com.goobercorp.gooberlib.option.individual.hotkey.HotkeyOption;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.option.individual.java.CycleOption;
 import com.goobercorp.gooberlib.option.individual.java.EnumOption;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
 import com.goobercorp.gooberlib.option.individual.minecraft.*;
-import com.goobercorp.gooberlib.option.individual.primitive.range.*;
 import com.goobercorp.gooberlib.option.individual.misc.ListOption;
 import com.goobercorp.gooberlib.option.individual.misc.ObjectOption;
 import com.goobercorp.gooberlib.option.individual.primitive.*;
+import com.goobercorp.gooberlib.option.individual.primitive.range.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.joml.Vector4i;
@@ -58,8 +59,9 @@ public class TheOne {
 	public static Text TextOption;
 //	public static Color ColorOption;
 	 */
-
+	@Section("fancy ass booleans")
 	public static final BooleanOption booleanOption = new BooleanOption("boolean option", "boolean description");
+	public static final BooleanOption secondBooleanOption = new BooleanOption("coolean option", "boolean description", SliderToggleWidget::new);
 
 	@Section("field test")
 	public static final StringOption stringOption = new StringOption("string option", "string description");
@@ -70,15 +72,15 @@ public class TheOne {
 	public static final FloatOption floatOption = new FloatOption("float option field", "float description", WidgetProviders.numberField());
 	public static final DoubleOption doubleOption = new DoubleOption("double option field", "double description", WidgetProviders.numberField());
 	public static final CharOption charOption = new CharOption("char option field", "char description", WidgetProviders.numberField());
-
-	@Section("slider test")
-	public static final ByteOption byteOptionSlider = new ByteOption("byte option slider", "byte description", WidgetProviders.numberSlider());
-	public static final ShortOption shortOptionSlider = new ShortOption("short option slider", "short description", WidgetProviders.numberSlider());
-	public static final IntOption intOptionSlider = new IntOption("int option slider", "int description", WidgetProviders.numberSlider());
-	public static final LongOption longOptionSlider = new LongOption("long option slider", "long description", WidgetProviders.numberSlider());
-	public static final FloatOption floatOptionSlider = new FloatOption("float option slider", "float description", WidgetProviders.numberSlider());
-	public static final DoubleOption doubleOptionSlider = new DoubleOption("double option slider", "double description", WidgetProviders.numberSlider());
-	public static final CharOption charOptionSlider = new CharOption("char option slider", "char description", WidgetProviders.numberSlider());
+//removed because it felt redundant when we have the value formatted ones
+//	@Section("slider test")
+//	public static final ByteOption byteOptionSlider = new ByteOption("byte option slider", "byte description", WidgetProviders.numberSlider());
+//	public static final ShortOption shortOptionSlider = new ShortOption("short option slider", "short description", WidgetProviders.numberSlider());
+//	public static final IntOption intOptionSlider = new IntOption("int option slider", "int description", WidgetProviders.numberSlider());
+//	public static final LongOption longOptionSlider = new LongOption("long option slider", "long description", WidgetProviders.numberSlider());
+//	public static final FloatOption floatOptionSlider = new FloatOption("float option slider", "float description", WidgetProviders.numberSlider());
+//	public static final DoubleOption doubleOptionSlider = new DoubleOption("double option slider", "double description", WidgetProviders.numberSlider());
+//	public static final CharOption charOptionSlider = new CharOption("char option slider", "char description", WidgetProviders.numberSlider());
 
 	@Section("slider test w/ value formatter")
 	public static final ByteOption byteOptionSliderFormatter = new ByteOption("byte option slider", "byte description", WidgetProviders.numberSliderWithFormatter(t -> t.name().copy().append("!!! with: " + t.getValue())));
@@ -102,10 +104,10 @@ public class TheOne {
 	public static final HotkeyOption hotkeyOption = new HotkeyOption("hotkey option", "hotkey description", "g, c", 2, () -> System.out.println("meow meow"));
 
 	@Section("range options")
-	public static final ByteRangeOption byteRangeOption = new ByteRangeOption(Text.of("float range option"), floatRangeOption1 -> Text.of("float range description"), (byte) 2, (byte) 4, (byte) 0, (byte) 10, WidgetProviders.rangeOption());
-	public static final ShortRangeOption shortRangeOption = new ShortRangeOption(Text.of("float range option"), floatRangeOption1 -> Text.of("float range description"), (short) 2, (short) 4, (short) 0, (short) 10, WidgetProviders.rangeOption());
-	public static final IntRangeOption intRangeOption = new IntRangeOption(Text.of("float range option"), floatRangeOption1 -> Text.of("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
-	public static final LongRangeOption longRangeOption = new LongRangeOption(Text.of("float range option"), floatRangeOption1 -> Text.of("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
+	public static final ByteRangeOption byteRangeOption = new ByteRangeOption(Text.of("byte range option"), floatRangeOption1 -> Text.of("float range description"), (byte) 2, (byte) 4, (byte) 0, (byte) 10, WidgetProviders.rangeOption());
+	public static final ShortRangeOption shortRangeOption = new ShortRangeOption(Text.of("short range option"), floatRangeOption1 -> Text.of("float range description"), (short) 2, (short) 4, (short) 0, (short) 10, WidgetProviders.rangeOption());
+	public static final IntRangeOption intRangeOption = new IntRangeOption(Text.of("int range option"), floatRangeOption1 -> Text.of("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
+	public static final LongRangeOption longRangeOption = new LongRangeOption(Text.of("long range option"), floatRangeOption1 -> Text.of("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
 	public static final FloatRangeOption floatRangeOption = new FloatRangeOption(Text.of("float range option"), floatRangeOption1 -> Text.of("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
 	public static final DoubleRangeOption doubleRangeOption = new DoubleRangeOption(Text.of("double range option"), floatRangeOption1 -> Text.of("double range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
 

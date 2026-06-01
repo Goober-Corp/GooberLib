@@ -25,6 +25,7 @@ public class EvilBaseWidget extends ClickableWidget {
 	protected float verticalPosOffset = 0;
 	protected float horizontalPosOffset = 0;
 	protected Tweener clickTweener;
+	//TODO: add back reference to BaseOption so we can easily reset on mouse middle click here
 	private final Text name;
 	private final Function<BaseOption<?>, Text> valueFormatter;
 

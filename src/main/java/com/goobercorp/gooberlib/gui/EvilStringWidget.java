@@ -458,7 +458,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 				if (!bl3 && this.suggestion != null) {
 					drawContext.drawText(this.textRenderer, this.suggestion, o - 1, this.textY, -8355712, this.textShadow);
 				}
-
+				//TODO: for some reason the selection doesn't get rendered when selecting backwards ?
 				if (n != l) {
 					int p = this.textX + this.textRenderer.getWidth(string.substring(0, n));
 //					drawContext.drawSelection(

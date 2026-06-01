@@ -16,6 +16,7 @@ import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.function.Function;
@@ -51,9 +52,9 @@ public class RangeSliderWidget extends EvilBaseWidget {
 	protected void drawText(DrawContext drawContext) {
 		newMatrixScope(drawContext, stack -> {
 //			stack.scale(0.5F, 0.5F);
-//			drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, numberOption.getNumberValue().toString(), (int) ((getX() + (this.width - 5) / 2F) + (valTweener.get() / 2 * (this.width - 5))) + 1, this.getY() - 10, ColorHelper.withAlpha(((float) clickTweener.get()), MainConfig.primaryCol));
+			drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, valueFormatter.get(), this.getRight() - this.getWidth() / 4, this.getY() - 10, ColorHelper.withAlpha(((float) clickTweener.get()), MainConfig.primaryCol));
 		});
-		drawContext.drawText(MinecraftClient.getInstance().textRenderer, this.valueFormatter.get(), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, MainConfig.primaryCol, true);
+		drawContext.drawText(MinecraftClient.getInstance().textRenderer, numberOption.name(), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, MainConfig.primaryCol, true);
 //		super.drawText(drawContext);
 	}
 
@@ -98,6 +99,7 @@ public class RangeSliderWidget extends EvilBaseWidget {
 			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (minValTweener.get() / 2 * (this.width - 5)) - 0.5), (float) getY() + 3, getBottom() - 3, MainConfig.primaryCol);
 			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (maxValTweener.get() / 2 * (this.width - 5)) - 0.5) + 1, (float) getY() + 4, getBottom() - 2, MainConfig.shadowCol);
 			RenderUtils.drawVerticalLine(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (minValTweener.get() / 2 * (this.width - 5)) - 0.5) + 1, (float) getY() + 4, getBottom() - 2, MainConfig.shadowCol);
+			RenderUtils.fillEvil(drawContext, (float) ((getX() + (this.width - 5) / 2F) + (minValTweener.get() / 2 * (this.width - 5)) - 0.5) + 1, getY() + 6, (float) ((getX() + (this.width - 5) / 2F) + (maxValTweener.get() / 2 * (this.width - 5)) - 0.5), getBottom() - 5, ColorHelper.withAlpha(0.5F, MainConfig.shadowCol));
 			if (RenderUtils.isInBounds(mX, mY, new ScreenRect(this.getX() + this.getWidth() / 2, this.getY(), this.getRight() - 5, this.getBottom()))) {
 				drawContext.setCursor(this.dragging ? StandardCursors.RESIZE_EW : StandardCursors.POINTING_HAND);
 			}

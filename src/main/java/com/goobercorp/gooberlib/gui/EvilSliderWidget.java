@@ -50,7 +50,7 @@ public class EvilSliderWidget extends EvilBaseWidget {
 //			stack.scale(0.5F, 0.5F);
 			drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, numberOption.getNumberValue().toString(), (int) ((getX() + (this.width - 5) / 2F) + (valTweener.get() / 2 * (this.width - 5))) + 1, this.getY() - 10, ColorHelper.withAlpha(((float) clickTweener.get()), MainConfig.primaryCol));
 		});
-		drawContext.drawText(MinecraftClient.getInstance().textRenderer, this.valueFormatter.get(), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, MainConfig.primaryCol, true);
+		drawContext.drawText(MinecraftClient.getInstance().textRenderer, numberOption.name(), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, MainConfig.primaryCol, true);
 //		super.drawText(drawContext);
 	}
 
