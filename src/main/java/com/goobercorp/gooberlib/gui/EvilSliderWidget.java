@@ -80,22 +80,15 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	public void renderWidget(DrawContext drawContext, int i, int j, float f) {
-		double mX, mY;
-		mX = MinecraftClient.getInstance().mouse.getScaledX(MinecraftClient.getInstance().getWindow());
-		mY = MinecraftClient.getInstance().mouse.getScaledY(MinecraftClient.getInstance().getWindow());
+	public void renderWidget(DrawContext context, double mouseX, double mouseY, float delta) {
 		valTweener.update();
-		newMatrixScope(drawContext, stack -> {
-			stack.translate(horizontalPosOffset, verticalPosOffset);
-			super.renderWidget(drawContext, i, j, f);
-			RenderUtils.drawVerticalLine(drawContext, ((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2F * (this.width - 5)) - 0.5F) + 1, getY() + 4, getBottom() - 2, MainConfig.shadowCol);
-			RenderUtils.drawHorizontalLine(drawContext, (getX() + (this.width - 5) / 2F) - 0.5F + 1, this.getRight() - 5.5F + 1, getY() + getHeight() / 2F + 1, MainConfig.shadowCol);
-			RenderUtils.drawHorizontalLine(drawContext, (getX() + (this.width - 5) / 2F) - 0.5F, this.getRight() - 5.5F, getY() + getHeight() / 2F, MainConfig.primaryCol);
-			RenderUtils.drawVerticalLine(drawContext, ((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2 * (this.width - 5)) - 0.5F), getY() + 3, getBottom() - 3, MainConfig.primaryCol);
-			if (this.isHovered()) {
-				drawContext.setCursor(this.dragging ? StandardCursors.RESIZE_EW : StandardCursors.POINTING_HAND);
-			}
-		});
+		RenderUtils.drawVerticalLine(context, ((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2F * (this.width - 5)) - 0.5F) + 1, getY() + 4, getBottom() - 2, MainConfig.shadowCol);
+		RenderUtils.drawHorizontalLine(context, (getX() + (this.width - 5) / 2F) - 0.5F + 1, this.getRight() - 5.5F + 1, getY() + getHeight() / 2F + 1, MainConfig.shadowCol);
+		RenderUtils.drawHorizontalLine(context, (getX() + (this.width - 5) / 2F) - 0.5F, this.getRight() - 5.5F, getY() + getHeight() / 2F, MainConfig.primaryCol);
+		RenderUtils.drawVerticalLine(context, ((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2 * (this.width - 5)) - 0.5F), getY() + 3, getBottom() - 3, MainConfig.primaryCol);
+		if (this.isHovered()) {
+			context.setCursor(this.dragging ? StandardCursors.RESIZE_EW : StandardCursors.POINTING_HAND);
+		}
 	}
 
 	@Override

@@ -25,8 +25,8 @@ public class EvilStringWidgetWithName extends EvilStringWidget {
 	}
 
 	@Override
-	public void renderWidget(DrawContext drawContext, int i, int j, float f) {
+	public void renderWidget(DrawContext drawContext, int mouseX, int mouseY, float delta) {
 		drawContext.drawText(font(), name, x, getY() + 3, MainConfig.primaryCol, true);
-		super.renderWidget(drawContext, i, j, f);
+		super.renderWidget(drawContext, mouseX, mouseY, delta);
 	}
 }

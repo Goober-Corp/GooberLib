@@ -12,8 +12,8 @@ import net.minecraft.util.math.Vec2f;
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 public class TickBoxWidget extends EvilBaseWidget {
-	BooleanOption opt;
-	Tweener t;
+	private final BooleanOption opt;
+	private final Tweener t;
 
 	public TickBoxWidget(BooleanOption opt, int x, int y, int width, int height) {
 		super(opt.name(), x, y, width, height);
@@ -28,24 +28,20 @@ public class TickBoxWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	protected void renderWidget(DrawContext drawContext, int i, int j, float f) {
+	public void renderWidget(DrawContext drawContext, double mouseX, double mouseY, float delta) {
 		t.update();
-		newMatrixScope(drawContext, stack -> {
-			stack.translate(horizontalPosOffset, verticalPosOffset);
-			super.renderWidget(drawContext, i, j, f);
-			float widthAndHeight = (getHeight() - getY() - 4);
-			float midpoint = (widthAndHeight / 2);
-			Vec2f center = new Vec2f(getRight() - midpoint - 2, midpoint + 2);
-			midpoint *= 0.75F;
-			RenderUtils.drawBoxOutline(drawContext, center.x - midpoint + 1, center.y - midpoint + 1, center.x + midpoint, center.y + midpoint, MainConfig.shadowCol);
-			RenderUtils.drawBoxOutline(drawContext, center.x - midpoint, center.y - midpoint, center.x + midpoint - 1, center.y + midpoint - 1, MainConfig.primaryCol);
-			if (t.get() > 0.05F) {
-				midpoint *= 0.65F;
-				midpoint *= t.getF() * 0.9F;
-				RenderUtils.fillEvil(drawContext, center.x - midpoint + 1, center.y - midpoint + 1, center.x + midpoint + 1, center.y + midpoint + 1, MainConfig.shadowCol);
-				RenderUtils.fillEvil(drawContext, center.x - midpoint, center.y - midpoint, center.x + midpoint, center.y + midpoint, MainConfig.primaryCol);
-			}
-		});
+		float widthAndHeight = (getHeight() - getY() - 4);
+		float midpoint = (widthAndHeight / 2);
+		Vec2f center = new Vec2f(getRight() - midpoint - 2, midpoint + 2);
+		midpoint *= 0.75F;
+		RenderUtils.drawBoxOutline(drawContext, center.x - midpoint + 1, center.y - midpoint + 1, center.x + midpoint, center.y + midpoint, MainConfig.shadowCol);
+		RenderUtils.drawBoxOutline(drawContext, center.x - midpoint, center.y - midpoint, center.x + midpoint - 1, center.y + midpoint - 1, MainConfig.primaryCol);
+		if (t.get() > 0.05F) {
+			midpoint *= 0.65F;
+			midpoint *= t.getF() * 0.9F;
+			RenderUtils.fillEvil(drawContext, center.x - midpoint + 1, center.y - midpoint + 1, center.x + midpoint + 1, center.y + midpoint + 1, MainConfig.shadowCol);
+			RenderUtils.fillEvil(drawContext, center.x - midpoint, center.y - midpoint, center.x + midpoint, center.y + midpoint, MainConfig.primaryCol);
+		}
 //		drawContext.drawText(MinecraftClient.getInstance().textRenderer, this.message, getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, MainConfig.primaryCol, true);
 	}
 

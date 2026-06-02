@@ -84,27 +84,20 @@ public class RangeSliderWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	public void renderWidget(DrawContext drawContext, int i, int j, float f) {
-		double mX, mY;
-		mX = MinecraftClient.getInstance().mouse.getScaledX(MinecraftClient.getInstance().getWindow());
-		mY = MinecraftClient.getInstance().mouse.getScaledY(MinecraftClient.getInstance().getWindow());
+	public void renderWidget(DrawContext drawContext, double mouseX, double mouseY, float delta) {
 		minValTweener.update();
 		maxValTweener.update();
-		newMatrixScope(drawContext, stack -> {
-			stack.translate(horizontalPosOffset, verticalPosOffset);
-			super.renderWidget(drawContext, i, j, f);
-			float minX = getX() + (this.width - 5) / 2F;
-			RenderUtils.drawHorizontalLine(drawContext, minX - 0.5F, this.getRight() - 5.5F, this.getY() + getHeight() / 2F, MainConfig.primaryCol);
-			RenderUtils.drawHorizontalLine(drawContext, minX - 0.5F + 1, this.getRight() - 5.5F + 1, this.getY() + getHeight() / 2F + 1, MainConfig.shadowCol);
-			RenderUtils.drawVerticalLine(drawContext, minX + (maxValTweener.getF() / 2 * (this.width - 5)) - 0.5F, getY() + 3, getBottom() - 3, MainConfig.primaryCol);
-			RenderUtils.drawVerticalLine(drawContext, minX + (minValTweener.getF() / 2 * (this.width - 5)) - 0.5F, getY() + 3, getBottom() - 3, MainConfig.primaryCol);
-			RenderUtils.drawVerticalLine(drawContext, (minX + (maxValTweener.getF() / 2 * (this.width - 5)) - 0.5F) + 1, getY() + 4, getBottom() - 2, MainConfig.shadowCol);
-			RenderUtils.drawVerticalLine(drawContext, (minX + (minValTweener.getF() / 2 * (this.width - 5)) - 0.5F) + 1, getY() + 4, getBottom() - 2, MainConfig.shadowCol);
-			RenderUtils.fillEvil(drawContext, (minX + (minValTweener.getF() / 2 * (this.width - 5)) - 0.5F) + 1, getY() + 6, (minX + (maxValTweener.getF() / 2 * (this.width - 5)) - 0.5F), getBottom() - 5, ColorHelper.withAlpha(0.5F, MainConfig.shadowCol));
-			if (RenderUtils.isInBounds(mX, mY, new ScreenRect(this.getX() + this.getWidth() / 2, this.getY(), this.getRight() - 5, this.getBottom()))) {
-				drawContext.setCursor(this.dragging ? StandardCursors.RESIZE_EW : StandardCursors.POINTING_HAND);
-			}
-		});
+		float minX = getX() + (this.width - 5) / 2F;
+		RenderUtils.drawHorizontalLine(drawContext, minX - 0.5F, this.getRight() - 5.5F, this.getY() + getHeight() / 2F, MainConfig.primaryCol);
+		RenderUtils.drawHorizontalLine(drawContext, minX - 0.5F + 1, this.getRight() - 5.5F + 1, this.getY() + getHeight() / 2F + 1, MainConfig.shadowCol);
+		RenderUtils.drawVerticalLine(drawContext, minX + (maxValTweener.getF() / 2 * (this.width - 5)) - 0.5F, getY() + 3, getBottom() - 3, MainConfig.primaryCol);
+		RenderUtils.drawVerticalLine(drawContext, minX + (minValTweener.getF() / 2 * (this.width - 5)) - 0.5F, getY() + 3, getBottom() - 3, MainConfig.primaryCol);
+		RenderUtils.drawVerticalLine(drawContext, (minX + (maxValTweener.getF() / 2 * (this.width - 5)) - 0.5F) + 1, getY() + 4, getBottom() - 2, MainConfig.shadowCol);
+		RenderUtils.drawVerticalLine(drawContext, (minX + (minValTweener.getF() / 2 * (this.width - 5)) - 0.5F) + 1, getY() + 4, getBottom() - 2, MainConfig.shadowCol);
+		RenderUtils.fillEvil(drawContext, (minX + (minValTweener.getF() / 2 * (this.width - 5)) - 0.5F) + 1, getY() + 6, (minX + (maxValTweener.getF() / 2 * (this.width - 5)) - 0.5F), getBottom() - 5, ColorHelper.withAlpha(0.5F, MainConfig.shadowCol));
+		if (RenderUtils.isInBounds(mouseX, mouseY, new ScreenRect(this.getX() + this.getWidth() / 2, this.getY(), this.getRight() - 5, this.getBottom()))) {
+			drawContext.setCursor(this.dragging ? StandardCursors.RESIZE_EW : StandardCursors.POINTING_HAND);
+		}
 	}
 
 	@Override

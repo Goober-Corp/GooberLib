@@ -12,9 +12,9 @@ import net.minecraft.util.math.Vec2f;
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 public class SliderToggleWidget extends EvilBaseWidget {
-	BooleanOption opt;
-	Tweener boxHoverTweener;
-	Tweener tweener;
+	private final BooleanOption opt;
+	private final Tweener boxHoverTweener;
+	private final Tweener tweener;
 
 	public SliderToggleWidget(BooleanOption opt, int x, int y, int width, int height) {
 		super(opt.name(), x, y, width, height);
@@ -24,26 +24,21 @@ public class SliderToggleWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	protected void renderWidget(DrawContext drawContext, int i, int j, float f) {
+	public void renderWidget(DrawContext drawContext, double mouseX, double mouseY, float delta) {
 		boxHoverTweener.update();
 		tweener.update();
+		float widthAndHeight = (getHeight() - getY() - 4);
+		float midpoint = (widthAndHeight / 2);
+		Vec2f center = new Vec2f(getRight() - midpoint - 2, midpoint + 2);
+		midpoint *= 0.75F;
+		RenderUtils.drawBoxOutline(drawContext, center.x - midpoint * 2 + 1, center.y - midpoint + 1, center.x + midpoint, center.y + midpoint, MainConfig.shadowCol);
+		RenderUtils.drawBoxOutline(drawContext, center.x - midpoint * 2, center.y - midpoint, center.x + midpoint - 1, center.y + midpoint - 1, MainConfig.primaryCol);
+		float finalMidpoint = midpoint;
+		float yeah = (midpoint * 0.5F * boxHoverTweener.getF());
 		newMatrixScope(drawContext, stack -> {
-			stack.translate(horizontalPosOffset, verticalPosOffset);
-			//TODO: some way to select left-aligned and centered text
-			super.renderWidget(drawContext, i, j, f);
-			float widthAndHeight = (getHeight() - getY() - 4);
-			float midpoint = (widthAndHeight / 2);
-			Vec2f center = new Vec2f(getRight() - midpoint - 2, midpoint + 2);
-			midpoint *= 0.75F;
-			RenderUtils.drawBoxOutline(drawContext, center.x - midpoint * 2 + 1, center.y - midpoint + 1, center.x + midpoint, center.y + midpoint, MainConfig.shadowCol);
-			RenderUtils.drawBoxOutline(drawContext, center.x - midpoint * 2, center.y - midpoint, center.x + midpoint - 1, center.y + midpoint - 1, MainConfig.primaryCol);
-			float finalMidpoint = midpoint;
-			float yeah = (midpoint * 0.5F * boxHoverTweener.getF());
-			newMatrixScope(drawContext, stack1 -> {
-				stack1.translate((-finalMidpoint * tweener.getF()), 0);
-				RenderUtils.fillEvil(drawContext, center.x - yeah + 1, center.y - yeah + 1, center.x + yeah + 1, center.y + yeah + 1, MainConfig.shadowCol);
-				RenderUtils.fillEvil(drawContext, center.x - yeah, center.y - yeah, center.x + yeah, center.y + yeah, MainConfig.primaryCol);
-			});
+			stack.translate((-finalMidpoint * tweener.getF()), 0);
+			RenderUtils.fillEvil(drawContext, center.x - yeah + 1, center.y - yeah + 1, center.x + yeah + 1, center.y + yeah + 1, MainConfig.shadowCol);
+			RenderUtils.fillEvil(drawContext, center.x - yeah, center.y - yeah, center.x + yeah, center.y + yeah, MainConfig.primaryCol);
 		});
 	}
 

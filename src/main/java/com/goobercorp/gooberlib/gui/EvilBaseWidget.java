@@ -17,9 +17,9 @@ import net.minecraft.util.math.ColorHelper;
 import java.util.function.Function;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.ease;
+import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 public class EvilBaseWidget extends ClickableWidget {
-
 	protected Tweener hoverTweener;
 	protected boolean mouseDown = false;
 	protected float verticalPosOffset = 0;
@@ -43,22 +43,20 @@ public class EvilBaseWidget extends ClickableWidget {
 
 	@Override
 	public boolean mouseClicked(Click click, boolean bl) {
-		boolean yeah = super.mouseClicked(click, bl);
-		if (yeah) {
+		if (super.mouseClicked(click, bl)) {
 			mouseDown = true;
+			return true;
 		}
-		return yeah;
+		return false;
 	}
 
 	@Override
 	public boolean mouseReleased(Click click) {
-		boolean yeah = super.mouseReleased(click);
-		if (yeah) {
-			mouseDown = false;
-		}
-		return yeah;
+		mouseDown = false;
+		return super.mouseReleased(click);
 	}
 
+	/// Override this if you don't want the moving effect
 	@Override
 	protected void renderWidget(DrawContext drawContext, int i, int j, float f) {
 		if (!mouseDown) {
@@ -68,19 +66,25 @@ public class EvilBaseWidget extends ClickableWidget {
 		hoverTweener.update();
 		clickTweener.update();
 //		stack.translate(horizontalPosOffset, verticalPosOffset);
-		drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED, Identifier.of("gooberlib", "widget/button"), this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0x80808080);
-		drawText(drawContext);
-		RenderUtils.drawBoxOutline(drawContext, this.getX() + clickTweener.getF(), this.getY() + clickTweener.getF(), this.getRight() - 1 - clickTweener.getF(), this.getBottom() - 1 - clickTweener.getF(), ColorHelper.lerp(hoverTweener.getF(), 0xFF000000, MainConfig.primaryCol));
+
+		newMatrixScope(drawContext, stack -> {
+			stack.translate(horizontalPosOffset, verticalPosOffset);
+			drawContext.drawGuiTexture(RenderPipelines.GUI_TEXTURED, Identifier.of("gooberlib", "widget/button"), this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0x80808080);
+			drawText(drawContext);
+			RenderUtils.drawBoxOutline(drawContext, this.getX() + clickTweener.getF(), this.getY() + clickTweener.getF(), this.getRight() - 1 - clickTweener.getF(), this.getBottom() - 1 - clickTweener.getF(), ColorHelper.lerp(hoverTweener.getF(), 0xFF000000, MainConfig.primaryCol));
+
+			double mouseX = MinecraftClient.getInstance().mouse.getScaledX(MinecraftClient.getInstance().getWindow());
+			double mouseY = MinecraftClient.getInstance().mouse.getScaledY(MinecraftClient.getInstance().getWindow());
+			this.renderWidget(drawContext, mouseX, mouseY, f);
+		});
+	}
+
+	/// Override this if you want the moving effect
+	public void renderWidget(DrawContext context, double mouseX, double mouseY, float delta) {
 	}
 
 	protected void drawText(DrawContext drawContext) {
 		drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, name, this.getX() + this.width / 2, this.getY() + this.height / 2 - MinecraftClient.getInstance().textRenderer.fontHeight / 2, MainConfig.primaryCol);
-	}
-
-
-	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder narrationMessageBuilder) {
-
 	}
 
 	@Override
@@ -93,5 +97,9 @@ public class EvilBaseWidget extends ClickableWidget {
 
 	public Function<BaseOption<?>, Text> getValueFormatter() {
 		return valueFormatter;
+	}
+
+	@Override
+	protected void appendClickableNarrations(NarrationMessageBuilder narrationMessageBuilder) {
 	}
 }

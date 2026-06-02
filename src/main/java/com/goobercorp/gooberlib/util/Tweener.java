@@ -48,4 +48,8 @@ public class Tweener {
 	public double getLerped(double start, double end) {
 		return MathHelper.lerp(value, start, end);
 	}
+
+	public void snapToTarget() {
+		this.value = this.target.get().doubleValue();
+	}
 }

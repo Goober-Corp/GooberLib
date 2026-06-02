@@ -9,7 +9,6 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.cursor.StandardCursors;
-import net.minecraft.client.gui.screen.ButtonTextures;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.screen.narration.NarrationPart;
 import net.minecraft.client.input.CharInput;
@@ -20,7 +19,6 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.StringHelper;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
@@ -30,12 +28,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
-
 public class EvilStringWidget extends EvilBaseWidget {
-	private static final ButtonTextures TEXTURES = new ButtonTextures(
-			Identifier.ofVanilla("widget/text_field"), Identifier.ofVanilla("widget/text_field_highlighted")
-	);
 	public static final Style PLACEHOLDER_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);
 	private final TextRenderer textRenderer;
 	private String text = "";
@@ -61,26 +54,29 @@ public class EvilStringWidget extends EvilBaseWidget {
 	private long lastSwitchFocusTime = Util.getMeasuringTimeMs();
 	private int textX;
 	private int textY;
-	private final int x;
 	private final Predicate<String> predicate;
 	private String lastAccepted;
 	private int targetCursorX = this.getX();
-	private final Tweener cursorPosTweener = new Tweener(() -> targetCursorX, 10);
 	private int targetCursorWidth;
-	private final Tweener cursorWidthTweener = new Tweener(() -> targetCursorWidth, 10);
 	private int targetCursorHeight;
+	private int targetSelectionX1;
+	private int targetSelectionX2;
+	// todo: change tweener with .setTarget or something? and .setValue to set the value and not have tweening
+	private final Tweener cursorPosTweener = new Tweener(() -> targetCursorX, 10);
+	private final Tweener cursorWidthTweener = new Tweener(() -> targetCursorWidth, 10);
 	private final Tweener cursorHeightTweener = new Tweener(() -> targetCursorHeight, 10);
+	private final Tweener selectionX1Tweener = new Tweener(() -> targetSelectionX1, 10);
+	private final Tweener selectionX2Tweener = new Tweener(() -> targetSelectionX2, 10);
 	private boolean isFirstAfterAtTarget = false;
+	private boolean firstAfterSelect = true;
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, String initial) {
 		super(Text.empty(), x, y, width, height);
 		this.textRenderer = MinecraftClient.getInstance().textRenderer;
-		this.x = x;
+		this.lastAccepted = initial;
 		this.setText(initial);
 		this.setChangedListener(changedListener);
-		this.changedListener = changedListener;
 		this.predicate = predicate;
-		this.lastAccepted = initial;
 	}
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, String initial, int colorOverride) {
@@ -410,82 +406,96 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	public void renderWidget(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
-		newMatrixScope(drawContext, stack -> {
-			stack.translate(horizontalPosOffset, verticalPosOffset);
-			super.renderWidget(drawContext, mouseX, mouseY, tickDelta);
-			if (this.isVisible()) {
-				int k = this.editable ? this.editableColor : this.uneditableColor;
-				int l = this.selectionStart - this.firstCharacterIndex;
-				String string = this.textRenderer.trimToWidth(this.text.substring(this.firstCharacterIndex), this.getInnerWidth());
-				boolean bl = l >= 0 && l <= string.length();
+	public void renderWidget(DrawContext context, double mouseX, double mouseY, float delta) {
+		if (this.isVisible()) {
+			int k = this.editable ? this.editableColor : this.uneditableColor;
+			int l = this.selectionStart - this.firstCharacterIndex;
+			String string = this.textRenderer.trimToWidth(this.text.substring(this.firstCharacterIndex), this.getInnerWidth());
+			boolean bl = l >= 0 && l <= string.length();
 
-				long measuringTimeMs = Util.getMeasuringTimeMs();
-				if (!cursorPosTweener.isAtTarget()) {
-					isFirstAfterAtTarget = true;
-					measuringTimeMs = this.lastSwitchFocusTime;
-				} else if (isFirstAfterAtTarget) {
-					isFirstAfterAtTarget = false;
-					this.lastSwitchFocusTime = Util.getMeasuringTimeMs();
-				}
-				boolean bl2 = this.isFocused() && (measuringTimeMs - this.lastSwitchFocusTime) / 300L % 2L == 0L && bl;
-				int m = this.textX;
-				int n = MathHelper.clamp(this.selectionEnd - this.firstCharacterIndex, 0, string.length());
-				if (!string.isEmpty()) {
-					String string2 = bl ? string.substring(0, l) : string;
-					OrderedText orderedText = this.format(string2);
-					drawContext.drawText(this.textRenderer, orderedText, m, this.textY, k, this.textShadow);
-					m += this.textRenderer.getWidth(orderedText) + 1;
-				}
+			long measuringTimeMs = Util.getMeasuringTimeMs();
+			if (!cursorPosTweener.isAtTarget()) {
+				isFirstAfterAtTarget = true;
+				measuringTimeMs = this.lastSwitchFocusTime;
+			} else if (isFirstAfterAtTarget) {
+				isFirstAfterAtTarget = false;
+				this.lastSwitchFocusTime = Util.getMeasuringTimeMs();
+			}
+			boolean bl2 = this.isFocused() && (measuringTimeMs - this.lastSwitchFocusTime) / 300L % 2L == 0L && bl;
+			int m = this.textX;
+			int n = MathHelper.clamp(this.selectionEnd - this.firstCharacterIndex, 0, string.length());
+			if (!string.isEmpty()) {
+				String string2 = bl ? string.substring(0, l) : string;
+				OrderedText orderedText = this.format(string2);
+				context.drawText(this.textRenderer, orderedText, m, this.textY, k, this.textShadow);
+				m += this.textRenderer.getWidth(orderedText) + 1;
+			}
 
-				boolean bl3 = this.selectionStart < this.text.length() || this.text.length() >= this.getMaxLength();
-				int o = m;
-				if (!bl) {
-					o = l > 0 ? this.textX + this.width : this.textX;
-				} else if (bl3) {
-					o = m - 1;
-					m--;
-				}
+			boolean bl3 = this.selectionStart < this.text.length() || this.text.length() >= this.getMaxLength();
+			int o = m;
+			if (!bl) {
+				o = l > 0 ? this.textX + this.width : this.textX;
+			} else if (bl3) {
+				o = m - 1;
+				m--;
+			}
 
-				if (!string.isEmpty() && bl && l < string.length()) {
-					drawContext.drawText(this.textRenderer, this.format(string.substring(l)), m, this.textY, k, this.textShadow);
-				}
+			if (!string.isEmpty() && bl && l < string.length()) {
+				context.drawText(this.textRenderer, this.format(string.substring(l)), m, this.textY, k, this.textShadow);
+			}
 
-				if (this.placeholder != null && string.isEmpty() && !this.isFocused()) {
-					drawContext.drawTextWithShadow(this.textRenderer, this.placeholder, m, this.textY, k);
-				}
+			if (this.placeholder != null && string.isEmpty() && !this.isFocused()) {
+				context.drawTextWithShadow(this.textRenderer, this.placeholder, m, this.textY, k);
+			}
 
-				if (!bl3 && this.suggestion != null) {
-					drawContext.drawText(this.textRenderer, this.suggestion, o - 1, this.textY, -8355712, this.textShadow);
-				}
-				//TODO: for some reason the selection doesn't get rendered when selecting backwards ?
-				if (n != l) {
-					int p = this.textX + this.textRenderer.getWidth(string.substring(0, n));
-//					drawContext.drawSelection(
+			if (!bl3 && this.suggestion != null) {
+				context.drawText(this.textRenderer, this.suggestion, o - 1, this.textY, -8355712, this.textShadow);
+			}
+			if (n != l) {
+				int p = this.textX + this.textRenderer.getWidth(string.substring(0, n));
+//					context.drawSelection(
 //							Math.min(o, this.getX() + this.width), this.textY - 1, Math.min(p - 1, this.getX() + this.width), this.textY + 1 + 9, this.invertSelectionBackground
 //					);
-					if (this.invertSelectionBackground) {
-						RenderUtils.fillEvil(drawContext, Math.min(o, this.getX() + this.width), this.textY - 1, Math.min(p - 1, this.getX() + this.width), this.textY + 1 + 9, -1, RenderPipelines.GUI_INVERT);
-					}
-					RenderUtils.fillEvil(drawContext, Math.min(o, this.getX() + this.width), this.textY - 1, Math.min(p - 1, this.getX() + this.width), this.textY + 1 + 9, -16776961, RenderPipelines.GUI_TEXT_HIGHLIGHT);
+				// todo: setTargetAndUpdate?
+				targetSelectionX1 = Math.min(o, this.getX() + this.width);
+				targetSelectionX2 = Math.min(p - 1, this.getX() + this.width);
+				selectionX1Tweener.update();
+				selectionX2Tweener.update();
+				if (this.firstAfterSelect) {
+					selectionX1Tweener.snapToTarget();
+					selectionX2Tweener.snapToTarget();
+					this.firstAfterSelect = false;
 				}
-
-				if (bl2) {
-					targetCursorX = o;
-					targetCursorWidth = bl3 ? 1 : 5;
-					//This one is range 0-1  because like. it goes in both directions ???
-					targetCursorHeight = bl3 ? 1 : 0;
-					cursorPosTweener.update();
-					cursorHeightTweener.update();
-					cursorWidthTweener.update();
-					RenderUtils.fillEvil(drawContext, cursorPosTweener.getF(), MathHelper.lerp(cursorHeightTweener.getF(), (this.textY + 7), (this.textY - 1)), (cursorPosTweener.getF() + cursorWidthTweener.getF()), MathHelper.lerp(cursorHeightTweener.getF(), this.textY + 8, this.textY + 1 + 9), k);
+				var x1 = selectionX1Tweener.getF();
+				var x2 = selectionX2Tweener.getF();
+				if (x1 > x2) {
+					var temp = x1;
+					x1 = x2;
+					x2 = temp;
 				}
-
-				if (this.isHovered()) {
-					drawContext.setCursor(this.isEditable() ? StandardCursors.IBEAM : StandardCursors.NOT_ALLOWED);
+				if (this.invertSelectionBackground) {
+					RenderUtils.fillEvil(context, x1, this.textY - 1, x2, this.textY + 1 + 9, -1, RenderPipelines.GUI_INVERT);
 				}
+				RenderUtils.fillEvil(context, x1, this.textY - 1, x2, this.textY + 1 + 9, -16776961, RenderPipelines.GUI_TEXT_HIGHLIGHT);
+			} else {
+				this.firstAfterSelect = true;
 			}
-		});
+
+			if (bl2) {
+				targetCursorX = o;
+				targetCursorWidth = bl3 ? 1 : 5;
+				//This one is range 0-1  because like. it goes in both directions ???
+				targetCursorHeight = bl3 ? 1 : 0;
+				cursorPosTweener.update();
+				cursorHeightTweener.update();
+				cursorWidthTweener.update();
+				RenderUtils.fillEvil(context, cursorPosTweener.getF(), MathHelper.lerp(cursorHeightTweener.getF(), (this.textY + 7), (this.textY - 1)), (cursorPosTweener.getF() + cursorWidthTweener.getF()), MathHelper.lerp(cursorHeightTweener.getF(), this.textY + 8, this.textY + 1 + 9), k);
+			}
+
+			if (this.isHovered()) {
+				context.setCursor(this.isEditable() ? StandardCursors.IBEAM : StandardCursors.NOT_ALLOWED);
+			}
+		}
 	}
 
 	private OrderedText format(String string) {
