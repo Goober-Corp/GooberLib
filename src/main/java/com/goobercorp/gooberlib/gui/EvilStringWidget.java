@@ -71,6 +71,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 	private final Tweener selectionX2Tweener = new Tweener(() -> targetSelectionX2, 10);
 	private boolean isFirstAfterAtTarget = false;
 	private boolean firstAfterSelect = true;
+	private boolean justFocused;
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, String initial) {
 		super(Text.empty(), x, y, width, height);
@@ -492,6 +493,15 @@ public class EvilStringWidget extends EvilBaseWidget {
 			cursorYTweener.update();
 			cursorHeightTweener.update();
 			cursorWidthTweener.update();
+
+			if (justFocused) {
+				cursorXTweener.snapToTarget();
+				cursorYTweener.snapToTarget();
+				cursorHeightTweener.snapToTarget();
+				cursorWidthTweener.snapToTarget();
+				justFocused = false;
+			}
+
 			if (blink) {
 				float x1 = cursorXTweener.getF();
 				float x2 = cursorXTweener.getF() + cursorWidthTweener.getF();
@@ -587,6 +597,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 			super.setFocused(bl);
 			if (bl) {
 				this.lastSwitchFocusTime = Util.getMeasuringTimeMs();
+				this.justFocused = true;
 			}
 		}
 	}
