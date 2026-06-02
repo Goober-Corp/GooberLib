@@ -57,12 +57,14 @@ public class EvilStringWidget extends EvilBaseWidget {
 	private final Predicate<String> predicate;
 	private String lastAccepted;
 	private int targetCursorX = this.getX();
+	private int targetCursorY = this.textY + 7;
 	private int targetCursorWidth;
 	private int targetCursorHeight;
 	private int targetSelectionX1;
 	private int targetSelectionX2;
 	// todo: change tweener with .setTarget or something? and .setValue to set the value and not have tweening
-	private final Tweener cursorPosTweener = new Tweener(() -> targetCursorX, 10);
+	private final Tweener cursorXTweener = new Tweener(() -> targetCursorX, 10);
+	private final Tweener cursorYTweener = new Tweener(() -> targetCursorY, 10);
 	private final Tweener cursorWidthTweener = new Tweener(() -> targetCursorWidth, 10);
 	private final Tweener cursorHeightTweener = new Tweener(() -> targetCursorHeight, 10);
 	private final Tweener selectionX1Tweener = new Tweener(() -> targetSelectionX1, 10);
@@ -408,56 +410,56 @@ public class EvilStringWidget extends EvilBaseWidget {
 	@Override
 	public void renderWidget(DrawContext context, double mouseX, double mouseY, float delta) {
 		if (this.isVisible()) {
-			int k = this.editable ? this.editableColor : this.uneditableColor;
-			int l = this.selectionStart - this.firstCharacterIndex;
-			String string = this.textRenderer.trimToWidth(this.text.substring(this.firstCharacterIndex), this.getInnerWidth());
-			boolean bl = l >= 0 && l <= string.length();
+			int colorIShouldBe = this.editable ? this.editableColor : this.uneditableColor;
+			int cursorOffset = this.selectionStart - this.firstCharacterIndex;
+			String visibleText = this.textRenderer.trimToWidth(this.text.substring(this.firstCharacterIndex), this.getInnerWidth());
+			boolean cursorVisible = cursorOffset >= 0 && cursorOffset <= visibleText.length();
 
-			long measuringTimeMs = Util.getMeasuringTimeMs();
-			if (!cursorPosTweener.isAtTarget()) {
+			long time = Util.getMeasuringTimeMs();
+			if (!cursorXTweener.isAtTarget()) {
 				isFirstAfterAtTarget = true;
-				measuringTimeMs = this.lastSwitchFocusTime;
+				time = this.lastSwitchFocusTime;
 			} else if (isFirstAfterAtTarget) {
 				isFirstAfterAtTarget = false;
-				this.lastSwitchFocusTime = Util.getMeasuringTimeMs();
+				this.lastSwitchFocusTime = time;
 			}
-			boolean bl2 = this.isFocused() && (measuringTimeMs - this.lastSwitchFocusTime) / 300L % 2L == 0L && bl;
-			int m = this.textX;
-			int n = MathHelper.clamp(this.selectionEnd - this.firstCharacterIndex, 0, string.length());
-			if (!string.isEmpty()) {
-				String string2 = bl ? string.substring(0, l) : string;
-				OrderedText orderedText = this.format(string2);
-				context.drawText(this.textRenderer, orderedText, m, this.textY, k, this.textShadow);
-				m += this.textRenderer.getWidth(orderedText) + 1;
+			boolean blink = this.isFocused() && (time - this.lastSwitchFocusTime) / 300L % 2L == 0L && cursorVisible;
+
+			int actualTextX = this.textX;
+			int visibleSelectedCharacters = MathHelper.clamp(this.selectionEnd - this.firstCharacterIndex, 0, visibleText.length());
+			if (!visibleText.isEmpty()) {
+				String string2 = cursorVisible ? visibleText.substring(0, cursorOffset) : visibleText;
+				OrderedText formatted = this.format(string2);
+				context.drawText(this.textRenderer, formatted, actualTextX, this.textY, colorIShouldBe, this.textShadow);
+				actualTextX += this.textRenderer.getWidth(formatted) + 1;
 			}
 
-			boolean bl3 = this.selectionStart < this.text.length() || this.text.length() >= this.getMaxLength();
-			int o = m;
-			if (!bl) {
-				o = l > 0 ? this.textX + this.width : this.textX;
-			} else if (bl3) {
-				o = m - 1;
-				m--;
+			boolean shouldBePipe = this.selectionStart < this.text.length() || this.text.length() >= this.getMaxLength();
+			int cursorX = actualTextX;
+			if (!cursorVisible) {
+				cursorX = cursorOffset > 0 ? this.textX + this.width : this.textX;
+			} else if (shouldBePipe) {
+				cursorX = --actualTextX;
 			}
 
-			if (!string.isEmpty() && bl && l < string.length()) {
-				context.drawText(this.textRenderer, this.format(string.substring(l)), m, this.textY, k, this.textShadow);
+			if (!visibleText.isEmpty() && cursorVisible && cursorOffset < visibleText.length()) {
+				context.drawText(this.textRenderer, this.format(visibleText.substring(cursorOffset)), actualTextX, this.textY, colorIShouldBe, this.textShadow);
 			}
 
-			if (this.placeholder != null && string.isEmpty() && !this.isFocused()) {
-				context.drawTextWithShadow(this.textRenderer, this.placeholder, m, this.textY, k);
+			if (this.placeholder != null && visibleText.isEmpty() && !this.isFocused()) {
+				context.drawTextWithShadow(this.textRenderer, this.placeholder, actualTextX, this.textY, colorIShouldBe);
 			}
 
-			if (!bl3 && this.suggestion != null) {
-				context.drawText(this.textRenderer, this.suggestion, o - 1, this.textY, -8355712, this.textShadow);
+			if (!shouldBePipe && this.suggestion != null) {
+				context.drawText(this.textRenderer, this.suggestion, cursorX - 1, this.textY, -8355712, this.textShadow);
 			}
-			if (n != l) {
-				int p = this.textX + this.textRenderer.getWidth(string.substring(0, n));
+			if (visibleSelectedCharacters != cursorOffset) {
+				int p = this.textX + this.textRenderer.getWidth(visibleText.substring(0, visibleSelectedCharacters));
 //					context.drawSelection(
 //							Math.min(o, this.getX() + this.width), this.textY - 1, Math.min(p - 1, this.getX() + this.width), this.textY + 1 + 9, this.invertSelectionBackground
 //					);
 				// todo: setTargetAndUpdate?
-				targetSelectionX1 = Math.min(o, this.getX() + this.width);
+				targetSelectionX1 = Math.min(cursorX, this.getX() + this.width);
 				targetSelectionX2 = Math.min(p - 1, this.getX() + this.width);
 				selectionX1Tweener.update();
 				selectionX2Tweener.update();
@@ -481,15 +483,21 @@ public class EvilStringWidget extends EvilBaseWidget {
 				this.firstAfterSelect = true;
 			}
 
-			if (bl2) {
-				targetCursorX = o;
-				targetCursorWidth = bl3 ? 1 : 5;
-				//This one is range 0-1  because like. it goes in both directions ???
-				targetCursorHeight = bl3 ? 1 : 0;
-				cursorPosTweener.update();
-				cursorHeightTweener.update();
-				cursorWidthTweener.update();
-				RenderUtils.fillEvil(context, cursorPosTweener.getF(), MathHelper.lerp(cursorHeightTweener.getF(), (this.textY + 7), (this.textY - 1)), (cursorPosTweener.getF() + cursorWidthTweener.getF()), MathHelper.lerp(cursorHeightTweener.getF(), this.textY + 8, this.textY + 1 + 9), k);
+			// do calculations regardless of if blink
+			targetCursorX = cursorX;
+			targetCursorY = shouldBePipe ? this.textY - 1 : this.textY + 8;
+			targetCursorWidth = shouldBePipe ? 1 : 5;
+			targetCursorHeight = shouldBePipe ? 10 : 1;
+			cursorXTweener.update();
+			cursorYTweener.update();
+			cursorHeightTweener.update();
+			cursorWidthTweener.update();
+			if (blink) {
+				float x1 = cursorXTweener.getF();
+				float x2 = cursorXTweener.getF() + cursorWidthTweener.getF();
+				float y1 = cursorYTweener.getF();
+				float y2 = cursorYTweener.getF() + cursorHeightTweener.getF();
+				RenderUtils.fillEvil(context, x1, y1, x2, y2, colorIShouldBe);
 			}
 
 			if (this.isHovered()) {

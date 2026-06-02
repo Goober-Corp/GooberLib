@@ -42,7 +42,8 @@ public class Tweener {
 	}
 
 	public boolean isAtTarget() {
-		return MathHelper.approximatelyEquals(value, target.get().doubleValue());
+		// approxEq takes too long to say true
+		return Math.abs(value - target.get().doubleValue()) < 1.0E-3F;
 	}
 
 	public double getLerped(double start, double end) {
