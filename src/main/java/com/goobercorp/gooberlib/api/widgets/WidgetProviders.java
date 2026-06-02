@@ -2,6 +2,7 @@ package com.goobercorp.gooberlib.api.widgets;
 
 import com.goobercorp.gooberlib.gui.*;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
+import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
 import com.goobercorp.gooberlib.option.individual.minecraft.BlockPosOption;
 import com.goobercorp.gooberlib.option.individual.minecraft.IdentifierOption;
@@ -46,6 +47,7 @@ public class WidgetProviders {
 			};
 		}
 
+		public static final Predicate<String> COLOR = falseIfException(Long::decode, NumberFormatException.class);
 		public static final Predicate<String> IDENTIFIER = falseIfException(Identifier::of, InvalidIdentifierException.class);
 		public static final Predicate<String> INTEGER = falseIfException(Integer::parseInt, NumberFormatException.class);
 		public static final Predicate<String> DOUBLE = falseIfException(Double::parseDouble, NumberFormatException.class);
@@ -138,6 +140,10 @@ public class WidgetProviders {
 		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setFromString, theOption.getPredicate(), theOption instanceof CharOption c ? String.valueOf(c.value) : theOption.getNumberValue().toString()));
 	}
 
+	public static <T extends NumberOption<T>> WidgetProvider<ColorOption> colorField() {
+		return ((theOption, x, y, width, height) -> new EvilStringColorWidget(theOption.name(), x, y, width, height, theOption::setFromString, Predicates.COLOR, "#" + Integer.toHexString(theOption.value), theOption));
+	}
+
 	public static WidgetProvider<IdentifierOption> identifierOneField() {
 		return (theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, s -> {
 			try {
@@ -148,7 +154,6 @@ public class WidgetProviders {
 	}
 
 	public static WidgetProvider<IdentifierOption> identifierTwoFields() {
-		// todo: colon in between the text field widgets
 		return (theOption, x, y, width, height) -> {
 			var widgetX = font().getWidth(theOption.name()) + 2;
 			var widgetWidth = width - font().getWidth(theOption.name());

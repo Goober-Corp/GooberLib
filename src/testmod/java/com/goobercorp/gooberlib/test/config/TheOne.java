@@ -93,6 +93,7 @@ public class TheOne {
 
 	@Section("misc options")
 	public static final ColorOption colorOption = new ColorOption("color option", "color description");
+	public static final ColorOption colorOptionString = new ColorOption("string color option", "color description", WidgetProviders.colorField());
 	public static final EnumOption<SomeEnum> enumOption = new EnumOption<>("enum option", "enum description", SomeEnum.class);
 	public static final CycleOption<String> cycleOption = new CycleOption<>("cycle option", "cycle description", "Option one", "Option two", "Option three");
 	public static final IdentifierOption identifierOptionOne = new IdentifierOption("c", "identifier description", Identifier.of("minecraft:stone"), WidgetProviders.identifierOneField());

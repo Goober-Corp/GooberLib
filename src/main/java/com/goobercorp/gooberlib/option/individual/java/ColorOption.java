@@ -1,7 +1,7 @@
 package com.goobercorp.gooberlib.option.individual.java;
 
-import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
+import com.goobercorp.gooberlib.option.BaseOption;
 import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 
@@ -71,5 +71,9 @@ public class ColorOption extends BaseOption<ColorOption> {
 
 	public Color asColor() {
 		return new Color((this.value << 8) | this.getAlpha(), true);
+	}
+
+	public void setFromString(String s) {
+		this.setValue(Long.decode(s).intValue());
 	}
 }

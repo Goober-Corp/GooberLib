@@ -49,7 +49,7 @@ public class EvilSliderWidget extends EvilBaseWidget {
 		newMatrixScope(drawContext, stack -> {
 //			stack.scale(0.5F, 0.5F);
 			stack.translate(((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2 * (this.width - 5))) + 1, this.getY() - 10);
-			drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, numberOption.getNumberValue().toString(), 0, 0, ColorHelper.withAlpha(clickTweener.getF(), MainConfig.primaryCol));
+			drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, valueFormatter.get(), 0, 0, ColorHelper.withAlpha(clickTweener.getF(), MainConfig.primaryCol));
 		});
 		drawContext.drawText(MinecraftClient.getInstance().textRenderer, numberOption.name(), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, MainConfig.primaryCol, true);
 	}

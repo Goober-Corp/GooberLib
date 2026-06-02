@@ -150,8 +150,8 @@ public class GooberScreen extends Screen {
 	@Override
 	public void render(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
 		updateTweeners();
-		drawCommon(drawContext, mouseX, mouseY, tickDelta);
 		super.render(drawContext, mouseX, mouseY, tickDelta);
+		drawCommon(drawContext, mouseX, mouseY, tickDelta);
 
 		for (PrecisePositionWidgetWrapper<?> ppww : evilLayout.values()) {
 			if (ppww.isMouseOver(mouseX, mouseY)) {
