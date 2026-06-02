@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.function.Supplier;
 
 import static org.apache.commons.lang3.function.Failable.rethrow;
 
@@ -57,6 +58,16 @@ public class ConfigDiscovery {
 									.filter(f -> Modifier.isFinal(f.getModifiers()))
 									.toList();
 
+							// todo document
+							// fixme: this is horrible.
+							List<Field> builderSupplierFields = Arrays.stream(configClass.getDeclaredFields())
+									.filter(f -> f.getType() == Supplier.class)
+									.filter(f -> f.getGenericType().getTypeName().equals("java.util.function.Supplier<com.goobercorp.gooberlib.builder.GooberConfigBuilder>"))
+									.filter(f -> Modifier.isPublic(f.getModifiers()))
+									.filter(f -> Modifier.isStatic(f.getModifiers()))
+									.filter(f -> Modifier.isFinal(f.getModifiers()))
+									.toList();
+
 							GooberConfigBuilder gooberConfigBuilder;
 							if (!builderFields.isEmpty()) {
 								if (builderFields.size() > 1)
@@ -64,6 +75,13 @@ public class ConfigDiscovery {
 
 								Field builderField = builderFields.getFirst();
 								gooberConfigBuilder = (GooberConfigBuilder) builderField.get(null);
+							} else if (!builderSupplierFields.isEmpty()) {
+								if (builderSupplierFields.size() > 1)
+									throw new IllegalStateException("Please only have one builder field");
+
+								Field builderField = builderSupplierFields.getFirst();
+								//noinspection unchecked
+								gooberConfigBuilder = ((Supplier<GooberConfigBuilder>) builderField.get(null)).get();
 							} else {
 								// switch to magic
 								List<Class<?>> classesToMagic = new ArrayList<>(List.of(gooberConfig.additionalClasses()));
