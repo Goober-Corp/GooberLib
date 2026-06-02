@@ -1,8 +1,8 @@
 package com.goobercorp.gooberlib.option.individual.primitive.range;
 
-import com.goobercorp.gooberlib.api.widgets.WidgetProviders;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
+import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
@@ -89,7 +89,7 @@ public class FloatRangeOption extends BaseOption<FloatRangeOption> implements Nu
 
 	@Override
 	public Predicate<String> getPredicate() {
-		return WidgetProviders.Predicates.FLOAT;
+		return Predicates.FLOAT;
 	}
 
 	@Override
