@@ -133,4 +133,8 @@ public class ColorOption extends BaseOption<ColorOption> {
 			throw new IllegalStateException("Not a valid input");
 		}
 	};
+
+	public Predicate<String> getImmediatePredicate() {
+		return null;
+	}
 }

@@ -106,4 +106,9 @@ public class ByteOption extends BaseOption<ByteOption> implements NumberOption<B
 	public Predicate<String> getPredicate() {
 		return Predicates.BYTE;
 	}
+
+	@Override
+	public Predicate<String> getImmediatePredicate() {
+		return Predicates.INTEGER_IMMEDIATE;
+	}
 }

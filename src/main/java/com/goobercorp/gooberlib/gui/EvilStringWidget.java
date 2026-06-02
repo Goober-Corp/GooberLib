@@ -24,7 +24,6 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -48,13 +47,13 @@ public class EvilStringWidget extends EvilBaseWidget {
 	private String suggestion;
 	@Nullable
 	private Consumer<String> changedListener;
-	private Predicate<String> textPredicate = Objects::nonNull;
+	private final Predicate<String> immediatePredicate;
+	private final Predicate<String> predicate;
 	@Nullable
 	private Text placeholder;
 	private long lastSwitchFocusTime = Util.getMeasuringTimeMs();
 	private int textX;
 	private int textY;
-	private final Predicate<String> predicate;
 	private String lastAccepted;
 	private int targetCursorX = this.getX();
 	private int targetCursorY = this.textY + 7;
@@ -73,8 +72,9 @@ public class EvilStringWidget extends EvilBaseWidget {
 	private boolean firstAfterSelect = true;
 	private boolean justFocused;
 
-	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, String initial) {
+	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial) {
 		super(Text.empty(), x, y, width, height);
+		this.immediatePredicate = immediatePredicate;
 		this.textRenderer = MinecraftClient.getInstance().textRenderer;
 		this.lastAccepted = initial;
 		this.setText(initial);
@@ -82,8 +82,8 @@ public class EvilStringWidget extends EvilBaseWidget {
 		this.predicate = predicate;
 	}
 
-	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, String initial, int colorOverride) {
-		this(x, y, width, height, changedListener, predicate, initial);
+	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, int colorOverride) {
+		this(x, y, width, height, changedListener, predicate, immediatePredicate, initial);
 		//TODO: automatically calculate good selection color. blue text here means it's just white when selected.
 		this.editableColor = colorOverride;
 	}
@@ -99,7 +99,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	public void setText(String string) {
-		if (this.textPredicate.test(string)) {
+		if (this.immediatePredicate.test(string)) {
 			if (string.length() > this.maxLength) {
 				this.text = string.substring(0, this.maxLength);
 			} else {
@@ -134,10 +134,6 @@ public class EvilStringWidget extends EvilBaseWidget {
 		this.updateTextPosition();
 	}
 
-	public void setTextPredicate(Predicate<String> predicate) {
-		this.textPredicate = predicate;
-	}
-
 	public void write(String string) {
 		int i = Math.min(this.selectionStart, this.selectionEnd);
 		int j = Math.max(this.selectionStart, this.selectionEnd);
@@ -155,7 +151,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 			}
 
 			String string3 = new StringBuilder(this.text).replace(i, j, string2).toString();
-			if (this.textPredicate.test(string3)) {
+			if (this.immediatePredicate.test(string3)) {
 				this.text = string3;
 				this.setSelectionStart(i + l);
 				this.setSelectionEnd(this.selectionStart);
@@ -203,7 +199,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 				int k = Math.max(i, this.selectionStart);
 				if (j != k) {
 					String string = new StringBuilder(this.text).delete(j, k).toString();
-					if (this.textPredicate.test(string)) {
+					if (this.immediatePredicate.test(string)) {
 						this.text = string;
 						this.setCursor(j, false);
 					}

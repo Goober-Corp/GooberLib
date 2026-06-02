@@ -107,4 +107,9 @@ public class LongOption extends BaseOption<LongOption> implements NumberOption<L
 	public Predicate<String> getPredicate() {
 		return Predicates.LONG;
 	}
+
+	@Override
+	public Predicate<String> getImmediatePredicate() {
+		return Predicates.INTEGER_IMMEDIATE;
+	}
 }

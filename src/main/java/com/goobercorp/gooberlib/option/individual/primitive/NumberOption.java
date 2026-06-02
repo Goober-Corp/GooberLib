@@ -16,4 +16,6 @@ public interface NumberOption<T extends Option<T>> extends Option<T> {
 	void setFromString(String s);
 
 	Predicate<String> getPredicate();
+
+	Predicate<String> getImmediatePredicate();
 }

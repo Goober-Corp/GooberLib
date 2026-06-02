@@ -108,4 +108,9 @@ public class ShortOption extends BaseOption<ShortOption> implements NumberOption
 	public Predicate<String> getPredicate() {
 		return Predicates.SHORT;
 	}
+
+	@Override
+	public Predicate<String> getImmediatePredicate() {
+		return Predicates.INTEGER_IMMEDIATE;
+	}
 }

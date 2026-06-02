@@ -107,4 +107,9 @@ public class FloatOption extends BaseOption<FloatOption> implements NumberOption
 	public Predicate<String> getPredicate() {
 		return Predicates.FLOAT;
 	}
+
+	@Override
+	public Predicate<String> getImmediatePredicate() {
+		return Predicates.DOUBLE_IMMEDIATE;
+	}
 }

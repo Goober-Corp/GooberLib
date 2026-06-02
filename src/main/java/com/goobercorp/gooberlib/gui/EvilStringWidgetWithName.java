@@ -14,8 +14,8 @@ public class EvilStringWidgetWithName extends EvilStringWidget {
 	private final Text name;
 	private final int x;
 
-	public EvilStringWidgetWithName(Text name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, String initial) {
-		super(x + font().getWidth(name) + 2, y, width - font().getWidth(name), height, changedListener, predicate, initial);
+	public EvilStringWidgetWithName(Text name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial) {
+		super(x + font().getWidth(name) + 2, y, width - font().getWidth(name), height, changedListener, predicate, immediatePredicate, initial);
 		this.name = name;
 		this.x = x;
 	}

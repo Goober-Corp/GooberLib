@@ -107,4 +107,9 @@ public class DoubleOption extends BaseOption<DoubleOption> implements NumberOpti
 	public Predicate<String> getPredicate() {
 		return Predicates.DOUBLE;
 	}
+
+	@Override
+	public Predicate<String> getImmediatePredicate() {
+		return Predicates.DOUBLE_IMMEDIATE;
+	}
 }

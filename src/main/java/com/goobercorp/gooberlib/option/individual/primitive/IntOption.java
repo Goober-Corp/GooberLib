@@ -107,4 +107,9 @@ public class IntOption extends BaseOption<IntOption> implements NumberOption<Int
 	public Predicate<String> getPredicate() {
 		return Predicates.INTEGER;
 	}
+
+	@Override
+	public Predicate<String> getImmediatePredicate() {
+		return Predicates.INTEGER_IMMEDIATE;
+	}
 }

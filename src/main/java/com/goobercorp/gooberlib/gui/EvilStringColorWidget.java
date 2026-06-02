@@ -17,8 +17,8 @@ public class EvilStringColorWidget extends EvilStringWidget {
 	private final int x;
 	private final ColorOption opt;
 
-	public EvilStringColorWidget(Text name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, String initial, ColorOption opt) {
-		super(x + font().getWidth(name) + 2, y, width - font().getWidth(name), height, changedListener, predicate, initial);
+	public EvilStringColorWidget(Text name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, ColorOption opt) {
+		super(x + font().getWidth(name) + 2, y, width - font().getWidth(name), height, changedListener, predicate, immediatePredicate, initial);
 		this.name = name;
 		this.x = x;
 		this.opt = opt;

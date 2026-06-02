@@ -23,7 +23,6 @@ public class Predicates {
 		};
 	}
 
-	public static final Predicate<String> COLOR = falseIfException(Long::decode, NumberFormatException.class);
 	public static final Predicate<String> IDENTIFIER = falseIfException(Identifier::of, InvalidIdentifierException.class);
 	public static final Predicate<String> INTEGER = falseIfException(Integer::parseInt, NumberFormatException.class);
 	public static final Predicate<String> DOUBLE = falseIfException(Double::parseDouble, NumberFormatException.class);
@@ -31,4 +30,8 @@ public class Predicates {
 	public static final Predicate<String> LONG = falseIfException(Long::parseLong, NumberFormatException.class);
 	public static final Predicate<String> SHORT = falseIfException(Short::parseShort, NumberFormatException.class);
 	public static final Predicate<String> BYTE = falseIfException(Byte::parseByte, NumberFormatException.class);
+
+	public static final Predicate<String> INTEGER_IMMEDIATE = s -> s.matches("^[0-9]*$");
+	public static final Predicate<String> DOUBLE_IMMEDIATE = DOUBLE.or(String::isEmpty);
+	public static final Predicate<String> IDENTIFIER_IMMEDIATE = s -> s.matches("^[0-9a-z_:/.-]*$");
 }
