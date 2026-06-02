@@ -13,6 +13,7 @@ public interface NumberRangeOption<T extends Option<T>> extends Option<T> {
 
 	Number getNumberMaxValue();
 
+	// todo: make this work (eg 4-5)
 	void setMinFromString(String s);
 
 	void setMaxFromString(String s);

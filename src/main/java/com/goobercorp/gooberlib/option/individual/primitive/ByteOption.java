@@ -2,6 +2,7 @@ package com.goobercorp.gooberlib.option.individual.primitive;
 
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
+import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 
@@ -103,13 +104,6 @@ public class ByteOption extends BaseOption<ByteOption> implements NumberOption<B
 
 	@Override
 	public Predicate<String> getPredicate() {
-		return s -> {
-			try {
-				Byte.parseByte(s);
-				return true;
-			} catch (NumberFormatException | NullPointerException _) {
-				return false;
-			}
-		};
+		return Predicates.BYTE;
 	}
 }
