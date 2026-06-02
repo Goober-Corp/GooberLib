@@ -135,6 +135,7 @@ public class ColorOption extends BaseOption<ColorOption> {
 	};
 
 	public Predicate<String> getImmediatePredicate() {
-		return null;
+		//TODO
+		return _ -> true;
 	}
 }
