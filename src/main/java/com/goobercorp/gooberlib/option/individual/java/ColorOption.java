@@ -7,6 +7,7 @@ import net.minecraft.text.Text;
 
 import java.awt.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class ColorOption extends BaseOption<ColorOption> {
 	/// @implNote This is in ARGB
@@ -70,10 +71,66 @@ public class ColorOption extends BaseOption<ColorOption> {
 	}
 
 	public Color asColor() {
-		return new Color((this.value << 8) | this.getAlpha(), true);
+		return new Color(this.value, true);
+	}
+
+	public Predicate<String> getPredicate() {
+		return s -> {
+			try {
+				theThing.apply(s);
+				return true;
+			} catch (IllegalStateException _) {
+				return false;
+			}
+		};
 	}
 
 	public void setFromString(String s) {
-		this.setValue(Long.decode(s).intValue());
+		try {
+			setValue(theThing.apply(s));
+		} catch (IllegalStateException _) {
+		}
 	}
+
+	public static final Function<String, Integer> theThing = s -> {
+		if (s.isEmpty()) throw new IllegalStateException("Not a valid input");
+		if (s.startsWith("0x")) s = s.replaceFirst("0x", "");
+		if (s.startsWith("#")) s = s.replaceFirst("#", "");
+		if (s.length() == 3) { // R G B -> RR GG BB
+			String r = s.substring(0, 1);
+			String g = s.substring(1, 2);
+			String b = s.substring(2, 3);
+			s = r + r + g + g + b + b;
+		}
+		if (s.length() == 4) { // A R G B -> AA RR GG BB
+			String a = s.substring(0, 1);
+			String r = s.substring(1, 2);
+			String g = s.substring(2, 3);
+			String b = s.substring(3, 4);
+			s = a + a + r + r + g + g + b + b;
+		}
+		if (s.length() == 5) { // X XX XX -> 0X XX XX
+			s = "0" + s;
+		}
+		if (s.length() == 6) { // XX XX XX -> FF XX XX XX
+			s = "FF" + s;
+		}
+		if (s.length() == 7) { // X XX XX XX -> 0X XX XX XX
+			s = "0" + s;
+		}
+		if (s.length() == 8) {
+			try {
+				int a = Integer.parseInt(s.substring(0, 2), 16);
+				int r = Integer.parseInt(s.substring(2, 4), 16);
+				int g = Integer.parseInt(s.substring(4, 6), 16);
+				int b = Integer.parseInt(s.substring(6, 8), 16);
+
+				return (a << 24 | r << 16 | g << 8 | b);
+			} catch (NumberFormatException _) {
+				throw new IllegalStateException("Not a valid input");
+			}
+		} else {
+			throw new IllegalStateException("Not a valid input");
+		}
+	};
 }

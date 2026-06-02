@@ -111,8 +111,8 @@ public class WidgetProviders {
 		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setFromString, theOption.getPredicate(), theOption instanceof CharOption c ? String.valueOf(c.value) : theOption.getNumberValue().toString()));
 	}
 
-	public static <T extends NumberOption<T>> WidgetProvider<ColorOption> colorField() {
-		return ((theOption, x, y, width, height) -> new EvilStringColorWidget(theOption.name(), x, y, width, height, theOption::setFromString, Predicates.COLOR, "#" + Integer.toHexString(theOption.value), theOption));
+	public static WidgetProvider<ColorOption> colorField() {
+		return ((theOption, x, y, width, height) -> new EvilStringColorWidget(theOption.name(), x, y, width, height, theOption::setFromString, theOption.getPredicate(), "#" + Integer.toHexString(theOption.value), theOption));
 	}
 
 	public static WidgetProvider<IdentifierOption> identifierOneField() {
