@@ -23,6 +23,7 @@ public class Predicates {
 		};
 	}
 
+	public static final Predicate<String> COLOR = falseIfException(Long::decode, NumberFormatException.class);
 	public static final Predicate<String> IDENTIFIER = falseIfException(Identifier::of, InvalidIdentifierException.class);
 	public static final Predicate<String> INTEGER = falseIfException(Integer::parseInt, NumberFormatException.class);
 	public static final Predicate<String> DOUBLE = falseIfException(Double::parseDouble, NumberFormatException.class);
