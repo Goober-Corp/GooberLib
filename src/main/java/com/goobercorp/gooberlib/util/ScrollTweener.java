@@ -9,7 +9,7 @@ public class ScrollTweener {
 	//TODO: this sucks. we don't talk about it because it works
 	Supplier<Double> target;
 	Consumer<Double> targetWriter;
-	boolean isBeingInteractedWith = false;
+	public boolean isBeingInteractedWith = false;
 	double value;
 	public double min;
 	public double max;

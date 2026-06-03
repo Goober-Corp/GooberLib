@@ -4,7 +4,6 @@ import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.DrawnTextConsumer;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -68,21 +67,12 @@ public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWid
 			this.drawCurrentTabLine(context, textRenderer, k);
 		}
 		newMatrixScope(context, stack -> {
-			stack.translate(0, (float) currentTabProgress.getLerped(0, 3));
-			context.drawCenteredTextWithShadow(textRenderer, this.getMessage(), (getRight() - 2) - this.getWidth() / 2 + 2, this.getY() + 5, MainConfig.primaryCol);
+			stack.translate(0, (float) currentTabProgress.getLerped(0, 4));
+			context.drawCenteredTextWithShadow(textRenderer, textRenderer.trimToWidth(this.getMessage(), this.width).getString(), (getRight() - 2) - this.getWidth() / 2 + 2, this.getY() + 5, MainConfig.primaryCol);
 		});
-//		this.drawMessage(context.getHoverListener(this, DrawContext.HoverType.NONE));
 		this.setCursor(context);
 	}
 
-
-	private void drawMessage(DrawnTextConsumer drawnTextConsumer) {
-		int i = this.getX() + 2;
-		int j = this.getY();
-		int k = this.getX() + this.getWidth() - 2;
-		int l = this.getY() + this.getHeight();
-		drawnTextConsumer.text(this.getMessage(), i, k, j, l);
-	}
 
 	private void drawCurrentTabLine(DrawContext drawContext, TextRenderer textRenderer, int i) {
 		float j = (Math.min(textRenderer.getWidth(this.getMessage()), this.getWidth() - 4) * currentTabProgress.getF());
@@ -118,13 +108,14 @@ public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWid
 		RenderUtils.drawHorizontalLine(context, this.getX(), getRight() - 1, getBottom() - yeah, 0xBF000000);
 		RenderUtils.drawVerticalLine(context, this.getX(), this.getY() + 1, this.height - yeah, 0xBF000000);
 		RenderUtils.drawVerticalLine(context, getRight() - 1, this.getY() + 1, this.height - yeah, 0xBF000000);
+		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 		newMatrixScope(context, stack -> {
-			stack.translate(0, (float) currentTabProgress.getLerped(0, 3));
-			context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, this.getMessage(), (getRight() - 2) - this.getWidth() / 2 + 2, this.getY() + 5, MainConfig.primaryCol);
+			stack.translate(0, (float) currentTabProgress.getLerped(0, 4));
+			context.drawCenteredTextWithShadow(textRenderer, textRenderer.trimToWidth(this.getMessage(), this.width).getString(), (getRight() - 2) - this.getWidth() / 2 + 2, this.getY() + 5, MainConfig.primaryCol);
 		});
 		int k = this.active ? MainConfig.primaryCol : -6250336;
 		if (this.isCurrentTab()) {
-			this.drawCurrentTabLine(context, MinecraftClient.getInstance().textRenderer, k);
+			this.drawCurrentTabLine(context, textRenderer, k);
 		}
 	}
 }

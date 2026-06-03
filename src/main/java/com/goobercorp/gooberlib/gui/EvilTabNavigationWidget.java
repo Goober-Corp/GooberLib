@@ -17,6 +17,7 @@ import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
@@ -34,6 +35,7 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 	private ScrollTweener scrollTweener;
 	private int ticksSinceLastScroll = 0;
 	private int page = 0;
+	private Vec2f prevDelta;
 
 	EvilTabNavigationWidget(int i, TabManager tabManager, Iterable<Tab> iterable) {
 		this.tabNavWidth = i;
@@ -49,10 +51,10 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 
 	public void init() {
 		int i = tabNavWidth - 10;
-//		int j = MathHelper.roundUpToMultiple(i / this.tabs.size(), 2);
+		int j = MathHelper.roundUpToMultiple(i / this.tabs.size(), 2);
 
 		for (EvilTabButtonWidget tabButtonWidget : this.tabButtons) {
-			tabButtonWidget.setWidth(100);
+			tabButtonWidget.setWidth(Math.max(j, 100));
 		}
 
 		this.grid.refreshPositions();
@@ -84,8 +86,10 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 
 	@Override
 	public boolean mouseDragged(Click click, double deltaX, double deltaY) {
+		prevDelta = new Vec2f((float) (prevDelta.x + deltaX), (float) (prevDelta.y + deltaY));
 		Optional<Element> optional = this.hoveredElement(click.comp_4798(), click.comp_4799());
 		if (optional.isPresent()) {
+			//TODO: temporary !
 			if (optional.get().isFocused()) {
 				//dragging stops if cursor goes off of selected tab. intended
 				//dragging continues if cursor goes back onto selected tab. unintended.
@@ -144,6 +148,7 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 
 	@Override
 	public boolean mouseClicked(Click click, boolean bl) {
+		prevDelta = new Vec2f((float) click.comp_4798(), (float) click.comp_4799());
 		Optional<Element> optional = this.hoveredElement(click.comp_4798(), click.comp_4799());
 		if (optional.isEmpty()) {
 			return false;
@@ -161,7 +166,10 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 //					} else if (currentTabIndex == tabs.size() - 1) {
 //						this.targetX = (double) tabNavWidth - 100 * tabs.size() - 5;
 //					} else {
-					this.targetX = (double) (-(100 * currentTabIndex + 1)) + tabNavWidth / 2 - 50;
+					//TODO: make this adjust to actual tab size
+					if (!scrollTweener.isBeingInteractedWith) {
+						this.targetX = (double) (-(100 * currentTabIndex + 1)) + tabNavWidth / 2 - 50;
+					}
 //					}
 				}
 				if (click.button() == 0) {
@@ -175,6 +183,10 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 
 	@Override
 	public boolean mouseReleased(Click click) {
+		float speedX = (float) Math.abs(click.comp_4798() - prevDelta.x);
+		if (speedX > 1) {
+			this.targetX += speedX * 25;
+		}
 		if (click.button() == 0) {
 			scrollTweener.setInteractionState(false);
 		}
@@ -183,11 +195,7 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 
 	@Override
 	public void appendNarrations(NarrationMessageBuilder narrationMessageBuilder) {
-		Optional<EvilTabButtonWidget> optional = this.tabButtons
-				.stream()
-				.filter(ClickableWidget::isHovered)
-				.findFirst()
-				.or(() -> Optional.ofNullable(this.getCurrentTabButton()));
+		Optional<EvilTabButtonWidget> optional = this.tabButtons.stream().filter(ClickableWidget::isHovered).findFirst().or(() -> Optional.ofNullable(this.getCurrentTabButton()));
 		optional.ifPresent(tabButtonWidget -> {
 			this.appendNarrations(narrationMessageBuilder.nextMessage(), tabButtonWidget);
 			tabButtonWidget.appendNarrations(narrationMessageBuilder);
@@ -222,9 +230,7 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 				grid.refreshPositions();
 			}
 			if (tabButtons.size() > tabs.size() * 2 && scrollTweener.get() < tabNavWidth) {
-				tabs.forEach(_ ->
-						tabButtons.removeFirst()
-				);
+				tabs.forEach(_ -> tabButtons.removeFirst());
 			}
 		}
 
