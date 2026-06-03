@@ -11,6 +11,8 @@ import net.minecraft.text.Text;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
+
 
 public class CyclingOptionWidget extends EvilBaseWidget {
 	private final CycleOption<?> opt;
@@ -25,7 +27,14 @@ public class CyclingOptionWidget extends EvilBaseWidget {
 
 	@Override
 	protected void drawText(DrawContext drawContext) {
-		drawContext.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, opt.value.toString(), this.getRight() - 5 - MinecraftClient.getInstance().textRenderer.getWidth(opt.value.toString()), this.getY() + this.height / 2 - MinecraftClient.getInstance().textRenderer.fontHeight / 2, MainConfig.primaryCol);
+		newMatrixScope(drawContext, stack -> {
+			//TODO: make this use value formatter
+			String yeah = opt.value.toString();
+			//TODO: give this text scaling effect to something like ButtonOption
+			stack.translate(this.getRight() - 5 - MinecraftClient.getInstance().textRenderer.getWidth(yeah), this.getY() + this.height / 2F - MinecraftClient.getInstance().textRenderer.fontHeight / 2);
+			stack.scaleAround(1 - clickTweener.getF() * 0.25F, MinecraftClient.getInstance().textRenderer.getWidth(yeah) / 2F, 5F);
+			drawContext.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, yeah, 0, 0, MainConfig.primaryCol);
+		});
 		drawContext.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, opt.name(), this.getX() + 5, this.getY() + this.height / 2 - MinecraftClient.getInstance().textRenderer.fontHeight / 2, MainConfig.primaryCol);
 	}
 

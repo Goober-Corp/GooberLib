@@ -54,12 +54,12 @@ public class Yacl {
 	public static final IntOption intField = new IntOption("Integer Field", "", WidgetProviders.numberField());
 	public static final LongOption longField = new LongOption("Long Field", "", WidgetProviders.numberField());
 
-	public static final EnumOption<Alphabet> enumOption = new EnumOption<>("Enum Cycler", "", Alphabet.class); // todo: widget
-	public static final CycleOption<String> stringOptions = new CycleOption<>("String Dropdown", "", "Apple", "Banana", "Cherry", "Date"); // todo: widget
+	public static final EnumOption<Alphabet> enumOption = new EnumOption<>("Enum Cycler", "", Alphabet.class);
+	public static final CycleOption<String> stringOptions = new CycleOption<>("String Dropdown", "", "Apple", "Banana", "Cherry", "Date");
 	public static final StringOption stringSuggestions = new StringOption("String suggestions", ""); // todo: widget
 
 	//	public static final ItemOption item = new ItemOption("Item Dropdown", ""); // todo: option
-	public static final EnumOption<Formatting> formattingOption = new EnumOption<>("Enum Dropdown", "", Formatting.class);
+	public static final EnumOption<Formatting> formattingOption = new EnumOption<>("Enum Dropdown", "", Formatting.class); //todo: widget
 
 	public static final ListOption<StringOption> stringList = new ListOption<>("String List", List.of(), () -> new StringOption("", ""));
 	public static final ListOption<IntOption> intList = new ListOption<>("Slider List", List.of(), () -> new IntOption(Text.of(""), _ -> Text.empty(), 0, 0, 10, null));
