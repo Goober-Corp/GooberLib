@@ -14,8 +14,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
-
 public class EvilStringColorWidget extends EvilStringWidget {
 	private final Text name;
 	private final int x;
@@ -35,18 +33,19 @@ public class EvilStringColorWidget extends EvilStringWidget {
 	}
 
 	@Override
+	public void renderWidget(DrawContext context, double mouseX, double mouseY, float delta) {
+		float widthAndHeight = (getHeight() - getY() - 4);
+		float midpoint = (widthAndHeight / 2);
+		Vec2f center = new Vec2f(getRight() - midpoint - 2, midpoint + 2);
+		midpoint *= 0.75F;
+		RenderUtils.fillEvil(context, center.x - midpoint + 1, center.y - midpoint + 1, center.x + midpoint - 1, center.y + midpoint - 1, colorTweener.get());
+		RenderUtils.drawBoxOutline(context, center.x - midpoint, center.y - midpoint, center.x + midpoint - 1, center.y + midpoint - 1, 0xFF000000);
+	}
+
+	@Override
 	public void renderWidget(DrawContext drawContext, int i, int j, float f) {
-		colorTweener.update();
 		super.renderWidget(drawContext, i, j, f);
-		newMatrixScope(drawContext, stack -> {
-			stack.translate(horizontalPosOffset, verticalPosOffset);
-			float widthAndHeight = (getHeight() - getY() - 4);
-			float midpoint = (widthAndHeight / 2);
-			Vec2f center = new Vec2f(getRight() - midpoint - 2, midpoint + 2);
-			midpoint *= 0.75F;
-			RenderUtils.fillEvil(drawContext, center.x - midpoint + 1, center.y - midpoint + 1, center.x + midpoint - 1, center.y + midpoint - 1, colorTweener.get());
-			RenderUtils.drawBoxOutline(drawContext, center.x - midpoint, center.y - midpoint, center.x + midpoint - 1, center.y + midpoint - 1, 0xFF000000);
-		});
+		colorTweener.update();
 		drawContext.drawText(font(), name, x, getY() + 3, MainConfig.primaryCol, true);
 	}
 }
