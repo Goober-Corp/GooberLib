@@ -32,6 +32,7 @@ public class Predicates {
 	public static final Predicate<String> BYTE = falseIfException(Byte::parseByte, NumberFormatException.class);
 
 	public static final Predicate<String> INTEGER_IMMEDIATE = s -> s.matches("^[0-9]*$");
+	public static final Predicate<String> HEX_IMMEDIATE = s -> s.matches("^[0-9a-fA-F]*$");
 	public static final Predicate<String> DOUBLE_IMMEDIATE = DOUBLE.or(String::isEmpty);
 	public static final Predicate<String> IDENTIFIER_IMMEDIATE = s -> s.matches("^[0-9a-z_:/.-]*$");
 }

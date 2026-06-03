@@ -2,6 +2,7 @@ package com.goobercorp.gooberlib.option.individual.java;
 
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
+import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 
@@ -135,7 +136,10 @@ public class ColorOption extends BaseOption<ColorOption> {
 	};
 
 	public Predicate<String> getImmediatePredicate() {
-		//TODO
-		return _ -> true;
+		return s -> {
+			if (s.startsWith("#")) s = s.substring(1);
+			else if (s.startsWith("0x")) s = s.substring(2);
+			return (Predicates.HEX_IMMEDIATE.test(s) && s.length() <= 8) || s.length() == 9 && s.startsWith("0");
+		};
 	}
 }
