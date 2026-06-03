@@ -17,11 +17,10 @@ public class ColorTweener {
 	public ColorTweener(Supplier<Integer> target, float speed) {
 		this.target = target;
 		this.speed = speed;
-		int yeah = target.get();
-		this.aTweener = new Tweener(() -> ColorHelper.getAlpha(yeah) / 255F, speed);
-		this.rTweener = new Tweener(() -> ColorHelper.getRed(yeah) / 255F, speed);
-		this.gTweener = new Tweener(() -> ColorHelper.getGreen(yeah) / 255F, speed);
-		this.bTweener = new Tweener(() -> ColorHelper.getBlue(yeah) / 255F, speed);
+		this.aTweener = new Tweener(() -> ColorHelper.getAlpha(target.get()) / 255F, speed);
+		this.rTweener = new Tweener(() -> ColorHelper.getRed(target.get()) / 255F, speed);
+		this.gTweener = new Tweener(() -> ColorHelper.getGreen(target.get()) / 255F, speed);
+		this.bTweener = new Tweener(() -> ColorHelper.getBlue(target.get()) / 255F, speed);
 	}
 
 	public void update() {
