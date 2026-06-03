@@ -1,4 +1,4 @@
-package com.goobercorp.gooberlib.gui;
+package com.goobercorp.gooberlib.gui.nav;
 
 import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.util.RenderUtils;

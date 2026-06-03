@@ -1,4 +1,4 @@
-package com.goobercorp.gooberlib.gui;
+package com.goobercorp.gooberlib.gui.option;
 
 import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;

@@ -7,9 +7,9 @@ import com.goobercorp.gooberlib.builder.misc.Metadata;
 import com.goobercorp.gooberlib.builder.misc.OptionHolder;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
 import com.goobercorp.gooberlib.config.MainConfig;
-import com.goobercorp.gooberlib.gui.EvilTabNavigationWidget;
-import com.goobercorp.gooberlib.gui.GroupTextWidget;
-import com.goobercorp.gooberlib.gui.PrecisePositionWidgetWrapper;
+import com.goobercorp.gooberlib.gui.nav.EvilTabNavigationWidget;
+import com.goobercorp.gooberlib.gui.nav.GroupDividerWidget;
+import com.goobercorp.gooberlib.gui.util.PrecisePositionWidgetWrapper;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
 import com.goobercorp.gooberlib.util.RenderUtils;
@@ -93,8 +93,8 @@ public class GooberScreen extends Screen {
 				if (o instanceof ConfigSection(
 						Metadata metadata, List<OptionContext<?>> childOptionContexts
 				)) {
-					GroupTextWidget t = new GroupTextWidget(metadata.name(), textRenderer);
-					PrecisePositionWidgetWrapper<GroupTextWidget> widgetWrapper = new PrecisePositionWidgetWrapper<>(t, x + ((double) MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (double) textRenderer.getWidth(metadata.name()) / 2, y, metadata::description);
+					GroupDividerWidget t = new GroupDividerWidget(metadata.name(), textRenderer);
+					PrecisePositionWidgetWrapper<GroupDividerWidget> widgetWrapper = new PrecisePositionWidgetWrapper<>(t, x + ((double) MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (double) textRenderer.getWidth(metadata.name()) / 2, y, metadata::description);
 					evilLayout.put(o, widgetWrapper);
 					if (new ScreenRect((int) widgetWrapper.getRealX(), (int) widgetWrapper.getRealY(), widgetWrapper.getWrapped().getRight(), widgetWrapper.getWrapped().getBottom()).overlaps(new ScreenRect(0, 0, width, height))) {
 						t.renderProgress = 1;

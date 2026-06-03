@@ -1,4 +1,4 @@
-package com.goobercorp.gooberlib.gui;
+package com.goobercorp.gooberlib.gui.util;
 
 import com.goobercorp.gooberlib.util.RenderUtils;
 import net.minecraft.client.MinecraftClient;

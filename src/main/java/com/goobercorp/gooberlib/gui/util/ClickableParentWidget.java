@@ -1,4 +1,4 @@
-package com.goobercorp.gooberlib.gui;
+package com.goobercorp.gooberlib.gui.util;
 
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;

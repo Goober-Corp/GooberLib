@@ -1,6 +1,7 @@
 package com.goobercorp.gooberlib.api.widgets;
 
-import com.goobercorp.gooberlib.gui.*;
+import com.goobercorp.gooberlib.gui.option.*;
+import com.goobercorp.gooberlib.gui.util.ClickableParentWidget;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;

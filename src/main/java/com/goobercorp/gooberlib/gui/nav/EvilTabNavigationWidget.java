@@ -1,4 +1,4 @@
-package com.goobercorp.gooberlib.gui;
+package com.goobercorp.gooberlib.gui.nav;
 
 import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.util.RenderUtils;
@@ -61,7 +61,7 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 		this.grid.setX(5);
 		this.targetX = 5d;
 		this.grid.setY(0);
-		scrollTweener = new ScrollTweener(() -> targetX, number -> targetX = number, -grid.getWidth() / 2F, grid.getWidth() / 2F, 20);
+		scrollTweener = new ScrollTweener(() -> targetX, number -> targetX = number, -grid.getWidth() + tabNavWidth / 2F, tabNavWidth / 2F, 20);
 	}
 
 	public static Builder builder(TabManager tabManager, int i) {

@@ -1,6 +1,7 @@
-package com.goobercorp.gooberlib.gui;
+package com.goobercorp.gooberlib.gui.option;
 
 import com.goobercorp.gooberlib.config.MainConfig;
+import com.goobercorp.gooberlib.gui.EvilBaseWidget;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
@@ -8,8 +9,6 @@ import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.util.math.Vec2f;
-
-import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 public class TickBoxWidget extends EvilBaseWidget {
 	private final BooleanOption opt;

@@ -1,5 +1,6 @@
-package com.goobercorp.gooberlib.gui;
+package com.goobercorp.gooberlib.gui.option;
 
+import com.goobercorp.gooberlib.gui.EvilBaseWidget;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import net.minecraft.client.gui.Click;

@@ -1,4 +1,4 @@
-package com.goobercorp.gooberlib.gui;
+package com.goobercorp.gooberlib.gui.nav;
 
 import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.util.RenderUtils;
@@ -17,22 +17,22 @@ import net.minecraft.util.Language;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
-public class GroupTextWidget extends AbstractTextWidget {
+public class GroupDividerWidget extends AbstractTextWidget {
 	private int maxWidth = 0;
 	private int cachedWidth = 0;
 	private boolean cachedWidthDirty = true;
-	private GroupTextWidget.TextOverflow textOverflow = GroupTextWidget.TextOverflow.CLAMPED;
+	private GroupDividerWidget.TextOverflow textOverflow = GroupDividerWidget.TextOverflow.CLAMPED;
 	public float renderProgress = 0;
 
-	public GroupTextWidget(Text text, TextRenderer textRenderer) {
+	public GroupDividerWidget(Text text, TextRenderer textRenderer) {
 		this(0, 0, textRenderer.getWidth(text.asOrderedText()), 9, text, textRenderer);
 	}
 
-	public GroupTextWidget(int i, int j, Text text, TextRenderer textRenderer) {
+	public GroupDividerWidget(int i, int j, Text text, TextRenderer textRenderer) {
 		this(0, 0, i, j, text, textRenderer);
 	}
 
-	public GroupTextWidget(int i, int j, int k, int l, Text text, TextRenderer textRenderer) {
+	public GroupDividerWidget(int i, int j, int k, int l, Text text, TextRenderer textRenderer) {
 		super(i, j, k, l, text, textRenderer);
 	}
 
@@ -42,11 +42,11 @@ public class GroupTextWidget extends AbstractTextWidget {
 		this.cachedWidthDirty = true;
 	}
 
-	public GroupTextWidget setMaxWidth(int i) {
-		return this.setMaxWidth(i, GroupTextWidget.TextOverflow.CLAMPED);
+	public GroupDividerWidget setMaxWidth(int i) {
+		return this.setMaxWidth(i, GroupDividerWidget.TextOverflow.CLAMPED);
 	}
 
-	public GroupTextWidget setMaxWidth(int i, GroupTextWidget.TextOverflow textOverflow) {
+	public GroupDividerWidget setMaxWidth(int i, GroupDividerWidget.TextOverflow textOverflow) {
 		this.maxWidth = i;
 		this.textOverflow = textOverflow;
 		return this;
