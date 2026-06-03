@@ -61,7 +61,7 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 		this.grid.setX(5);
 		this.targetX = 5d;
 		this.grid.setY(0);
-		scrollTweener = new ScrollTweener(() -> targetX, number -> targetX = number, -grid.getWidth() / 2F, grid.getWidth() / 2F);
+		scrollTweener = new ScrollTweener(() -> targetX, number -> targetX = number, -grid.getWidth() / 2F, grid.getWidth() / 2F, 20);
 	}
 
 	public static Builder builder(TabManager tabManager, int i) {
@@ -89,7 +89,7 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 		prevDelta = new Vec2f((float) (prevDelta.x + deltaX), (float) (prevDelta.y + deltaY));
 		Optional<Element> optional = this.hoveredElement(click.comp_4798(), click.comp_4799());
 		if (optional.isPresent()) {
-			//TODO: temporary !
+			//TODO: change this from checking if it's currently focused to if it was focused as of the initial click, so dragging doesn't stop if the tweener can't catch up.
 			if (optional.get().isFocused()) {
 				//dragging stops if cursor goes off of selected tab. intended
 				//dragging continues if cursor goes back onto selected tab. unintended.
@@ -166,10 +166,8 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 //					} else if (currentTabIndex == tabs.size() - 1) {
 //						this.targetX = (double) tabNavWidth - 100 * tabs.size() - 5;
 //					} else {
-					//TODO: make this adjust to actual tab size
-					if (!scrollTweener.isBeingInteractedWith) {
-						this.targetX = (double) (-(100 * currentTabIndex + 1)) + tabNavWidth / 2 - 50;
-					}
+					//TODO: make this adjust to actual tab size and not snap if currently dragging stuff
+					this.targetX = (double) (-(100 * currentTabIndex + 1)) + tabNavWidth / 2 - 50;
 //					}
 				}
 				if (click.button() == 0) {

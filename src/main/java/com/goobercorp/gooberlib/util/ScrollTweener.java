@@ -13,14 +13,19 @@ public class ScrollTweener {
 	double value;
 	public double min;
 	public double max;
+	private float speed;
 
-
-	public ScrollTweener(Supplier<Double> target, Consumer<Double> targetWriter, double min, double max) {
+	public ScrollTweener(Supplier<Double> target, Consumer<Double> targetWriter, double min, double max, float speed) {
 		this.target = target;
 		this.targetWriter = targetWriter;
 		value = target.get();
 		this.min = min;
 		this.max = max;
+		this.speed = speed;
+	}
+
+	public ScrollTweener(Supplier<Double> target, Consumer<Double> targetWriter, double min, double max) {
+		this(target, targetWriter, min, max, 15);
 	}
 
 	public void setInteractionState(boolean yeah) {
@@ -31,7 +36,7 @@ public class ScrollTweener {
 		if (!isBeingInteractedWith) {
 			targetWriter.accept(RenderUtils.ease(target.get(), Math.clamp(target.get(), min, max), 15));
 		}
-		value = RenderUtils.ease(value, target.get(), 15);
+		value = RenderUtils.ease(value, target.get(), speed);
 	}
 
 	public double get() {
