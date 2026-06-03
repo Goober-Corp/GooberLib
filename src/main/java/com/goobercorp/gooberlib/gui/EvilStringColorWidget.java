@@ -34,6 +34,7 @@ public class EvilStringColorWidget extends EvilStringWidget {
 
 	@Override
 	public void renderWidget(DrawContext context, double mouseX, double mouseY, float delta) {
+		super.renderWidget(context, mouseX, mouseY, delta);
 		float widthAndHeight = (getHeight() - getY() - 4);
 		float midpoint = (widthAndHeight / 2);
 		Vec2f center = new Vec2f(getRight() - midpoint - 2, midpoint + 2);

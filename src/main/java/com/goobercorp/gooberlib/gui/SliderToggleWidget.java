@@ -19,8 +19,8 @@ public class SliderToggleWidget extends EvilBaseWidget {
 	public SliderToggleWidget(BooleanOption opt, int x, int y, int width, int height) {
 		super(opt.name(), x, y, width, height);
 		this.opt = opt;
-		boxHoverTweener = new Tweener(() -> isHovered() ? 0.8F : 1);
-		tweener = new Tweener(() -> opt.value ? 1 : 0);
+		tweener = new Tweener(() -> opt.value ? 0 : 1);
+		boxHoverTweener = new Tweener(() -> Math.abs(0.5F - tweener.getF()), 10);
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class SliderToggleWidget extends EvilBaseWidget {
 		RenderUtils.drawBoxOutline(drawContext, center.x - midpoint * 2 + 1, center.y - midpoint + 1, center.x + midpoint, center.y + midpoint, MainConfig.shadowCol);
 		RenderUtils.drawBoxOutline(drawContext, center.x - midpoint * 2, center.y - midpoint, center.x + midpoint - 1, center.y + midpoint - 1, MainConfig.primaryCol);
 		float finalMidpoint = midpoint;
-		float yeah = (midpoint * 0.5F * boxHoverTweener.getF());
+		float yeah = (midpoint * boxHoverTweener.getF());
 		newMatrixScope(drawContext, stack -> {
 			stack.translate((-finalMidpoint * tweener.getF()), 0);
 			RenderUtils.fillEvil(drawContext, center.x - yeah + 1, center.y - yeah + 1, center.x + yeah + 1, center.y + yeah + 1, MainConfig.shadowCol);

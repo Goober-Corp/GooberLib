@@ -1,7 +1,7 @@
 package com.goobercorp.gooberlib.option.individual.java;
 
-import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
+import com.goobercorp.gooberlib.option.BaseOption;
 import com.mojang.serialization.DynamicOps;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
@@ -68,5 +68,9 @@ public class CycleOption<T> extends BaseOption<CycleOption<T>> {
 
 	public Function<T, Text> getDisplayNameProvider() {
 		return displayNameProvider;
+	}
+
+	public void advance() {
+		setValue(options.get((options.indexOf(getValue()) + 1) % options.size()));
 	}
 }

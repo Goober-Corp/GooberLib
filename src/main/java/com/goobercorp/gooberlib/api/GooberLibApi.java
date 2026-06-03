@@ -3,19 +3,24 @@ package com.goobercorp.gooberlib.api;
 import com.goobercorp.gooberlib.GooberLibEntrypoint;
 import com.goobercorp.gooberlib.api.widgets.WidgetProviders;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
-import com.goobercorp.gooberlib.builder.misc.Metadata;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
+import com.goobercorp.gooberlib.builder.misc.Metadata;
+import com.goobercorp.gooberlib.builder.misc.OptionHolder;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
+import com.goobercorp.gooberlib.gui.ColorPickerWidget;
 import com.goobercorp.gooberlib.gui.EvilButtonWidget;
+import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
-import com.goobercorp.gooberlib.builder.misc.OptionHolder;
-import com.goobercorp.gooberlib.option.individual.java.*;
-import com.goobercorp.gooberlib.option.individual.minecraft.*;
-import com.goobercorp.gooberlib.option.individual.misc.*;
-import com.goobercorp.gooberlib.option.individual.primitive.*;
-import com.goobercorp.gooberlib.gui.ColorPickerWidget;
-import com.goobercorp.gooberlib.interfaces.WidgetProvider;
+import com.goobercorp.gooberlib.option.individual.java.ColorOption;
+import com.goobercorp.gooberlib.option.individual.java.CycleOption;
+import com.goobercorp.gooberlib.option.individual.java.StringOption;
+import com.goobercorp.gooberlib.option.individual.minecraft.BlockPosOption;
+import com.goobercorp.gooberlib.option.individual.minecraft.IdentifierOption;
+import com.goobercorp.gooberlib.option.individual.minecraft.Vec3dOption;
+import com.goobercorp.gooberlib.option.individual.minecraft.Vec3iOption;
+import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
+import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.option.individual.primitive.CharOption;
 import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
 import com.goobercorp.gooberlib.screen.GooberScreen;
@@ -189,7 +194,9 @@ public class GooberLibApi {
 		registerWidgetProvider(BlockPosOption.class, WidgetProviders.blockPosFields());
 		registerWidgetProvider(Vec3iOption.class, WidgetProviders.vec3iFields());
 		registerWidgetProvider(Vec3dOption.class, WidgetProviders.vec3dFields());
+		registerWidgetProvider(CycleOption.class, WidgetProviders.cyclingOption());
 	}
+
 
 	/**
 	 * Registers or replaces the default {@link WidgetProvider} for an option class. This provider gets used when no widget provider was supplier upon creating an instance of the option class

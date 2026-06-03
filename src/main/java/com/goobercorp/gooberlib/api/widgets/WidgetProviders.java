@@ -2,6 +2,7 @@ package com.goobercorp.gooberlib.api.widgets;
 
 import com.goobercorp.gooberlib.gui.*;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
+import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
 import com.goobercorp.gooberlib.option.individual.minecraft.BlockPosOption;
@@ -105,6 +106,10 @@ public class WidgetProviders {
 		return RangeSliderWidget::new;
 	}
 
+	public static <T extends Option<T>> WidgetProvider<T> cyclingOption() {
+		return (theOption, x, y, width, height) -> new CyclingOptionWidget(theOption, x, y, width, height, (t) -> Text.of("yeah"));
+	}
+
 	public static <T extends NumberOption<T>> WidgetProvider<T> numberSliderWithFormatter(Function<T, Text> valueFormatter) {
 		return (theOption, x, y, width, height) -> new EvilSliderWidget(theOption, x, y, width, height, valueFormatter);
 	}
@@ -154,4 +159,6 @@ public class WidgetProviders {
 	public static WidgetProvider<StringOption> stringField() {
 		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value));
 	}
+
+
 }
