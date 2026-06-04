@@ -26,6 +26,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
@@ -109,7 +110,7 @@ public class WidgetProviders {
 	}
 
 	public static <E> WidgetProvider<CycleOption<E>> cyclingOption() {
-		return CyclingOptionWidget::new;
+		return (opt, x, y, width, height) -> new CyclingOptionWidget(opt, x, y, width, height, opt.getDisplayNameProvider());
 	}
 
 	public static <T extends NumberOption<T>> WidgetProvider<T> numberSliderWithFormatter(Function<T, Component> valueFormatter) {
@@ -158,9 +159,19 @@ public class WidgetProviders {
 		return TickBoxWidget::new;
 	}
 
+	public static WidgetProvider<BooleanOption> booleanSliderWidget() {
+		return SliderToggleWidget::new;
+	}
+
+	public static WidgetProvider<BooleanOption> booleanToggleWidget() {
+		return (theOption, x, y, width, height) -> new CyclingOptionWidget(theOption, x, y, width, height, o -> CommonComponents.optionStatus(o.getValue()));
+	}
+
+	public static WidgetProvider<BooleanOption> booleanToggleWidget(Component whenTrue, Component whenFalse) {
+		return (theOption, x, y, width, height) -> new CyclingOptionWidget(theOption, x, y, width, height, o -> o.getValue() ? whenTrue : whenFalse);
+	}
+
 	public static WidgetProvider<StringOption> stringField() {
 		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value));
 	}
-
-
 }

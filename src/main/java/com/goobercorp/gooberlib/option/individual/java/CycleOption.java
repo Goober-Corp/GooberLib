@@ -3,7 +3,6 @@ package com.goobercorp.gooberlib.option.individual.java;
 import com.goobercorp.gooberlib.interfaces.AdvanceableOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
-import com.goobercorp.gooberlib.option.Option;
 import com.mojang.serialization.DynamicOps;
 import org.jetbrains.annotations.NotNull;
 
@@ -69,8 +68,8 @@ public class CycleOption<T> extends BaseOption<CycleOption<T>> implements Advanc
 		return defaultValue;
 	}
 
-	public Function<T, Component> getDisplayNameProvider() {
-		return displayNameProvider;
+	public Function<CycleOption<T>, Component> getDisplayNameProvider() {
+		return o -> displayNameProvider.apply(o.value);
 	}
 
 	public void advance() {

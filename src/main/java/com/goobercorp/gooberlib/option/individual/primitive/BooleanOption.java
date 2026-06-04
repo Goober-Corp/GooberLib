@@ -1,12 +1,15 @@
 package com.goobercorp.gooberlib.option.individual.primitive;
 
+import com.goobercorp.gooberlib.interfaces.AdvanceableOption;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
+
 import java.util.function.Function;
+
 import net.minecraft.network.chat.Component;
 
-public class BooleanOption extends BaseOption<BooleanOption> {
+public class BooleanOption extends BaseOption<BooleanOption> implements AdvanceableOption<BooleanOption> {
 	private final boolean defaultValue;
 	/// @implNote Modifying this value directly will *not* trigger
 	public boolean value;
@@ -56,5 +59,10 @@ public class BooleanOption extends BaseOption<BooleanOption> {
 
 	public boolean getDefaultValue() {
 		return defaultValue;
+	}
+
+	@Override
+	public void advance() {
+		this.setValue(!this.getValue());
 	}
 }

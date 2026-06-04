@@ -5,7 +5,6 @@ import com.goobercorp.gooberlib.api.widgets.WidgetProviders;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
-import com.goobercorp.gooberlib.gui.option.SliderToggleWidget;
 import com.goobercorp.gooberlib.option.individual.hotkey.HotkeyOption;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.option.individual.java.CycleOption;
@@ -61,7 +60,9 @@ public class TheOne {
 	 */
 	@Section("fancy ass booleans")
 	public static final BooleanOption booleanOption = new BooleanOption("boolean option", "boolean description");
-	public static final BooleanOption secondBooleanOption = new BooleanOption("coolean option", "boolean description", SliderToggleWidget::new);
+	public static final BooleanOption secondBooleanOption = new BooleanOption("coolean option", "boolean description", WidgetProviders.booleanSliderWidget());
+	public static final BooleanOption thirdBooleanOption = new BooleanOption("droolean option", "boolean description", WidgetProviders.booleanToggleWidget());
+	public static final BooleanOption fourthBooleanOption = new BooleanOption("ghoulean option", "boolean description", WidgetProviders.booleanToggleWidget(Component.literal("Yes"), Component.literal("No")));
 
 	@Section("field test")
 	public static final StringOption stringOption = new StringOption("string option", "string description");
