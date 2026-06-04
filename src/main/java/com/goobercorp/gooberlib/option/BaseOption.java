@@ -6,10 +6,11 @@ import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
+
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 
-public abstract class BaseOption<T extends BaseOption<T>> implements Option<T> {
+public abstract class BaseOption<T extends Option<T>> implements Option<T> {
 	protected Component name;
 	protected Function<T, Component> description;
 	private ValueChangeCallback<T> callback;

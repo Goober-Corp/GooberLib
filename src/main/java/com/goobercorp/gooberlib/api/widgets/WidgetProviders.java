@@ -3,8 +3,8 @@ package com.goobercorp.gooberlib.api.widgets;
 import com.goobercorp.gooberlib.gui.option.*;
 import com.goobercorp.gooberlib.gui.util.ClickableParentWidget;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
-import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
+import com.goobercorp.gooberlib.option.individual.java.CycleOption;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
 import com.goobercorp.gooberlib.option.individual.minecraft.BlockPosOption;
 import com.goobercorp.gooberlib.option.individual.minecraft.IdentifierOption;
@@ -15,9 +15,11 @@ import com.goobercorp.gooberlib.option.individual.primitive.CharOption;
 import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
 import com.goobercorp.gooberlib.option.individual.primitive.range.NumberRangeOption;
 import com.goobercorp.gooberlib.util.Predicates;
+
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
 import net.minecraft.IdentifierException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -106,8 +108,8 @@ public class WidgetProviders {
 		return RangeSliderWidget::new;
 	}
 
-	public static <T extends Option<T>> WidgetProvider<T> cyclingOption() {
-		return (theOption, x, y, width, height) -> new CyclingOptionWidget(theOption, x, y, width, height, (t) -> Component.nullToEmpty("yeah"));
+	public static <E> WidgetProvider<CycleOption<E>> cyclingOption() {
+		return CyclingOptionWidget::new;
 	}
 
 	public static <T extends NumberOption<T>> WidgetProvider<T> numberSliderWithFormatter(Function<T, Component> valueFormatter) {

@@ -1,15 +1,18 @@
 package com.goobercorp.gooberlib.option.individual.java;
 
+import com.goobercorp.gooberlib.interfaces.AdvanceableOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
+import com.goobercorp.gooberlib.option.Option;
 import com.mojang.serialization.DynamicOps;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Function;
+
 import net.minecraft.network.chat.Component;
 
-public class CycleOption<T> extends BaseOption<CycleOption<T>> {
+public class CycleOption<T> extends BaseOption<CycleOption<T>> implements AdvanceableOption<CycleOption<T>> {
 	private final T defaultValue;
 	private final List<T> options;
 	private final Function<T, Component> displayNameProvider;
