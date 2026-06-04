@@ -4,10 +4,12 @@ import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.util.ColorTweener;
 import com.goobercorp.gooberlib.util.RenderUtils;
+import net.minecraft.network.chat.MutableComponent;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,6 +27,47 @@ public class EvilStringColorWidget extends EvilStringWidget {
 		this.name = name;
 		this.x = x;
 		this.opt = opt;
+		this.setFormatter(s -> {
+			MutableComponent component = Component.empty();
+			if (s.startsWith("#")) {
+				component.append("#");
+				s = s.substring(1);
+			} else if (s.startsWith("0x")) {
+				component.append("0x");
+				s = s.substring(2);
+			}
+			switch (s.length()) {
+				case 3 -> component
+						.append(Component.literal(s.substring(0, 1)).withColor(0xFF0000))
+						.append(Component.literal(s.substring(1, 2)).withColor(0x00FF00))
+						.append(Component.literal(s.substring(2, 3)).withColor(0x0000FF));
+				case 4 -> component
+						.append(Component.literal(s.substring(0, 1)).withColor(0xFFFFFF))
+						.append(Component.literal(s.substring(1, 2)).withColor(0xFF0000))
+						.append(Component.literal(s.substring(2, 3)).withColor(0x00FF00))
+						.append(Component.literal(s.substring(3, 4)).withColor(0x0000FF));
+				case 5 -> component
+						.append(Component.literal(s.substring(0, 1)).withColor(0xFF0000))
+						.append(Component.literal(s.substring(1, 3)).withColor(0x00FF00))
+						.append(Component.literal(s.substring(3, 5)).withColor(0x0000FF));
+				case 6 -> component
+						.append(Component.literal(s.substring(0, 2)).withColor(0xFF0000))
+						.append(Component.literal(s.substring(2, 4)).withColor(0x00FF00))
+						.append(Component.literal(s.substring(4, 6)).withColor(0x0000FF));
+				case 7 -> component
+						.append(Component.literal(s.substring(0, 1)).withColor(0xFFFFFF))
+						.append(Component.literal(s.substring(1, 3)).withColor(0xFF0000))
+						.append(Component.literal(s.substring(3, 5)).withColor(0x00FF00))
+						.append(Component.literal(s.substring(5, 7)).withColor(0x0000FF));
+				case 8 -> component
+						.append(Component.literal(s.substring(0, 2)).withColor(0xFFFFFF))
+						.append(Component.literal(s.substring(2, 4)).withColor(0xFF0000))
+						.append(Component.literal(s.substring(4, 6)).withColor(0x00FF00))
+						.append(Component.literal(s.substring(6, 8)).withColor(0x0000FF));
+				default -> component.append(s);
+			}
+			return component;
+		});
 		colorTweener = new ColorTweener(() -> opt.value, 5);
 	}
 

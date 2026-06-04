@@ -19,13 +19,13 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import net.minecraft.util.Util;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class EvilStringWidget extends EvilBaseWidget {
@@ -72,6 +72,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 	private boolean isFirstAfterAtTarget = false;
 	private boolean firstAfterSelect = true;
 	private boolean justFocused;
+	private Function<String, Component> formatter = Component::literal;
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial) {
 		super(Component.empty(), x, y, width, height);
@@ -428,8 +429,8 @@ public class EvilStringWidget extends EvilBaseWidget {
 			int visibleSelectedCharacters = Mth.clamp(this.selectionEnd - this.firstCharacterIndex, 0, visibleText.length());
 			if (!visibleText.isEmpty()) {
 				String string2 = cursorVisible ? visibleText.substring(0, cursorOffset) : visibleText;
-				FormattedCharSequence formatted = this.format(string2);
-				context.drawString(this.textRenderer, formatted, actualTextX, this.textY, colorIShouldBe, this.textShadow);
+				Component formatted = this.format(string2);
+				context.drawString(this.textRenderer, this.format(visibleText), actualTextX, this.textY, colorIShouldBe, this.textShadow);
 				actualTextX += this.textRenderer.width(formatted) + 1;
 			}
 
@@ -441,9 +442,9 @@ public class EvilStringWidget extends EvilBaseWidget {
 				cursorX = --actualTextX;
 			}
 
-			if (!visibleText.isEmpty() && cursorVisible && cursorOffset < visibleText.length()) {
-				context.drawString(this.textRenderer, this.format(visibleText.substring(cursorOffset)), actualTextX, this.textY, colorIShouldBe, this.textShadow);
-			}
+//			if (!visibleText.isEmpty() && cursorVisible && cursorOffset < visibleText.length()) {
+//				context.drawString(this.textRenderer, this.format(visibleText.substring(cursorOffset)), actualTextX, this.textY, colorIShouldBe, this.textShadow);
+//			}
 
 			if (this.placeholder != null && visibleText.isEmpty() && !this.isFocused()) {
 				context.drawString(this.textRenderer, this.placeholder, actualTextX, this.textY, colorIShouldBe);
@@ -514,8 +515,12 @@ public class EvilStringWidget extends EvilBaseWidget {
 		}
 	}
 
-	private FormattedCharSequence format(String string) {
-		return FormattedCharSequence.forward(string, Style.EMPTY);
+	private Component format(String string) {
+		return this.formatter.apply(string);
+	}
+
+	public void setFormatter(Function<String, Component> formatter) {
+		this.formatter = formatter;
 	}
 
 	private void updateTextPosition() {

@@ -4,9 +4,11 @@ import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.serialization.DynamicOps;
+
 import java.awt.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
 import net.minecraft.network.chat.Component;
 
 public class ColorOption extends BaseOption<ColorOption> {
@@ -66,8 +68,20 @@ public class ColorOption extends BaseOption<ColorOption> {
 		return this.value & 0xFFFFFF;
 	}
 
-	public int getAlpha() {
-		return this.value >>> 24;
+	public int getA() {
+		return (this.value >>> 24) & 0xFF;
+	}
+
+	public int getR() {
+		return (this.value >>> 16) & 0xFF;
+	}
+
+	public int getG() {
+		return (this.value >>> 8) & 0xFF;
+	}
+
+	public int getB() {
+		return (this.value) & 0xFF;
 	}
 
 	public Color asColor() {
