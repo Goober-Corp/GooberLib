@@ -19,11 +19,8 @@ public abstract class BaseOption<T extends Option<T>> implements Option<T> {
 	protected BaseOption(Component name, Function<T, Component> description, @Nullable WidgetProvider<T> provider) {
 		this.name = name;
 		this.description = description;
-		// todo: this needs testing for EnumOption due to it being a generic class
-		@SuppressWarnings("unchecked")
-		Class<T> optionClass = (Class<T>) this.getClass();
 		this.provider = provider == null
-				? GooberLibApi.getDefaultWidgetProvider(optionClass)
+				? GooberLibApi.getDefaultWidgetProvider(thisT())
 				: provider;
 	}
 

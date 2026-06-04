@@ -33,13 +33,12 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
-import oshi.util.tuples.Pair;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 
 import static org.apache.commons.io.function.Erase.rethrow;
 
@@ -180,47 +179,80 @@ public class GooberLibApi {
 		out.add(optionName, jo);
 	}
 
-	private static final List<Pair<Class<? extends Option<?>>, WidgetProvider<?>>> widgetProviders = new ArrayList<>();
+	private record WidgetHandler<T extends Option<T>>(Function<T, Boolean> checkCanHandle, int priority,
+	                                                  WidgetProvider<T> widgetProvider) {
+		boolean genericCanHandle(Object o) {
+			try {
+				//noinspection unchecked
+				Boolean result = checkCanHandle.apply((T) o);
+				return result != null;
+			} catch (ClassCastException _) {
+				return false;
+			}
+		}
+	}
+
+	private static final SortedSet<WidgetHandler<?>> widgetProviders = new TreeSet<>(Comparator.<WidgetHandler<?>>comparingInt(o -> o.priority).thenComparing((_, _) -> -1));
 
 	static {
-		registerWidgetProvider(CharOption.class, WidgetProviders.numberField());
-		//noinspection unchecked
-		registerWidgetProvider(NumberOption.class, WidgetProviders.numberSlider());
-		registerWidgetProvider(ColorOption.class, ColorPickerWidget::new);
-		registerWidgetProvider(BooleanOption.class, WidgetProviders.booleanTickBox());
-		registerWidgetProvider(ButtonOption.class, EvilButtonWidget::new);
-		registerWidgetProvider(StringOption.class, WidgetProviders.stringField());
-		registerWidgetProvider(IdentifierOption.class, WidgetProviders.identifierTwoFields());
-		registerWidgetProvider(BlockPosOption.class, WidgetProviders.blockPosFields());
-		registerWidgetProvider(Vec3iOption.class, WidgetProviders.vec3iFields());
-		registerWidgetProvider(Vec3dOption.class, WidgetProviders.vec3dFields());
-		registerWidgetProvider(CycleOption.class, WidgetProviders.cyclingOption());
-	}
-
-
-	/**
-	 * Registers or replaces the default {@link WidgetProvider} for an option class. This provider gets used when no widget provider was supplier upon creating an instance of the option class
-	 *
-	 * @param optionClass    the option class
-	 * @param widgetProvider the default widget provider to use
-	 */
-	public static <T extends Option<T>> void registerWidgetProvider(Class<T> optionClass, WidgetProvider<T> widgetProvider) {
-		widgetProviders.add(new Pair<>(optionClass, widgetProvider));
+		// noinspection unchecked, rawtypes
+		GooberLibApi.<NumberOption>registerWidgetProvider(t -> t instanceof NumberOption, WidgetProviders.numberSlider(), -2);
+		GooberLibApi.<CharOption>registerWidgetProvider(t -> t instanceof CharOption, WidgetProviders.numberField(), -1);
+		GooberLibApi.<ButtonOption>registerWidgetProvider(t -> t instanceof ButtonOption, EvilButtonWidget::new, -1);
+		registerWidgetProvider(t -> t instanceof ColorOption, ColorPickerWidget::new, -1);
+		registerWidgetProvider(t -> t instanceof BooleanOption, WidgetProviders.booleanTickBox(), -1);
+		registerWidgetProvider(t -> t instanceof StringOption, WidgetProviders.stringField(), -1);
+		registerWidgetProvider(t -> t instanceof IdentifierOption, WidgetProviders.identifierTwoFields(), -1);
+		registerWidgetProvider(t -> t instanceof BlockPosOption, WidgetProviders.blockPosFields(), -1);
+		registerWidgetProvider(t -> t instanceof Vec3iOption, WidgetProviders.vec3iFields(), -1);
+		registerWidgetProvider(t -> t instanceof Vec3dOption, WidgetProviders.vec3dFields(), -1);
+		registerWidgetProvider(t -> t instanceof CycleOption, WidgetProviders.cyclingOption(), -1);
 	}
 
 	/**
-	 * Returns the default {@link WidgetProvider} for the option class
+	 * Registers a default {@link WidgetProvider} for an option with the default priority. This provider gets used when no widget provider was supplier upon creating an instance of the option class
+	 * <p>
 	 *
-	 * @param optionClass the option class
-	 * @return the default {@link WidgetProvider} for the option class
+	 * @param widgetProvider the widget provider
+	 * @param checkCanHandle the function to check if given widget provider can handle a given option
+	 * @param <T>            the option type
 	 */
-//	 * @throws IllegalArgumentException if no default widget provider for the given option class was registered
-	public static <T extends Option<T>> WidgetProvider<T> getDefaultWidgetProvider(Class<T> optionClass) {
-		for (Pair<Class<? extends Option<?>>, WidgetProvider<?>> widgetProvider : widgetProviders) {
-			if (widgetProvider.getA().isAssignableFrom(optionClass)) {
-				//noinspection unchecked
-				return (WidgetProvider<T>) widgetProvider.getB();
+	public static <T extends Option<T>> void registerWidgetProvider(Function<T, Boolean> checkCanHandle, WidgetProvider<T> widgetProvider) {
+		registerWidgetProvider(checkCanHandle, widgetProvider, 1000);
+	}
+
+	/**
+	 * Registers a default {@link WidgetProvider} for an option. This provider gets used when no widget provider was supplier upon creating an instance of the option class
+	 * <p>
+	 *
+	 * @param widgetProvider the widget provider
+	 * @param checkCanHandle the function to check if given widget provider can handle a given option
+	 * @param priority       priority of the widget provider (the one with the highest priority will be picked)
+	 * @param <T>            the option type
+	 */
+	public static <T extends Option<T>> void registerWidgetProvider(Function<T, Boolean> checkCanHandle, WidgetProvider<T> widgetProvider, int priority) {
+		widgetProviders.add(new WidgetHandler<>(checkCanHandle, priority, widgetProvider));
+	}
+
+	/**
+	 * Returns the default {@link WidgetProvider} for the option instance
+	 *
+	 * @param option the option instance
+	 * @param <T>    the option type
+	 * @return the default {@link WidgetProvider} for the option instance
+	 */
+	public static <T extends Option<T>> WidgetProvider<T> getDefaultWidgetProvider(T option) {
+		WidgetHandler<T> bestSoFar = null;
+		for (WidgetHandler<?> handler : widgetProviders) {
+			if (handler.genericCanHandle(option)) {
+				if (bestSoFar == null || bestSoFar.priority < handler.priority) {
+					//noinspection unchecked
+					bestSoFar = (WidgetHandler<T>) handler;
+				}
 			}
+		}
+		if (bestSoFar != null) {
+			return bestSoFar.widgetProvider();
 		}
 		return (theOption, x, y, width, height) -> new StringWidget(x, y, width, height, theOption.name(), Minecraft.getInstance().font);
 //		throw new IllegalArgumentException("No default widget provider for " + optionClass);
