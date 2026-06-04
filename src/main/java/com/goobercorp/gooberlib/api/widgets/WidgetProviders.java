@@ -174,4 +174,12 @@ public class WidgetProviders {
 	public static WidgetProvider<StringOption> stringField() {
 		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value));
 	}
+
+	public static WidgetProvider<StringOption> stringField(Function<String, List<String>> suggestionProvider) {
+		return (theOption, x, y, width, height) -> {
+			var widget = new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value);
+			widget.setSuggestionProvider(suggestionProvider);
+			return widget;
+		};
+	}
 }

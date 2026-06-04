@@ -24,6 +24,7 @@ import net.minecraft.util.StringUtil;
 import net.minecraft.util.Util;
 import org.jspecify.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -44,8 +45,6 @@ public class EvilStringWidget extends EvilBaseWidget {
 	private int selectionEnd;
 	private int editableColor = MainConfig.primaryCol;
 	private int uneditableColor = -9408400;
-	@Nullable
-	private String suggestion;
 	@Nullable
 	private Consumer<String> changedListener;
 	private final Predicate<String> immediatePredicate;
@@ -72,6 +71,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 	private boolean isFirstAfterAtTarget = false;
 	private boolean firstAfterSelect = true;
 	private boolean justFocused;
+	private Function<String, List<String>> suggestionProvider = List::of;
 	private Function<String, Component> formatter = Component::literal;
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial) {
@@ -450,9 +450,6 @@ public class EvilStringWidget extends EvilBaseWidget {
 				context.drawString(this.textRenderer, this.placeholder, actualTextX, this.textY, colorIShouldBe);
 			}
 
-			if (!shouldBePipe && this.suggestion != null) {
-				context.drawString(this.textRenderer, this.suggestion, cursorX - 1, this.textY, -8355712, this.textShadow);
-			}
 			if (visibleSelectedCharacters != cursorOffset) {
 				int p = this.textX + this.textRenderer.width(visibleText.substring(0, visibleSelectedCharacters));
 //					context.drawSelection(
@@ -654,10 +651,6 @@ public class EvilStringWidget extends EvilBaseWidget {
 		this.visible = bl;
 	}
 
-	public void setSuggestion(@Nullable String string) {
-		this.suggestion = string;
-	}
-
 	public int getCharacterX(int i) {
 		return i > this.text.length() ? this.getX() : this.getX() + this.textRenderer.width(this.text.substring(0, i));
 	}
@@ -670,5 +663,13 @@ public class EvilStringWidget extends EvilBaseWidget {
 	public void setPlaceholder(Component text) {
 		boolean bl = text.getStyle().equals(Style.EMPTY);
 		this.placeholder = bl ? text.copy().withStyle(PLACEHOLDER_STYLE) : text;
+	}
+
+	public Function<String, List<String>> getSuggestionProvider() {
+		return suggestionProvider;
+	}
+
+	public void setSuggestionProvider(Function<String, List<String>> suggestionProvider) {
+		this.suggestionProvider = suggestionProvider;
 	}
 }

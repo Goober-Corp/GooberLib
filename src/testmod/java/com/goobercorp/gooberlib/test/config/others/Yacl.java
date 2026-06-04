@@ -56,7 +56,7 @@ public class Yacl {
 
 	public static final EnumOption<Alphabet> enumOption = new EnumOption<>("Enum Cycler", "", Alphabet.class);
 	public static final CycleOption<String> stringOptions = new CycleOption<>("String Dropdown", "", "Apple", "Banana", "Cherry", "Date");
-	public static final StringOption stringSuggestions = new StringOption("String suggestions", ""); // todo: widget
+	public static final StringOption stringSuggestions = new StringOption("String suggestions", "", WidgetProviders.stringField(s -> List.of(s + "1", s + "2", s + "3"))); // todo: widget
 
 	//	public static final ItemOption item = new ItemOption("Item Dropdown", ""); // todo: option
 	public static final EnumOption<ChatFormatting> formattingOption = new EnumOption<>("Enum Dropdown", "", ChatFormatting.class); //todo: widget
