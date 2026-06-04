@@ -1,25 +1,25 @@
 package com.goobercorp.gooberlib.mixin.gui;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import net.minecraft.client.option.InactivityFpsLimiter;
+import com.mojang.blaze3d.platform.FramerateLimitTracker;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(InactivityFpsLimiter.class)
+@Mixin(FramerateLimitTracker.class)
 public abstract class InactivityFpsLimiterMixin {
 
     @Shadow
-    public abstract InactivityFpsLimiter.LimitReason getLimitReason();
+    public abstract FramerateLimitTracker.FramerateThrottleReason getThrottleReason();
 
     @Shadow
-    private int maxFps;
+    private int framerateLimit;
 
-    @ModifyReturnValue(method = "update", at = @At("RETURN"))
+    @ModifyReturnValue(method = "getFramerateLimit", at = @At("RETURN"))
     //this is how we make everyone think that it's smoother than it actually is. shh, don't tell anyone!
     int yeah(int original){
-        if(getLimitReason() == InactivityFpsLimiter.LimitReason.OUT_OF_LEVEL_MENU){
-            return maxFps;
+        if(getThrottleReason() == FramerateLimitTracker.FramerateThrottleReason.OUT_OF_LEVEL_MENU){
+            return framerateLimit;
         }
         return original;
     }

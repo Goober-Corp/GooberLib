@@ -3,15 +3,15 @@ package com.goobercorp.gooberlib.util;
 import com.goobercorp.gooberlib.option.individual.hotkey.HotkeyOption;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.client.input.MouseInput;
-import net.minecraft.client.util.InputUtil;
+import com.mojang.blaze3d.platform.InputConstants;
 import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 
 import static org.apache.commons.io.function.Erase.rethrow;
 
@@ -20,15 +20,15 @@ public class HotkeyUtil {
 	public static final List<HotkeyOption> ALL_HOTKEYS = new ArrayList<>();
 	public static final List<Integer> PRESSED = new ArrayList<>();
 
-	public static @InputUtil.Keycode int fromName(String individualKey) {
+	public static @InputConstants.Value int fromName(String individualKey) {
 		Integer keyCode = MAP.inverse().get(individualKey);
 		if (keyCode == null) throw new IllegalArgumentException("No keycode for " + individualKey);
 		return keyCode;
 	}
 
-	public static void handleKeyboard(@KeyInput.KeyAction int keyAction, KeyInput keyInput) {
-		if (keyAction == 1) PRESSED.add(keyInput.getKeycode());
-		else PRESSED.removeIf(i -> i == keyInput.getKeycode());
+	public static void handleKeyboard(@KeyEvent.Action int keyAction, KeyEvent keyInput) {
+		if (keyAction == 1) PRESSED.add(keyInput.input());
+		else PRESSED.removeIf(i -> i == keyInput.input());
 		main:
 		for (HotkeyOption hotkey : ALL_HOTKEYS) {
 			if (hotkey.settings.matches(keyAction, PRESSED, hotkey)) {
@@ -40,9 +40,9 @@ public class HotkeyUtil {
 		}
 	}
 
-	public static void handleMouse(int keyAction, MouseInput mouseInput) {
-		if (keyAction == 1) PRESSED.add(mouseInput.getKeycode());
-		else PRESSED.removeIf(i -> i == mouseInput.getKeycode());
+	public static void handleMouse(int keyAction, MouseButtonInfo mouseInput) {
+		if (keyAction == 1) PRESSED.add(mouseInput.input());
+		else PRESSED.removeIf(i -> i == mouseInput.input());
 		main:
 		for (HotkeyOption hotkey : ALL_HOTKEYS) {
 			if (hotkey.settings.matches(keyAction, PRESSED, hotkey)) {

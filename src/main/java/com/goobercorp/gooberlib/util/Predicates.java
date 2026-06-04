@@ -1,10 +1,9 @@
 package com.goobercorp.gooberlib.util;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.InvalidIdentifierException;
-
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import net.minecraft.IdentifierException;
+import net.minecraft.resources.Identifier;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class Predicates {
@@ -23,7 +22,7 @@ public class Predicates {
 		};
 	}
 
-	public static final Predicate<String> IDENTIFIER = falseIfException(Identifier::of, InvalidIdentifierException.class);
+	public static final Predicate<String> IDENTIFIER = falseIfException(Identifier::parse, IdentifierException.class);
 	public static final Predicate<String> INTEGER = falseIfException(Integer::parseInt, NumberFormatException.class);
 	public static final Predicate<String> DOUBLE = falseIfException(Double::parseDouble, NumberFormatException.class);
 	public static final Predicate<String> FLOAT = falseIfException(Float::parseFloat, NumberFormatException.class);

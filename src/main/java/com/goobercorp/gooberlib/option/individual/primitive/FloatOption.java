@@ -4,10 +4,9 @@ import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.text.Text;
-
 import java.util.function.Function;
 import java.util.function.Predicate;
+import net.minecraft.network.chat.Component;
 
 import static java.lang.Math.clamp;
 
@@ -17,7 +16,7 @@ public class FloatOption extends BaseOption<FloatOption> implements NumberOption
 	private final float max;
 	public float value;
 
-	public FloatOption(Text name, Function<FloatOption, Text> description, float defaultValue, float min, float max, WidgetProvider<FloatOption> provider) {
+	public FloatOption(Component name, Function<FloatOption, Component> description, float defaultValue, float min, float max, WidgetProvider<FloatOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -26,11 +25,11 @@ public class FloatOption extends BaseOption<FloatOption> implements NumberOption
 	}
 
 	public FloatOption(String name, String description) {
-		this(Text.literal(name), _ -> Text.literal(description), 0, -Float.MAX_VALUE, Float.MAX_VALUE, null);
+		this(Component.literal(name), _ -> Component.literal(description), 0, -Float.MAX_VALUE, Float.MAX_VALUE, null);
 	}
 
 	public FloatOption(String name, String description, WidgetProvider<FloatOption> provider) {
-		this(Text.literal(name), _ -> Text.literal(description), 0, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+		this(Component.literal(name), _ -> Component.literal(description), 0, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
 	}
 
 	@Override

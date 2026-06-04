@@ -2,11 +2,11 @@ package com.goobercorp.gooberlib.gui.option;
 
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.util.RenderUtils;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 
-public class ColorPickerWidget extends ClickableWidget {
+public class ColorPickerWidget extends AbstractWidget {
 	private final ColorOption option;
 
 	public ColorPickerWidget(ColorOption theOption, int x, int y, int width, int height) {
@@ -15,16 +15,16 @@ public class ColorPickerWidget extends ClickableWidget {
 	}
 
 	@Override
-	protected void renderWidget(DrawContext drawContext, int i, int j, float f) {
+	protected void renderWidget(GuiGraphics drawContext, int i, int j, float f) {
 		drawRainbowGradient(drawContext, getX(), getY(), getRight(), getBottom());
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder narrationMessageBuilder) {
+	protected void updateWidgetNarration(NarrationElementOutput narrationMessageBuilder) {
 
 	}
 
-	protected void drawRainbowGradient(DrawContext graphics, int x1, int y1, int x2, int y2) {
+	protected void drawRainbowGradient(GuiGraphics graphics, int x1, int y1, int x2, int y2) {
 		//Draws a rainbow gradient, left to right
 		int[] colors = new int[]{0xFFFF0000, 0xFFFFFF00, 0xFF00FF00, 0xFF00FFFF, 0xFF0000FF, 0xFFFF00FF, 0xFFFF0000}; //all the colors in the gradient
 		int width = x2 - x1;

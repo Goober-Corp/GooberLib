@@ -39,7 +39,7 @@ val loaderVersion: String by project
 dependencies {
     modImplementation("com.terraformersmc:modmenu:17.0.0")
     minecraft("com.mojang:minecraft:${minecraftVersion}")
-    mappings(libs.yarn)
+    mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:${loaderVersion}")
     modImplementation(libs.fabric.api)
 }

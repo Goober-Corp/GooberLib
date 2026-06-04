@@ -4,33 +4,33 @@ import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.gui.EvilBaseWidget;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.cursor.StandardCursors;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.screen.narration.NarrationPart;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.client.sound.SoundManager;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.StringHelper;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
+import net.minecraft.util.StringUtil;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.MathHelper;
 import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class EvilStringWidget extends EvilBaseWidget {
-	public static final Style PLACEHOLDER_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);
-	private final TextRenderer textRenderer;
+	public static final Style PLACEHOLDER_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GRAY);
+	private final Font textRenderer;
 	private String text = "";
 	private int maxLength = 32;
 	private boolean drawsBackground = true;
@@ -51,8 +51,8 @@ public class EvilStringWidget extends EvilBaseWidget {
 	private final Predicate<String> immediatePredicate;
 	private final Predicate<String> predicate;
 	@Nullable
-	private Text placeholder;
-	private long lastSwitchFocusTime = Util.getMeasuringTimeMs();
+	private Component placeholder;
+	private long lastSwitchFocusTime = Util.getMillis();
 	private int textX;
 	private int textY;
 	private String lastAccepted;
@@ -74,9 +74,9 @@ public class EvilStringWidget extends EvilBaseWidget {
 	private boolean justFocused;
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial) {
-		super(Text.empty(), x, y, width, height);
+		super(Component.empty(), x, y, width, height);
 		this.immediatePredicate = immediatePredicate;
-		this.textRenderer = MinecraftClient.getInstance().textRenderer;
+		this.textRenderer = Minecraft.getInstance().font;
 		this.lastAccepted = initial;
 		this.setText(initial);
 		this.setChangedListener(changedListener);
@@ -94,9 +94,9 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	protected MutableText getNarrationMessage() {
-		Text text = this.getMessage();
-		return Text.translatable("gui.narrate.editBox", text, this.text);
+	protected MutableComponent createNarrationMessage() {
+		Component text = this.getMessage();
+		return Component.translatable("gui.narrate.editBox", text, this.text);
 	}
 
 	public void setText(String string) {
@@ -140,7 +140,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 		int j = Math.max(this.selectionStart, this.selectionEnd);
 		int k = this.maxLength - this.text.length() - (i - j);
 		if (k > 0) {
-			String string2 = StringHelper.stripInvalidChars(string);
+			String string2 = StringUtil.filterText(string);
 			int l = string2.length();
 			if (k < l) {
 				if (Character.isHighSurrogate(string2.charAt(k - 1))) {
@@ -253,7 +253,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	private int getCursorPosWithOffset(int i) {
-		return Util.moveCursor(this.text, this.selectionStart, i);
+		return Util.offsetByCodepoints(this.text, this.selectionStart, i);
 	}
 
 	public void setCursor(int i, boolean bl) {
@@ -266,7 +266,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	public void setSelectionStart(int i) {
-		this.selectionStart = MathHelper.clamp(i, 0, this.text.length());
+		this.selectionStart = Mth.clamp(i, 0, this.text.length());
 		this.updateFirstCharacterIndex(this.selectionStart);
 	}
 
@@ -279,13 +279,13 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	public boolean keyPressed(KeyInput keyInput) {
-		if (this.isInteractable() && this.isFocused()) {
-			switch (keyInput.comp_4795()) {
+	public boolean keyPressed(KeyEvent keyInput) {
+		if (this.isActive() && this.isFocused()) {
+			switch (keyInput.key()) {
 				// todo rename these to GLFW.KEY_...
 				case 259:
 					if (this.editable) {
-						this.erase(-1, keyInput.hasCtrlOrCmd());
+						this.erase(-1, keyInput.hasControlDownWithQuirk());
 					}
 
 					return true;
@@ -296,31 +296,31 @@ public class EvilStringWidget extends EvilBaseWidget {
 				case 267:
 				case 261:
 					if (this.editable) {
-						this.erase(1, keyInput.hasCtrlOrCmd());
+						this.erase(1, keyInput.hasControlDownWithQuirk());
 					}
 
 					return true;
 				case 262:
-					if (keyInput.hasCtrlOrCmd()) {
-						this.setCursor(this.getWordSkipPosition(1), keyInput.hasShift());
+					if (keyInput.hasControlDownWithQuirk()) {
+						this.setCursor(this.getWordSkipPosition(1), keyInput.hasShiftDown());
 					} else {
-						this.moveCursor(1, keyInput.hasShift());
+						this.moveCursor(1, keyInput.hasShiftDown());
 					}
 
 					return true;
 				case 263:
-					if (keyInput.hasCtrlOrCmd()) {
-						this.setCursor(this.getWordSkipPosition(-1), keyInput.hasShift());
+					if (keyInput.hasControlDownWithQuirk()) {
+						this.setCursor(this.getWordSkipPosition(-1), keyInput.hasShiftDown());
 					} else {
-						this.moveCursor(-1, keyInput.hasShift());
+						this.moveCursor(-1, keyInput.hasShiftDown());
 					}
 
 					return true;
 				case 268:
-					this.setCursorToStart(keyInput.hasShift());
+					this.setCursorToStart(keyInput.hasShiftDown());
 					return true;
 				case 269:
-					this.setCursorToEnd(keyInput.hasShift());
+					this.setCursorToEnd(keyInput.hasShiftDown());
 					return true;
 				default:
 					if (keyInput.isSelectAll()) {
@@ -328,17 +328,17 @@ public class EvilStringWidget extends EvilBaseWidget {
 						this.setSelectionEnd(0);
 						return true;
 					} else if (keyInput.isCopy()) {
-						MinecraftClient.getInstance().keyboard.setClipboard(this.getSelectedText());
+						Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
 						return true;
 					} else if (keyInput.isPaste()) {
 						if (this.isEditable()) {
-							this.write(MinecraftClient.getInstance().keyboard.getClipboard());
+							this.write(Minecraft.getInstance().keyboardHandler.getClipboard());
 						}
 
 						return true;
 					} else {
 						if (keyInput.isCut()) {
-							MinecraftClient.getInstance().keyboard.setClipboard(this.getSelectedText());
+							Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
 							if (this.isEditable()) {
 								this.write("");
 							}
@@ -355,16 +355,17 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	public boolean isActive() {
-		return this.isInteractable() && this.isFocused() && this.isEditable();
+		//TODO: switching to mojmap somehow broke this??? I think i've fixed it but this needs to be looked into
+		return active && this.isEditable();
 	}
 
 	@Override
-	public boolean charTyped(CharInput charInput) {
+	public boolean charTyped(CharacterEvent charInput) {
 		if (!this.isActive()) {
 			return false;
-		} else if (charInput.isValidChar()) {
+		} else if (charInput.isAllowedChatCharacter()) {
 			if (this.editable) {
-				this.write(charInput.asString());
+				this.write(charInput.codepointAsString());
 			}
 
 			return true;
@@ -373,13 +374,13 @@ public class EvilStringWidget extends EvilBaseWidget {
 		}
 	}
 
-	private int calculateCursorPos(Click click) {
-		int i = Math.min(MathHelper.floor(click.comp_4798()) - this.textX, this.getInnerWidth());
+	private int calculateCursorPos(MouseButtonEvent click) {
+		int i = Math.min(Mth.floor(click.x()) - this.textX, this.getInnerWidth());
 		String string = this.text.substring(this.firstCharacterIndex);
-		return this.firstCharacterIndex + this.textRenderer.trimToWidth(string, i).length();
+		return this.firstCharacterIndex + this.textRenderer.plainSubstrByWidth(string, i).length();
 	}
 
-	private void selectWord(Click click) {
+	private void selectWord(MouseButtonEvent click) {
 		int i = this.calculateCursorPos(click);
 		int j = this.getWordSkipPosition(-1, i);
 		int k = this.getWordSkipPosition(1, i);
@@ -388,16 +389,16 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	public void onClick(Click click, boolean bl) {
+	public void onClick(MouseButtonEvent click, boolean bl) {
 		if (bl) {
 			this.selectWord(click);
 		} else {
-			this.setCursor(this.calculateCursorPos(click), click.hasShift());
+			this.setCursor(this.calculateCursorPos(click), click.hasShiftDown());
 		}
 	}
 
 	@Override
-	protected void onDrag(Click click, double d, double e) {
+	protected void onDrag(MouseButtonEvent click, double d, double e) {
 		this.setCursor(this.calculateCursorPos(click), true);
 	}
 
@@ -406,14 +407,14 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	public void renderWidget(DrawContext context, double mouseX, double mouseY, float delta) {
+	public void renderWidget(GuiGraphics context, double mouseX, double mouseY, float delta) {
 		if (this.isVisible()) {
 			int colorIShouldBe = this.editable ? this.editableColor : this.uneditableColor;
 			int cursorOffset = this.selectionStart - this.firstCharacterIndex;
-			String visibleText = this.textRenderer.trimToWidth(this.text.substring(this.firstCharacterIndex), this.getInnerWidth());
+			String visibleText = this.textRenderer.plainSubstrByWidth(this.text.substring(this.firstCharacterIndex), this.getInnerWidth());
 			boolean cursorVisible = cursorOffset >= 0 && cursorOffset <= visibleText.length();
 
-			long time = Util.getMeasuringTimeMs();
+			long time = Util.getMillis();
 			if (!cursorXTweener.isAtTarget()) {
 				isFirstAfterAtTarget = true;
 				time = this.lastSwitchFocusTime;
@@ -424,12 +425,12 @@ public class EvilStringWidget extends EvilBaseWidget {
 			boolean blink = this.isFocused() && (time - this.lastSwitchFocusTime) / 300L % 2L == 0L && cursorVisible;
 
 			int actualTextX = this.textX;
-			int visibleSelectedCharacters = MathHelper.clamp(this.selectionEnd - this.firstCharacterIndex, 0, visibleText.length());
+			int visibleSelectedCharacters = Mth.clamp(this.selectionEnd - this.firstCharacterIndex, 0, visibleText.length());
 			if (!visibleText.isEmpty()) {
 				String string2 = cursorVisible ? visibleText.substring(0, cursorOffset) : visibleText;
-				OrderedText formatted = this.format(string2);
-				context.drawText(this.textRenderer, formatted, actualTextX, this.textY, colorIShouldBe, this.textShadow);
-				actualTextX += this.textRenderer.getWidth(formatted) + 1;
+				FormattedCharSequence formatted = this.format(string2);
+				context.drawString(this.textRenderer, formatted, actualTextX, this.textY, colorIShouldBe, this.textShadow);
+				actualTextX += this.textRenderer.width(formatted) + 1;
 			}
 
 			boolean shouldBePipe = this.selectionStart < this.text.length() || this.text.length() >= this.getMaxLength();
@@ -441,18 +442,18 @@ public class EvilStringWidget extends EvilBaseWidget {
 			}
 
 			if (!visibleText.isEmpty() && cursorVisible && cursorOffset < visibleText.length()) {
-				context.drawText(this.textRenderer, this.format(visibleText.substring(cursorOffset)), actualTextX, this.textY, colorIShouldBe, this.textShadow);
+				context.drawString(this.textRenderer, this.format(visibleText.substring(cursorOffset)), actualTextX, this.textY, colorIShouldBe, this.textShadow);
 			}
 
 			if (this.placeholder != null && visibleText.isEmpty() && !this.isFocused()) {
-				context.drawTextWithShadow(this.textRenderer, this.placeholder, actualTextX, this.textY, colorIShouldBe);
+				context.drawString(this.textRenderer, this.placeholder, actualTextX, this.textY, colorIShouldBe);
 			}
 
 			if (!shouldBePipe && this.suggestion != null) {
-				context.drawText(this.textRenderer, this.suggestion, cursorX - 1, this.textY, -8355712, this.textShadow);
+				context.drawString(this.textRenderer, this.suggestion, cursorX - 1, this.textY, -8355712, this.textShadow);
 			}
 			if (visibleSelectedCharacters != cursorOffset) {
-				int p = this.textX + this.textRenderer.getWidth(visibleText.substring(0, visibleSelectedCharacters));
+				int p = this.textX + this.textRenderer.width(visibleText.substring(0, visibleSelectedCharacters));
 //					context.drawSelection(
 //							Math.min(o, this.getX() + this.width), this.textY - 1, Math.min(p - 1, this.getX() + this.width), this.textY + 1 + 9, this.invertSelectionBackground
 //					);
@@ -508,19 +509,19 @@ public class EvilStringWidget extends EvilBaseWidget {
 			}
 
 			if (this.isHovered()) {
-				context.setCursor(this.isEditable() ? StandardCursors.IBEAM : StandardCursors.NOT_ALLOWED);
+				context.requestCursor(this.isEditable() ? CursorTypes.IBEAM : CursorTypes.NOT_ALLOWED);
 			}
 		}
 	}
 
-	private OrderedText format(String string) {
-		return OrderedText.styledForwardsVisitedString(string, Style.EMPTY);
+	private FormattedCharSequence format(String string) {
+		return FormattedCharSequence.forward(string, Style.EMPTY);
 	}
 
 	private void updateTextPosition() {
 		if (this.textRenderer != null) {
-			String string = this.textRenderer.trimToWidth(this.text.substring(this.firstCharacterIndex), this.getInnerWidth());
-			this.textX = this.getX() + (this.isCentered() ? (this.getWidth() - this.textRenderer.getWidth(string)) / 2 : (this.drawsBackground ? 4 : 0));
+			String string = this.textRenderer.plainSubstrByWidth(this.text.substring(this.firstCharacterIndex), this.getInnerWidth());
+			this.textX = this.getX() + (this.isCentered() ? (this.getWidth() - this.textRenderer.width(string)) / 2 : (this.drawsBackground ? 4 : 0));
 			this.textY = this.drawsBackground ? this.getY() + (this.height - 8) / 2 : this.getY();
 		}
 	}
@@ -593,7 +594,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 		if (this.focusUnlocked || bl) {
 			super.setFocused(bl);
 			if (bl) {
-				this.lastSwitchFocusTime = Util.getMeasuringTimeMs();
+				this.lastSwitchFocusTime = Util.getMillis();
 				this.justFocused = true;
 			}
 		}
@@ -612,7 +613,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	public void setSelectionEnd(int i) {
-		this.selectionEnd = MathHelper.clamp(i, 0, this.text.length());
+		this.selectionEnd = Mth.clamp(i, 0, this.text.length());
 		this.updateFirstCharacterIndex(this.selectionEnd);
 	}
 
@@ -620,10 +621,10 @@ public class EvilStringWidget extends EvilBaseWidget {
 		if (this.textRenderer != null) {
 			this.firstCharacterIndex = Math.min(this.firstCharacterIndex, this.text.length());
 			int j = this.getInnerWidth();
-			String string = this.textRenderer.trimToWidth(this.text.substring(this.firstCharacterIndex), j);
+			String string = this.textRenderer.plainSubstrByWidth(this.text.substring(this.firstCharacterIndex), j);
 			int k = string.length() + this.firstCharacterIndex;
 			if (i == this.firstCharacterIndex) {
-				this.firstCharacterIndex = this.firstCharacterIndex - this.textRenderer.trimToWidth(this.text, j, true).length();
+				this.firstCharacterIndex = this.firstCharacterIndex - this.textRenderer.plainSubstrByWidth(this.text, j, true).length();
 			}
 
 			if (i > k) {
@@ -632,7 +633,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 				this.firstCharacterIndex = this.firstCharacterIndex - (this.firstCharacterIndex - i);
 			}
 
-			this.firstCharacterIndex = MathHelper.clamp(this.firstCharacterIndex, 0, this.text.length());
+			this.firstCharacterIndex = Mth.clamp(this.firstCharacterIndex, 0, this.text.length());
 		}
 	}
 
@@ -653,16 +654,16 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	public int getCharacterX(int i) {
-		return i > this.text.length() ? this.getX() : this.getX() + this.textRenderer.getWidth(this.text.substring(0, i));
+		return i > this.text.length() ? this.getX() : this.getX() + this.textRenderer.width(this.text.substring(0, i));
 	}
 
 	@Override
-	public void appendClickableNarrations(NarrationMessageBuilder narrationMessageBuilder) {
-		narrationMessageBuilder.put(NarrationPart.TITLE, this.getNarrationMessage());
+	public void updateWidgetNarration(NarrationElementOutput narrationMessageBuilder) {
+		narrationMessageBuilder.add(NarratedElementType.TITLE, this.createNarrationMessage());
 	}
 
-	public void setPlaceholder(Text text) {
+	public void setPlaceholder(Component text) {
 		boolean bl = text.getStyle().equals(Style.EMPTY);
-		this.placeholder = bl ? text.copy().fillStyle(PLACEHOLDER_STYLE) : text;
+		this.placeholder = bl ? text.copy().withStyle(PLACEHOLDER_STYLE) : text;
 	}
 }

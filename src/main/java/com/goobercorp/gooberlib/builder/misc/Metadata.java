@@ -1,7 +1,7 @@
 package com.goobercorp.gooberlib.builder.misc;
 
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 
-public record Metadata(Text name, @Nullable Text description) {
+public record Metadata(Component name, @Nullable Component description) {
 }

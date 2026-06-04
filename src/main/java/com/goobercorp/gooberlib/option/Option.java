@@ -3,10 +3,9 @@ package com.goobercorp.gooberlib.option;
 import com.goobercorp.gooberlib.interfaces.ValueChangeCallback;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.Text;
-
 import java.util.function.Function;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.network.chat.Component;
 
 public interface Option<T extends Option<T>> {
 	<S> S serialize(DynamicOps<S> ops);
@@ -15,16 +14,16 @@ public interface Option<T extends Option<T>> {
 
 	void onChange();
 
-	Text name();
+	Component name();
 
-	Function<T, Text> description();
+	Function<T, Component> description();
 
-	Text getDescription();
+	Component getDescription();
 
 	T setOnValueChange(ValueChangeCallback<T> t);
 
 	WidgetProvider<T> getWidgetProvider();
 
-	ClickableWidget makeWidget(int x, int y, int width, int height);
+	AbstractWidget makeWidget(int x, int y, int width, int height);
 
 }

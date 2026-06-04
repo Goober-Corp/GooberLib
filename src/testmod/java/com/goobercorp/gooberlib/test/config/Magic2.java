@@ -3,7 +3,7 @@ package com.goobercorp.gooberlib.test.config;
 import com.goobercorp.gooberlib.annotations.Section;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.level.chunk.ChunkAccess;
 
 public class Magic2 {
 	public static final StringOption stringOption = new StringOption("string option 2", "string description2 ");
@@ -12,7 +12,7 @@ public class Magic2 {
 	public static final StringOption secondStringOption = new StringOption("second string option2 ", "second string description2 ");
 
 	@Section("meow meow mrrp")
-	public static final Chunk meow = null;
+	public static final ChunkAccess meow = null;
 
 	public static final StringOption thirdStringOption = new StringOption("third string option2 ", "third string description2 ");
 

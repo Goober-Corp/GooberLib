@@ -3,48 +3,47 @@ package com.goobercorp.gooberlib.option.individual.minecraft;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.Vec2f;
-
 import java.util.function.Function;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.Vec2;
 
 public class Vec2fOption extends BaseOption<Vec2fOption> {
-	private final Vec2f defaultValue;
-	private Vec2f value;
+	private final Vec2 defaultValue;
+	private Vec2 value;
 
-	public Vec2fOption(Text name, Function<Vec2fOption, Text> description, Vec2f defaultValue, WidgetProvider<Vec2fOption> provider) {
+	public Vec2fOption(Component name, Function<Vec2fOption, Component> description, Vec2 defaultValue, WidgetProvider<Vec2fOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
 
-	public Vec2fOption(String name, String description, Vec2f defaultValue) {
-		this(Text.literal(name), _ -> Text.literal(description), defaultValue, null);
+	public Vec2fOption(String name, String description, Vec2 defaultValue) {
+		this(Component.literal(name), _ -> Component.literal(description), defaultValue, null);
 	}
 
 	public Vec2fOption(String name, String description) {
-		this(Text.literal(name), _ -> Text.literal(description), Vec2f.ZERO, null);
+		this(Component.literal(name), _ -> Component.literal(description), Vec2.ZERO, null);
 	}
 
-	public Vec2fOption(String name, String description, Vec2f defaultValue, WidgetProvider<Vec2fOption> provider) {
-		this(Text.literal(name), _ -> Text.literal(description), defaultValue, provider);
+	public Vec2fOption(String name, String description, Vec2 defaultValue, WidgetProvider<Vec2fOption> provider) {
+		this(Component.literal(name), _ -> Component.literal(description), defaultValue, provider);
 	}
 
 	@Override
 	public <S> S serialize(DynamicOps<S> ops) {
-		return Vec2f.CODEC.encodeStart(ops, this.value).getOrThrow();
+		return Vec2.CODEC.encodeStart(ops, this.value).getOrThrow();
 	}
 
 	@Override
 	public <S> void deserialize(DynamicOps<S> ops, S object) {
-		this.value = Vec2f.CODEC.parse(ops, object).getOrThrow();
+		this.value = Vec2.CODEC.parse(ops, object).getOrThrow();
 	}
 
-	public Vec2f getValue() {
+	public Vec2 getValue() {
 		return value;
 	}
 
-	public void setValue(Vec2f newValue) {
+	public void setValue(Vec2 newValue) {
 		if (!this.value.equals(newValue)) {
 			this.value = newValue;
 			this.onChange();
@@ -57,7 +56,7 @@ public class Vec2fOption extends BaseOption<Vec2fOption> {
 		}
 	}
 
-	public Vec2f getDefaultValue() {
+	public Vec2 getDefaultValue() {
 		return defaultValue;
 	}
 

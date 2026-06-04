@@ -3,19 +3,19 @@ package com.goobercorp.gooberlib.option;
 import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.interfaces.ValueChangeCallback;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.network.chat.Component;
 
 public abstract class BaseOption<T extends BaseOption<T>> implements Option<T> {
-	protected Text name;
-	protected Function<T, Text> description;
+	protected Component name;
+	protected Function<T, Component> description;
 	private ValueChangeCallback<T> callback;
 	private final WidgetProvider<T> provider;
 
-	protected BaseOption(Text name, Function<T, Text> description, @Nullable WidgetProvider<T> provider) {
+	protected BaseOption(Component name, Function<T, Component> description, @Nullable WidgetProvider<T> provider) {
 		this.name = name;
 		this.description = description;
 		// todo: this needs testing for EnumOption due to it being a generic class
@@ -27,17 +27,17 @@ public abstract class BaseOption<T extends BaseOption<T>> implements Option<T> {
 	}
 
 	@Override
-	public Text name() {
+	public Component name() {
 		return name;
 	}
 
 	@Override
-	public Function<T, Text> description() {
+	public Function<T, Component> description() {
 		return description;
 	}
 
 	@Override
-	public Text getDescription() {
+	public Component getDescription() {
 		return description.apply(thisT());
 	}
 
@@ -62,7 +62,7 @@ public abstract class BaseOption<T extends BaseOption<T>> implements Option<T> {
 	}
 
 	@Override
-	public ClickableWidget makeWidget(int x, int y, int width, int height) {
+	public AbstractWidget makeWidget(int x, int y, int width, int height) {
 		return this.getWidgetProvider().makeWidget(thisT(), x, y, width, height);
 	}
 

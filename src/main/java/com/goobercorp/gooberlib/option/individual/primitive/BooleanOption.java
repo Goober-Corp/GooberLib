@@ -3,27 +3,26 @@ package com.goobercorp.gooberlib.option.individual.primitive;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.text.Text;
-
 import java.util.function.Function;
+import net.minecraft.network.chat.Component;
 
 public class BooleanOption extends BaseOption<BooleanOption> {
 	private final boolean defaultValue;
 	/// @implNote Modifying this value directly will *not* trigger
 	public boolean value;
 
-	public BooleanOption(Text name, Function<BooleanOption, Text> description, boolean defaultValue, WidgetProvider<BooleanOption> provider) {
+	public BooleanOption(Component name, Function<BooleanOption, Component> description, boolean defaultValue, WidgetProvider<BooleanOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
 
 	public BooleanOption(String name, String description) {
-		this(Text.literal(name), _ -> Text.literal(description), false, null);
+		this(Component.literal(name), _ -> Component.literal(description), false, null);
 	}
 
 	public BooleanOption(String name, String description, WidgetProvider<BooleanOption> provider) {
-		this(Text.literal(name), _ -> Text.literal(description), false, provider);
+		this(Component.literal(name), _ -> Component.literal(description), false, provider);
 	}
 
 	@Override

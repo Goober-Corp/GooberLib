@@ -5,12 +5,12 @@ import com.goobercorp.gooberlib.builder.misc.Metadata;
 import com.goobercorp.gooberlib.builder.misc.OptionHolder;
 import com.goobercorp.gooberlib.builder.section.SectionBuilder;
 import com.goobercorp.gooberlib.option.Option;
-import net.minecraft.text.Text;
 import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import net.minecraft.network.chat.Component;
 
 import static org.apache.commons.io.function.Erase.rethrow;
 
@@ -22,7 +22,7 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 * @param description the description of the category
 	 * @return the category builder
 	 */
-	public static CategoryBuilder builder(Text name, Text description) {
+	public static CategoryBuilder builder(Component name, Component description) {
 		return new CategoryBuilder(null, name, description);
 	}
 
@@ -34,7 +34,7 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 * @return the category builder
 	 */
 	public static CategoryBuilder builder(String name, String description) {
-		return builder(Text.of(name), Text.of(description));
+		return builder(Component.nullToEmpty(name), Component.nullToEmpty(description));
 	}
 
 	/**
@@ -44,7 +44,7 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 * @return the category builder
 	 */
 	public static CategoryBuilder builder(String name) {
-		return builder(Text.of(name), Text.empty());
+		return builder(Component.nullToEmpty(name), Component.empty());
 	}
 
 	/**
@@ -53,8 +53,8 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 * @param name the name of the category
 	 * @return the category builder
 	 */
-	public static CategoryBuilder builder(Text name) {
-		return builder(name, Text.empty());
+	public static CategoryBuilder builder(Component name) {
+		return builder(name, Component.empty());
 	}
 
 	/**
@@ -65,7 +65,7 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 * @param description the description of the category
 	 * @return a {@link CategoryBuilder} with the options of the class
 	 */
-	public static CategoryBuilder ofClassBuildable(Class<?> clazz, Text name, Text description) {
+	public static CategoryBuilder ofClassBuildable(Class<?> clazz, Component name, Component description) {
 		CategoryBuilder builder = builder(name, description);
 		SectionBuilder sectionBuilder = null;
 		for (Field f : clazz.getDeclaredFields()) {
@@ -101,7 +101,7 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 * @return a {@link CategoryBuilder} with the options of the class
 	 */
 	public static CategoryBuilder ofClassBuildable(Class<?> clazz, String name, String description) {
-		return ofClassBuildable(clazz, Text.literal(name), Text.literal(description));
+		return ofClassBuildable(clazz, Component.literal(name), Component.literal(description));
 	}
 
 
@@ -113,7 +113,7 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 * @return a {@link CategoryBuilder} with the options of the class
 	 */
 	public static CategoryBuilder ofClassBuildable(Class<?> clazz, String name) {
-		return ofClassBuildable(clazz, Text.literal(name), Text.empty());
+		return ofClassBuildable(clazz, Component.literal(name), Component.empty());
 	}
 
 
@@ -125,7 +125,7 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 * @param description the description of the category
 	 * @return a {@link ConfigCategory} with the options of the class
 	 */
-	public static ConfigCategory ofClass(Class<?> clazz, Text name, Text description) {
+	public static ConfigCategory ofClass(Class<?> clazz, Component name, Component description) {
 		return ofClassBuildable(clazz, name, description).buildCategory();
 	}
 
@@ -138,7 +138,7 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 * @return a {@link ConfigCategory} with the options of the class
 	 */
 	public static ConfigCategory ofClass(Class<?> clazz, String name, String description) {
-		return ofClass(clazz, Text.of(name), Text.of(description));
+		return ofClass(clazz, Component.nullToEmpty(name), Component.nullToEmpty(description));
 	}
 
 	/**
@@ -149,7 +149,7 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 * @return a {@link ConfigCategory} with the options of the class
 	 */
 	public static ConfigCategory ofClass(Class<?> clazz, String name) {
-		return ofClass(clazz, Text.of(name), Text.empty());
+		return ofClass(clazz, Component.nullToEmpty(name), Component.empty());
 	}
 
 	@Override

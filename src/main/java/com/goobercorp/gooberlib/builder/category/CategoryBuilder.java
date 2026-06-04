@@ -7,23 +7,23 @@ import com.goobercorp.gooberlib.builder.section.ConfigSection;
 import com.goobercorp.gooberlib.builder.section.SectionBuilder;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import net.minecraft.network.chat.Component;
 
 public class CategoryBuilder {
-	private final Text name;
-	private final Text description;
+	private final Component name;
+	private final Component description;
 
 	private final List<OptionHolder> elements = new ArrayList<>();
 
 	@Nullable
 	private final GooberConfigBuilder parent;
 
-	public CategoryBuilder(@Nullable GooberConfigBuilder parent, Text name, Text description) {
+	public CategoryBuilder(@Nullable GooberConfigBuilder parent, Component name, Component description) {
 		this.parent = parent;
 		this.name = name;
 		this.description = description;
@@ -71,7 +71,7 @@ public class CategoryBuilder {
 	 * @param description the description
 	 * @return the {@link SectionBuilder}
 	 */
-	public SectionBuilder section(Text name, Text description) {
+	public SectionBuilder section(Component name, Component description) {
 		return new SectionBuilder(this, name, description);
 	}
 
@@ -83,7 +83,7 @@ public class CategoryBuilder {
 	 * @return the {@link SectionBuilder}
 	 */
 	public SectionBuilder section(String name, String description) {
-		return section(Text.literal(name), Text.literal(description));
+		return section(Component.literal(name), Component.literal(description));
 	}
 
 	/**
@@ -92,8 +92,8 @@ public class CategoryBuilder {
 	 * @param name the name
 	 * @return the {@link SectionBuilder}
 	 */
-	public SectionBuilder section(Text name) {
-		return section(name, Text.empty());
+	public SectionBuilder section(Component name) {
+		return section(name, Component.empty());
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class CategoryBuilder {
 	 * @return the {@link SectionBuilder}
 	 */
 	public SectionBuilder section(String name) {
-		return section(Text.of(name), Text.empty());
+		return section(Component.nullToEmpty(name), Component.empty());
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class CategoryBuilder {
 	 * @param options     the options
 	 * @return the {@link SectionBuilder}
 	 */
-	public CategoryBuilder sectionWithOptions(Text name, Text description, Option<?>... options) {
+	public CategoryBuilder sectionWithOptions(Component name, Component description, Option<?>... options) {
 		var section = section(name, description);
 		section.options(options);
 		return section.build();
@@ -129,7 +129,7 @@ public class CategoryBuilder {
 	 * @return the {@link SectionBuilder}
 	 */
 	public CategoryBuilder sectionWithOptions(String name, String description, Option<?>... options) {
-		return sectionWithOptions(Text.of(name), Text.of(description), options);
+		return sectionWithOptions(Component.nullToEmpty(name), Component.nullToEmpty(description), options);
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class CategoryBuilder {
 	 * @return the {@link SectionBuilder}
 	 */
 	public CategoryBuilder sectionWithOptions(String name, Option<?>... options) {
-		return sectionWithOptions(Text.of(name), Text.empty(), options);
+		return sectionWithOptions(Component.nullToEmpty(name), Component.empty(), options);
 	}
 
 	/**
@@ -150,8 +150,8 @@ public class CategoryBuilder {
 	 * @param options the options
 	 * @return the {@link SectionBuilder}
 	 */
-	public CategoryBuilder sectionWithOptions(Text name, Option<?>... options) {
-		return sectionWithOptions(Text.of(name), Text.empty(), options);
+	public CategoryBuilder sectionWithOptions(Component name, Option<?>... options) {
+		return sectionWithOptions(Component.translationArg(name), Component.empty(), options);
 	}
 
 	/**
@@ -204,7 +204,7 @@ public class CategoryBuilder {
 	 * @param categoryBuilderConsumer the category builder
 	 * @return this
 	 */
-	public CategoryBuilder section(Text name, Text description, Consumer<SectionBuilder> categoryBuilderConsumer) {
+	public CategoryBuilder section(Component name, Component description, Consumer<SectionBuilder> categoryBuilderConsumer) {
 		var section = section(name, description);
 		categoryBuilderConsumer.accept(section);
 		return section.build();
@@ -252,8 +252,8 @@ public class CategoryBuilder {
 	 * @param categoryBuilderConsumer the category builder
 	 * @return this
 	 */
-	public CategoryBuilder section(Text name, Consumer<SectionBuilder> categoryBuilderConsumer) {
-		var section = section(name, Text.empty());
+	public CategoryBuilder section(Component name, Consumer<SectionBuilder> categoryBuilderConsumer) {
+		var section = section(name, Component.empty());
 		categoryBuilderConsumer.accept(section);
 		return section.build();
 	}

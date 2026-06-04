@@ -4,40 +4,40 @@ import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.DrawnTextConsumer;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.AbstractTextWidget;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.StringVisitable;
-import net.minecraft.text.Text;
-import net.minecraft.util.Language;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ActiveTextCollector;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractStringWidget;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 
 @Environment(EnvType.CLIENT)
-public class GroupDividerWidget extends AbstractTextWidget {
+public class GroupDividerWidget extends AbstractStringWidget {
 	private int maxWidth = 0;
 	private int cachedWidth = 0;
 	private boolean cachedWidthDirty = true;
 	private GroupDividerWidget.TextOverflow textOverflow = GroupDividerWidget.TextOverflow.CLAMPED;
 	public float renderProgress = 0;
 
-	public GroupDividerWidget(Text text, TextRenderer textRenderer) {
-		this(0, 0, textRenderer.getWidth(text.asOrderedText()), 9, text, textRenderer);
+	public GroupDividerWidget(Component text, Font textRenderer) {
+		this(0, 0, textRenderer.width(text.getVisualOrderText()), 9, text, textRenderer);
 	}
 
-	public GroupDividerWidget(int i, int j, Text text, TextRenderer textRenderer) {
+	public GroupDividerWidget(int i, int j, Component text, Font textRenderer) {
 		this(0, 0, i, j, text, textRenderer);
 	}
 
-	public GroupDividerWidget(int i, int j, int k, int l, Text text, TextRenderer textRenderer) {
+	public GroupDividerWidget(int i, int j, int k, int l, Component text, Font textRenderer) {
 		super(i, j, k, l, text, textRenderer);
 	}
 
 	@Override
-	public void setMessage(Text text) {
+	public void setMessage(Component text) {
 		super.setMessage(text);
 		this.cachedWidthDirty = true;
 	}
@@ -56,7 +56,7 @@ public class GroupDividerWidget extends AbstractTextWidget {
 	public int getWidth() {
 		if (this.maxWidth > 0) {
 			if (this.cachedWidthDirty) {
-				this.cachedWidth = Math.min(this.maxWidth, this.getTextRenderer().getWidth(this.getMessage().asOrderedText()));
+				this.cachedWidth = Math.min(this.maxWidth, this.getFont().width(this.getMessage().getVisualOrderText()));
 				this.cachedWidthDirty = false;
 			}
 
@@ -68,21 +68,21 @@ public class GroupDividerWidget extends AbstractTextWidget {
 
 
 	@Override
-	public void renderWidget(DrawContext drawContext, int i, int j, float f) {
+	public void renderWidget(GuiGraphics drawContext, int i, int j, float f) {
 		super.renderWidget(drawContext, i, j, f);
 		renderProgress = (float) RenderUtils.ease(renderProgress, 1, 5F);
 		//this requires the widget to be centered. fuck
-		float yeah = this.getX() - drawContext.getScaledWindowWidth() / 2F + getTextRenderer().getWidth(message) / 2F;
-		RenderUtils.drawThinningHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 4.5F, 0, MainConfig.shadowCol, 2.25F, false);
-		RenderUtils.drawThinningHorizontalLine(drawContext, MathHelper.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 3.5F, 0, MainConfig.primaryCol, 2.25F, false);
-		int otherYeah = this.getX() + getTextRenderer().getWidth(message);
-		RenderUtils.drawThinningHorizontalLine(drawContext, otherYeah + 1, MathHelper.lerp(1 - renderProgress, this.getX() + getTextRenderer().getWidth(message) / 2f + drawContext.getScaledWindowWidth() / 2F - 1, otherYeah), this.getY() + 4.5F, MainConfig.shadowCol, 0, 2.25F, true);
-		RenderUtils.drawThinningHorizontalLine(drawContext, otherYeah, MathHelper.lerp(1 - renderProgress, this.getX() + getTextRenderer().getWidth(message) / 2f + drawContext.getScaledWindowWidth() / 2F - 1, otherYeah), this.getY() + 3.5F, MainConfig.primaryCol, 0, 2.25F, true);
-		drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, message, MinecraftClient.getInstance().textRenderer.getWidth(message) / 2, 0, MainConfig.primaryCol);
+		float yeah = this.getX() - drawContext.guiWidth() / 2F + getFont().width(message) / 2F;
+		RenderUtils.drawThinningHorizontalLine(drawContext, Mth.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 4.5F, 0, MainConfig.shadowCol, 2.25F, false);
+		RenderUtils.drawThinningHorizontalLine(drawContext, Mth.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 3.5F, 0, MainConfig.primaryCol, 2.25F, false);
+		int otherYeah = this.getX() + getFont().width(message);
+		RenderUtils.drawThinningHorizontalLine(drawContext, otherYeah + 1, Mth.lerp(1 - renderProgress, this.getX() + getFont().width(message) / 2f + drawContext.guiWidth() / 2F - 1, otherYeah), this.getY() + 4.5F, MainConfig.shadowCol, 0, 2.25F, true);
+		RenderUtils.drawThinningHorizontalLine(drawContext, otherYeah, Mth.lerp(1 - renderProgress, this.getX() + getFont().width(message) / 2f + drawContext.guiWidth() / 2F - 1, otherYeah), this.getY() + 3.5F, MainConfig.primaryCol, 0, 2.25F, true);
+		drawContext.drawCenteredString(Minecraft.getInstance().font, message, Minecraft.getInstance().font.width(message) / 2, 0, MainConfig.primaryCol);
 	}
 
 	@Override
-	public void draw(DrawnTextConsumer drawnTextConsumer) {
+	public void visitLines(ActiveTextCollector drawnTextConsumer) {
 //		Text text = this.getMessage();
 //		TextRenderer textRenderer = this.getTextRenderer();
 //		int i = this.maxWidth > 0 ? this.maxWidth : this.getWidth();
@@ -103,9 +103,9 @@ public class GroupDividerWidget extends AbstractTextWidget {
 //		}
 	}
 
-	public static OrderedText trim(Text text, TextRenderer textRenderer, int i) {
-		StringVisitable stringVisitable = textRenderer.trimToWidth(text, i - textRenderer.getWidth(ScreenTexts.ELLIPSIS));
-		return Language.getInstance().reorder(StringVisitable.concat(stringVisitable, ScreenTexts.ELLIPSIS));
+	public static FormattedCharSequence trim(Component text, Font textRenderer, int i) {
+		FormattedText stringVisitable = textRenderer.substrByWidth(text, i - textRenderer.width(CommonComponents.ELLIPSIS));
+		return Language.getInstance().getVisualOrder(FormattedText.composite(stringVisitable, CommonComponents.ELLIPSIS));
 	}
 
 	@Environment(EnvType.CLIENT)

@@ -1,8 +1,7 @@
 package com.goobercorp.gooberlib.util;
 
-import net.minecraft.util.math.ColorHelper;
-
 import java.util.function.Supplier;
+import net.minecraft.util.ARGB;
 
 public class ColorTweener {
 
@@ -17,10 +16,10 @@ public class ColorTweener {
 	public ColorTweener(Supplier<Integer> target, float speed) {
 		this.target = target;
 		this.speed = speed;
-		this.aTweener = new Tweener(() -> ColorHelper.getAlpha(target.get()) / 255F, speed);
-		this.rTweener = new Tweener(() -> ColorHelper.getRed(target.get()) / 255F, speed);
-		this.gTweener = new Tweener(() -> ColorHelper.getGreen(target.get()) / 255F, speed);
-		this.bTweener = new Tweener(() -> ColorHelper.getBlue(target.get()) / 255F, speed);
+		this.aTweener = new Tweener(() -> ARGB.alpha(target.get()) / 255F, speed);
+		this.rTweener = new Tweener(() -> ARGB.red(target.get()) / 255F, speed);
+		this.gTweener = new Tweener(() -> ARGB.green(target.get()) / 255F, speed);
+		this.bTweener = new Tweener(() -> ARGB.blue(target.get()) / 255F, speed);
 	}
 
 	public void update() {
@@ -31,7 +30,7 @@ public class ColorTweener {
 	}
 
 	public int get() {
-		return ColorHelper.fromFloats(aTweener.getF(), rTweener.getF(), gTweener.getF(), bTweener.getF());
+		return ARGB.colorFromFloat(aTweener.getF(), rTweener.getF(), gTweener.getF(), bTweener.getF());
 	}
 
 }

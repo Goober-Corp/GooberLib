@@ -1,16 +1,21 @@
 package com.goobercorp.gooberlib.gui.util;
 
 import com.goobercorp.gooberlib.util.RenderUtils;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
-import net.minecraft.client.gui.navigation.GuiNavigation;
-import net.minecraft.client.gui.navigation.GuiNavigationPath;
-import net.minecraft.client.gui.navigation.NavigationDirection;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.narration.NarrationSupplier;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent;
+import net.minecraft.client.gui.navigation.ScreenDirection;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -19,15 +24,15 @@ import java.util.function.Supplier;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
-public class PrecisePositionWidgetWrapper<T extends ClickableWidget> implements Drawable, Element, Selectable, Narratable {
+public class PrecisePositionWidgetWrapper<T extends AbstractWidget> implements Renderable, GuiEventListener, NarratableEntry, NarrationSupplier {
 	private final T wrapped;
-	private Supplier<Text> hoverMessage;
+	private Supplier<Component> hoverMessage;
 	private double x;
 	private double y;
 	private float renderProgress = 0;
 	private float targetInset;
 
-	public void setHoverMessage(Supplier<Text> hoverMessage) {
+	public void setHoverMessage(Supplier<Component> hoverMessage) {
 		this.hoverMessage = hoverMessage;
 	}
 
@@ -74,7 +79,7 @@ public class PrecisePositionWidgetWrapper<T extends ClickableWidget> implements 
 		this.y = y;
 	}
 
-	public Supplier<Text> getHoverMessage() {
+	public Supplier<Component> getHoverMessage() {
 		return hoverMessage;
 	}
 
@@ -108,23 +113,23 @@ public class PrecisePositionWidgetWrapper<T extends ClickableWidget> implements 
 		this.setY(theFunc.apply(this.getY()));
 	}
 
-	public PrecisePositionWidgetWrapper(T wrapped, double x, double y, Supplier<Text> description) {
+	public PrecisePositionWidgetWrapper(T wrapped, double x, double y, Supplier<Component> description) {
 		this.wrapped = wrapped;
-		renderProgress = new ScreenRect((int) getRealX(), (int) getRealY(), wrapped.getRight(), wrapped.getBottom()).overlaps(new ScreenRect(0, 0, MinecraftClient.getInstance().getWindow().getScaledWidth(), MinecraftClient.getInstance().getWindow().getScaledHeight())) ? 1 : 0;
+		renderProgress = new ScreenRectangle((int) getRealX(), (int) getRealY(), wrapped.getRight(), wrapped.getBottom()).overlaps(new ScreenRectangle(0, 0, Minecraft.getInstance().getWindow().getGuiScaledWidth(), Minecraft.getInstance().getWindow().getGuiScaledHeight())) ? 1 : 0;
 		this.x = x - wrapped.getWidth() + 1;
 		this.targetInset = (float) x;
 		this.y = y;
 		if (description != null) {
 			this.hoverMessage = description;
 		} else {
-			this.hoverMessage = Text::empty;
+			this.hoverMessage = Component::empty;
 		}
 	}
 
 	@Override
-	public void render(DrawContext drawContext, int i, int j, float f) {
+	public void render(GuiGraphics drawContext, int i, int j, float f) {
 		// todo: move this outside of this class (not related to a precise position wrapper gui element; should extend this or be handled in the screen)
-		boolean isOnScreen = new ScreenRect((int) getRealX(), (int) getRealY(), wrapped.getRight(), wrapped.getBottom()).overlaps(new ScreenRect(0, 0, drawContext.getScaledWindowWidth(), drawContext.getScaledWindowHeight()));
+		boolean isOnScreen = new ScreenRectangle((int) getRealX(), (int) getRealY(), wrapped.getRight(), wrapped.getBottom()).overlaps(new ScreenRectangle(0, 0, drawContext.guiWidth(), drawContext.guiHeight()));
 		this.x = RenderUtils.ease(this.x, isOnScreen ? targetInset : x, 10);
 		renderProgress = (float) RenderUtils.ease(renderProgress, isOnScreen ? 1 : 0, 15);
 		if (isOnScreen) {
@@ -141,21 +146,21 @@ public class PrecisePositionWidgetWrapper<T extends ClickableWidget> implements 
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean bl) {
-		return wrapped.mouseClicked(new Click(click.comp_4798() - getRealX(), click.comp_4799() - getRealY(), click.comp_4800()), bl);
+	public boolean mouseClicked(MouseButtonEvent click, boolean bl) {
+		return wrapped.mouseClicked(new MouseButtonEvent(click.x() - getRealX(), click.y() - getRealY(), click.buttonInfo()), bl);
 	}
 
 	@Override
-	public boolean mouseReleased(Click click) {
-		return wrapped.mouseReleased(new Click(click.comp_4798() - getRealX(), click.comp_4799() - getRealY(), click.comp_4800()));
+	public boolean mouseReleased(MouseButtonEvent click) {
+		return wrapped.mouseReleased(new MouseButtonEvent(click.x() - getRealX(), click.y() - getRealY(), click.buttonInfo()));
 	}
 
 	@Override
-	public boolean mouseDragged(Click click, double d, double e) {
+	public boolean mouseDragged(MouseButtonEvent click, double d, double e) {
 //		this.offsetX(x -> x + d);
 //		this.offsetY(y -> y + e);
 
-		return wrapped.mouseDragged(new Click(click.comp_4798() - getRealX(), click.comp_4799() - getRealY(), click.comp_4800()), d, e);
+		return wrapped.mouseDragged(new MouseButtonEvent(click.x() - getRealX(), click.y() - getRealY(), click.buttonInfo()), d, e);
 	}
 
 	@Override
@@ -164,23 +169,23 @@ public class PrecisePositionWidgetWrapper<T extends ClickableWidget> implements 
 	}
 
 	@Override
-	public boolean keyPressed(KeyInput keyInput) {
+	public boolean keyPressed(KeyEvent keyInput) {
 		return wrapped.keyPressed(keyInput);
 	}
 
 	@Override
-	public boolean keyReleased(KeyInput keyInput) {
+	public boolean keyReleased(KeyEvent keyInput) {
 		return wrapped.keyReleased(keyInput);
 	}
 
 	@Override
-	public boolean charTyped(CharInput charInput) {
+	public boolean charTyped(CharacterEvent charInput) {
 		return wrapped.charTyped(charInput);
 	}
 
 	@Override
-	public @Nullable GuiNavigationPath getNavigationPath(GuiNavigation guiNavigation) {
-		return wrapped.getNavigationPath(guiNavigation);
+	public @Nullable ComponentPath nextFocusPath(FocusNavigationEvent guiNavigation) {
+		return wrapped.nextFocusPath(guiNavigation);
 	}
 
 	@Override
@@ -199,47 +204,47 @@ public class PrecisePositionWidgetWrapper<T extends ClickableWidget> implements 
 	}
 
 	@Override
-	public boolean isClickable() {
-		return wrapped.isClickable();
+	public boolean shouldTakeFocusAfterInteraction() {
+		return wrapped.shouldTakeFocusAfterInteraction();
 	}
 
 	@Override
-	public @Nullable GuiNavigationPath getFocusedPath() {
-		return wrapped.getFocusedPath();
+	public @Nullable ComponentPath getCurrentFocusPath() {
+		return wrapped.getCurrentFocusPath();
 	}
 
 	@Override
-	public ScreenRect getNavigationFocus() {
-		return wrapped.getNavigationFocus();
+	public ScreenRectangle getRectangle() {
+		return wrapped.getRectangle();
 	}
 
 	@Override
-	public ScreenRect getBorder(NavigationDirection navigationDirection) {
-		return wrapped.getBorder(navigationDirection);
+	public ScreenRectangle getBorderForArrowNavigation(ScreenDirection navigationDirection) {
+		return wrapped.getBorderForArrowNavigation(navigationDirection);
 	}
 
 	@Override
-	public SelectionType getType() {
-		return wrapped.getType();
+	public NarrationPriority narrationPriority() {
+		return wrapped.narrationPriority();
 	}
 
 	@Override
-	public boolean isInteractable() {
-		return wrapped.isInteractable();
+	public boolean isActive() {
+		return wrapped.isActive();
 	}
 
 	@Override
-	public Collection<? extends Selectable> getNarratedParts() {
-		return wrapped.getNarratedParts();
+	public Collection<? extends NarratableEntry> getNarratables() {
+		return wrapped.getNarratables();
 	}
 
 	@Override
-	public void appendNarrations(NarrationMessageBuilder narrationMessageBuilder) {
-		wrapped.appendNarrations(narrationMessageBuilder);
+	public void updateNarration(NarrationElementOutput narrationMessageBuilder) {
+		wrapped.updateNarration(narrationMessageBuilder);
 	}
 
 	@Override
-	public int getNavigationOrder() {
-		return wrapped.getNavigationOrder();
+	public int getTabOrderGroup() {
+		return wrapped.getTabOrderGroup();
 	}
 }

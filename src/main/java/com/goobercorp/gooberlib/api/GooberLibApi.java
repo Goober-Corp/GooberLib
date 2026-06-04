@@ -30,9 +30,9 @@ import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
 import com.mojang.serialization.JsonOps;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextWidget;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.client.gui.screens.Screen;
 import oshi.util.tuples.Pair;
 
 import java.io.IOException;
@@ -222,7 +222,7 @@ public class GooberLibApi {
 				return (WidgetProvider<T>) widgetProvider.getB();
 			}
 		}
-		return (theOption, x, y, width, height) -> new TextWidget(x, y, width, height, theOption.name(), MinecraftClient.getInstance().textRenderer);
+		return (theOption, x, y, width, height) -> new StringWidget(x, y, width, height, theOption.name(), Minecraft.getInstance().font);
 //		throw new IllegalArgumentException("No default widget provider for " + optionClass);
 	}
 

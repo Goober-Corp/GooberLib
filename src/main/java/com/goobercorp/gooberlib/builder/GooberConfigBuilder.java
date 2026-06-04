@@ -3,20 +3,20 @@ package com.goobercorp.gooberlib.builder;
 import com.goobercorp.gooberlib.builder.category.CategoryBuilder;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
 import com.goobercorp.gooberlib.screen.GooberScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
 import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 public class GooberConfigBuilder {
-	private final Text title;
+	private final Component title;
 	private final List<ConfigCategory> categories = new ArrayList<>();
 	private TriFunction<BuiltConfig, Screen, String, GooberScreen> screenSupplier = GooberScreen::new;
 
-	public GooberConfigBuilder(Text title) {
+	public GooberConfigBuilder(Component title) {
 		this.title = title;
 	}
 
@@ -27,7 +27,7 @@ public class GooberConfigBuilder {
 	 * @param description the category description
 	 * @return a new category builder
 	 */
-	public CategoryBuilder category(Text name, Text description) {
+	public CategoryBuilder category(Component name, Component description) {
 		return new CategoryBuilder(this, name, description);
 	}
 
@@ -39,7 +39,7 @@ public class GooberConfigBuilder {
 	 * @return a new category builder
 	 */
 	public CategoryBuilder category(String name, String description) {
-		return category(Text.literal(name), Text.literal(description));
+		return category(Component.literal(name), Component.literal(description));
 	}
 
 
@@ -49,8 +49,8 @@ public class GooberConfigBuilder {
 	 * @param name the category name
 	 * @return a new category builder
 	 */
-	public CategoryBuilder category(Text name) {
-		return category(name, Text.empty());
+	public CategoryBuilder category(Component name) {
+		return category(name, Component.empty());
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class GooberConfigBuilder {
 	 * @return a new category builder
 	 */
 	public CategoryBuilder category(String name) {
-		return category(Text.of(name));
+		return category(Component.nullToEmpty(name));
 	}
 
 	/**
@@ -88,25 +88,25 @@ public class GooberConfigBuilder {
 		return new BuiltConfig(title, categories, screenSupplier);
 	}
 
-	public static GooberConfigBuilder create(Text title) {
+	public static GooberConfigBuilder create(Component title) {
 		return new GooberConfigBuilder(title);
 	}
 
 	public static GooberConfigBuilder create(String title) {
-		return create(Text.of(title));
+		return create(Component.nullToEmpty(title));
 	}
 
 	public static GooberConfigBuilder create(String title, Consumer<GooberConfigBuilder> configBuilderConsumer) {
-		return create(Text.of(title), configBuilderConsumer);
+		return create(Component.nullToEmpty(title), configBuilderConsumer);
 	}
 
-	public static GooberConfigBuilder create(Text title, Consumer<GooberConfigBuilder> configBuilderConsumer) {
+	public static GooberConfigBuilder create(Component title, Consumer<GooberConfigBuilder> configBuilderConsumer) {
 		var builder = create(title);
 		configBuilderConsumer.accept(builder);
 		return builder;
 	}
 
-	public static GooberConfigBuilder ofCategories(Text title, ConfigCategory... categories) {
+	public static GooberConfigBuilder ofCategories(Component title, ConfigCategory... categories) {
 		GooberConfigBuilder gooberConfigBuilder = create(title);
 		for (ConfigCategory category : categories) {
 			gooberConfigBuilder.addBuiltCategory(category);
@@ -115,36 +115,36 @@ public class GooberConfigBuilder {
 	}
 
 	public static GooberConfigBuilder ofCategories(String title, ConfigCategory... categories) {
-		return ofCategories(Text.of(title), categories);
+		return ofCategories(Component.nullToEmpty(title), categories);
 	}
 
-	public GooberConfigBuilder makeBuiltCategory(Class<?> clazz, Text name, Text description) {
+	public GooberConfigBuilder makeBuiltCategory(Class<?> clazz, Component name, Component description) {
 		return this.addBuiltCategory(ConfigCategory.ofClass(clazz, name, description));
 	}
 
 	public GooberConfigBuilder makeBuiltCategory(Class<?> clazz, String name, String description) {
-		return this.makeBuiltCategory(clazz, Text.of(name), Text.of(description));
+		return this.makeBuiltCategory(clazz, Component.nullToEmpty(name), Component.nullToEmpty(description));
 	}
 
 	public GooberConfigBuilder makeBuiltCategory(Class<?> clazz, String name) {
-		return this.makeBuiltCategory(clazz, Text.of(name), Text.empty());
+		return this.makeBuiltCategory(clazz, Component.nullToEmpty(name), Component.empty());
 	}
 
-	public GooberConfigBuilder category(Text name, Text description, Consumer<CategoryBuilder> categoryBuilderConsumer) {
+	public GooberConfigBuilder category(Component name, Component description, Consumer<CategoryBuilder> categoryBuilderConsumer) {
 		var builder = new CategoryBuilder(this, name, description);
 		categoryBuilderConsumer.accept(builder);
 		return builder.build();
 	}
 
 	public GooberConfigBuilder category(String name, String description, Consumer<CategoryBuilder> categoryBuilderConsumer) {
-		return category(Text.of(name), Text.of(description), categoryBuilderConsumer);
+		return category(Component.nullToEmpty(name), Component.nullToEmpty(description), categoryBuilderConsumer);
 	}
 
 	public GooberConfigBuilder category(String name, Consumer<CategoryBuilder> categoryBuilderConsumer) {
-		return category(Text.of(name), Text.empty(), categoryBuilderConsumer);
+		return category(Component.nullToEmpty(name), Component.empty(), categoryBuilderConsumer);
 	}
 
-	public GooberConfigBuilder category(Text name, Consumer<CategoryBuilder> categoryBuilderConsumer) {
-		return category(name, Text.empty(), categoryBuilderConsumer);
+	public GooberConfigBuilder category(Component name, Consumer<CategoryBuilder> categoryBuilderConsumer) {
+		return category(name, Component.empty(), categoryBuilderConsumer);
 	}
 }

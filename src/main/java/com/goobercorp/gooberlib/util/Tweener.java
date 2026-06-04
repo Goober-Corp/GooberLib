@@ -1,8 +1,7 @@
 package com.goobercorp.gooberlib.util;
 
-import net.minecraft.util.math.MathHelper;
-
 import java.util.function.Supplier;
+import net.minecraft.util.Mth;
 
 public class Tweener {
 	//TODO: add easings
@@ -47,7 +46,7 @@ public class Tweener {
 	}
 
 	public double getLerped(double start, double end) {
-		return MathHelper.lerp(value, start, end);
+		return Mth.lerp(value, start, end);
 	}
 
 	public void snapToTarget() {

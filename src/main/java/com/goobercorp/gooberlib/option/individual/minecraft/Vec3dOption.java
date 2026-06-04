@@ -3,48 +3,47 @@ package com.goobercorp.gooberlib.option.individual.minecraft;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.Vec3d;
-
 import java.util.function.Function;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.Vec3;
 
 public class Vec3dOption extends BaseOption<Vec3dOption> {
-	private final Vec3d defaultValue;
-	private Vec3d value;
+	private final Vec3 defaultValue;
+	private Vec3 value;
 
-	public Vec3dOption(Text name, Function<Vec3dOption, Text> description, Vec3d defaultValue, WidgetProvider<Vec3dOption> provider) {
+	public Vec3dOption(Component name, Function<Vec3dOption, Component> description, Vec3 defaultValue, WidgetProvider<Vec3dOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
 
-	public Vec3dOption(String name, String description, Vec3d defaultValue) {
-		this(Text.literal(name), _ -> Text.of(description), defaultValue, null);
+	public Vec3dOption(String name, String description, Vec3 defaultValue) {
+		this(Component.literal(name), _ -> Component.nullToEmpty(description), defaultValue, null);
 	}
 
 	public Vec3dOption(String name, String description) {
-		this(Text.literal(name), _ -> Text.literal(description), Vec3d.ZERO, null);
+		this(Component.literal(name), _ -> Component.literal(description), Vec3.ZERO, null);
 	}
 
-	public Vec3dOption(String name, String description, Vec3d defaultValue, WidgetProvider<Vec3dOption> provider) {
-		this(Text.literal(name), _ -> Text.literal(description), defaultValue, provider);
+	public Vec3dOption(String name, String description, Vec3 defaultValue, WidgetProvider<Vec3dOption> provider) {
+		this(Component.literal(name), _ -> Component.literal(description), defaultValue, provider);
 	}
 
 	@Override
 	public <S> S serialize(DynamicOps<S> ops) {
-		return Vec3d.CODEC.encodeStart(ops, this.value).getOrThrow();
+		return Vec3.CODEC.encodeStart(ops, this.value).getOrThrow();
 	}
 
 	@Override
 	public <S> void deserialize(DynamicOps<S> ops, S object) {
-		this.value = Vec3d.CODEC.parse(ops, object).getOrThrow();
+		this.value = Vec3.CODEC.parse(ops, object).getOrThrow();
 	}
 
-	public Vec3d getValue() {
+	public Vec3 getValue() {
 		return value;
 	}
 
-	public void setValue(Vec3d newValue) {
+	public void setValue(Vec3 newValue) {
 		if (!this.value.equals(newValue)) {
 			this.value = newValue;
 			this.onChange();
@@ -57,19 +56,19 @@ public class Vec3dOption extends BaseOption<Vec3dOption> {
 		}
 	}
 
-	public Vec3d getDefaultValue() {
+	public Vec3 getDefaultValue() {
 		return defaultValue;
 	}
 
 	public double getX() {
-		return this.value.getX();
+		return this.value.x();
 	}
 
 	public double getY() {
-		return this.value.getY();
+		return this.value.y();
 	}
 
 	public double getZ() {
-		return this.value.getZ();
+		return this.value.z();
 	}
 }

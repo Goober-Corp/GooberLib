@@ -4,11 +4,10 @@ import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.text.Text;
-
 import java.awt.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import net.minecraft.network.chat.Component;
 
 public class ColorOption extends BaseOption<ColorOption> {
 	/// @implNote This is in ARGB
@@ -16,18 +15,18 @@ public class ColorOption extends BaseOption<ColorOption> {
 	/// @implNote Modifying this value directly will *not* trigger .onChange(). This is in ARGB
 	public int value;
 
-	public ColorOption(Text name, Function<ColorOption, Text> description, int defaultValue, WidgetProvider<ColorOption> provider) {
+	public ColorOption(Component name, Function<ColorOption, Component> description, int defaultValue, WidgetProvider<ColorOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
 
 	public ColorOption(String name, String description) {
-		this(Text.literal(name), _ -> Text.literal(description), 0xFFFFFFFF, null);
+		this(Component.literal(name), _ -> Component.literal(description), 0xFFFFFFFF, null);
 	}
 
 	public ColorOption(String name, String description, WidgetProvider<ColorOption> provider) {
-		this(Text.literal(name), _ -> Text.literal(description), 0xFFFFFFFF, provider);
+		this(Component.literal(name), _ -> Component.literal(description), 0xFFFFFFFF, provider);
 	}
 
 	@Override

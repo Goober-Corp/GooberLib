@@ -5,7 +5,6 @@ import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.option.Option;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import net.minecraft.network.chat.Component;
 
 import static org.apache.commons.io.function.Erase.rethrow;
 
@@ -21,7 +21,7 @@ public class ObjectOption<T> extends BaseOption<ObjectOption<T>> {
 	private final T instance;
 	private final List<Option<?>> options;
 
-	public ObjectOption(Text name, T instance, Function<ObjectOption<T>, Text> description, @Nullable WidgetProvider<ObjectOption<T>> provider) {
+	public ObjectOption(Component name, T instance, Function<ObjectOption<T>, Component> description, @Nullable WidgetProvider<ObjectOption<T>> provider) {
 		super(name, description, provider);
 		this.instance = instance;
 		this.options = new ArrayList<>();
@@ -41,7 +41,7 @@ public class ObjectOption<T> extends BaseOption<ObjectOption<T>> {
 	}
 
 	public ObjectOption(String name, T instance, String description) {
-		this(Text.of(name), instance, _ -> Text.of(description), null);
+		this(Component.nullToEmpty(name), instance, _ -> Component.nullToEmpty(description), null);
 	}
 
 	@Override

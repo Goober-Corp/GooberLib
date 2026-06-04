@@ -12,11 +12,11 @@ import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import com.goobercorp.gooberlib.option.individual.misc.LabelOption;
 import com.goobercorp.gooberlib.option.individual.misc.ListOption;
 import com.goobercorp.gooberlib.option.individual.primitive.*;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 
 import java.net.URI;
 import java.util.List;
@@ -25,21 +25,21 @@ import java.util.function.Consumer;
 // todo: overloads
 @GooberConfig(modId = "java")
 public class Yacl {
-	/*	public static final BooleanOption booleanToggle = new BooleanOption(Text.of("Boolean Toggle"), _ -> Text.empty()
-				.append(Text.literal("a").styled(style -> style.withHoverEvent(new HoverEvent.ShowText(Text.literal("a")))))
-				.append(Text.literal("b").styled(style -> style.withHoverEvent(new HoverEvent.ShowText(Text.literal("b")))))
-				.append(Text.literal("c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c").styled(style -> style.withHoverEvent(new HoverEvent.ShowText(Text.literal("c")))))
-				.append(Text.literal("e").styled(style -> style.withHoverEvent(new HoverEvent.ShowText(Text.literal("e")))))
-				.append(Text.literal("click me").styled(style -> style.withClickEvent(new ClickEvent.OpenUrl(URI.create("https://isxander.dev"))))), false, null
+	/*	public static final BooleanOption booleanToggle = new BooleanOption(Component.literal("Boolean Toggle"), _ -> Component.empty()
+				.append(Component.literal("a").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowComponent(Component.literal("a")))))
+				.append(Component.literal("b").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowComponent(Component.literal("b")))))
+				.append(Component.literal("c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowComponent(Component.literal("c")))))
+				.append(Component.literal("e").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowComponent(Component.literal("e")))))
+				.append(Component.literal("click me").withStyle(style -> style.withClickEvent(new ClickEvent.OpenUrl(URI.create("https://isxander.dev"))))), false, null
 		); // todo: widget*/
 //	public static final BooleanOption customBooleanToggle = new BooleanOption("Custom Boolean Toggle", "You can customize controllers like so! YACL is truly infinitely customizable! This tooltip is long in order to demonstrate the cool, smooth scrolling of these descriptions. Did you know, they are also super clickable?! I know, cool right, YACL 3.x really is amazing."); // todo: widget
 	public static final BooleanOption tickbox = new BooleanOption("Tick Box", "There are even alternate methods of displaying the same data type!");
 
-	public static final IntOption intSlider = new IntOption(Text.of("Int Slider"), _ -> Text.empty(), 1, 0, 3, null);
-	public static final DoubleOption doubleSlider = new DoubleOption(Text.of("Double Slider"), _ -> Text.empty(), 0.05, 0, 3, null);
-	public static final FloatOption floatSlider = new FloatOption(Text.of("Double Slider"), _ -> Text.empty(), 0.1f, 0, 3, null);
-	public static final LongOption longSlider = new LongOption(Text.of("Double Slider"), _ -> Text.empty(), 100, 0, 1_000_000, null);
-	public static final StringOption textField = new StringOption("Component Option", ""); // todo: widget
+	public static final IntOption intSlider = new IntOption(Component.literal("Int Slider"), _ -> Component.empty(), 1, 0, 3, null);
+	public static final DoubleOption doubleSlider = new DoubleOption(Component.literal("Double Slider"), _ -> Component.empty(), 0.05, 0, 3, null);
+	public static final FloatOption floatSlider = new FloatOption(Component.literal("Double Slider"), _ -> Component.empty(), 0.1f, 0, 3, null);
+	public static final LongOption longSlider = new LongOption(Component.literal("Double Slider"), _ -> Component.empty(), 100, 0, 1_000_000, null);
+	public static final StringOption ComponentField = new StringOption("Component Option", ""); // todo: widget
 	public static final ColorOption colorOption = new ColorOption("Color Option", ""); // todo: widget
 
 	// todo: labels
@@ -59,10 +59,10 @@ public class Yacl {
 	public static final StringOption stringSuggestions = new StringOption("String suggestions", ""); // todo: widget
 
 	//	public static final ItemOption item = new ItemOption("Item Dropdown", ""); // todo: option
-	public static final EnumOption<Formatting> formattingOption = new EnumOption<>("Enum Dropdown", "", Formatting.class); //todo: widget
+	public static final EnumOption<ChatFormatting> formattingOption = new EnumOption<>("Enum Dropdown", "", ChatFormatting.class); //todo: widget
 
 	public static final ListOption<StringOption> stringList = new ListOption<>("String List", List.of(), () -> new StringOption("", ""));
-	public static final ListOption<IntOption> intList = new ListOption<>("Slider List", List.of(), () -> new IntOption(Text.of(""), _ -> Text.empty(), 0, 0, 10, null));
+	public static final ListOption<IntOption> intList = new ListOption<>("Slider List", List.of(), () -> new IntOption(Component.literal(""), _ -> Component.empty(), 0, 0, 10, null));
 
 	public static final BooleanOption groupTestRoot = new BooleanOption("Root Test", "");
 	public static final BooleanOption groupTestFirstGroup = new BooleanOption("First Group Test 1", "");
@@ -86,7 +86,7 @@ public class Yacl {
 			cat.section("Slider Controllers", section -> {
 				section.options(intSlider, doubleSlider, floatSlider, longSlider);
 			});
-			cat.sectionWithOptions("Input Field Controllers", textField, colorOption);
+			cat.sectionWithOptions("Input Field Controllers", ComponentField, colorOption);
 			cat.section("Number Fields", section -> {
 				section.option(doubleField);
 				section.option(floatField);
@@ -104,27 +104,27 @@ public class Yacl {
 			});
 			cat.section("Options that aren't really options", section -> {
 				section.option(new ButtonOption("Button \"Option\"", /*opt -> opt.setAvailable(false)*/() -> System.out.println("Click!")));
-				section.option(new LabelOption(Text.empty()
-						.append(Text.literal("a").styled(style -> style.withHoverEvent(new HoverEvent.ShowText(Text.literal("a")))))
-						.append(Text.literal("b").styled(style -> style.withHoverEvent(new HoverEvent.ShowText(Text.literal("b")))))
-						.append(Text.literal("c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c").styled(style -> style.withHoverEvent(new HoverEvent.ShowText(Text.literal("c")))))
-						.append(Text.literal("e").styled(style -> style.withHoverEvent(new HoverEvent.ShowText(Text.literal("e")))))
-						.append(Text.literal("click me").styled(style -> style.withClickEvent(new ClickEvent.OpenUrl(URI.create("https://isxander.dev")))))));
+				section.option(new LabelOption(Component.empty()
+						.append(Component.literal("a").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal("a")))))
+						.append(Component.literal("b").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal("b")))))
+						.append(Component.literal("c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal("c")))))
+						.append(Component.literal("e").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal("e")))))
+						.append(Component.literal("click me").withStyle(style -> style.withClickEvent(new ClickEvent.OpenUrl(URI.create("https://isxander.dev")))))));
 			});
 			cat.sectionWithOptions("Minecraft Bindings", "YACL can also bind Minecraft options!", new BooleanOption("Minecraft AutoJump", "You can even bind minecraft options!") {
 				@Override
 				public void setValue(boolean newValue) {
-					MinecraftClient.getInstance().options.getAutoJump().setValue(newValue);
+					Minecraft.getInstance().options.autoJump().set(newValue);
 				}
 
 				@Override
 				public boolean getValue() {
-					return MinecraftClient.getInstance().options.getAutoJump().getValue();
+					return Minecraft.getInstance().options.autoJump().get();
 				}
 
 				@Override
 				public void resetToDefault() {
-					MinecraftClient.getInstance().options.getAutoJump().setValue(false);
+					Minecraft.getInstance().options.autoJump().set(false);
 				}
 
 				@Override

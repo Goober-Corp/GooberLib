@@ -3,27 +3,26 @@ package com.goobercorp.gooberlib.option.individual.minecraft;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
 import java.util.function.Function;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 public class IdentifierOption extends BaseOption<IdentifierOption> {
 	private final Identifier defaultValue;
 	private Identifier value;
 
-	public IdentifierOption(Text name, Function<IdentifierOption, Text> description, Identifier defaultValue, WidgetProvider<IdentifierOption> provider) {
+	public IdentifierOption(Component name, Function<IdentifierOption, Component> description, Identifier defaultValue, WidgetProvider<IdentifierOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
 
 	public IdentifierOption(String name, String description, Identifier defaultValue) {
-		this(Text.literal(name), _ -> Text.literal(description), defaultValue, null);
+		this(Component.literal(name), _ -> Component.literal(description), defaultValue, null);
 	}
 
 	public IdentifierOption(String name, String description, Identifier defaultValue, WidgetProvider<IdentifierOption> provider) {
-		this(Text.literal(name), _ -> Text.literal(description), defaultValue, provider);
+		this(Component.literal(name), _ -> Component.literal(description), defaultValue, provider);
 	}
 
 	@Override
@@ -48,7 +47,7 @@ public class IdentifierOption extends BaseOption<IdentifierOption> {
 	}
 
 	public void setValueFromString(String newValue) {
-		this.setValue(Identifier.of(newValue));
+		this.setValue(Identifier.parse(newValue));
 	}
 
 	public void resetToDefault() {

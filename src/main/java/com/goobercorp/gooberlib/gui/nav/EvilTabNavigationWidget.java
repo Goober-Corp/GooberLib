@@ -5,28 +5,33 @@ import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.ScrollTweener;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.*;
-import net.minecraft.client.gui.navigation.GuiNavigation;
-import net.minecraft.client.gui.navigation.GuiNavigationPath;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.screen.narration.NarrationPart;
-import net.minecraft.client.gui.tab.Tab;
-import net.minecraft.client.gui.tab.TabManager;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec2f;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.components.tabs.Tab;
+import net.minecraft.client.gui.components.tabs.TabManager;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.navigation.FocusNavigationEvent;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec2;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
-public class EvilTabNavigationWidget extends AbstractParentElement implements Drawable, Selectable {
-	private static final Text USAGE_NARRATION_TEXT = Text.translatable("narration.tab_navigation.usage");
-	private final DirectionalLayoutWidget grid = DirectionalLayoutWidget.horizontal();
+public class EvilTabNavigationWidget extends AbstractContainerEventHandler implements Renderable, NarratableEntry {
+	private static final Component USAGE_NARRATION_TEXT = Component.translatable("narration.tab_navigation.usage");
+	private final LinearLayout grid = LinearLayout.horizontal();
 	private int tabNavWidth;
 	private final TabManager tabManager;
 	private final ImmutableList<Tab> tabs;
@@ -35,29 +40,29 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 	private ScrollTweener scrollTweener;
 	private int ticksSinceLastScroll = 0;
 	private int page = 0;
-	private Vec2f prevDelta;
+	private Vec2 prevDelta;
 
 	EvilTabNavigationWidget(int i, TabManager tabManager, Iterable<Tab> iterable) {
 		this.tabNavWidth = i;
 		this.tabManager = tabManager;
 		this.tabs = ImmutableList.copyOf(iterable);
-		this.grid.getMainPositioner().alignHorizontalCenter();
+		this.grid.defaultCellSetting().alignHorizontallyCenter();
 
 		for (Tab tab : iterable) {
-			tabButtons.add(this.grid.add(new EvilTabButtonWidget(tabManager, tab, 0, 24)));
+			tabButtons.add(this.grid.addChild(new EvilTabButtonWidget(tabManager, tab, 0, 24)));
 		}
 
 	}
 
 	public void init() {
 		int i = tabNavWidth - 10;
-		int j = MathHelper.roundUpToMultiple(i / this.tabs.size(), 2);
+		int j = Mth.roundToward(i / this.tabs.size(), 2);
 
 		for (EvilTabButtonWidget tabButtonWidget : this.tabButtons) {
 			tabButtonWidget.setWidth(Math.max(j, 100));
 		}
 
-		this.grid.refreshPositions();
+		this.grid.arrangeElements();
 		this.grid.setX(5);
 		this.targetX = 5d;
 		this.grid.setY(0);
@@ -85,9 +90,9 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 	}
 
 	@Override
-	public boolean mouseDragged(Click click, double deltaX, double deltaY) {
-		prevDelta = new Vec2f((float) (prevDelta.x + deltaX), (float) (prevDelta.y + deltaY));
-		Optional<Element> optional = this.hoveredElement(click.comp_4798(), click.comp_4799());
+	public boolean mouseDragged(MouseButtonEvent click, double deltaX, double deltaY) {
+		prevDelta = new Vec2((float) (prevDelta.x + deltaX), (float) (prevDelta.y + deltaY));
+		Optional<GuiEventListener> optional = this.getChildAt(click.x(), click.y());
 		if (optional.isPresent()) {
 			//TODO: change this from checking if it's currently focused to if it was focused as of the initial click, so dragging doesn't stop if the tweener can't catch up.
 			if (optional.get().isFocused()) {
@@ -111,9 +116,9 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 	}
 
 	@Override
-	public void setFocused(@Nullable Element element) {
+	public void setFocused(@Nullable GuiEventListener element) {
 		super.setFocused(element);
-		if (element instanceof EvilTabButtonWidget tabButtonWidget && tabButtonWidget.isInteractable()) {
+		if (element instanceof EvilTabButtonWidget tabButtonWidget && tabButtonWidget.isActive()) {
 			this.tabManager.setCurrentTab(tabButtonWidget.getTab(), true);
 		}
 	}
@@ -121,19 +126,19 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 
 	@Nullable
 	@Override
-	public GuiNavigationPath getNavigationPath(GuiNavigation guiNavigation) {
+	public ComponentPath nextFocusPath(FocusNavigationEvent guiNavigation) {
 		if (!this.isFocused()) {
 			EvilTabButtonWidget tabButtonWidget = this.getCurrentTabButton();
 			if (tabButtonWidget != null) {
-				return GuiNavigationPath.of(this, GuiNavigationPath.of(tabButtonWidget));
+				return ComponentPath.path(this, ComponentPath.leaf(tabButtonWidget));
 			}
 		}
 
-		return guiNavigation instanceof GuiNavigation.Tab ? null : super.getNavigationPath(guiNavigation);
+		return guiNavigation instanceof FocusNavigationEvent.TabNavigation ? null : super.nextFocusPath(guiNavigation);
 	}
 
 	@Override
-	public List<? extends Element> children() {
+	public List<? extends GuiEventListener> children() {
 		return this.tabButtons;
 	}
 
@@ -142,20 +147,20 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 	}
 
 	@Override
-	public SelectionType getType() {
-		return this.tabButtons.stream().map(ClickableWidget::getType).max(Comparator.naturalOrder()).orElse(SelectionType.NONE);
+	public NarrationPriority narrationPriority() {
+		return this.tabButtons.stream().map(AbstractWidget::narrationPriority).max(Comparator.naturalOrder()).orElse(NarrationPriority.NONE);
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean bl) {
-		prevDelta = new Vec2f((float) click.comp_4798(), (float) click.comp_4799());
-		Optional<Element> optional = this.hoveredElement(click.comp_4798(), click.comp_4799());
+	public boolean mouseClicked(MouseButtonEvent click, boolean bl) {
+		prevDelta = new Vec2((float) click.x(), (float) click.y());
+		Optional<GuiEventListener> optional = this.getChildAt(click.x(), click.y());
 		if (optional.isEmpty()) {
 			return false;
 		} else {
 			scrollTweener.setInteractionState(true);
-			Element element = optional.get();
-			if (element.mouseClicked(click, bl) && element.isClickable()) {
+			GuiEventListener element = optional.get();
+			if (element.mouseClicked(click, bl) && element.shouldTakeFocusAfterInteraction()) {
 				//TODO: this logic doesn't work for some reason after first opening screen
 				if (!element.isFocused()) {
 					this.setFocused(element);
@@ -180,8 +185,8 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 	}
 
 	@Override
-	public boolean mouseReleased(Click click) {
-		float speedX = (float) Math.abs(click.comp_4798() - prevDelta.x);
+	public boolean mouseReleased(MouseButtonEvent click) {
+		float speedX = (float) Math.abs(click.x() - prevDelta.x);
 		if (speedX > 1) {
 			this.targetX += speedX * 25;
 		}
@@ -192,29 +197,29 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 	}
 
 	@Override
-	public void appendNarrations(NarrationMessageBuilder narrationMessageBuilder) {
-		Optional<EvilTabButtonWidget> optional = this.tabButtons.stream().filter(ClickableWidget::isHovered).findFirst().or(() -> Optional.ofNullable(this.getCurrentTabButton()));
+	public void updateNarration(NarrationElementOutput narrationMessageBuilder) {
+		Optional<EvilTabButtonWidget> optional = this.tabButtons.stream().filter(AbstractWidget::isHovered).findFirst().or(() -> Optional.ofNullable(this.getCurrentTabButton()));
 		optional.ifPresent(tabButtonWidget -> {
-			this.appendNarrations(narrationMessageBuilder.nextMessage(), tabButtonWidget);
-			tabButtonWidget.appendNarrations(narrationMessageBuilder);
+			this.appendNarrations(narrationMessageBuilder.nest(), tabButtonWidget);
+			tabButtonWidget.updateNarration(narrationMessageBuilder);
 		});
 		if (this.isFocused()) {
-			narrationMessageBuilder.put(NarrationPart.USAGE, USAGE_NARRATION_TEXT);
+			narrationMessageBuilder.add(NarratedElementType.USAGE, USAGE_NARRATION_TEXT);
 		}
 	}
 
-	protected void appendNarrations(NarrationMessageBuilder narrationMessageBuilder, EvilTabButtonWidget tabButtonWidget) {
+	protected void appendNarrations(NarrationElementOutput narrationMessageBuilder, EvilTabButtonWidget tabButtonWidget) {
 		if (this.tabs.size() > 1) {
 			int i = this.tabButtons.indexOf(tabButtonWidget);
 			if (i != -1) {
-				narrationMessageBuilder.put(NarrationPart.POSITION, Text.translatable("narrator.position.tab", i + 1, this.tabs.size()));
+				narrationMessageBuilder.add(NarratedElementType.POSITION, Component.translatable("narrator.position.tab", i + 1, this.tabs.size()));
 			}
 		}
 	}
 
 
 	@Override
-	public void render(DrawContext drawContext, int i, int j, float f) {
+	public void render(GuiGraphics drawContext, int i, int j, float f) {
 		if (MainConfig.ENABLE_INFINITE_TAB_SCROLLING.value) {
 			scrollTweener.min = -10000;
 			scrollTweener.max = 10000;
@@ -223,9 +228,9 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 				tabs.forEach(tab -> {
 					EvilTabButtonWidget widget = new EvilTabButtonWidget(tabManager, tab, 0, 24);
 					widget.setWidth(100);
-					tabButtons.add(grid.add(widget));
+					tabButtons.add(grid.addChild(widget));
 				});
-				grid.refreshPositions();
+				grid.arrangeElements();
 			}
 			if (tabButtons.size() > tabs.size() * 2 && scrollTweener.get() < tabNavWidth) {
 				tabs.forEach(_ -> tabButtons.removeFirst());
@@ -248,28 +253,28 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 		});
 	}
 
-	public void renderForBackgroundLayer(DrawContext drawContext) {
+	public void renderForBackgroundLayer(GuiGraphics drawContext) {
 
-		drawContext.getMatrices().pushMatrix();
-		drawContext.getMatrices().translate(scrollTweener.getFloatingRemainder(), 0);
-		drawContext.drawHorizontalLine(0, tabButtons.getFirst().getX() - 1, this.grid.getY(), 0xBF000000);
-		drawContext.drawHorizontalLine(tabButtons.getLast().getRight(), tabNavWidth, this.grid.getY(), 0xBF000000);
+		drawContext.pose().pushMatrix();
+		drawContext.pose().translate(scrollTweener.getFloatingRemainder(), 0);
+		drawContext.hLine(0, tabButtons.getFirst().getX() - 1, this.grid.getY(), 0xBF000000);
+		drawContext.hLine(tabButtons.getLast().getRight(), tabNavWidth, this.grid.getY(), 0xBF000000);
 
 		for (EvilTabButtonWidget tabButtonWidget : this.tabButtons) {
 			tabButtonWidget.renderForBackground(drawContext);
 		}
-		drawContext.getMatrices().popMatrix();
+		drawContext.pose().popMatrix();
 	}
 
 	@Override
-	public ScreenRect getNavigationFocus() {
-		return this.grid.getNavigationFocus();
+	public ScreenRectangle getRectangle() {
+		return this.grid.getRectangle();
 	}
 
 	public void selectTab(int i, boolean bl) {
 		if (this.isFocused()) {
 			this.setFocused(this.tabButtons.get(i));
-		} else if (this.tabButtons.get(i).isInteractable()) {
+		} else if (this.tabButtons.get(i).isActive()) {
 			this.tabManager.setCurrentTab(this.tabs.get(i), bl);
 		}
 	}
@@ -287,11 +292,11 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 	}
 
 	@Override
-	public boolean keyPressed(KeyInput keyInput) {
-		if (keyInput.hasCtrlOrCmd()) {
+	public boolean keyPressed(KeyEvent keyInput) {
+		if (keyInput.hasControlDownWithQuirk()) {
 			int i = this.getTabForKey(keyInput);
 			if (i != -1) {
-				this.selectTab(MathHelper.clamp(i, 0, this.tabs.size() - 1), true);
+				this.selectTab(Mth.clamp(i, 0, this.tabs.size() - 1), true);
 				return true;
 			}
 		}
@@ -312,16 +317,16 @@ public class EvilTabNavigationWidget extends AbstractParentElement implements Dr
 		return false;
 	}
 
-	private int getTabForKey(KeyInput keyInput) {
+	private int getTabForKey(KeyEvent keyInput) {
 		return this.getTabForKey(this.getCurrentTabIndex(), keyInput);
 	}
 
-	private int getTabForKey(int i, KeyInput keyInput) {
-		int j = keyInput.asNumber();
+	private int getTabForKey(int i, KeyEvent keyInput) {
+		int j = keyInput.getDigit();
 		if (j != -1) {
 			return Math.floorMod(j - 1, 10);
-		} else if (keyInput.isTab() && i != -1) {
-			int k = keyInput.hasShift() ? i - 1 : i + 1;
+		} else if (keyInput.isCycleFocus() && i != -1) {
+			int k = keyInput.hasShiftDown() ? i - 1 : i + 1;
 			int l = Math.floorMod(k, this.tabs.size());
 			return this.tabButtons.get(l).active ? l : this.getTabForKey(l, keyInput);
 		} else {

@@ -3,37 +3,37 @@ package com.goobercorp.gooberlib.util;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.texture.TextureSetup;
-import net.minecraft.util.math.Vec2f;
 import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fStack;
 
 import java.util.function.Consumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.world.phys.Vec2;
 
 import static java.lang.Math.exp;
-import static net.minecraft.client.gl.RenderPipelines.TRANSFORMS_AND_PROJECTION_SNIPPET;
+import static net.minecraft.client.renderer.RenderPipelines.MATRICES_PROJECTION_SNIPPET;
 
 public class RenderUtils {
 	public static double ease(double start, double end, float speed) {
-		var dt = 1.0F / MinecraftClient.getInstance().getCurrentFps();
+		var dt = 1.0F / Minecraft.getInstance().getFps();
 		return start + (end - start) * (1 - exp(-dt * speed));
 	}
 
-	public static final RenderPipeline.Snippet GUI_SNIPPET = RenderPipeline.builder(TRANSFORMS_AND_PROJECTION_SNIPPET)
+	public static final RenderPipeline.Snippet GUI_SNIPPET = RenderPipeline.builder(MATRICES_PROJECTION_SNIPPET)
 			.withVertexShader("core/gui")
 			.withFragmentShader("core/gui")
 			.withBlend(BlendFunction.TRANSLUCENT)
-			.withVertexFormat(VertexFormats.POSITION_COLOR, VertexFormat.DrawMode.QUADS)
+			.withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
 			.withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
 			.buildSnippet();
 
-	public static void drawHorizontalLine(DrawContext context, float x1, float x2, float y, int col) {
+	public static void drawHorizontalLine(GuiGraphics context, float x1, float x2, float y, int col) {
 		if (x2 < x1) {
 			float m = x1;
 			x1 = x2;
@@ -43,7 +43,7 @@ public class RenderUtils {
 		fillEvil(context, x1, y, x2 + 1, y + 1, col);
 	}
 
-	public static void drawHorizontalLine(DrawContext context, float x1, float x2, float y, int col, int col2) {
+	public static void drawHorizontalLine(GuiGraphics context, float x1, float x2, float y, int col, int col2) {
 		if (x2 < x1) {
 			float m = x1;
 			x1 = x2;
@@ -54,7 +54,7 @@ public class RenderUtils {
 	}
 
 	//TODO: this sucks
-	public static void drawThinningHorizontalLine(DrawContext context, float x1, float x2, float y, int col, int col2, float thickness, boolean flip) {
+	public static void drawThinningHorizontalLine(GuiGraphics context, float x1, float x2, float y, int col, int col2, float thickness, boolean flip) {
 		if (x2 < x1) {
 			float m = x1;
 			x1 = x2;
@@ -64,7 +64,7 @@ public class RenderUtils {
 		fillEviler(context, x1, y - thickness, x2 + 1, y + thickness, col, col2, flip);
 	}
 
-	public static void drawHorizontalLine(DrawContext context, float x1, float x2, float y, int col, int col2, int col3, int col4) {
+	public static void drawHorizontalLine(GuiGraphics context, float x1, float x2, float y, int col, int col2, int col3, int col4) {
 		if (x2 < x1) {
 			float m = x1;
 			x1 = x2;
@@ -74,7 +74,7 @@ public class RenderUtils {
 		fillEvil(context, x1, y, x2 + 1, y + 1, col, col2, col3, col4);
 	}
 
-	public static void drawVerticalLine(DrawContext context, float x, float y1, float y2, int col) {
+	public static void drawVerticalLine(GuiGraphics context, float x, float y1, float y2, int col) {
 		if (y2 < y1) {
 			float m = y1;
 			y1 = y2;
@@ -84,56 +84,56 @@ public class RenderUtils {
 		fillEvil(context, x, y1 + 1, x + 1, y2, col);
 	}
 
-	public static void fillEvil(DrawContext context, float x, float y, float x2, float y2, int col) {
-		context.state
-				.addSimpleElement(
+	public static void fillEvil(GuiGraphics context, float x, float y, float x2, float y2, int col) {
+		context.guiRenderState
+				.submitGuiElement(
 						new EvilColoredQuadGuiElementRenderState(
-								RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), x, y, x2, y2, col, col, col, col, context.scissorStack.peekLast()
+								RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), x, y, x2, y2, col, col, col, col, context.scissorStack.peek()
 						)
 				);
 	}
 
-	public static void fillEvil(DrawContext context, float x, float y, float x2, float y2, int col, RenderPipeline pipeline) {
-		context.state
-				.addSimpleElement(
+	public static void fillEvil(GuiGraphics context, float x, float y, float x2, float y2, int col, RenderPipeline pipeline) {
+		context.guiRenderState
+				.submitGuiElement(
 						new EvilColoredQuadGuiElementRenderState(
-								pipeline, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), x, y, x2, y2, col, col, col, col, context.scissorStack.peekLast()
+								pipeline, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), x, y, x2, y2, col, col, col, col, context.scissorStack.peek()
 						)
 				);
 	}
 
-	public static void fillEvil(DrawContext context, float x, float y, float x2, float y2, int col, int col2) {
-		context.state
-				.addSimpleElement(
+	public static void fillEvil(GuiGraphics context, float x, float y, float x2, float y2, int col, int col2) {
+		context.guiRenderState
+				.submitGuiElement(
 						new EvilColoredQuadGuiElementRenderState(
-								RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), x, y, x2, y2, col, col, col2, col2, context.scissorStack.peekLast()
+								RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), x, y, x2, y2, col, col, col2, col2, context.scissorStack.peek()
 						)
 				);
 	}
 
-	public static void fillEviler(DrawContext context, float x, float y, float x2, float y2, int col, int col2, boolean flip) {
-		context.state
-				.addSimpleElement(
+	public static void fillEviler(GuiGraphics context, float x, float y, float x2, float y2, int col, int col2, boolean flip) {
+		context.guiRenderState
+				.submitGuiElement(
 						new EvilerColoredQuadGuiElementRenderState(
-								RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), x, y, x2, y2, col, col, col2, col2, context.scissorStack.peekLast(), flip
+								RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), x, y, x2, y2, col, col, col2, col2, context.scissorStack.peek(), flip
 						)
 				);
 	}
 
-	public static void fillEvil(DrawContext context, float x, float y, float x2, float y2, int col, int col2, int col3, int col4) {
-		context.state
-				.addSimpleElement(
+	public static void fillEvil(GuiGraphics context, float x, float y, float x2, float y2, int col, int col2, int col3, int col4) {
+		context.guiRenderState
+				.submitGuiElement(
 						new EvilColoredQuadGuiElementRenderState(
-								RenderPipelines.GUI, TextureSetup.empty(), new Matrix3x2f(context.getMatrices()), x, y, x2, y2, col, col2, col3, col4, context.scissorStack.peekLast()
+								RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), x, y, x2, y2, col, col2, col3, col4, context.scissorStack.peek()
 						)
 				);
 	}
 
-	public static void fuckIt(DrawContext context, Vec2f point1, Vec2f point2, Vec2f point3, Vec2f point4, int col1, int col2, int col3, int col4) {
+	public static void fuckIt(GuiGraphics context, Vec2 point1, Vec2 point2, Vec2 point3, Vec2 point4, int col1, int col2, int col3, int col4) {
 
 	}
 
-	public static void drawBoxOutline(DrawContext context, float x, float y, float x2, float y2, int col) {
+	public static void drawBoxOutline(GuiGraphics context, float x, float y, float x2, float y2, int col) {
 		drawHorizontalLine(context, x, x2, y, col);
 		drawHorizontalLine(context, x, x2, y2, col);
 
@@ -141,13 +141,13 @@ public class RenderUtils {
 		drawVerticalLine(context, x2, y, y2, col);
 	}
 
-	public static void newMatrixScope(DrawContext context, Consumer<Matrix3x2fStack> function) {
-		context.getMatrices().pushMatrix();
-		function.accept(context.getMatrices());
-		context.getMatrices().popMatrix();
+	public static void newMatrixScope(GuiGraphics context, Consumer<Matrix3x2fStack> function) {
+		context.pose().pushMatrix();
+		function.accept(context.pose());
+		context.pose().popMatrix();
 	}
 
-	public static boolean isInBounds(double mouseX, double mouseY, ScreenRect rect) {
-		return mouseX >= rect.getLeft() && mouseY >= rect.getTop() && mouseX < rect.getRight() && mouseY < rect.getBottom();
+	public static boolean isInBounds(double mouseX, double mouseY, ScreenRectangle rect) {
+		return mouseX >= rect.left() && mouseY >= rect.top() && mouseX < rect.right() && mouseY < rect.bottom();
 	}
 }

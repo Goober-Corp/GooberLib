@@ -1,11 +1,10 @@
 package com.goobercorp.gooberlib.option.individual.hotkey;
 
-import net.minecraft.client.MinecraftClient;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import net.minecraft.client.Minecraft;
 
 @SuppressWarnings("unused")
 public class HotkeySettings {
@@ -65,7 +64,7 @@ public class HotkeySettings {
 		boolean ret = true;
 
 		if (gui != Gui.BOTH) {
-			ret &= (MinecraftClient.getInstance().currentScreen != null)
+			ret &= (Minecraft.getInstance().screen != null)
 					== (gui == Gui.GUI);
 		}
 

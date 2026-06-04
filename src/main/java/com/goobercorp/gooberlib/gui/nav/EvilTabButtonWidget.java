@@ -3,46 +3,46 @@ package com.goobercorp.gooberlib.gui.nav;
 import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.screen.narration.NarrationPart;
-import net.minecraft.client.gui.tab.Tab;
-import net.minecraft.client.gui.tab.TabManager;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.sound.SoundManager;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.tabs.Tab;
+import net.minecraft.client.gui.components.tabs.TabManager;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.fillEvil;
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
-public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWidget {
+public class EvilTabButtonWidget extends AbstractWidget.WithInactiveMessage {
 	private final TabManager tabManager;
 	private final Tab tab;
 	private final Tweener currentTabProgress;
 	private final Tweener isSelectedProgress;
 
 	public EvilTabButtonWidget(TabManager tabManager, Tab tab, int i, int j) {
-		super(0, 0, i, j, tab.getTitle());
+		super(0, 0, i, j, tab.getTabTitle());
 		this.tabManager = tabManager;
 		this.tab = tab;
 
 		this.currentTabProgress = new Tweener(() -> isCurrentTab() ? 1 : isHovered() ? 0.5F : 0);
-		this.isSelectedProgress = new Tweener(() -> isSelected() ? 1 : 0);
+		this.isSelectedProgress = new Tweener(() -> isHoveredOrFocused() ? 1 : 0);
 	}
 
 	@Override
-	public void renderWidget(DrawContext context, int i, int j, float f) {
+	public void renderWidget(GuiGraphics context, int i, int j, float f) {
 		currentTabProgress.update();
 		isSelectedProgress.update();
 
 		float yeah = (float) currentTabProgress.getLerped(4, 0);
-		int ohyeah = ColorHelper.lerp(isSelectedProgress.getF(), 0x33FFFFFF, MainConfig.primaryCol);
-		int specialCol = ColorHelper.lerp(isSelectedProgress.getF(), 0x00000000, MainConfig.primaryCol);
-		int ough = ColorHelper.lerp(currentTabProgress.getF(), 0xB0000000, 0x40000000);
+		int ohyeah = ARGB.srgbLerp(isSelectedProgress.getF(), 0x33FFFFFF, MainConfig.primaryCol);
+		int specialCol = ARGB.srgbLerp(isSelectedProgress.getF(), 0x00000000, MainConfig.primaryCol);
+		int ough = ARGB.srgbLerp(currentTabProgress.getF(), 0xB0000000, 0x40000000);
 		//outer black line
 		drawOutsideBorder(context, yeah);
 
@@ -52,39 +52,39 @@ public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWid
 		//bottom bullshit
 		// kr1v: :pleading_face:
 		if (isCurrentTab()) {
-			context.drawVerticalLine(getRight() - 1, getY() + 2, getY(), 0x33FFFFFF);
-			context.drawVerticalLine(getX(), getY() + 2, getY(), 0x33FFFFFF);
-			context.drawHorizontalLine(this.getX(), this.getX() + 1, getY(), 0xBF000000);
-			context.drawHorizontalLine(this.getRight() - 1, this.getRight() - 2, getY(), 0xBF000000);
+			context.vLine(getRight() - 1, getY() + 2, getY(), 0x33FFFFFF);
+			context.vLine(getX(), getY() + 2, getY(), 0x33FFFFFF);
+			context.hLine(this.getX(), this.getX() + 1, getY(), 0xBF000000);
+			context.hLine(this.getRight() - 1, this.getRight() - 2, getY(), 0xBF000000);
 		}
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		Font textRenderer = Minecraft.getInstance().font;
 		int k = this.active ? MainConfig.primaryCol : -6250336;
 		fillEvil(context, this.getX() + 2, this.getY() + (isCurrentTab() ? 0 : 2), getRight() - 2, getBottom() - 1 - yeah, ough);
-		if (!isCurrentTab() && !MathHelper.approximatelyEquals(isSelectedProgress.get(), 0)) {
-			context.drawHorizontalLine(this.getX() + 2, getRight() - 3, getY() + 2, specialCol);
+		if (!isCurrentTab() && !Mth.equal(isSelectedProgress.get(), 0)) {
+			context.hLine(this.getX() + 2, getRight() - 3, getY() + 2, specialCol);
 		}
 		if (this.isCurrentTab()) {
 			this.drawCurrentTabLine(context, textRenderer, k);
 		}
 		newMatrixScope(context, stack -> {
 			stack.translate(0, (float) currentTabProgress.getLerped(0, 4));
-			context.drawCenteredTextWithShadow(textRenderer, textRenderer.trimToWidth(this.getMessage(), this.width).getString(), (getRight() - 2) - this.getWidth() / 2 + 2, this.getY() + 5, MainConfig.primaryCol);
+			context.drawCenteredString(textRenderer, textRenderer.substrByWidth(this.getMessage(), this.width).getString(), (getRight() - 2) - this.getWidth() / 2 + 2, this.getY() + 5, MainConfig.primaryCol);
 		});
-		this.setCursor(context);
+		this.handleCursor(context);
 	}
 
 
-	private void drawCurrentTabLine(DrawContext drawContext, TextRenderer textRenderer, int i) {
-		float j = (Math.min(textRenderer.getWidth(this.getMessage()), this.getWidth() - 4) * currentTabProgress.getF());
+	private void drawCurrentTabLine(GuiGraphics drawContext, Font textRenderer, int i) {
+		float j = (Math.min(textRenderer.width(this.getMessage()), this.getWidth() - 4) * currentTabProgress.getF());
 		float k = this.getX() + (this.getWidth() - j) / 2F;
 		float l = (this.getY());
 		fillEvil(drawContext, k, l, k + j, (l + 1 - (1 - currentTabProgress.getF())), i);
 	}
 
 	@Override
-	protected void appendClickableNarrations(NarrationMessageBuilder narrationMessageBuilder) {
-		narrationMessageBuilder.put(NarrationPart.TITLE, Text.translatable("gui.narrate.tab", this.tab.getTitle()));
-		narrationMessageBuilder.put(NarrationPart.HINT, this.tab.getNarratedHint());
+	protected void updateWidgetNarration(NarrationElementOutput narrationMessageBuilder) {
+		narrationMessageBuilder.add(NarratedElementType.TITLE, Component.translatable("gui.narrate.tab", this.tab.getTabTitle()));
+		narrationMessageBuilder.add(NarratedElementType.HINT, this.tab.getTabExtraNarration());
 	}
 
 	@Override
@@ -99,19 +99,19 @@ public class EvilTabButtonWidget extends ClickableWidget.InactivityIndicatingWid
 		return this.tabManager.getCurrentTab() == this.tab;
 	}
 
-	public void renderForBackground(DrawContext context) {
+	public void renderForBackground(GuiGraphics context) {
 		float yeah = (float) currentTabProgress.getLerped(4, 0);
 		drawOutsideBorder(context, yeah);
 	}
 
-	private void drawOutsideBorder(DrawContext context, float yeah) {
+	private void drawOutsideBorder(GuiGraphics context, float yeah) {
 		RenderUtils.drawHorizontalLine(context, this.getX(), getRight() - 1, getBottom() - yeah, 0xBF000000);
 		RenderUtils.drawVerticalLine(context, this.getX(), this.getY() + 1, this.height - yeah, 0xBF000000);
 		RenderUtils.drawVerticalLine(context, getRight() - 1, this.getY() + 1, this.height - yeah, 0xBF000000);
-		TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+		Font textRenderer = Minecraft.getInstance().font;
 		newMatrixScope(context, stack -> {
 			stack.translate(0, (float) currentTabProgress.getLerped(0, 4));
-			context.drawCenteredTextWithShadow(textRenderer, textRenderer.trimToWidth(this.getMessage(), this.width).getString(), (getRight() - 2) - this.getWidth() / 2 + 2, this.getY() + 5, MainConfig.primaryCol);
+			context.drawCenteredString(textRenderer, textRenderer.substrByWidth(this.getMessage(), this.width).getString(), (getRight() - 2) - this.getWidth() / 2 + 2, this.getY() + 5, MainConfig.primaryCol);
 		});
 		int k = this.active ? MainConfig.primaryCol : -6250336;
 		if (this.isCurrentTab()) {

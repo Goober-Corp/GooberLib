@@ -4,7 +4,6 @@ import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.option.Option;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -15,6 +14,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import net.minecraft.network.chat.Component;
 
 // todo: test lol
 public class ListOption<T extends Option<T>> extends BaseOption<ListOption<T>> implements Iterable<T> {
@@ -23,7 +23,7 @@ public class ListOption<T extends Option<T>> extends BaseOption<ListOption<T>> i
 	private final @Unmodifiable List<T> defaultValue;
 	private final List<T> value;
 
-	public ListOption(Text name, Function<ListOption<T>, Text> description, Supplier<T> initial, boolean insertAtEnd, List<T> defaultValue, @Nullable WidgetProvider<ListOption<T>> provider) {
+	public ListOption(Component name, Function<ListOption<T>, Component> description, Supplier<T> initial, boolean insertAtEnd, List<T> defaultValue, @Nullable WidgetProvider<ListOption<T>> provider) {
 		super(name, description, provider);
 		this.initial = initial;
 		this.insertAtEnd = insertAtEnd;
@@ -32,7 +32,7 @@ public class ListOption<T extends Option<T>> extends BaseOption<ListOption<T>> i
 	}
 
 	public ListOption(String name, List<T> defaultValue, Supplier<T> initial) {
-		this(Text.of(name), _ -> Text.empty(), initial, true, defaultValue, null);
+		this(Component.nullToEmpty(name), _ -> Component.empty(), initial, true, defaultValue, null);
 	}
 
 	@Override

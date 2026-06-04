@@ -4,12 +4,12 @@ import com.goobercorp.gooberlib.builder.misc.Metadata;
 import com.goobercorp.gooberlib.builder.category.CategoryBuilder;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import net.minecraft.network.chat.Component;
 
 public class SectionBuilder {
 	@Nullable
@@ -17,11 +17,11 @@ public class SectionBuilder {
 
 	private final List<OptionContext<?>> options = new ArrayList<>();
 
-	private final Text name;
-	private final Text description;
+	private final Component name;
+	private final Component description;
 
 
-	public SectionBuilder(@Nullable CategoryBuilder parent, Text name, Text description) {
+	public SectionBuilder(@Nullable CategoryBuilder parent, Component name, Component description) {
 		this.parent = parent;
 		this.name = name;
 		this.description = description;

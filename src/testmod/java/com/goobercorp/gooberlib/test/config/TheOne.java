@@ -16,8 +16,8 @@ import com.goobercorp.gooberlib.option.individual.misc.ListOption;
 import com.goobercorp.gooberlib.option.individual.misc.ObjectOption;
 import com.goobercorp.gooberlib.option.individual.primitive.*;
 import com.goobercorp.gooberlib.option.individual.primitive.range.*;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import org.joml.Vector4i;
 
 import java.util.List;
@@ -56,7 +56,7 @@ public class TheOne {
 	public static Block BlockOption;
 	and lists...
 	and objects...
-	public static Text TextOption;
+	public static Component ComponentOption;
 //	public static Color ColorOption;
 	 */
 	@Section("fancy ass booleans")
@@ -96,8 +96,8 @@ public class TheOne {
 	public static final ColorOption colorOptionString = new ColorOption("string color option", "color description", WidgetProviders.colorField());
 	public static final EnumOption<SomeEnum> enumOption = new EnumOption<>("enum option", "enum description", SomeEnum.class);
 	public static final CycleOption<String> cycleOption = new CycleOption<>("cycle option", "cycle description", "Option one", "Option two", "Option three");
-	public static final IdentifierOption identifierOptionOne = new IdentifierOption("single string identifier", "identifier description", Identifier.of("minecraft:stone"), WidgetProviders.identifierOneField());
-	public static final IdentifierOption identifierOptionTwo = new IdentifierOption("dual string", "identifier description", Identifier.of("minecraft:stone"), WidgetProviders.identifierTwoFields());
+	public static final IdentifierOption identifierOptionOne = new IdentifierOption("single string identifier", "identifier description", Identifier.parse("minecraft:stone"), WidgetProviders.identifierOneField());
+	public static final IdentifierOption identifierOptionTwo = new IdentifierOption("dual string", "identifier description", Identifier.parse("minecraft:stone"), WidgetProviders.identifierTwoFields());
 	public static final BlockPosOption blockPosOption = new BlockPosOption("blockpos", "blockpos description");
 	public static final Vec2fOption vec2fOption = new Vec2fOption("vec2f option", "vec2f description");
 	public static final Vec3dOption vec3dOption = new Vec3dOption("vec3d option", "vec3d description");
@@ -105,12 +105,12 @@ public class TheOne {
 	public static final HotkeyOption hotkeyOption = new HotkeyOption("hotkey option", "hotkey description", "g, c", 2, () -> System.out.println("meow meow"));
 
 	@Section("range options")
-	public static final ByteRangeOption byteRangeOption = new ByteRangeOption(Text.of("byte range option"), floatRangeOption1 -> Text.of("float range description"), (byte) 2, (byte) 4, (byte) 0, (byte) 10, WidgetProviders.rangeOption());
-	public static final ShortRangeOption shortRangeOption = new ShortRangeOption(Text.of("short range option"), floatRangeOption1 -> Text.of("float range description"), (short) 2, (short) 4, (short) 0, (short) 10, WidgetProviders.rangeOption());
-	public static final IntRangeOption intRangeOption = new IntRangeOption(Text.of("int range option"), floatRangeOption1 -> Text.of("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
-	public static final LongRangeOption longRangeOption = new LongRangeOption(Text.of("long range option"), floatRangeOption1 -> Text.of("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
-	public static final FloatRangeOption floatRangeOption = new FloatRangeOption(Text.of("float range option"), floatRangeOption1 -> Text.of("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
-	public static final DoubleRangeOption doubleRangeOption = new DoubleRangeOption(Text.of("double range option"), floatRangeOption1 -> Text.of("double range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
+	public static final ByteRangeOption byteRangeOption = new ByteRangeOption(Component.literal("byte range option"), floatRangeOption1 -> Component.literal("float range description"), (byte) 2, (byte) 4, (byte) 0, (byte) 10, WidgetProviders.rangeOption());
+	public static final ShortRangeOption shortRangeOption = new ShortRangeOption(Component.literal("short range option"), floatRangeOption1 -> Component.literal("float range description"), (short) 2, (short) 4, (short) 0, (short) 10, WidgetProviders.rangeOption());
+	public static final IntRangeOption intRangeOption = new IntRangeOption(Component.literal("int range option"), floatRangeOption1 -> Component.literal("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
+	public static final LongRangeOption longRangeOption = new LongRangeOption(Component.literal("long range option"), floatRangeOption1 -> Component.literal("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
+	public static final FloatRangeOption floatRangeOption = new FloatRangeOption(Component.literal("float range option"), floatRangeOption1 -> Component.literal("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
+	public static final DoubleRangeOption doubleRangeOption = new DoubleRangeOption(Component.literal("double range option"), floatRangeOption1 -> Component.literal("double range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
 
 	public static class InstanceMeow {
 		public final StringOption s = new StringOption("Wow!", "");
@@ -125,7 +125,7 @@ public class TheOne {
 
 	public static class Vec4iOption extends ObjectOption<Vec4iOption.Vec4iModel> {
 		public Vec4iOption(String name, String description) {
-			super(Text.of(name), new Vec4iModel(), _ -> Text.of(description), null); // TOdo: pretend it has a custom widget provider
+			super(Component.literal(name), new Vec4iModel(), _ -> Component.literal(description), null); // TOdo: pretend it has a custom widget provider
 		}
 
 		public Vector4i getValue() {
@@ -181,7 +181,7 @@ public class TheOne {
 					s.option(new IntOption("option " + i, ""), o -> o.child(new DoubleOption("child option " + finalI, "")));
 				}
 			})
-			.options(new IntOption(Text.of("meoww"), o -> Text.of("meow: " + o.getValue()), 0, 0, 1000, null))
+			.options(new IntOption(Component.literal("meoww"), o -> Component.literal("meow: " + o.getValue()), 0, 0, 1000, null))
 			.addBuiltSection(testSection)
 		.buildCategory();
 	// @formatter:on

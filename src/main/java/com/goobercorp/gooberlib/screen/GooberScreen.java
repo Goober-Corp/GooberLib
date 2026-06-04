@@ -15,25 +15,25 @@ import com.goobercorp.gooberlib.option.OptionContext;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.ScrollTweener;
 import com.goobercorp.gooberlib.util.Tweener;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.ScreenRect;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tab.GridScreenTab;
-import net.minecraft.client.gui.tab.Tab;
-import net.minecraft.client.gui.tab.TabManager;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.tabs.GridLayoutTab;
+import net.minecraft.client.gui.components.tabs.Tab;
+import net.minecraft.client.gui.components.tabs.TabManager;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.FormattedCharSequence;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.ease;
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
@@ -43,13 +43,13 @@ public class GooberScreen extends Screen {
 	private static final int CHILD_INSET = 16;
 	private final BuiltConfig config;
 	private final Screen parent;
-	private Text descriptionText = Text.of("");
+	private Component descriptionText = Component.nullToEmpty("");
 	private float descriptionAnimationProgress = 0;
 	private float categoryHoverProgress = 1;
 	private float screenCategoryAnimationState = 0;
 	private EvilTabNavigationWidget tabNavigationWidget;
 	private int tabHoldTicks = 20;
-	private final TabManager tabManager = new TabManager(this::addDrawableChild, this::remove);
+	private final TabManager tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
 	private double scrollProgress = 0;
 	private final ScrollTweener scrollTweener = new ScrollTweener(() -> scrollProgress, writeTo -> scrollProgress = writeTo, -1000, 0);
 	private int lastScrollTicks = 0;
@@ -58,7 +58,7 @@ public class GooberScreen extends Screen {
 	private final Tab[] tabs;
 	private final int[] heights;
 	private boolean animateHoverDescription = false;
-	public ScreenRect badbadbad = new ScreenRect(0, 0, 0, 0);
+	public ScreenRectangle badbadbad = new ScreenRectangle(0, 0, 0, 0);
 	private boolean showTabs;
 
 	private final String modId;
@@ -69,9 +69,9 @@ public class GooberScreen extends Screen {
 		this.parent = parent;
 		this.modId = modId;
 
-		this.tabs = new GridScreenTab[config.categories().size()];
+		this.tabs = new GridLayoutTab[config.categories().size()];
 		for (int i = 0; i < config.categories().size(); i++) {
-			tabs[i] = new GridScreenTab(config.categories().get(i).metadata().name());
+			tabs[i] = new GridLayoutTab(config.categories().get(i).metadata().name());
 		}
 		heights = new int[tabs.length];
 		showTabs = tabs.length > 1;
@@ -81,25 +81,25 @@ public class GooberScreen extends Screen {
 	protected void init() {
 		evilLayout.clear();
 		if (this.showTabs) {
-			this.tabNavigationWidget = this.addSelectableChild(EvilTabNavigationWidget.builder(tabManager, width).tabs(tabs).build());
+			this.tabNavigationWidget = this.addWidget(EvilTabNavigationWidget.builder(tabManager, width).tabs(tabs).build());
 			this.tabNavigationWidget.init();
 			tabNavigationWidget.selectTab(0, false);
 		}
 
 		for (ConfigCategory c : config.categories()) {
-			int x = MinecraftClient.getInstance().getWindow().getScaledWidth() * (config.categories().indexOf(c));
+			int x = Minecraft.getInstance().getWindow().getGuiScaledWidth() * (config.categories().indexOf(c));
 			int y = VERTICAL_PADDING;
 			for (OptionHolder o : c.elements()) {
 				if (o instanceof ConfigSection(
 						Metadata metadata, List<OptionContext<?>> childOptionContexts
 				)) {
-					GroupDividerWidget t = new GroupDividerWidget(metadata.name(), textRenderer);
-					PrecisePositionWidgetWrapper<GroupDividerWidget> widgetWrapper = new PrecisePositionWidgetWrapper<>(t, x + ((double) MinecraftClient.getInstance().getWindow().getScaledWidth() / 2) - (double) textRenderer.getWidth(metadata.name()) / 2, y, metadata::description);
+					GroupDividerWidget t = new GroupDividerWidget(metadata.name(), font);
+					PrecisePositionWidgetWrapper<GroupDividerWidget> widgetWrapper = new PrecisePositionWidgetWrapper<>(t, x + ((double) Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2) - (double) font.width(metadata.name()) / 2, y, metadata::description);
 					evilLayout.put(o, widgetWrapper);
-					if (new ScreenRect((int) widgetWrapper.getRealX(), (int) widgetWrapper.getRealY(), widgetWrapper.getWrapped().getRight(), widgetWrapper.getWrapped().getBottom()).overlaps(new ScreenRect(0, 0, width, height))) {
+					if (new ScreenRectangle((int) widgetWrapper.getRealX(), (int) widgetWrapper.getRealY(), widgetWrapper.getWrapped().getRight(), widgetWrapper.getWrapped().getBottom()).overlaps(new ScreenRectangle(0, 0, width, height))) {
 						t.renderProgress = 1;
 					}
-					addDrawableChild(widgetWrapper);
+					addRenderableWidget(widgetWrapper);
 					y += VERTICAL_PADDING;
 					for (OptionContext<?> yeah : childOptionContexts) {
 						y += addOptionWithChildren(yeah, y, x + CHILD_INSET);
@@ -136,10 +136,10 @@ public class GooberScreen extends Screen {
 	private int addOptionWithChildren(OptionContext<?> optionContext, int y, int x) {
 		int addY = 0;
 		Option<?> option = optionContext.option();
-		ClickableWidget widget = option.makeWidget(0, 0, 250, VERTICAL_PADDING / 2);
+		AbstractWidget widget = option.makeWidget(0, 0, 250, VERTICAL_PADDING / 2);
 
 		PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x, y + addY, option::getDescription);
-		this.addDrawableChild(pw);
+		this.addRenderableWidget(pw);
 		evilLayout.put(optionContext, pw);
 		addY += VERTICAL_PADDING;
 
@@ -151,20 +151,20 @@ public class GooberScreen extends Screen {
 	}
 
 	@Override
-	public void renderBackground(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
+	public void renderBackground(GuiGraphics drawContext, int mouseX, int mouseY, float tickDelta) {
 		//think of this as the pre-render
 		updateTweeners();
 		setWidgetOffsets();
 		double mX, mY;
-		mX = MinecraftClient.getInstance().mouse.getScaledX(MinecraftClient.getInstance().getWindow());
-		mY = MinecraftClient.getInstance().mouse.getScaledY(MinecraftClient.getInstance().getWindow());
+		mX = Minecraft.getInstance().mouseHandler.getScaledXPos(Minecraft.getInstance().getWindow());
+		mY = Minecraft.getInstance().mouseHandler.getScaledYPos(Minecraft.getInstance().getWindow());
 		//Cursor glow
 		RenderUtils.fillEvil(drawContext, (float) mX, (float) mY, (float) (mX + 2.5f), (float) (mY + 2.5F), MainConfig.primaryCol);
 		newMatrixScope(drawContext, stack -> {
 			stack.translate((float) (-mX * 0.1F), (float) (-mY * 0.1F));
-			stack.translate(MinecraftClient.getInstance().getWindow().getScaledWidth() / 2F - 100, MinecraftClient.getInstance().getWindow().getScaledHeight() / 2F - 100);
+			stack.translate(Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2F - 100, Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2F - 100);
 			stack.scale(2.5F, 2.5F);
-			drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, Identifier.of("gooberlib", "textures/him.png"), 0, 0, 100, 100, 100, 100, 100, 100);
+			drawContext.blit(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath("gooberlib", "textures/him.png"), 0, 0, 100, 100, 100, 100, 100, 100);
 		});
 
 
@@ -176,15 +176,15 @@ public class GooberScreen extends Screen {
 				tabNavigationWidget.renderForBackgroundLayer(drawContext);
 			});
 		}
-		drawContext.createNewRootLayer();
+		drawContext.nextStratum();
 		super.renderBackground(drawContext, mouseX, mouseY, tickDelta);
 	}
 
 	@Override
-	public void render(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
+	public void render(GuiGraphics drawContext, int mouseX, int mouseY, float tickDelta) {
 		double mX, mY;
-		mX = MinecraftClient.getInstance().mouse.getScaledX(MinecraftClient.getInstance().getWindow());
-		mY = MinecraftClient.getInstance().mouse.getScaledY(MinecraftClient.getInstance().getWindow());
+		mX = Minecraft.getInstance().mouseHandler.getScaledXPos(Minecraft.getInstance().getWindow());
+		mY = Minecraft.getInstance().mouseHandler.getScaledYPos(Minecraft.getInstance().getWindow());
 		drawCommon(drawContext, mouseX, mouseY, tickDelta);
 		setHoverText(mX, mY);
 
@@ -213,22 +213,22 @@ public class GooberScreen extends Screen {
 		}
 	}
 
-	private void drawCommon(DrawContext drawContext, int mouseX, int mouseY, float tickDelta) {
+	private void drawCommon(GuiGraphics drawContext, int mouseX, int mouseY, float tickDelta) {
 		drawLines(drawContext);
 		evilLayout.values().forEach(entry -> entry.render(drawContext, mouseX, mouseY, tickDelta));
 		drawHoveredDescription(drawContext);
 	}
 
-	private void drawHoveredDescription(DrawContext drawContext) {
+	private void drawHoveredDescription(GuiGraphics drawContext) {
 		newMatrixScope(drawContext, stack -> {
-			List<OrderedText> lines = textRenderer.wrapLines(descriptionText, width);
+			List<FormattedCharSequence> lines = font.split(descriptionText, width);
 			int linesHeight = lines.size() * 9;
-			stack.translate((float) (drawContext.getScaledWindowWidth() / 2), this.height - linesHeight * descriptionAnimationProgress);
+			stack.translate((float) (drawContext.guiWidth() / 2), this.height - linesHeight * descriptionAnimationProgress);
 //			RenderUtils.fillEvil(drawContext, 0, -1, width / 2F, linesHeight, MainConfig.shadowCol, 0x00000000);
 //			RenderUtils.fillEvil(drawContext, -width / 2F, -1, 0, linesHeight, 0x00000000, MainConfig.shadowCol);
 			RenderUtils.fillEvil(drawContext, -width / 2F, -1, width / 2F, linesHeight, 0, MainConfig.shadowCol, MainConfig.shadowCol, 0);
-			for (OrderedText orderedText : lines) {
-				drawContext.drawCenteredTextWithShadow(textRenderer, orderedText, 0, 9 * lines.indexOf(orderedText), MainConfig.primaryCol);
+			for (FormattedCharSequence orderedText : lines) {
+				drawContext.drawCenteredString(font, orderedText, 0, 9 * lines.indexOf(orderedText), MainConfig.primaryCol);
 			}
 //			drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, 0, 0, MainConfig.primaryCol);
 		});
@@ -251,11 +251,11 @@ public class GooberScreen extends Screen {
 		}
 	}
 
-	private void drawLines(DrawContext drawContext) {
+	private void drawLines(GuiGraphics drawContext) {
 		forEachOption(optionHolderV3 -> drawLinesForOption(drawContext, optionHolderV3));
 	}
 
-	private void drawLinesForOption(DrawContext drawContext, OptionHolder o) {
+	private void drawLinesForOption(GuiGraphics drawContext, OptionHolder o) {
 		if (o.childOptions().isEmpty()) return;
 		PrecisePositionWidgetWrapper<?> mainWidget = evilLayout.get(o);
 		PrecisePositionWidgetWrapper<?> lastChildWidget = evilLayout.get(o.childOptions().getLast());
@@ -270,8 +270,8 @@ public class GooberScreen extends Screen {
 	}
 
 	@Override
-	public boolean keyPressed(KeyInput keyInput) {
-		if (keyInput.hasCtrl() && keyInput.getKeycode() == GLFW.GLFW_KEY_F) {
+	public boolean keyPressed(KeyEvent keyInput) {
+		if (keyInput.hasControlDown() && keyInput.input() == GLFW.GLFW_KEY_F) {
 
 		}
 		return super.keyPressed(keyInput);
@@ -300,9 +300,9 @@ public class GooberScreen extends Screen {
 	}
 
 	@Override
-	public void close() {
+	public void onClose() {
 		setFocused(null);
-		MinecraftClient.getInstance().setScreen(parent);
+		Minecraft.getInstance().setScreen(parent);
 		GooberLibApi.save(modId, config);
 	}
 
@@ -320,7 +320,7 @@ public class GooberScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseClicked(Click click, boolean bl) {
+	public boolean mouseClicked(MouseButtonEvent click, boolean bl) {
 		boolean b = super.mouseClicked(click, bl);
 		if (!b) {
 			setFocused(null);
@@ -329,7 +329,7 @@ public class GooberScreen extends Screen {
 	}
 
 	@Override
-	public boolean mouseDragged(Click click, double d, double e) {
+	public boolean mouseDragged(MouseButtonEvent click, double d, double e) {
 		if (super.mouseDragged(click, d, e)) return true;
 
 		if (tabNavigationWidget != null && click.button() == 0 && !tabNavigationWidget.isMouseOver(d, e)) {

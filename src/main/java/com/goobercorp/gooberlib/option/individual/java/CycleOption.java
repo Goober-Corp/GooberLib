@@ -3,20 +3,20 @@ package com.goobercorp.gooberlib.option.individual.java;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Function;
+import net.minecraft.network.chat.Component;
 
 public class CycleOption<T> extends BaseOption<CycleOption<T>> {
 	private final T defaultValue;
 	private final List<T> options;
-	private final Function<T, Text> displayNameProvider;
+	private final Function<T, Component> displayNameProvider;
 	/// @implNote Modifying this value directly will *not* trigger .onChange()
 	public T value;
 
-	public CycleOption(Text name, Function<CycleOption<T>, Text> description, T defaultValue, List<T> options, WidgetProvider<CycleOption<T>> provider, @NotNull Function<T, Text> displayNameProvider) {
+	public CycleOption(Component name, Function<CycleOption<T>, Component> description, T defaultValue, List<T> options, WidgetProvider<CycleOption<T>> provider, @NotNull Function<T, Component> displayNameProvider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -26,7 +26,7 @@ public class CycleOption<T> extends BaseOption<CycleOption<T>> {
 
 	@SafeVarargs
 	public CycleOption(String name, String description, Function<T, String> displayNameProvider, T... options) {
-		this(Text.literal(name), _ -> Text.literal(description), options[0], List.of(options), null, s -> Text.of(displayNameProvider.apply(s)));
+		this(Component.literal(name), _ -> Component.literal(description), options[0], List.of(options), null, s -> Component.nullToEmpty(displayNameProvider.apply(s)));
 	}
 
 
@@ -66,7 +66,7 @@ public class CycleOption<T> extends BaseOption<CycleOption<T>> {
 		return defaultValue;
 	}
 
-	public Function<T, Text> getDisplayNameProvider() {
+	public Function<T, Component> getDisplayNameProvider() {
 		return displayNameProvider;
 	}
 

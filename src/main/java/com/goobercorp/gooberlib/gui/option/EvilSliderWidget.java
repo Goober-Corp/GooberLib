@@ -5,22 +5,21 @@ import com.goobercorp.gooberlib.gui.EvilBaseWidget;
 import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.cursor.StandardCursors;
-import net.minecraft.client.gui.navigation.GuiNavigationType;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.screen.narration.NarrationPart;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.client.sound.SoundManager;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.MathHelper;
-
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import net.minecraft.client.InputType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
@@ -28,13 +27,13 @@ import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 //  widget? i think you meant wider
 public class EvilSliderWidget extends EvilBaseWidget {
 	protected double value;
-	private final Supplier<Text> valueFormatter;
+	private final Supplier<Component> valueFormatter;
 	protected boolean sliderFocused;
 	private boolean dragging;
 	private final NumberOption<?> numberOption;
 	private final Tweener valTweener = new Tweener(() -> value);
 
-	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height, Function<T, Text> valueFormatter) {
+	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height, Function<T, Component> valueFormatter) {
 		super(numberOption.name(), x, y, width, height);
 		this.numberOption = numberOption;
 		this.value = getInterpolatedValue(numberOption.getNumberValue().doubleValue(), numberOption.getDoubleMin(), numberOption.getDoubleMax());
@@ -42,17 +41,17 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	}
 
 	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height) {
-		this(numberOption, x, y, width, height, t -> Text.of(t.getNumberValue().toString()));
+		this(numberOption, x, y, width, height, t -> Component.nullToEmpty(t.getNumberValue().toString()));
 	}
 
 	@Override
-	protected void drawText(DrawContext drawContext) {
+	protected void drawText(GuiGraphics drawContext) {
 		newMatrixScope(drawContext, stack -> {
 //			stack.scale(0.5F, 0.5F);
 			stack.translate(((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2 * (this.width - 5))) + 1, this.getY() - 10);
-			drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, valueFormatter.get(), 0, 0, ColorHelper.withAlpha(clickTweener.getF(), MainConfig.primaryCol));
+			drawContext.drawCenteredString(Minecraft.getInstance().font, valueFormatter.get(), 0, 0, ARGB.color(clickTweener.getF(), MainConfig.primaryCol));
 		});
-		drawContext.drawText(MinecraftClient.getInstance().textRenderer, numberOption.name(), getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, MainConfig.primaryCol, true);
+		drawContext.drawString(Minecraft.getInstance().font, numberOption.name(), getX() + 5, getY() + Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol, true);
 	}
 
 	public static double getInterpolatedValue(double val, double min, double max) {
@@ -60,35 +59,35 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	protected MutableText getNarrationMessage() {
-		return Text.translatable("gui.narrate.slider", this.getMessage());
+	protected MutableComponent createNarrationMessage() {
+		return Component.translatable("gui.narrate.slider", this.getMessage());
 	}
 
 	@Override
-	public void appendClickableNarrations(NarrationMessageBuilder narrationMessageBuilder) {
-		narrationMessageBuilder.put(NarrationPart.TITLE, this.getNarrationMessage());
+	public void updateWidgetNarration(NarrationElementOutput narrationMessageBuilder) {
+		narrationMessageBuilder.add(NarratedElementType.TITLE, this.createNarrationMessage());
 		if (this.active) {
 			if (this.isFocused()) {
 				if (this.sliderFocused) {
-					narrationMessageBuilder.put(NarrationPart.USAGE, Text.translatable("narration.slider.usage.focused"));
+					narrationMessageBuilder.add(NarratedElementType.USAGE, Component.translatable("narration.slider.usage.focused"));
 				} else {
-					narrationMessageBuilder.put(NarrationPart.USAGE, Text.translatable("narration.slider.usage.focused.keyboard_cannot_change_value"));
+					narrationMessageBuilder.add(NarratedElementType.USAGE, Component.translatable("narration.slider.usage.focused.keyboard_cannot_change_value"));
 				}
 			} else {
-				narrationMessageBuilder.put(NarrationPart.USAGE, Text.translatable("narration.slider.usage.hovered"));
+				narrationMessageBuilder.add(NarratedElementType.USAGE, Component.translatable("narration.slider.usage.hovered"));
 			}
 		}
 	}
 
 	@Override
-	public void renderWidget(DrawContext context, double mouseX, double mouseY, float delta) {
+	public void renderWidget(GuiGraphics context, double mouseX, double mouseY, float delta) {
 		valTweener.update();
 		RenderUtils.drawVerticalLine(context, ((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2F * (this.width - 5)) - 0.5F) + 1, getY() + 4, getBottom() - 2, MainConfig.shadowCol);
 		RenderUtils.drawHorizontalLine(context, (getX() + (this.width - 5) / 2F) - 0.5F + 1, this.getRight() - 5.5F + 1, getY() + getHeight() / 2F + 1, MainConfig.shadowCol);
 		RenderUtils.drawHorizontalLine(context, (getX() + (this.width - 5) / 2F) - 0.5F, this.getRight() - 5.5F, getY() + getHeight() / 2F, MainConfig.primaryCol);
 		RenderUtils.drawVerticalLine(context, ((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2 * (this.width - 5)) - 0.5F), getY() + 3, getBottom() - 3, MainConfig.primaryCol);
 		if (this.isHovered()) {
-			context.setCursor(this.dragging ? StandardCursors.RESIZE_EW : StandardCursors.POINTING_HAND);
+			context.requestCursor(this.dragging ? CursorTypes.RESIZE_EW : CursorTypes.POINTING_HAND);
 		}
 	}
 
@@ -99,7 +98,7 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	public void onClick(Click click, boolean bl) {
+	public void onClick(MouseButtonEvent click, boolean bl) {
 		this.dragging = this.active;
 		this.setValueFromMouse(click);
 	}
@@ -110,16 +109,16 @@ public class EvilSliderWidget extends EvilBaseWidget {
 		if (!bl) {
 			this.sliderFocused = false;
 		} else {
-			GuiNavigationType guiNavigationType = MinecraftClient.getInstance().getNavigationType();
-			if (guiNavigationType == GuiNavigationType.MOUSE || guiNavigationType == GuiNavigationType.KEYBOARD_TAB) {
+			InputType guiNavigationType = Minecraft.getInstance().getLastInputType();
+			if (guiNavigationType == InputType.MOUSE || guiNavigationType == InputType.KEYBOARD_TAB) {
 				this.sliderFocused = true;
 			}
 		}
 	}
 
 	@Override
-	public boolean keyPressed(KeyInput keyInput) {
-		if (keyInput.isEnterOrSpace()) {
+	public boolean keyPressed(KeyEvent keyInput) {
+		if (keyInput.isSelection()) {
 			this.sliderFocused = !this.sliderFocused;
 			return true;
 		} else {
@@ -137,17 +136,17 @@ public class EvilSliderWidget extends EvilBaseWidget {
 		}
 	}
 
-	private void setValueFromMouse(Click click) {
-		this.setValue((click.comp_4798() - (this.getX() + ((this.width - 5) / 2F))) / (this.width - 5) * 2);
+	private void setValueFromMouse(MouseButtonEvent click) {
+		this.setValue((click.x() - (this.getX() + ((this.width - 5) / 2F))) / (this.width - 5) * 2);
 	}
 
 	protected void setValue(double d) {
-		this.value = MathHelper.clamp(d, 0.0, 1.0);
+		this.value = Mth.clamp(d, 0.0, 1.0);
 		numberOption.setDoubleValue((1.0 - value) * numberOption.getDoubleMin() + value * numberOption.getDoubleMax());
 	}
 
 	@Override
-	protected void onDrag(Click click, double d, double e) {
+	protected void onDrag(MouseButtonEvent click, double d, double e) {
 		this.setValueFromMouse(click);
 		super.onDrag(click, d, e);
 	}
@@ -158,9 +157,9 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	public void onRelease(Click click) {
+	public void onRelease(MouseButtonEvent click) {
 		this.dragging = false;
-		super.playDownSound(MinecraftClient.getInstance().getSoundManager());
+		super.playDownSound(Minecraft.getInstance().getSoundManager());
 	}
 
 }

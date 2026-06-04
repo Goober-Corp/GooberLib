@@ -4,10 +4,9 @@ import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.text.Text;
-
 import java.util.function.Function;
 import java.util.function.Predicate;
+import net.minecraft.network.chat.Component;
 
 public class ShortOption extends BaseOption<ShortOption> implements NumberOption<ShortOption> {
 	private final short defaultValue;
@@ -18,7 +17,7 @@ public class ShortOption extends BaseOption<ShortOption> implements NumberOption
 	// TODO overloads for taking in default, min and max as ints, and making sure they're within bound, so the user doesn't need to do (short) 0, and can instead just do 0
 	//  also needs to be done for .getValueInt(), .setValueInt(), getMinInt() etc
 	//  also needs to be done for ByteOption, CharOption
-	public ShortOption(Text name, Function<ShortOption, Text> description, short defaultValue, short min, short max, WidgetProvider<ShortOption> provider) {
+	public ShortOption(Component name, Function<ShortOption, Component> description, short defaultValue, short min, short max, WidgetProvider<ShortOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -27,11 +26,11 @@ public class ShortOption extends BaseOption<ShortOption> implements NumberOption
 	}
 
 	public ShortOption(String name, String description) {
-		this(Text.literal(name), _ -> Text.literal(description), (short) 0, Short.MIN_VALUE, Short.MAX_VALUE, null);
+		this(Component.literal(name), _ -> Component.literal(description), (short) 0, Short.MIN_VALUE, Short.MAX_VALUE, null);
 	}
 
 	public ShortOption(String name, String description, WidgetProvider<ShortOption> provider) {
-		this(Text.literal(name), _ -> Text.literal(description), (short) 0, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+		this(Component.literal(name), _ -> Component.literal(description), (short) 0, Short.MIN_VALUE, Short.MAX_VALUE, provider);
 	}
 
 	@Override

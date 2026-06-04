@@ -5,12 +5,11 @@ import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.text.Text;
-
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import net.minecraft.network.chat.Component;
 
 public class IntRangeOption extends BaseOption<IntRangeOption> implements NumberRangeOption<IntRangeOption> {
 	private final int defaultValueMin;
@@ -20,7 +19,7 @@ public class IntRangeOption extends BaseOption<IntRangeOption> implements Number
 	public int minValue;
 	public int maxValue;
 
-	public IntRangeOption(Text name, Function<IntRangeOption, Text> description, int defaultValueMin, int defaultValueMax, int min, int max, WidgetProvider<IntRangeOption> provider) {
+	public IntRangeOption(Component name, Function<IntRangeOption, Component> description, int defaultValueMin, int defaultValueMax, int min, int max, WidgetProvider<IntRangeOption> provider) {
 		super(name, description, provider);
 		this.minValue = defaultValueMin;
 		this.maxValue = defaultValueMax;

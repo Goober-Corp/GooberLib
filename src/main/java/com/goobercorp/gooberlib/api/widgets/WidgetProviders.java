@@ -15,31 +15,30 @@ import com.goobercorp.gooberlib.option.individual.primitive.CharOption;
 import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
 import com.goobercorp.gooberlib.option.individual.primitive.range.NumberRangeOption;
 import com.goobercorp.gooberlib.util.Predicates;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.widget.TextWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.InvalidIdentifierException;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import net.minecraft.IdentifierException;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.StringWidget;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.phys.Vec3;
 
 import static com.google.common.base.Predicates.alwaysTrue;
 
 public class WidgetProviders {
-	private static TextRenderer font() {
-		return MinecraftClient.getInstance().textRenderer;
+	private static Font font() {
+		return Minecraft.getInstance().font;
 	}
 
 	public static WidgetProvider<BlockPosOption> blockPosFields() {
 		return ((theOption, x, y, width, height) -> {
-			var widgetX = font().getWidth(theOption.name()) + 2;
-			var widgetWidth = width - font().getWidth(theOption.name());
+			var widgetX = font().width(theOption.name()) + 2;
+			var widgetWidth = width - font().width(theOption.name());
 			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getX(), 0xFFFF0000);
 			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getY(), 0xFF00FF00);
 			var zWidget = new EvilStringWidget(widgetX + widgetWidth * 2 / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getZ(), 0xFF0000FF);
@@ -53,14 +52,14 @@ public class WidgetProviders {
 			yWidget.setChangedListener(changedListener);
 			zWidget.setChangedListener(changedListener);
 
-			return new ClickableParentWidget(x, y, width, height, Text.empty(), List.of(new TextWidget(x, y, width, height, theOption.name(), font()), xWidget, yWidget, zWidget));
+			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new StringWidget(x, y, width, height, theOption.name(), font()), xWidget, yWidget, zWidget));
 		});
 	}
 
 	public static WidgetProvider<Vec3iOption> vec3iFields() {
 		return ((theOption, x, y, width, height) -> {
-			var widgetX = font().getWidth(theOption.name()) + 2;
-			var widgetWidth = width - font().getWidth(theOption.name());
+			var widgetX = font().width(theOption.name()) + 2;
+			var widgetWidth = width - font().width(theOption.name());
 			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getX(), 0xFFFF0000);
 			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getY(), 0xFF00FF00);
 			var zWidget = new EvilStringWidget(widgetX + widgetWidth * 2 / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getZ(), 0xFF0000FF);
@@ -74,20 +73,20 @@ public class WidgetProviders {
 			yWidget.setChangedListener(changedListener);
 			zWidget.setChangedListener(changedListener);
 
-			return new ClickableParentWidget(x, y, width, height, Text.empty(), List.of(new TextWidget(x, y, width, height, theOption.name(), font()), xWidget, yWidget, zWidget));
+			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new StringWidget(x, y, width, height, theOption.name(), font()), xWidget, yWidget, zWidget));
 		});
 	}
 
 	public static WidgetProvider<Vec3dOption> vec3dFields() {
 		return ((theOption, x, y, width, height) -> {
-			var widgetX = font().getWidth(theOption.name()) + 2;
-			var widgetWidth = width - font().getWidth(theOption.name());
+			var widgetX = font().width(theOption.name()) + 2;
+			var widgetWidth = width - font().width(theOption.name());
 			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.DOUBLE, Predicates.DOUBLE_IMMEDIATE, "" + theOption.getX(), 0xFFFF0000);
 			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, widgetWidth / 3, height, null, Predicates.DOUBLE, Predicates.DOUBLE_IMMEDIATE, "" + theOption.getY(), 0xFF00FF00);
 			var zWidget = new EvilStringWidget(widgetX + widgetWidth * 2 / 3, y, widgetWidth / 3, height, null, Predicates.DOUBLE, Predicates.DOUBLE_IMMEDIATE, "" + theOption.getZ(), 0xFF0000FF);
 			Consumer<String> changedListener = _ -> {
 				try {
-					theOption.setValue(new Vec3d(Double.parseDouble(xWidget.getText()), Double.parseDouble(yWidget.getText()), Double.parseDouble(zWidget.getText())));
+					theOption.setValue(new Vec3(Double.parseDouble(xWidget.getText()), Double.parseDouble(yWidget.getText()), Double.parseDouble(zWidget.getText())));
 				} catch (NumberFormatException _) {
 				}
 			};
@@ -95,7 +94,7 @@ public class WidgetProviders {
 			yWidget.setChangedListener(changedListener);
 			zWidget.setChangedListener(changedListener);
 
-			return new ClickableParentWidget(x, y, width, height, Text.empty(), List.of(new TextWidget(x, y, width, height, theOption.name(), font()), xWidget, yWidget, zWidget));
+			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new StringWidget(x, y, width, height, theOption.name(), font()), xWidget, yWidget, zWidget));
 		});
 	}
 
@@ -108,10 +107,10 @@ public class WidgetProviders {
 	}
 
 	public static <T extends Option<T>> WidgetProvider<T> cyclingOption() {
-		return (theOption, x, y, width, height) -> new CyclingOptionWidget(theOption, x, y, width, height, (t) -> Text.of("yeah"));
+		return (theOption, x, y, width, height) -> new CyclingOptionWidget(theOption, x, y, width, height, (t) -> Component.nullToEmpty("yeah"));
 	}
 
-	public static <T extends NumberOption<T>> WidgetProvider<T> numberSliderWithFormatter(Function<T, Text> valueFormatter) {
+	public static <T extends NumberOption<T>> WidgetProvider<T> numberSliderWithFormatter(Function<T, Component> valueFormatter) {
 		return (theOption, x, y, width, height) -> new EvilSliderWidget(theOption, x, y, width, height, valueFormatter);
 	}
 
@@ -126,30 +125,30 @@ public class WidgetProviders {
 	public static WidgetProvider<IdentifierOption> identifierOneField() {
 		return (theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, s -> {
 			try {
-				theOption.setValue(Identifier.of(s));
-			} catch (InvalidIdentifierException _) {
+				theOption.setValue(Identifier.parse(s));
+			} catch (IdentifierException _) {
 			}
 		}, Predicates.IDENTIFIER, Predicates.IDENTIFIER_IMMEDIATE, theOption.getValue().toShortString());
 	}
 
 	public static WidgetProvider<IdentifierOption> identifierTwoFields() {
 		return (theOption, x, y, width, height) -> {
-			var widgetX = font().getWidth(theOption.name()) + 2;
-			var widgetWidth = width - font().getWidth(theOption.name());
+			var widgetX = font().width(theOption.name()) + 2;
+			var widgetWidth = width - font().width(theOption.name());
 
 			var namespace = new EvilStringWidget(widgetX, y, widgetWidth / 2 - 4, height, null, Predicates.IDENTIFIER, Predicates.IDENTIFIER_IMMEDIATE, theOption.getValue().getNamespace());
 			var path = new EvilStringWidget(widgetX + widgetWidth / 2, y, widgetWidth / 2 + 4, height, null, Predicates.IDENTIFIER, Predicates.IDENTIFIER_IMMEDIATE, theOption.getValue().getNamespace());
 
 			Consumer<String> changedListener = _ -> {
 				try {
-					theOption.setValue(Identifier.of(namespace.getText(), path.getText()));
-				} catch (InvalidIdentifierException _) {
+					theOption.setValue(Identifier.fromNamespaceAndPath(namespace.getText(), path.getText()));
+				} catch (IdentifierException _) {
 				}
 			};
 			namespace.setChangedListener(changedListener);
 			path.setChangedListener(changedListener);
 			//TODO: replace text widget with my own impl that allows a custom text color
-			return new ClickableParentWidget(x, y, width, height, Text.empty(), List.of(new TextWidget(x, y, width, height, theOption.name(), font()), namespace, path, new TextWidget(widgetX + widgetWidth / 2 - 3, y, width, height, Text.of(":"), font())));
+			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new StringWidget(x, y, width, height, theOption.name(), font()), namespace, path, new StringWidget(widgetX + widgetWidth / 2 - 3, y, width, height, Component.nullToEmpty(":"), font())));
 		};
 	}
 

@@ -5,12 +5,11 @@ import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.text.Text;
-
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import net.minecraft.network.chat.Component;
 
 public class ShortRangeOption extends BaseOption<ShortRangeOption> implements NumberRangeOption<ShortRangeOption> {
 	private final short defaultValueMin;
@@ -20,7 +19,7 @@ public class ShortRangeOption extends BaseOption<ShortRangeOption> implements Nu
 	public short minValue;
 	public short maxValue;
 
-	public ShortRangeOption(Text name, Function<ShortRangeOption, Text> description, short defaultValueMin, short defaultValueMax, short min, short max, WidgetProvider<ShortRangeOption> provider) {
+	public ShortRangeOption(Component name, Function<ShortRangeOption, Component> description, short defaultValueMin, short defaultValueMax, short min, short max, WidgetProvider<ShortRangeOption> provider) {
 		super(name, description, provider);
 		this.minValue = defaultValueMin;
 		this.maxValue = defaultValueMax;

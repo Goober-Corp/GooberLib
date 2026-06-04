@@ -3,9 +3,8 @@ package com.goobercorp.gooberlib.builder.section;
 import com.goobercorp.gooberlib.builder.misc.Metadata;
 import com.goobercorp.gooberlib.builder.misc.OptionHolder;
 import com.goobercorp.gooberlib.option.OptionContext;
-import net.minecraft.text.Text;
-
 import java.util.List;
+import net.minecraft.network.chat.Component;
 
 public record ConfigSection(Metadata metadata, List<OptionContext<?>> childOptions)
 		implements OptionHolder {
@@ -16,7 +15,7 @@ public record ConfigSection(Metadata metadata, List<OptionContext<?>> childOptio
 	 * @param description the description of the section
 	 * @return the section builder
 	 */
-	public static SectionBuilder builder(Text name, Text description) {
+	public static SectionBuilder builder(Component name, Component description) {
 		return new SectionBuilder(null, name, description);
 	}
 
@@ -28,7 +27,7 @@ public record ConfigSection(Metadata metadata, List<OptionContext<?>> childOptio
 	 * @return the section builder
 	 */
 	public static SectionBuilder builder(String name, String description) {
-		return builder(Text.of(name), Text.of(description));
+		return builder(Component.nullToEmpty(name), Component.nullToEmpty(description));
 	}
 
 	/**
@@ -37,8 +36,8 @@ public record ConfigSection(Metadata metadata, List<OptionContext<?>> childOptio
 	 * @param name the name of the section
 	 * @return the section builder
 	 */
-	public static SectionBuilder builder(Text name) {
-		return builder(name, Text.empty());
+	public static SectionBuilder builder(Component name) {
+		return builder(name, Component.empty());
 	}
 
 	/**
@@ -48,6 +47,6 @@ public record ConfigSection(Metadata metadata, List<OptionContext<?>> childOptio
 	 * @return the section builder
 	 */
 	public static SectionBuilder builder(String name) {
-		return builder(Text.of(name), Text.empty());
+		return builder(Component.nullToEmpty(name), Component.empty());
 	}
 }
