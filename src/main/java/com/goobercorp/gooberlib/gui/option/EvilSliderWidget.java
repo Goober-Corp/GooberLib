@@ -6,8 +6,6 @@ import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import net.minecraft.client.InputType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,6 +19,9 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 // todo: make option widgets widget
@@ -32,6 +33,7 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	private boolean dragging;
 	private final NumberOption<?> numberOption;
 	private final Tweener valTweener = new Tweener(() -> value);
+	private float scrollAmount = 0;
 
 	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height, Function<T, Component> valueFormatter) {
 		super(numberOption.name(), x, y, width, height);
@@ -49,7 +51,7 @@ public class EvilSliderWidget extends EvilBaseWidget {
 		newMatrixScope(drawContext, stack -> {
 //			stack.scale(0.5F, 0.5F);
 			stack.translate(((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2 * (this.width - 5))) + 1, this.getY() - 10);
-			drawContext.drawCenteredString(Minecraft.getInstance().font, valueFormatter.get(), 0, 0, ARGB.color(clickTweener.getF(), MainConfig.primaryCol));
+			drawContext.drawCenteredString(Minecraft.getInstance().font, valueFormatter.get(), 0, 0, ARGB.color(Math.max(clickTweener.getF(), Math.clamp(scrollAmount, 0, 1)), MainConfig.primaryCol));
 		});
 		drawContext.drawString(Minecraft.getInstance().font, numberOption.name(), getX() + 5, getY() + Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol, true);
 	}
@@ -82,6 +84,7 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	@Override
 	public void renderWidget(GuiGraphics context, double mouseX, double mouseY, float delta) {
 		valTweener.update();
+		scrollAmount = (float) RenderUtils.ease(scrollAmount, 0, 5);
 		RenderUtils.drawVerticalLine(context, ((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2F * (this.width - 5)) - 0.5F) + 1, getY() + 4, getBottom() - 2, MainConfig.shadowCol);
 		RenderUtils.drawHorizontalLine(context, (getX() + (this.width - 5) / 2F) - 0.5F + 1, this.getRight() - 5.5F + 1, getY() + getHeight() / 2F + 1, MainConfig.shadowCol);
 		RenderUtils.drawHorizontalLine(context, (getX() + (this.width - 5) / 2F) - 0.5F, this.getRight() - 5.5F, getY() + getHeight() / 2F, MainConfig.primaryCol);
@@ -91,8 +94,10 @@ public class EvilSliderWidget extends EvilBaseWidget {
 		}
 	}
 
+
 	@Override
 	public boolean mouseScrolled(double d, double e, double f, double g) {
+		scrollAmount += (float) Math.abs(g);
 		this.setValue(this.value + g / (this.width - 8));
 		return true;
 	}
