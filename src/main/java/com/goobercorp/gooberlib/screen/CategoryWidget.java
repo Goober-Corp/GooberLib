@@ -44,7 +44,7 @@ public class CategoryWidget extends ClickableParentWidget {
 	private int addOptionWithChildren(OptionContext<?> optionContext, int y, int x) {
 		int addY = 0;
 		Option<?> option = optionContext.option();
-		AbstractWidget widget = option.makeWidget(0, 0, 250, VERTICAL_PADDING / 2);
+		AbstractWidget widget = option.makeWidget(0, 0, width / 2 - (x % width), VERTICAL_PADDING / 2);
 
 		PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x, y + addY, option::getDescription);
 		children().add(pw);

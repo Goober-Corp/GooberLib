@@ -9,6 +9,7 @@ import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractStringWidget;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -23,6 +24,7 @@ public class GroupDividerWidget extends AbstractStringWidget {
 	private boolean cachedWidthDirty = true;
 	private GroupDividerWidget.TextOverflow textOverflow = GroupDividerWidget.TextOverflow.CLAMPED;
 	public float renderProgress = 0;
+	public boolean isCollapsed;
 
 	public GroupDividerWidget(Component text, Font textRenderer) {
 		this(0, 0, textRenderer.width(text.getVisualOrderText()), 9, text, textRenderer);
@@ -106,6 +108,12 @@ public class GroupDividerWidget extends AbstractStringWidget {
 	public static FormattedCharSequence trim(Component text, Font textRenderer, int i) {
 		FormattedText stringVisitable = textRenderer.substrByWidth(text, i - textRenderer.width(CommonComponents.ELLIPSIS));
 		return Language.getInstance().getVisualOrder(FormattedText.composite(stringVisitable, CommonComponents.ELLIPSIS));
+	}
+
+	@Override
+	public void onClick(MouseButtonEvent mouseButtonEvent, boolean bl) {
+		this.isCollapsed = !this.isCollapsed;
+		super.onClick(mouseButtonEvent, bl);
 	}
 
 	@Environment(EnvType.CLIENT)

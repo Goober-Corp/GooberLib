@@ -9,6 +9,7 @@ import com.goobercorp.gooberlib.gui.util.PrecisePositionWidgetWrapper;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
 import com.goobercorp.gooberlib.util.RenderUtils;
+import com.goobercorp.gooberlib.util.TargetedTweener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -19,10 +20,12 @@ import java.util.HashMap;
 
 import static com.goobercorp.gooberlib.screen.GooberScreen.CHILD_INSET;
 import static com.goobercorp.gooberlib.screen.GooberScreen.VERTICAL_PADDING;
+import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 public class SectionWidget extends ClickableParentWidget {
 	private final HashMap<OptionHolder, PrecisePositionWidgetWrapper<?>> evilLayout = new HashMap<>();
 	private final ConfigSection section;
+	private final TargetedTweener collapsedTweener = new TargetedTweener();
 
 	public SectionWidget(ConfigSection section, int x, int y, int width, int height) {
 		super(x, y, width, height, section.metadata().name(), new ArrayList<>());
@@ -44,8 +47,19 @@ public class SectionWidget extends ClickableParentWidget {
 
 	@Override
 	protected void renderWidget(GuiGraphics drawContext, int mouseX, int mouseY, float delta) {
-		drawLines(drawContext);
-		evilLayout.values().forEach(entry -> entry.render(drawContext, mouseX, mouseY, delta));
+		PrecisePositionWidgetWrapper<GroupDividerWidget> groupDividerWidget = (PrecisePositionWidgetWrapper<GroupDividerWidget>) evilLayout.get(section);
+		groupDividerWidget.render(drawContext, mouseX, mouseY, delta);
+		collapsedTweener.setTarget(groupDividerWidget.getWrapped().isCollapsed ? 0 : 1);
+		collapsedTweener.update();
+		newMatrixScope(drawContext, stack -> {
+			stack.scaleAround(1, collapsedTweener.getF(), this.getX() + this.getWidth() / 2F, this.getY() + groupDividerWidget.getWrapped().getHeight());
+			drawLines(drawContext);
+			evilLayout.values().forEach(entry -> {
+				if (!(entry.getWrapped() instanceof GroupDividerWidget)) {
+					entry.render(drawContext, mouseX, mouseY, delta);
+				}
+			});
+		});
 	}
 
 	private void drawLines(GuiGraphics guiGraphics) {
@@ -71,7 +85,7 @@ public class SectionWidget extends ClickableParentWidget {
 	private int addOptionWithChildren(OptionContext<?> optionContext, int y, int x) {
 		int addY = 0;
 		Option<?> option = optionContext.option();
-		AbstractWidget widget = option.makeWidget(0, 0, 250, VERTICAL_PADDING / 2);
+		AbstractWidget widget = option.makeWidget(0, 0, width / 2 - (x % width), VERTICAL_PADDING / 2);
 
 		PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x, y + addY, option::getDescription);
 		children().add(pw);

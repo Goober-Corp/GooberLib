@@ -188,7 +188,16 @@ public class GooberScreen extends Screen {
 	}
 
 	private void drawCommon(GuiGraphics drawContext, int mouseX, int mouseY, float tickDelta) {
-		categoryWidgets.forEach(categoryWidget -> categoryWidget.render(drawContext, mouseX, mouseY, tickDelta));
+		categoryWidgets.forEach(categoryWidget -> {
+			boolean isOnScreen = categoryWidget.getRectangle().overlaps(new ScreenRectangle(0, 0, drawContext.guiWidth(), drawContext.guiHeight()).transformAxisAligned(drawContext.pose()));
+			if (isOnScreen) {
+				//TODO: doesn't work for some reason???
+				//descriptions are broken because of the new structure
+				//also the bottom-most section of each category cannot be collapsed???
+				categoryWidget.render(drawContext, mouseX, mouseY, tickDelta);
+			}
+
+		});
 		drawHoveredDescription(drawContext);
 	}
 
