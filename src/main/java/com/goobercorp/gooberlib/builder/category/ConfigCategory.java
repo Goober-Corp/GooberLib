@@ -10,6 +10,8 @@ import org.jspecify.annotations.NonNull;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.function.Consumer;
+
 import net.minecraft.network.chat.Component;
 
 import static org.apache.commons.io.function.Erase.rethrow;
@@ -55,6 +57,60 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 */
 	public static CategoryBuilder builder(Component name) {
 		return builder(name, Component.empty());
+	}
+
+	/**
+	 * Makes a new {@link CategoryBuilder}, lets the {@code consumer} consume it, builds it, and returns it
+	 *
+	 * @param name        the name of the category
+	 * @param description the description of the category
+	 * @param consumer    the lambda that consumes the builder
+	 * @return the category builder
+	 */
+	public static ConfigCategory builder(Component name, Component description, Consumer<CategoryBuilder> consumer) {
+		CategoryBuilder builder = new CategoryBuilder(null, name, description);
+		consumer.accept(builder);
+		return builder.buildCategory();
+	}
+
+	/**
+	 * Makes a new {@link CategoryBuilder}, lets the {@code consumer} consume it, builds it, and returns it
+	 *
+	 * @param name     the name of the category
+	 * @param consumer the lambda that consumes the builder
+	 * @return the category builder
+	 */
+	public static ConfigCategory builder(Component name, Consumer<CategoryBuilder> consumer) {
+		CategoryBuilder builder = new CategoryBuilder(null, name, Component.empty());
+		consumer.accept(builder);
+		return builder.buildCategory();
+	}
+
+	/**
+	 * Makes a new {@link CategoryBuilder}, lets the {@code consumer} consume it, builds it, and returns it
+	 *
+	 * @param name        the name of the category
+	 * @param description the description of the category
+	 * @param consumer    the lambda that consumes the builder
+	 * @return the category builder
+	 */
+	public static ConfigCategory builder(String name, String description, Consumer<CategoryBuilder> consumer) {
+		CategoryBuilder builder = new CategoryBuilder(null, Component.literal(name), Component.literal(description));
+		consumer.accept(builder);
+		return builder.buildCategory();
+	}
+
+	/**
+	 * Makes a new {@link CategoryBuilder}, lets the {@code consumer} consume it, builds it, and returns it
+	 *
+	 * @param name     the name of the category
+	 * @param consumer the lambda that consumes the builder
+	 * @return the category builder
+	 */
+	public static ConfigCategory builder(String name, Consumer<CategoryBuilder> consumer) {
+		CategoryBuilder builder = new CategoryBuilder(null, Component.literal(name), Component.empty());
+		consumer.accept(builder);
+		return builder.buildCategory();
 	}
 
 	/**
