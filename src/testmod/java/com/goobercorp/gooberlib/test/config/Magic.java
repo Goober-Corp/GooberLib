@@ -7,6 +7,19 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 
 public class Magic {
 	public static final StringOption stringOption = new StringOption("string option", "string description");
+	public static final StringOption stringOption2 = new StringOption("string option", "string description");
+	public static final StringOption stringOption3 = new StringOption("string option", "string description");
+	public static final StringOption stringOption4 = new StringOption("string option", "string description");
+	public static final StringOption stringOption5 = new StringOption("string option", "string description");
+	public static final StringOption stringOption6 = new StringOption("string option", "string description");
+	public static final StringOption stringOption7 = new StringOption("string option", "string description");
+	public static final StringOption stringOption8 = new StringOption("string option", "string description");
+	public static final StringOption stringOption9 = new StringOption("string option", "string description");
+	public static final StringOption stringOption0 = new StringOption("string option", "string description");
+	public static final StringOption stringOption22 = new StringOption("string option", "string description");
+	public static final StringOption stringOption23 = new StringOption("string option", "string description");
+	public static final StringOption stringOption34 = new StringOption("string option", "string description");
+	public static final StringOption stringOption35 = new StringOption("string option", "string description");
 
 	@Section("meow meow")
 	public static final StringOption secondStringOption = new StringOption("second string option", "second string description");

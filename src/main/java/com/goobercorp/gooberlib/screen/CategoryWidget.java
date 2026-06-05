@@ -33,8 +33,7 @@ public class CategoryWidget extends ClickableParentWidget {
 				var wrapper = new PrecisePositionWidgetWrapper<>(sectionWidget, x, y, () -> section.metadata().description());
 				children().add(wrapper);
 				evilLayout.put(section, wrapper);
-				sectionWidget.setHeight(sectionWidget.getMaxY() - y);
-				y += sectionWidget.getMaxY();
+				y += sectionWidget.getHeight();
 			} else {
 				y += addOptionWithChildren((OptionContext<?>) o, y, x + 5);
 			}
@@ -67,11 +66,7 @@ public class CategoryWidget extends ClickableParentWidget {
 
 	private void drawLines(GuiGraphics guiGraphics) {
 		for (OptionHolder o : category.elements()) {
-			if (o instanceof ConfigSection) {
-//				for (OptionHolder opt : o.childOptions()) {
-//					drawLinesForOption(guiGraphics, opt);
-//				}
-			} else {
+			if (!(o instanceof ConfigSection)) {
 				drawLinesForOption(guiGraphics, o);
 			}
 		}

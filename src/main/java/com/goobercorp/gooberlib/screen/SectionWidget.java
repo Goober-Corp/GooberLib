@@ -23,7 +23,6 @@ import static com.goobercorp.gooberlib.screen.GooberScreen.VERTICAL_PADDING;
 public class SectionWidget extends ClickableParentWidget {
 	private final HashMap<OptionHolder, PrecisePositionWidgetWrapper<?>> evilLayout = new HashMap<>();
 	private final ConfigSection section;
-	private final int maxY;
 
 	public SectionWidget(ConfigSection section, int x, int y, int width, int height) {
 		super(x, y, width, height, section.metadata().name(), new ArrayList<>());
@@ -40,7 +39,7 @@ public class SectionWidget extends ClickableParentWidget {
 		for (OptionContext<?> yeah : section.childOptions()) {
 			y += addOptionWithChildren(yeah, y, x + CHILD_INSET);
 		}
-		this.maxY = y;
+		this.setHeight(y);
 	}
 
 	@Override
@@ -84,9 +83,5 @@ public class SectionWidget extends ClickableParentWidget {
 		}
 
 		return addY;
-	}
-
-	public int getMaxY() {
-		return this.maxY;
 	}
 }
