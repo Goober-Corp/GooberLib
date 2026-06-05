@@ -18,7 +18,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.world.phys.Vec2;
 
 import static java.lang.Math.exp;
 import static net.minecraft.client.renderer.RenderPipelines.MATRICES_PROJECTION_SNIPPET;
@@ -131,10 +130,6 @@ public class RenderUtils {
 								RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), x, y, x2, y2, col, col2, col3, col4, context.scissorStack.peek()
 						)
 				);
-	}
-
-	public static void fuckIt(GuiGraphics context, Vec2 point1, Vec2 point2, Vec2 point3, Vec2 point4, int col1, int col2, int col3, int col4) {
-
 	}
 
 	public static void drawBoxOutline(GuiGraphics context, float x, float y, float x2, float y2, int col) {
