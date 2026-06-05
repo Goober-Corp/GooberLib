@@ -82,6 +82,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 		this.setText(initial);
 		this.setChangedListener(changedListener);
 		this.predicate = predicate;
+		this.setMaxLength(100);
 	}
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, int colorOverride) {

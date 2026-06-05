@@ -23,6 +23,7 @@ import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.option.individual.primitive.CharOption;
 import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
+import com.goobercorp.gooberlib.option.individual.primitive.range.NumberRangeOption;
 import com.goobercorp.gooberlib.screen.GooberScreen;
 import com.goobercorp.gooberlib.util.ConfigDiscovery;
 import com.google.gson.*;
@@ -197,6 +198,8 @@ public class GooberLibApi {
 	static {
 		// noinspection unchecked, rawtypes
 		GooberLibApi.<NumberOption>registerWidgetProvider(t -> t instanceof NumberOption, WidgetProviders.numberSlider(), -2);
+		// noinspection unchecked, rawtypes
+		GooberLibApi.<NumberRangeOption>registerWidgetProvider(t -> t instanceof NumberRangeOption, WidgetProviders.rangeOption(), -2);
 		GooberLibApi.<CharOption>registerWidgetProvider(t -> t instanceof CharOption, WidgetProviders.numberField(), -1);
 		GooberLibApi.<ButtonOption>registerWidgetProvider(t -> t instanceof ButtonOption, EvilButtonWidget::new, -1);
 		registerWidgetProvider(t -> t instanceof ColorOption, ColorPickerWidget::new, -1);
