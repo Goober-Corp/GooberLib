@@ -45,10 +45,10 @@ public class TickBoxWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(MouseButtonEvent click, boolean bl) {
+	public void onClick(MouseButtonEvent click, boolean bl) {
 		if (RenderUtils.isInBounds(click.x(), click.y(), new ScreenRectangle(getRight() - width + 1, getY() + 1, getRight() - 2, getBottom() - 2))) {
 			opt.setValue(!opt.value);
 		}
-		return super.mouseClicked(click, bl);
 	}
+
 }

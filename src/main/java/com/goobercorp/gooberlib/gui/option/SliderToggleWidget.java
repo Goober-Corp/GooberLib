@@ -8,7 +8,9 @@ import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.world.phys.Vec2;
+import org.lwjgl.glfw.GLFW;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
@@ -44,10 +46,15 @@ public class SliderToggleWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(MouseButtonEvent click, boolean bl) {
+	public void onClick(MouseButtonEvent click, boolean bl) {
 		if (RenderUtils.isInBounds(click.x(), click.y(), new ScreenRectangle(getRight() - width + 1, getY() + 1, getRight() - 2, getBottom() - 2))) {
 			opt.setValue(!opt.value);
 		}
-		return super.mouseClicked(click, bl);
+	}
+
+	@Override
+	protected boolean isValidClickButton(MouseButtonInfo mouseButtonInfo) {
+		int button = mouseButtonInfo.button();
+		return button == GLFW.GLFW_MOUSE_BUTTON_LEFT;
 	}
 }
