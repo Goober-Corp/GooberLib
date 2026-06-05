@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.util;
 
+import com.goobercorp.gooberlib.GooberLibEntrypoint;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DepthTestFunction;
@@ -8,7 +9,10 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fStack;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.function.Consumer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -149,5 +153,14 @@ public class RenderUtils {
 
 	public static boolean isInBounds(double mouseX, double mouseY, ScreenRectangle rect) {
 		return mouseX >= rect.left() && mouseY >= rect.top() && mouseX < rect.right() && mouseY < rect.bottom();
+	}
+
+	public static void breakpoint(String reason) {
+		Instant instant = Instant.now();
+		GooberLibEntrypoint.LOGGER.warn("Did you remember to set a breakpoint here?");
+		boolean bl = Duration.between(instant, Instant.now()).toMillis() > 500L;
+		if (!bl) {
+			GooberLibEntrypoint.LOGGER.warn("Breakpoint because {}", reason);
+		}
 	}
 }

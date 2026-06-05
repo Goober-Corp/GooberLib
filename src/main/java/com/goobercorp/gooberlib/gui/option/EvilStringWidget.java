@@ -3,7 +3,7 @@ package com.goobercorp.gooberlib.gui.option;
 import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.gui.EvilBaseWidget;
 import com.goobercorp.gooberlib.util.RenderUtils;
-import com.goobercorp.gooberlib.util.Tweener;
+import com.goobercorp.gooberlib.util.TargetedTweener;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -29,6 +29,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@SuppressWarnings("unused")
 public class EvilStringWidget extends EvilBaseWidget {
 	public static final Style PLACEHOLDER_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GRAY);
 	private final Font textRenderer;
@@ -55,19 +56,12 @@ public class EvilStringWidget extends EvilBaseWidget {
 	private int textX;
 	private int textY;
 	private String lastAccepted;
-	private int targetCursorX = this.getX();
-	private int targetCursorY = this.textY + 7;
-	private int targetCursorWidth;
-	private int targetCursorHeight;
-	private int targetSelectionX1;
-	private int targetSelectionX2;
-	// todo: change tweener with .setTarget or something? and .setValue to set the value and not have tweening
-	private final Tweener cursorXTweener = new Tweener(() -> targetCursorX, 10);
-	private final Tweener cursorYTweener = new Tweener(() -> targetCursorY, 10);
-	private final Tweener cursorWidthTweener = new Tweener(() -> targetCursorWidth, 10);
-	private final Tweener cursorHeightTweener = new Tweener(() -> targetCursorHeight, 10);
-	private final Tweener selectionX1Tweener = new Tweener(() -> targetSelectionX1, 10);
-	private final Tweener selectionX2Tweener = new Tweener(() -> targetSelectionX2, 10);
+	private final TargetedTweener cursorXTweener = new TargetedTweener(10);
+	private final TargetedTweener cursorYTweener = new TargetedTweener(10);
+	private final TargetedTweener cursorWidthTweener = new TargetedTweener(10);
+	private final TargetedTweener cursorHeightTweener = new TargetedTweener(10);
+	private final TargetedTweener selectionX1Tweener = new TargetedTweener(10);
+	private final TargetedTweener selectionX2Tweener = new TargetedTweener(10);
 	private boolean isFirstAfterAtTarget = false;
 	private boolean firstAfterSelect = true;
 	private boolean justFocused;
@@ -220,7 +214,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	// despair
-	private int getWordSkipPosition(int i, int j, boolean bl) {
+	private int getWordSkipPosition(int i, int j, @SuppressWarnings("SameParameterValue") boolean bl) {
 		int k = j;
 		boolean bl2 = i < 0;
 		int l = Math.abs(i);
@@ -456,9 +450,8 @@ public class EvilStringWidget extends EvilBaseWidget {
 //					context.drawSelection(
 //							Math.min(o, this.getX() + this.width), this.textY - 1, Math.min(p - 1, this.getX() + this.width), this.textY + 1 + 9, this.invertSelectionBackground
 //					);
-				// todo: setTargetAndUpdate?
-				targetSelectionX1 = Math.min(cursorX, this.getX() + this.width);
-				targetSelectionX2 = Math.min(p - 1, this.getX() + this.width);
+				selectionX1Tweener.targetV = Math.min(cursorX, this.getX() + this.width);
+				selectionX2Tweener.targetV = Math.min(p - 1, this.getX() + this.width);
 				selectionX1Tweener.update();
 				selectionX2Tweener.update();
 				if (this.firstAfterSelect) {
@@ -482,10 +475,10 @@ public class EvilStringWidget extends EvilBaseWidget {
 			}
 
 			// do calculations regardless of if blink
-			targetCursorX = cursorX;
-			targetCursorY = shouldBePipe ? this.textY - 1 : this.textY + 8;
-			targetCursorWidth = shouldBePipe ? 1 : 5;
-			targetCursorHeight = shouldBePipe ? 10 : 1;
+			cursorXTweener.targetV = cursorX;
+			cursorYTweener.targetV = shouldBePipe ? this.textY - 1 : this.textY + 8;
+			cursorWidthTweener.targetV = shouldBePipe ? 1 : 5;
+			cursorHeightTweener.targetV = shouldBePipe ? 10 : 1;
 			cursorXTweener.update();
 			cursorYTweener.update();
 			cursorHeightTweener.update();

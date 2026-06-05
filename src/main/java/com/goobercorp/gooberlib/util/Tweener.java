@@ -44,7 +44,13 @@ public class Tweener {
 
 	public boolean isAtTarget() {
 		// approxEq takes too long to say true
-		return Math.abs(value - target.get().doubleValue()) < 1.0E-3F;
+		var targetV = target.get();
+		if (targetV == null) { // it was null at one point when it couldn't have been, and now I'm paranoid
+			RenderUtils.breakpoint("targetV == null");
+			return false;
+		} else {
+			return Math.abs(value - targetV.doubleValue()) < 1.0E-3F;
+		}
 	}
 
 	public double getLerped(double start, double end) {
