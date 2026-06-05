@@ -1,6 +1,7 @@
 package com.goobercorp.gooberlib.util;
 
 import java.util.function.Supplier;
+
 import net.minecraft.util.Mth;
 
 public class Tweener {
@@ -22,6 +23,7 @@ public class Tweener {
 
 	public void update() {
 		value = RenderUtils.ease(value, target.get().doubleValue(), speed);
+		if (isAtTarget()) value = target.get().doubleValue();
 	}
 
 	public double get() {
