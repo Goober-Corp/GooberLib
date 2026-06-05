@@ -79,12 +79,14 @@ public class GooberScreen extends Screen {
 
 		for (ConfigCategory c : config.categories()) {
 			int x = Minecraft.getInstance().getWindow().getGuiScaledWidth() * (config.categories().indexOf(c));
-			var cat = this.addWidget(new CategoryWidget(c, 0, 0, width, height));
+			var cat = new CategoryWidget(c, 0, 0, width, height);
 			PrecisePositionWidgetWrapper<CategoryWidget> pw = new PrecisePositionWidgetWrapper<>(cat, x, VERTICAL_PADDING, () -> c.metadata().description());
 			// TODO: maybe store scroll height for each category?
 			int catHeight = Math.max(cat.getMaxY() - height / 2, 0);
 			heights[config.categories().indexOf(c)] = catHeight;
 			cat.setHeight(catHeight);
+
+			this.addWidget(pw);
 			categoryWidgets.add(pw);
 		}
 		//to prevent weirdness on resize
