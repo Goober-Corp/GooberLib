@@ -85,9 +85,9 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	public void renderWidget(GuiGraphics context, double mouseX, double mouseY, float delta) {
 		valTweener.update();
 		scrollAmount = (float) RenderUtils.ease(scrollAmount, 0, 5);
+		RenderUtils.drawHorizontalLine(context, (getX() + (this.width - 5) / 2F) - 0.5F, this.getRight() - 5.5F, getY() + getHeight() / 2F, MainConfig.primaryCol);
 		RenderUtils.drawVerticalLine(context, ((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2F * (this.width - 5)) - 0.5F) + 1, getY() + 4, getBottom() - 2, MainConfig.shadowCol);
 		RenderUtils.drawHorizontalLine(context, (getX() + (this.width - 5) / 2F) - 0.5F + 1, this.getRight() - 5.5F + 1, getY() + getHeight() / 2F + 1, MainConfig.shadowCol);
-		RenderUtils.drawHorizontalLine(context, (getX() + (this.width - 5) / 2F) - 0.5F, this.getRight() - 5.5F, getY() + getHeight() / 2F, MainConfig.primaryCol);
 		RenderUtils.drawVerticalLine(context, ((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2 * (this.width - 5)) - 0.5F), getY() + 3, getBottom() - 3, MainConfig.primaryCol);
 		if (this.isHovered()) {
 			context.requestCursor(this.dragging ? CursorTypes.RESIZE_EW : CursorTypes.POINTING_HAND);

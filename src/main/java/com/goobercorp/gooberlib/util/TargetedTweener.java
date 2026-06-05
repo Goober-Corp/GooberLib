@@ -4,7 +4,7 @@ public class TargetedTweener extends Tweener {
 	public Number targetV = 0;
 
 	public TargetedTweener() {
-		this(15);
+		this(20);
 	}
 
 	public TargetedTweener(float speed) {

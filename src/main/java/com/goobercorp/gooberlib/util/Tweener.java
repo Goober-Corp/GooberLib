@@ -1,8 +1,8 @@
 package com.goobercorp.gooberlib.util;
 
-import java.util.function.Supplier;
-
 import net.minecraft.util.Mth;
+
+import java.util.function.Supplier;
 
 public class Tweener {
 	//TODO: add easings
@@ -12,7 +12,7 @@ public class Tweener {
 	float speed;
 
 	public Tweener(Supplier<Number> target) {
-		this(target, 15);
+		this(target, 20);
 	}
 
 	public Tweener(Supplier<Number> target, float speed) {
