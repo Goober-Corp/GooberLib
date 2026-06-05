@@ -171,6 +171,10 @@ public class WidgetProviders {
 		return (theOption, x, y, width, height) -> new CyclingOptionWidget(theOption, x, y, width, height, o -> o.getValue() ? whenTrue : whenFalse);
 	}
 
+	public static WidgetProvider<BooleanOption> booleanToggleWidget(String whenTrue, String whenFalse) {
+		return booleanToggleWidget(Component.literal(whenTrue), Component.literal(whenFalse));
+	}
+
 	public static WidgetProvider<StringOption> stringField() {
 		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value));
 	}

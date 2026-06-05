@@ -62,7 +62,7 @@ public class TheOne {
 	public static final BooleanOption booleanOption = new BooleanOption("boolean option", "boolean description");
 	public static final BooleanOption secondBooleanOption = new BooleanOption("coolean option", "boolean description", WidgetProviders.booleanSliderWidget());
 	public static final BooleanOption thirdBooleanOption = new BooleanOption("droolean option", "boolean description", WidgetProviders.booleanToggleWidget());
-	public static final BooleanOption fourthBooleanOption = new BooleanOption("ghoulean option", "boolean description", WidgetProviders.booleanToggleWidget(Component.literal("Yes"), Component.literal("No")));
+	public static final BooleanOption fourthBooleanOption = new BooleanOption("ghoulean option", "boolean description", WidgetProviders.booleanToggleWidget("Yes", "No"));
 
 	@Section("field test")
 	public static final StringOption stringOption = new StringOption("string option", "string description");
