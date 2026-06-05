@@ -16,17 +16,17 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 public class ClickableParentWidget extends AbstractWidget implements ContainerEventHandler {
-	private final List<? extends GuiEventListener> children;
+	private final List<GuiEventListener> children;
 	private boolean dragging;
 	private @Nullable GuiEventListener focussed;
 
-	public ClickableParentWidget(int x, int y, int width, int height, Component message, List<? extends GuiEventListener> children) {
+	public ClickableParentWidget(int x, int y, int width, int height, Component message, List<GuiEventListener> children) {
 		super(x, y, width, height, message);
 		this.children = children;
 	}
 
 	@Override
-	public List<? extends GuiEventListener> children() {
+	public List<GuiEventListener> children() {
 		return this.children;
 	}
 

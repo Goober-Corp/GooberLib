@@ -3,21 +3,14 @@ package com.goobercorp.gooberlib.screen;
 import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
-import com.goobercorp.gooberlib.builder.misc.Metadata;
-import com.goobercorp.gooberlib.builder.misc.OptionHolder;
-import com.goobercorp.gooberlib.builder.section.ConfigSection;
 import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.gui.nav.EvilTabNavigationWidget;
-import com.goobercorp.gooberlib.gui.nav.GroupDividerWidget;
 import com.goobercorp.gooberlib.gui.util.PrecisePositionWidgetWrapper;
-import com.goobercorp.gooberlib.option.Option;
-import com.goobercorp.gooberlib.option.OptionContext;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.ScrollTweener;
 import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.tabs.GridLayoutTab;
 import net.minecraft.client.gui.components.tabs.Tab;
 import net.minecraft.client.gui.components.tabs.TabManager;
@@ -29,21 +22,19 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
-import org.lwjgl.glfw.GLFW;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.ease;
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 public class GooberScreen extends Screen {
-	private static final int VERTICAL_PADDING = 32;
-	private static final int CHILD_INSET = 16;
+	public static final int VERTICAL_PADDING = 32;
+	public static final int CHILD_INSET = 16;
 	private final BuiltConfig config;
 	private final Screen parent;
-	private Component descriptionText = Component.nullToEmpty("");
+	private Component descriptionText = Component.literal("");
 	private float descriptionAnimationProgress = 0;
 	private float categoryHoverProgress = 1;
 	private float screenCategoryAnimationState = 0;
@@ -54,14 +45,14 @@ public class GooberScreen extends Screen {
 	private final ScrollTweener scrollTweener = new ScrollTweener(() -> scrollProgress, writeTo -> scrollProgress = writeTo, -1000, 0);
 	private int lastScrollTicks = 0;
 	private final Tweener categoryTweener = new Tweener(() -> screenCategoryAnimationState);
-	private final HashMap<OptionHolder, PrecisePositionWidgetWrapper<?>> evilLayout = new HashMap<>();
 	private final Tab[] tabs;
 	private final int[] heights;
 	private boolean animateHoverDescription = false;
 	public ScreenRectangle badbadbad = new ScreenRectangle(0, 0, 0, 0);
-	private boolean showTabs;
+	private final boolean showTabs;
 
 	private final String modId;
+	private final List<PrecisePositionWidgetWrapper<CategoryWidget>> categoryWidgets = new ArrayList<>();
 
 	public GooberScreen(BuiltConfig config, Screen parent, String modId) {
 		super(config.title());
@@ -79,7 +70,7 @@ public class GooberScreen extends Screen {
 
 	@Override
 	protected void init() {
-		evilLayout.clear();
+		categoryWidgets.clear();
 		if (this.showTabs) {
 			this.tabNavigationWidget = this.addWidget(EvilTabNavigationWidget.builder(tabManager, width).tabs(tabs).build());
 			this.tabNavigationWidget.init();
@@ -88,66 +79,24 @@ public class GooberScreen extends Screen {
 
 		for (ConfigCategory c : config.categories()) {
 			int x = Minecraft.getInstance().getWindow().getGuiScaledWidth() * (config.categories().indexOf(c));
-			int y = VERTICAL_PADDING;
-			for (OptionHolder o : c.elements()) {
-				if (o instanceof ConfigSection(
-						Metadata metadata, List<OptionContext<?>> childOptionContexts
-				)) {
-					GroupDividerWidget t = new GroupDividerWidget(metadata.name(), font);
-					PrecisePositionWidgetWrapper<GroupDividerWidget> widgetWrapper = new PrecisePositionWidgetWrapper<>(t, x + ((double) Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2) - (double) font.width(metadata.name()) / 2, y, metadata::description);
-					evilLayout.put(o, widgetWrapper);
-					if (new ScreenRectangle((int) widgetWrapper.getRealX(), (int) widgetWrapper.getRealY(), widgetWrapper.getWrapped().getRight(), widgetWrapper.getWrapped().getBottom()).overlaps(new ScreenRectangle(0, 0, width, height))) {
-						t.renderProgress = 1;
-					}
-					addRenderableWidget(widgetWrapper);
-					y += VERTICAL_PADDING;
-					for (OptionContext<?> yeah : childOptionContexts) {
-						y += addOptionWithChildren(yeah, y, x + CHILD_INSET);
-					}
-				} else {
-					y += addOptionWithChildren((OptionContext<?>) o, y, x + 5);
-				}
-				// TODO: maybe store scroll height for each category?
-				heights[config.categories().indexOf(c)] = Math.max(y - height, 0);
-			}
+			var cat = this.addWidget(new CategoryWidget(c, 0, 0, width, height));
+			PrecisePositionWidgetWrapper<CategoryWidget> pw = new PrecisePositionWidgetWrapper<>(cat, x, VERTICAL_PADDING, () -> c.metadata().description());
+			// TODO: maybe store scroll height for each category?
+			int catHeight = Math.max(cat.getMaxY() - height / 2, 0);
+			heights[config.categories().indexOf(c)] = catHeight;
+			cat.setHeight(catHeight);
+			categoryWidgets.add(pw);
 		}
 		//to prevent weirdness on resize
 		setWidgetOffsets();
 	}
 
 	private void setWidgetOffsets() {
-		for (PrecisePositionWidgetWrapper<?> entry : evilLayout.values()) {
-
-//            if (scrollTweener.get() < scrollTweener.min) {
-//                //TODO: this is kinda busted???
-//                /*entry.setOffsetY(scrollTweener.get() * ((scrollTweener.get() - scrollTweener.min) / (entry.getY() - scrollTweener.min)));*/
-//                entry.setOffsetY(scrollTweener.get() - (scrollTweener.get() * Math.abs(((scrollTweener.get() - scrollTweener.min) / (-entry.getY())))));
-//            } else if (scrollTweener.get() > scrollTweener.max) {
-//                entry.setOffsetY(scrollTweener.get() + (scrollTweener.get() * Math.abs(((scrollTweener.get() - scrollTweener.max) / entry.getY()))));
-//                /*entry.setOffsetY(scrollTweener.get() * (scrollTweener.get() / entry.getY()));*/
-//            } else {
-//            }
+		for (PrecisePositionWidgetWrapper<?> entry : categoryWidgets) {
 			//TODO: sticky groups
 			entry.setOffsetY(scrollTweener.get());
 			entry.setOffsetX(-width * categoryTweener.get());
 		}
-	}
-
-	private int addOptionWithChildren(OptionContext<?> optionContext, int y, int x) {
-		int addY = 0;
-		Option<?> option = optionContext.option();
-		AbstractWidget widget = option.makeWidget(0, 0, 250, VERTICAL_PADDING / 2);
-
-		PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x, y + addY, option::getDescription);
-		this.addRenderableWidget(pw);
-		evilLayout.put(optionContext, pw);
-		addY += VERTICAL_PADDING;
-
-		for (OptionContext<?> child : optionContext.childOptions()) {
-			addY += addOptionWithChildren(child, y + addY, x + CHILD_INSET);
-		}
-
-		return addY;
 	}
 
 	@Override
@@ -203,7 +152,7 @@ public class GooberScreen extends Screen {
 	}
 
 	private void setHoverText(double mouseX, double mouseY) {
-		for (PrecisePositionWidgetWrapper<?> ppww : evilLayout.values()) {
+		for (PrecisePositionWidgetWrapper<?> ppww : getAllWidgets()) {
 			if (ppww.isMouseOver(mouseX, mouseY)) {
 				descriptionText = ppww.getHoverMessage().get();
 				animateHoverDescription = true;
@@ -213,9 +162,31 @@ public class GooberScreen extends Screen {
 		}
 	}
 
+	private List<PrecisePositionWidgetWrapper<?>> getAllWidgets() {
+		List<PrecisePositionWidgetWrapper<?>> list = new ArrayList<>();
+
+		for (PrecisePositionWidgetWrapper<CategoryWidget> pw : categoryWidgets) {
+			CategoryWidget categoryWidget = pw.getWrapped();
+			for (var child : categoryWidget.children()) {
+				if (child instanceof PrecisePositionWidgetWrapper<?> p) {
+					var wrapped = p.getWrapped();
+					if (wrapped instanceof SectionWidget section) {
+						for (var sectionChild : section.children()) {
+							if (sectionChild instanceof PrecisePositionWidgetWrapper<?> ppww) {
+								list.add(ppww);
+							}
+						}
+					}
+					list.add(p);
+				}
+			}
+		}
+
+		return list;
+	}
+
 	private void drawCommon(GuiGraphics drawContext, int mouseX, int mouseY, float tickDelta) {
-		drawLines(drawContext);
-		evilLayout.values().forEach(entry -> entry.render(drawContext, mouseX, mouseY, tickDelta));
+		categoryWidgets.forEach(categoryWidget -> categoryWidget.render(drawContext, mouseX, mouseY, tickDelta));
 		drawHoveredDescription(drawContext);
 	}
 
@@ -234,46 +205,8 @@ public class GooberScreen extends Screen {
 		});
 	}
 
-	private void forEachOption(Consumer<OptionHolder> consumer) {
-		//run a function for every top-level option, including standalone options
-		for (ConfigCategory c : config.categories()) {
-			for (OptionHolder o : c.elements()) {
-				if (o instanceof ConfigSection) {
-					for (OptionHolder opt : o.childOptions()) {
-						consumer.accept(opt);
-					}
-				} else {
-					if (!o.childOptions().isEmpty()) {
-						consumer.accept(o);
-					}
-				}
-			}
-		}
-	}
-
-	private void drawLines(GuiGraphics drawContext) {
-		forEachOption(optionHolderV3 -> drawLinesForOption(drawContext, optionHolderV3));
-	}
-
-	private void drawLinesForOption(GuiGraphics drawContext, OptionHolder o) {
-		if (o.childOptions().isEmpty()) return;
-		PrecisePositionWidgetWrapper<?> mainWidget = evilLayout.get(o);
-		PrecisePositionWidgetWrapper<?> lastChildWidget = evilLayout.get(o.childOptions().getLast());
-		RenderUtils.drawVerticalLine(drawContext, (float) mainWidget.getRealX() + 6, (float) mainWidget.getRealY() + mainWidget.getWrapped().getHeight(), (float) lastChildWidget.getRealY() + (lastChildWidget.getWrapped().getHeight() / 2F) + 1, MainConfig.bgColor);
-		RenderUtils.drawVerticalLine(drawContext, (float) mainWidget.getRealX() + 5, (float) mainWidget.getRealY() + mainWidget.getWrapped().getHeight() - 1, (float) lastChildWidget.getRealY() + (lastChildWidget.getWrapped().getHeight() / 2F), MainConfig.primaryCol);
-		for (OptionHolder opt : o.childOptions()) {
-			PrecisePositionWidgetWrapper<?> optionWidget = evilLayout.get(opt);
-			RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getRealX() + 6, (float) evilLayout.get(opt).getRealX(), (float) optionWidget.getRealY() + optionWidget.getWrapped().getHeight() / 2F + 1, MainConfig.bgColor);
-			RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getRealX() + 5, (float) evilLayout.get(opt).getRealX(), (float) optionWidget.getRealY() + optionWidget.getWrapped().getHeight() / 2F, MainConfig.primaryCol);
-			drawLinesForOption(drawContext, opt);
-		}
-	}
-
 	@Override
 	public boolean keyPressed(KeyEvent keyInput) {
-		if (keyInput.hasControlDown() && keyInput.input() == GLFW.GLFW_KEY_F) {
-
-		}
 		return super.keyPressed(keyInput);
 	}
 

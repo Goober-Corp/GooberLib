@@ -128,16 +128,17 @@ public class PrecisePositionWidgetWrapper<T extends AbstractWidget> implements R
 
 	@Override
 	public void render(GuiGraphics drawContext, int i, int j, float f) {
+		// todo: readd
 		// todo: move this outside of this class (not related to a precise position wrapper gui element; should extend this or be handled in the screen)
-		boolean isOnScreen = new ScreenRectangle((int) getRealX(), (int) getRealY(), wrapped.getRight(), wrapped.getBottom()).overlaps(new ScreenRectangle(0, 0, drawContext.guiWidth(), drawContext.guiHeight()));
-		this.x = RenderUtils.ease(this.x, isOnScreen ? targetInset : x, 10);
-		renderProgress = (float) RenderUtils.ease(renderProgress, isOnScreen ? 1 : 0, 15);
-		if (isOnScreen) {
-			newMatrixScope(drawContext, matrix3x2fStack -> {
-				matrix3x2fStack.translate((float) getRealX(), (float) getRealY());
-				wrapped.render(drawContext, (int) Math.round(i - getRealX()), (int) Math.round(j - getRealY()), f);
-			});
-		}
+//		boolean isOnScreen = new ScreenRectangle((int) getRealX(), (int) getRealY(), wrapped.getWidth(), wrapped.getHeight()).overlaps(new ScreenRectangle(0, 0, drawContext.guiWidth(), drawContext.guiHeight()).transformAxisAligned(drawContext.pose()));
+		this.x = RenderUtils.ease(this.x, targetInset, 10);
+		renderProgress = (float) RenderUtils.ease(renderProgress, 1, 15);
+//		if (isOnScreen) {
+		newMatrixScope(drawContext, matrix3x2fStack -> {
+			matrix3x2fStack.translate((float) getRealX(), (float) getRealY());
+			wrapped.render(drawContext, (int) Math.round(i - getRealX()), (int) Math.round(j - getRealY()), f);
+		});
+//		}
 	}
 
 	@Override
