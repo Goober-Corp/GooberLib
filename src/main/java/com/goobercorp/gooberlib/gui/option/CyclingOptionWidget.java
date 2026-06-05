@@ -3,14 +3,15 @@ package com.goobercorp.gooberlib.gui.option;
 import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.gui.EvilBaseWidget;
 import com.goobercorp.gooberlib.interfaces.AdvanceableOption;
-
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.Component;
+import org.lwjgl.glfw.GLFW;
+
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
@@ -39,6 +40,16 @@ public class CyclingOptionWidget extends EvilBaseWidget {
 
 	@Override
 	public void onClick(MouseButtonEvent click, boolean bl) {
-		opt.advance();
+		if (click.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+			opt.regress();
+		} else if (click.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+			opt.advance();
+		}
+	}
+
+	@Override
+	protected boolean isValidClickButton(MouseButtonInfo mouseButtonInfo) {
+		int button = mouseButtonInfo.button();
+		return button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
 	}
 }

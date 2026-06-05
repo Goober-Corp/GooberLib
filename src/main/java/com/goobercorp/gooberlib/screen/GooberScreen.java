@@ -15,11 +15,6 @@ import com.goobercorp.gooberlib.option.OptionContext;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.ScrollTweener;
 import com.goobercorp.gooberlib.util.Tweener;
-import org.lwjgl.glfw.GLFW;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -34,6 +29,11 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
+import org.lwjgl.glfw.GLFW;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.function.Consumer;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.ease;
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
@@ -326,6 +326,17 @@ public class GooberScreen extends Screen {
 			setFocused(null);
 		}
 		return b;
+	}
+
+	@Override
+	public boolean mouseReleased(MouseButtonEvent mouseButtonEvent) {
+		if (this.isDragging()) {
+			this.setDragging(false);
+		}
+		if (this.getFocused() != null) {
+			return this.getFocused().mouseReleased(mouseButtonEvent);
+		}
+		return false;
 	}
 
 	@Override

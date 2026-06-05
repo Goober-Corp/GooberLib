@@ -4,12 +4,11 @@ import com.goobercorp.gooberlib.interfaces.AdvanceableOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.mojang.serialization.DynamicOps;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Function;
-
-import net.minecraft.network.chat.Component;
 
 public class CycleOption<T> extends BaseOption<CycleOption<T>> implements AdvanceableOption<CycleOption<T>> {
 	private final T defaultValue;
@@ -74,5 +73,10 @@ public class CycleOption<T> extends BaseOption<CycleOption<T>> implements Advanc
 
 	public void advance() {
 		setValue(options.get((options.indexOf(getValue()) + 1) % options.size()));
+	}
+
+	public void regress() {
+		int index = options.indexOf(getValue()) - 1;
+		setValue(options.get(index == -1 ? options.size() - 1 : index));
 	}
 }
