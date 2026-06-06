@@ -82,9 +82,8 @@ public class GooberScreen extends Screen {
 			var cat = new CategoryWidget(c, 0, 0, width, height);
 			PrecisePositionWidgetWrapper<CategoryWidget> pw = new PrecisePositionWidgetWrapper<>(cat, x, VERTICAL_PADDING, () -> c.metadata().description());
 			// TODO: maybe store scroll height for each category?
-			int catHeight = Math.max(cat.getMaxY() - height / 2, 0);
+			int catHeight = cat.getHeight();
 			heights[config.categories().indexOf(c)] = catHeight;
-			cat.setHeight(catHeight);
 
 			this.addWidget(pw);
 			categoryWidgets.add(pw);
@@ -188,16 +187,9 @@ public class GooberScreen extends Screen {
 	}
 
 	private void drawCommon(GuiGraphics drawContext, int mouseX, int mouseY, float tickDelta) {
-		categoryWidgets.forEach(categoryWidget -> {
-			boolean isOnScreen = categoryWidget.getRectangle().overlaps(new ScreenRectangle(0, 0, drawContext.guiWidth(), drawContext.guiHeight()).transformAxisAligned(drawContext.pose()));
-			if (isOnScreen) {
-				//TODO: doesn't work for some reason???
-				//descriptions are broken because of the new structure
-				//also the bottom-most section of each category cannot be collapsed???
-				categoryWidget.render(drawContext, mouseX, mouseY, tickDelta);
-			}
-
-		});
+		for (PrecisePositionWidgetWrapper<CategoryWidget> categoryWidget : categoryWidgets) {
+			categoryWidget.render(drawContext, mouseX, mouseY, tickDelta);
+		}
 		drawHoveredDescription(drawContext);
 	}
 

@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.gui.util;
 
+import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
@@ -19,7 +20,6 @@ import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
@@ -30,6 +30,7 @@ public class PrecisePositionWidgetWrapper<T extends AbstractWidget> implements R
 	private double x;
 	private double y;
 	private float renderProgress = 0;
+	// todo: move this outside of this class (not related to a precise position wrapper gui element; should extend this or be handled in the screen)
 	private float targetInset;
 
 	public void setHoverMessage(Supplier<Component> hoverMessage) {
@@ -119,17 +120,23 @@ public class PrecisePositionWidgetWrapper<T extends AbstractWidget> implements R
 
 	@Override
 	public void render(GuiGraphics drawContext, int i, int j, float f) {
-		boolean isOnScreen = new ScreenRectangle((int) getRealX(), (int) getRealY(), wrapped.getWidth(), wrapped.getHeight()).overlaps(new ScreenRectangle(0, 0, drawContext.guiWidth(), drawContext.guiHeight()));
-//		var isOnScreen = true;
+		boolean isVisible = new ScreenRectangle((int) getRealX(), (int) getRealY(), wrapped.getWidth(), wrapped.getHeight()).overlaps(new ScreenRectangle(0, 0, drawContext.guiWidth(), drawContext.guiHeight()));
+//		var isVisible = true;
 		this.x = RenderUtils.ease(this.x, targetInset, 10);
 		renderProgress = (float) RenderUtils.ease(renderProgress, 1, 15);
-		if (isOnScreen) {
+		if (isVisible) {
 			newMatrixScope(drawContext, matrix3x2fStack -> {
-				// todo: move this outside of this class (not related to a precise position wrapper gui element; should extend this or be handled in the screen)
 				matrix3x2fStack.translate((float) getRealX(), (float) getRealY());
 
 				wrapped.render(drawContext, (int) Math.round(i - getRealX()), (int) Math.round(j - getRealY()), f);
 			});
+		}
+
+		// blue bounds for !isVisible, red for isVisible
+		if (MainConfig.showBounds) {
+			RenderUtils.fillEvil(drawContext, (float) getRealX(), (float) getRealY(), (float) (getRealX() + wrapped.getWidth()), (float) (getRealY() + wrapped.getHeight()), 0x11FFFFFF);
+			RenderUtils.drawBoxOutline(drawContext, (float) getRealX(), (float) getRealY(), (float) (getRealX() + wrapped.getWidth()), (float) (getRealY() + wrapped.getHeight()), isVisible ? 0xAAFF0000 : 0xAA0000FF);
+			drawContext.drawString(Minecraft.getInstance().font, wrapped.getMessage(), (int) getRealX(), (int) getRealY(), -1);
 		}
 	}
 

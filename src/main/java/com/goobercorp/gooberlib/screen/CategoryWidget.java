@@ -21,7 +21,6 @@ import static com.goobercorp.gooberlib.screen.GooberScreen.CHILD_INSET;
 import static com.goobercorp.gooberlib.screen.GooberScreen.VERTICAL_PADDING;
 
 public class CategoryWidget extends ClickableParentWidget {
-	private final int maxY;
 	private final List<PrecisePositionWidgetWrapper<?>> values = new ArrayList<>();
 	private final HashMap<OptionHolder, PrecisePositionWidgetWrapper<?>> evilLayout = new HashMap<>();
 	private final ConfigCategory category;
@@ -41,7 +40,7 @@ public class CategoryWidget extends ClickableParentWidget {
 				y += addOptionWithChildren((OptionContext<?>) o, y, x + 5);
 			}
 		}
-		this.maxY = y;
+		this.setHeight(y);
 	}
 
 	private int addOptionWithChildren(OptionContext<?> optionContext, int y, int x) {
@@ -100,9 +99,5 @@ public class CategoryWidget extends ClickableParentWidget {
 
 	@Override
 	protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
-	}
-
-	public int getMaxY() {
-		return this.maxY;
 	}
 }
