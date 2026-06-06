@@ -3,7 +3,8 @@ package com.goobercorp.gooberlib.gui.util;
 import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.ComponentPath;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -133,7 +134,7 @@ public class PrecisePositionWidgetWrapper<T extends AbstractWidget> implements R
 		}
 
 		// blue bounds for !isVisible, red for isVisible
-		if (MainConfig.showBounds) {
+		if (MainConfig.PPWW_BOUNDS.value) {
 			RenderUtils.fillEvil(drawContext, (float) getRealX(), (float) getRealY(), (float) (getRealX() + wrapped.getWidth()), (float) (getRealY() + wrapped.getHeight()), 0x11FFFFFF);
 			RenderUtils.drawBoxOutline(drawContext, (float) getRealX(), (float) getRealY(), (float) (getRealX() + wrapped.getWidth()), (float) (getRealY() + wrapped.getHeight()), isVisible ? 0xAAFF0000 : 0xAA0000FF);
 			drawContext.drawString(Minecraft.getInstance().font, wrapped.getMessage(), (int) getRealX(), (int) getRealY(), -1);
