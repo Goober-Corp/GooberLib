@@ -15,12 +15,14 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.goobercorp.gooberlib.screen.GooberScreen.CHILD_INSET;
 import static com.goobercorp.gooberlib.screen.GooberScreen.VERTICAL_PADDING;
 
 public class CategoryWidget extends ClickableParentWidget {
 	private final int maxY;
+	private final List<PrecisePositionWidgetWrapper<?>> values = new ArrayList<>();
 	private final HashMap<OptionHolder, PrecisePositionWidgetWrapper<?>> evilLayout = new HashMap<>();
 	private final ConfigCategory category;
 
@@ -33,6 +35,7 @@ public class CategoryWidget extends ClickableParentWidget {
 				var wrapper = new PrecisePositionWidgetWrapper<>(sectionWidget, x, y, () -> section.metadata().description());
 				children().add(wrapper);
 				evilLayout.put(section, wrapper);
+				values.add(wrapper);
 				y += sectionWidget.getHeight();
 			} else {
 				y += addOptionWithChildren((OptionContext<?>) o, y, x + 5);
@@ -61,7 +64,15 @@ public class CategoryWidget extends ClickableParentWidget {
 	@Override
 	protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
 		drawLines(guiGraphics);
-		evilLayout.values().forEach(entry -> entry.render(guiGraphics, i, j, f));
+		double totalYOffset = 0;
+		for (PrecisePositionWidgetWrapper<?> entry : values) {
+			entry.setOffsetY(totalYOffset);
+			entry.render(guiGraphics, i, j, f);
+			var wrapped = entry.getWrapped();
+			if (wrapped instanceof SectionWidget section) {
+				totalYOffset -= section.getOffsetRequired();
+			}
+		}
 	}
 
 	private void drawLines(GuiGraphics guiGraphics) {

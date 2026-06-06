@@ -24,8 +24,10 @@ import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 public class SectionWidget extends ClickableParentWidget {
 	private final HashMap<OptionHolder, PrecisePositionWidgetWrapper<?>> evilLayout = new HashMap<>();
+	private final PrecisePositionWidgetWrapper<GroupDividerWidget> dividerWidget;
 	private final ConfigSection section;
 	private final TargetedTweener collapsedTweener = new TargetedTweener();
+	public final int uncollapsedHeight;
 
 	public SectionWidget(ConfigSection section, int x, int y, int width, int height) {
 		super(x, y, width, height, section.metadata().name(), new ArrayList<>());
@@ -33,7 +35,7 @@ public class SectionWidget extends ClickableParentWidget {
 
 		GroupDividerWidget t = new GroupDividerWidget(section.metadata().name(), Minecraft.getInstance().font);
 		PrecisePositionWidgetWrapper<GroupDividerWidget> groupDivider = new PrecisePositionWidgetWrapper<>(t, x + ((double) Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2) - (double) Minecraft.getInstance().font.width(section.metadata().name()) / 2, y, section.metadata()::description);
-		evilLayout.put(section, groupDivider);
+		dividerWidget = groupDivider;
 		if (new ScreenRectangle((int) groupDivider.getRealX(), (int) groupDivider.getRealY(), groupDivider.getWrapped().getRight(), groupDivider.getWrapped().getBottom()).overlaps(new ScreenRectangle(0, 0, width, height))) {
 			t.renderProgress = 1;
 		}
@@ -43,23 +45,22 @@ public class SectionWidget extends ClickableParentWidget {
 			y += addOptionWithChildren(yeah, y, x + CHILD_INSET);
 		}
 		this.setHeight(y);
+		this.uncollapsedHeight = y;
 	}
 
 	@Override
 	protected void renderWidget(GuiGraphics drawContext, int mouseX, int mouseY, float delta) {
-		PrecisePositionWidgetWrapper<GroupDividerWidget> groupDividerWidget = (PrecisePositionWidgetWrapper<GroupDividerWidget>) evilLayout.get(section);
-		groupDividerWidget.render(drawContext, mouseX, mouseY, delta);
-		collapsedTweener.setTarget(groupDividerWidget.getWrapped().isCollapsed ? 0 : 1);
+		dividerWidget.render(drawContext, mouseX, mouseY, delta);
+		collapsedTweener.setTarget(dividerWidget.getWrapped().isCollapsed ? 0 : 1);
 		collapsedTweener.update();
 		newMatrixScope(drawContext, stack -> {
-			stack.scaleAround(1, collapsedTweener.getF(), this.getX() + this.getWidth() / 2F, this.getY() + groupDividerWidget.getWrapped().getHeight());
+			stack.scaleAround(1, collapsedTweener.getF(), this.getX() + this.getWidth() / 2F, this.getY() + dividerWidget.getWrapped().getHeight());
 			drawLines(drawContext);
-			evilLayout.values().forEach(entry -> {
-				if (!(entry.getWrapped() instanceof GroupDividerWidget)) {
-					entry.render(drawContext, mouseX, mouseY, delta);
-				}
-			});
+			for (PrecisePositionWidgetWrapper<?> entry : evilLayout.values()) {
+				entry.render(drawContext, mouseX, mouseY, delta);
+			}
 		});
+		this.setHeight((int) getHeightWithoutSectionDivider() + this.dividerWidget.getWrapped().getHeight());
 	}
 
 	private void drawLines(GuiGraphics guiGraphics) {
@@ -97,5 +98,15 @@ public class SectionWidget extends ClickableParentWidget {
 		}
 
 		return addY;
+	}
+
+	public float getHeightWithoutSectionDivider() {
+		int dividerHeight = this.dividerWidget.getWrapped().getHeight() + VERTICAL_PADDING / 2;
+		return (float) ((this.uncollapsedHeight - dividerHeight) * (this.collapsedTweener.get()));
+	}
+
+	public float getOffsetRequired() {
+		int dividerHeight = this.dividerWidget.getWrapped().getHeight() + VERTICAL_PADDING / 2;
+		return (float) ((this.uncollapsedHeight - dividerHeight) * (1 - this.collapsedTweener.get()));
 	}
 }
