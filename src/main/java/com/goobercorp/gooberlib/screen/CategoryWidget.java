@@ -52,6 +52,7 @@ public class CategoryWidget extends ClickableParentWidget {
 		PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x, y + addY, option::getDescription);
 		children().add(pw);
 		evilLayout.put(optionContext, pw);
+		values.add(pw);
 		addY += VERTICAL_PADDING;
 
 		for (OptionContext<?> child : optionContext.childOptions()) {

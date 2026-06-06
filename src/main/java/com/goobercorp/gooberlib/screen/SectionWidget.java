@@ -53,6 +53,9 @@ public class SectionWidget extends ClickableParentWidget {
 		dividerWidget.render(drawContext, mouseX, mouseY, delta);
 		collapsedTweener.setTarget(dividerWidget.getWrapped().isCollapsed ? 0 : 1);
 		collapsedTweener.update();
+		if (dividerWidget.getWrapped().isCollapsed && collapsedTweener.isAtTarget()) {
+			return; // dont render if fully collapsed
+		}
 		newMatrixScope(drawContext, stack -> {
 			stack.scaleAround(1, collapsedTweener.getF(), this.getX() + this.getWidth() / 2F, this.getY() + dividerWidget.getWrapped().getHeight());
 			drawLines(drawContext);
