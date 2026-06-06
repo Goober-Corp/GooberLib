@@ -23,7 +23,7 @@ public class GooberLibEntrypoint implements ModInitializer {
 		try {
 			long start = System.nanoTime();
 
-			builtConfigMap = ConfigDiscovery.discover();
+			builtConfigMap = ConfigDiscovery.discover(false);
 			//TODO make this async
 			LOGGER.info("Discovered {} configs in {}ms", builtConfigMap.size(), Duration.ofNanos(System.nanoTime() - start).toMillis());
 
@@ -35,5 +35,15 @@ public class GooberLibEntrypoint implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		try {
+			long start = System.nanoTime();
+
+			builtConfigMap.putAll(ConfigDiscovery.discover(true));
+			LOGGER.info("Discovered {} late configs in {}ms", builtConfigMap.size(), Duration.ofNanos(System.nanoTime() - start).toMillis());
+
+			GooberLibApi.loadAll();
+		} catch (IOException e) {
+			throw rethrow(e);
+		}
 	}
 }

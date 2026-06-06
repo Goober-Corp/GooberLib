@@ -25,7 +25,7 @@ public class ConfigDiscovery {
 	}; // TODO improve hacky approach
 
 
-	public static Map<String, BuiltConfig> discover() throws IOException {
+	public static Map<String, BuiltConfig> discover(boolean late) throws IOException {
 		final Map<String, BuiltConfig> flattened = new HashMap<>();
 
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -46,6 +46,7 @@ public class ConfigDiscovery {
 
 						if (configClass.isAnnotationPresent(GooberConfig.class)) {
 							GooberConfig gooberConfig = configClass.getAnnotation(GooberConfig.class);
+							if (gooberConfig.lazy() != late) return;
 							String modId = gooberConfig.modId();
 							if (flattened.containsKey(modId)) {
 								throw new IllegalStateException("Multiple config classes found for the same mod id: %s".formatted(modId));

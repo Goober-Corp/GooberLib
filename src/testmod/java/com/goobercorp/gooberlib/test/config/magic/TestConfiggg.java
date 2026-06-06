@@ -4,8 +4,12 @@ import com.goobercorp.gooberlib.annotations.GooberConfig;
 import com.goobercorp.gooberlib.annotations.Section;
 import com.goobercorp.gooberlib.option.individual.primitive.CharOption;
 
-@GooberConfig(modId = "fabricloader") // tehe
+@GooberConfig(modId = "fabricloader", lazy = true) // tehe
 public class TestConfiggg {
 	@Section("meow meow")
 	public static final CharOption charOption = new CharOption("char option", "char description");
+
+	static {
+		IO.println("I'm late!");
+	}
 }

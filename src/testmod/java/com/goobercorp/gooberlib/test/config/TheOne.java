@@ -186,4 +186,8 @@ public class TheOne {
 			.addBuiltSection(testSection)
 		.buildCategory();
 	// @formatter:on
+
+	static {
+		IO.println("I'm early!");
+	}
 }
