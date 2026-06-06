@@ -65,6 +65,7 @@ public class CategoryWidget extends ClickableParentWidget {
 	protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
 		drawLines(guiGraphics);
 		double totalYOffset = 0;
+		double height = 0;
 		for (PrecisePositionWidgetWrapper<?> entry : values) {
 			entry.setOffsetY(totalYOffset);
 			entry.render(guiGraphics, i, j, f);
@@ -72,7 +73,9 @@ public class CategoryWidget extends ClickableParentWidget {
 			if (wrapped instanceof SectionWidget section) {
 				totalYOffset -= section.getOffsetRequired();
 			}
+			height += entry.getWrapped().getHeight() + VERTICAL_PADDING / 2;
 		}
+		this.setHeight((int) height);
 	}
 
 	private void drawLines(GuiGraphics guiGraphics) {
