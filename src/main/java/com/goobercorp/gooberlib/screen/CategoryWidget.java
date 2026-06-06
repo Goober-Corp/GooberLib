@@ -35,7 +35,7 @@ public class CategoryWidget extends ClickableParentWidget {
 				children().add(wrapper);
 				evilLayout.put(section, wrapper);
 				values.add(wrapper);
-				y += sectionWidget.getHeight();
+				y += sectionWidget.uncollapsedHeight;
 			} else {
 				y += addOptionWithChildren((OptionContext<?>) o, y, x + 5);
 			}
