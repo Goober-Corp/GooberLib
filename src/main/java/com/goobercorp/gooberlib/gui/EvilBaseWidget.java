@@ -26,7 +26,7 @@ public class EvilBaseWidget extends AbstractWidget {
 	protected float horizontalPosOffset = 0;
 	protected Tweener clickTweener;
 	//TODO: add back reference to BaseOption so we can easily reset on mouse middle click here
-	private final Component name;
+	protected final Component name;
 	private final Function<BaseOption<?>, Component> valueFormatter;
 
 	public EvilBaseWidget(Component name, int x, int y, int width, int height, Function<BaseOption<?>, Component> valueFormatter) {

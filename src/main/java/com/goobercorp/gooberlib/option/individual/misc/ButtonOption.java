@@ -28,4 +28,8 @@ public class ButtonOption extends DummyOption<ButtonOption> {
 	public void execute() {
 		r.run();
 	}
+
+	public Runnable getRunnable() {
+		return r;
+	}
 }
