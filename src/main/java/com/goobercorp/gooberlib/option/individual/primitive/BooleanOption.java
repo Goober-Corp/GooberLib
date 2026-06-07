@@ -4,7 +4,6 @@ import com.goobercorp.gooberlib.interfaces.AdvanceableOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.network.chat.Component;
 
 import java.util.function.Function;
 
@@ -13,18 +12,18 @@ public class BooleanOption extends BaseOption<BooleanOption> implements Advancea
 	/// @implNote Modifying this value directly will *not* trigger
 	public boolean value;
 
-	public BooleanOption(Component name, Function<BooleanOption, Component> description, boolean defaultValue, WidgetProvider<BooleanOption> provider) {
+	public BooleanOption(CharSequence name, Function<BooleanOption, CharSequence> description, boolean defaultValue, WidgetProvider<BooleanOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
 
-	public BooleanOption(String name, String description) {
-		this(Component.literal(name), _ -> Component.literal(description), false, null);
+	public BooleanOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, false, null);
 	}
 
-	public BooleanOption(String name, String description, WidgetProvider<BooleanOption> provider) {
-		this(Component.literal(name), _ -> Component.literal(description), false, provider);
+	public BooleanOption(CharSequence name, CharSequence description, WidgetProvider<BooleanOption> provider) {
+		this(name, _ -> description, false, provider);
 	}
 
 	@Override

@@ -3,30 +3,31 @@ package com.goobercorp.gooberlib.option.individual.minecraft;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
+
 import java.util.function.Function;
-import net.minecraft.network.chat.Component;
+
 import net.minecraft.world.phys.Vec3;
 
 public class Vec3dOption extends BaseOption<Vec3dOption> {
 	private final Vec3 defaultValue;
 	private Vec3 value;
 
-	public Vec3dOption(Component name, Function<Vec3dOption, Component> description, Vec3 defaultValue, WidgetProvider<Vec3dOption> provider) {
+	public Vec3dOption(CharSequence name, Function<Vec3dOption, CharSequence> description, Vec3 defaultValue, WidgetProvider<Vec3dOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
 
-	public Vec3dOption(String name, String description, Vec3 defaultValue) {
-		this(Component.literal(name), _ -> Component.nullToEmpty(description), defaultValue, null);
+	public Vec3dOption(CharSequence name, CharSequence description, Vec3 defaultValue) {
+		this(name, _ -> description, defaultValue, null);
 	}
 
-	public Vec3dOption(String name, String description) {
-		this(Component.literal(name), _ -> Component.literal(description), Vec3.ZERO, null);
+	public Vec3dOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, Vec3.ZERO, null);
 	}
 
-	public Vec3dOption(String name, String description, Vec3 defaultValue, WidgetProvider<Vec3dOption> provider) {
-		this(Component.literal(name), _ -> Component.literal(description), defaultValue, provider);
+	public Vec3dOption(CharSequence name, CharSequence description, Vec3 defaultValue, WidgetProvider<Vec3dOption> provider) {
+		this(name, _ -> description, defaultValue, provider);
 	}
 
 	@Override

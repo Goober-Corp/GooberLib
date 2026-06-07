@@ -5,11 +5,11 @@ import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DynamicOps;
+
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import net.minecraft.network.chat.Component;
 
 public class LongRangeOption extends BaseOption<LongRangeOption> implements NumberRangeOption<LongRangeOption> {
 	private final long defaultValueMin;
@@ -19,7 +19,7 @@ public class LongRangeOption extends BaseOption<LongRangeOption> implements Numb
 	public long minValue;
 	public long maxValue;
 
-	public LongRangeOption(Component name, Function<LongRangeOption, Component> description, long defaultValueMin, long defaultValueMax, long min, long max, WidgetProvider<LongRangeOption> provider) {
+	public LongRangeOption(CharSequence name, Function<LongRangeOption, CharSequence> description, long defaultValueMin, long defaultValueMax, long min, long max, WidgetProvider<LongRangeOption> provider) {
 		super(name, description, provider);
 		this.minValue = defaultValueMin;
 		this.maxValue = defaultValueMax;

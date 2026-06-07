@@ -3,26 +3,26 @@ package com.goobercorp.gooberlib.option.individual.java;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
+
 import java.util.function.Function;
-import net.minecraft.network.chat.Component;
 
 public class StringOption extends BaseOption<StringOption> {
 	private final String defaultValue;
 	/// @implNote Modifying this value directly will *not* trigger .onChange()
 	public String value;
 
-	public StringOption(Component name, Function<StringOption, Component> description, String defaultValue, WidgetProvider<StringOption> provider) {
+	public StringOption(CharSequence name, Function<StringOption, CharSequence> description, String defaultValue, WidgetProvider<StringOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
 
-	public StringOption(String name, String description) {
-		this(Component.literal(name), _ -> Component.literal(description), "", null);
+	public StringOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, "", null);
 	}
 
-	public StringOption(String name, String description, WidgetProvider<StringOption> provider) {
-		this(Component.literal(name), _ -> Component.literal(description), "", provider);
+	public StringOption(CharSequence name, CharSequence description, WidgetProvider<StringOption> provider) {
+		this(name, _ -> description, "", provider);
 	}
 
 	// todo:

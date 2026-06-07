@@ -35,10 +35,10 @@ public class Yacl {
 //	public static final BooleanOption customBooleanToggle = new BooleanOption("Custom Boolean Toggle", "You can customize controllers like so! YACL is truly infinitely customizable! This tooltip is long in order to demonstrate the cool, smooth scrolling of these descriptions. Did you know, they are also super clickable?! I know, cool right, YACL 3.x really is amazing."); // todo: widget
 	public static final BooleanOption tickbox = new BooleanOption("Tick Box", "There are even alternate methods of displaying the same data type!");
 
-	public static final IntOption intSlider = new IntOption(Component.literal("Int Slider"), _ -> Component.empty(), 1, 0, 3, null);
-	public static final DoubleOption doubleSlider = new DoubleOption(Component.literal("Double Slider"), _ -> Component.empty(), 0.05, 0, 3, null);
-	public static final FloatOption floatSlider = new FloatOption(Component.literal("Double Slider"), _ -> Component.empty(), 0.1f, 0, 3, null);
-	public static final LongOption longSlider = new LongOption(Component.literal("Double Slider"), _ -> Component.empty(), 100, 0, 1_000_000, null);
+	public static final IntOption intSlider = new IntOption("Int Slider", _ -> "", 1, 0, 3, null);
+	public static final DoubleOption doubleSlider = new DoubleOption("Double Slider", _ -> "", 0.05, 0, 3, null);
+	public static final FloatOption floatSlider = new FloatOption("Double Slider", _ -> "", 0.1f, 0, 3, null);
+	public static final LongOption longSlider = new LongOption("Double Slider", _ -> "", 100, 0, 1_000_000, null);
 	public static final StringOption ComponentField = new StringOption("Component Option", ""); // todo: widget
 	public static final ColorOption colorOption = new ColorOption("Color Option", ""); // todo: widget
 

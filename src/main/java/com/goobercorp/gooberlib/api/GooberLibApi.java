@@ -195,6 +195,7 @@ public class GooberLibApi {
 
 	private static final SortedSet<WidgetHandler<?>> widgetProviders = new TreeSet<>(Comparator.<WidgetHandler<?>>comparingInt(o -> o.priority).thenComparing((_, _) -> -1));
 
+	// fixme?: bad bad bad bad bad
 	static {
 		// noinspection unchecked, rawtypes
 		GooberLibApi.<NumberOption>registerWidgetProvider(t -> t instanceof NumberOption, WidgetProviders.numberSlider(), -2);

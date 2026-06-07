@@ -30,7 +30,7 @@ public class EvilButtonWidget extends EvilBaseWidget {
 	protected void drawText(GuiGraphics drawContext) {
 		newMatrixScope(drawContext, stack -> {
 			Component yeah = opt.name();
-			stack.translate(this.getX() + this.getWidth() / 2F, this.getY() + this.height / 2F - Minecraft.getInstance().font.lineHeight / 2);
+			stack.translate(this.getX() + this.getWidth() / 2F, this.getY() + this.height / 2F - Minecraft.getInstance().font.lineHeight / 2f);
 			stack.scaleAround(1 - clickTweener.getF() * 0.25F, Minecraft.getInstance().font.width(yeah) / 2F, 5F);
 			drawContext.drawString(Minecraft.getInstance().font, yeah, 0, 0, MainConfig.primaryCol);
 		});

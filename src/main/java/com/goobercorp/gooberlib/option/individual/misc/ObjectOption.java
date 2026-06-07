@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import net.minecraft.network.chat.Component;
 
 import static org.apache.commons.io.function.Erase.rethrow;
 
@@ -21,7 +20,7 @@ public class ObjectOption<T> extends BaseOption<ObjectOption<T>> {
 	private final T instance;
 	private final List<Option<?>> options;
 
-	public ObjectOption(Component name, T instance, Function<ObjectOption<T>, Component> description, @Nullable WidgetProvider<ObjectOption<T>> provider) {
+	public ObjectOption(CharSequence name, T instance, Function<ObjectOption<T>, CharSequence> description, @Nullable WidgetProvider<ObjectOption<T>> provider) {
 		super(name, description, provider);
 		this.instance = instance;
 		this.options = new ArrayList<>();
@@ -40,8 +39,8 @@ public class ObjectOption<T> extends BaseOption<ObjectOption<T>> {
 		}
 	}
 
-	public ObjectOption(String name, T instance, String description) {
-		this(Component.nullToEmpty(name), instance, _ -> Component.nullToEmpty(description), null);
+	public ObjectOption(CharSequence name, T instance, CharSequence description) {
+		this(name, instance, _ -> description, null);
 	}
 
 	@Override

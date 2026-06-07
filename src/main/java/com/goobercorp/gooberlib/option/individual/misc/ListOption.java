@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-import net.minecraft.network.chat.Component;
 
 // todo: test lol
 public class ListOption<T extends Option<T>> extends BaseOption<ListOption<T>> implements Iterable<T> {
@@ -23,7 +22,7 @@ public class ListOption<T extends Option<T>> extends BaseOption<ListOption<T>> i
 	private final @Unmodifiable List<T> defaultValue;
 	private final List<T> value;
 
-	public ListOption(Component name, Function<ListOption<T>, Component> description, Supplier<T> initial, boolean insertAtEnd, List<T> defaultValue, @Nullable WidgetProvider<ListOption<T>> provider) {
+	public ListOption(CharSequence name, Function<ListOption<T>, CharSequence> description, Supplier<T> initial, boolean insertAtEnd, List<T> defaultValue, @Nullable WidgetProvider<ListOption<T>> provider) {
 		super(name, description, provider);
 		this.initial = initial;
 		this.insertAtEnd = insertAtEnd;
@@ -31,8 +30,8 @@ public class ListOption<T extends Option<T>> extends BaseOption<ListOption<T>> i
 		this.value = new ArrayList<>(defaultValue);
 	}
 
-	public ListOption(String name, List<T> defaultValue, Supplier<T> initial) {
-		this(Component.nullToEmpty(name), _ -> Component.empty(), initial, true, defaultValue, null);
+	public ListOption(CharSequence name, List<T> defaultValue, Supplier<T> initial) {
+		this(name, _ -> "", initial, true, defaultValue, null);
 	}
 
 	@Override

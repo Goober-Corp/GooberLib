@@ -5,11 +5,11 @@ import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DynamicOps;
+
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import net.minecraft.network.chat.Component;
 
 public class DoubleRangeOption extends BaseOption<DoubleRangeOption> implements NumberRangeOption<DoubleRangeOption> {
 	private final double defaultValueMin;
@@ -19,7 +19,7 @@ public class DoubleRangeOption extends BaseOption<DoubleRangeOption> implements 
 	public double minValue;
 	public double maxValue;
 
-	public DoubleRangeOption(Component name, Function<DoubleRangeOption, Component> description, double defaultValueMin, double defaultValueMax, double min, double max, WidgetProvider<DoubleRangeOption> provider) {
+	public DoubleRangeOption(CharSequence name, Function<DoubleRangeOption, CharSequence> description, double defaultValueMin, double defaultValueMax, double min, double max, WidgetProvider<DoubleRangeOption> provider) {
 		super(name, description, provider);
 		this.minValue = defaultValueMin;
 		this.maxValue = defaultValueMax;

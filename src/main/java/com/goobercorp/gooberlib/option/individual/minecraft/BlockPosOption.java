@@ -3,22 +3,23 @@ package com.goobercorp.gooberlib.option.individual.minecraft;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
+
 import java.util.function.Function;
+
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 
 public class BlockPosOption extends BaseOption<BlockPosOption> {
 	private final BlockPos defaultValue;
 	private BlockPos value;
 
-	public BlockPosOption(Component name, Function<BlockPosOption, Component> description, BlockPos defaultValue, WidgetProvider<BlockPosOption> provider) {
+	public BlockPosOption(CharSequence name, Function<BlockPosOption, CharSequence> description, BlockPos defaultValue, WidgetProvider<BlockPosOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
 
-	public BlockPosOption(String name, String description) {
-		this(Component.nullToEmpty(name), _ -> Component.nullToEmpty(description), BlockPos.ZERO, null);
+	public BlockPosOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, BlockPos.ZERO, null);
 	}
 
 	@Override

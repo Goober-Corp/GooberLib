@@ -7,11 +7,13 @@ import com.goobercorp.gooberlib.builder.section.ConfigSection;
 import com.goobercorp.gooberlib.builder.section.SectionBuilder;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
+import com.goobercorp.gooberlib.util.Util;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
 import net.minecraft.network.chat.Component;
 
 public class CategoryBuilder {
@@ -23,10 +25,10 @@ public class CategoryBuilder {
 	@Nullable
 	private final GooberConfigBuilder parent;
 
-	public CategoryBuilder(@Nullable GooberConfigBuilder parent, Component name, Component description) {
+	public CategoryBuilder(@Nullable GooberConfigBuilder parent, CharSequence name, CharSequence description) {
 		this.parent = parent;
-		this.name = name;
-		this.description = description;
+		this.name = Util.fromChars(name);
+		this.description = Util.fromChars(description);
 	}
 
 	/**

@@ -12,8 +12,6 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.minecraft.network.chat.Component;
-
 import static org.apache.commons.io.function.Erase.rethrow;
 
 public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
@@ -24,39 +22,18 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 * @param description the description of the category
 	 * @return the category builder
 	 */
-	public static CategoryBuilder builder(Component name, Component description) {
+	public static CategoryBuilder builder(CharSequence name, CharSequence description) {
 		return new CategoryBuilder(null, name, description);
 	}
 
 	/**
 	 * Makes a new {@link CategoryBuilder}
 	 *
-	 * @param name        the name of the category
-	 * @param description the description of the category
-	 * @return the category builder
-	 */
-	public static CategoryBuilder builder(String name, String description) {
-		return builder(Component.nullToEmpty(name), Component.nullToEmpty(description));
-	}
-
-	/**
-	 * Makes a new {@link CategoryBuilder}
-	 *
 	 * @param name the name of the category
 	 * @return the category builder
 	 */
-	public static CategoryBuilder builder(String name) {
-		return builder(Component.nullToEmpty(name), Component.empty());
-	}
-
-	/**
-	 * Makes a new {@link CategoryBuilder}
-	 *
-	 * @param name the name of the category
-	 * @return the category builder
-	 */
-	public static CategoryBuilder builder(Component name) {
-		return builder(name, Component.empty());
+	public static CategoryBuilder builder(CharSequence name) {
+		return builder(name, "");
 	}
 
 	/**
@@ -67,7 +44,7 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 * @param consumer    the lambda that consumes the builder
 	 * @return the category builder
 	 */
-	public static ConfigCategory builder(Component name, Component description, Consumer<CategoryBuilder> consumer) {
+	public static ConfigCategory builder(CharSequence name, CharSequence description, Consumer<CategoryBuilder> consumer) {
 		CategoryBuilder builder = new CategoryBuilder(null, name, description);
 		consumer.accept(builder);
 		return builder.buildCategory();
@@ -80,37 +57,8 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 * @param consumer the lambda that consumes the builder
 	 * @return the category builder
 	 */
-	public static ConfigCategory builder(Component name, Consumer<CategoryBuilder> consumer) {
-		CategoryBuilder builder = new CategoryBuilder(null, name, Component.empty());
-		consumer.accept(builder);
-		return builder.buildCategory();
-	}
-
-	/**
-	 * Makes a new {@link CategoryBuilder}, lets the {@code consumer} consume it, builds it, and returns it
-	 *
-	 * @param name        the name of the category
-	 * @param description the description of the category
-	 * @param consumer    the lambda that consumes the builder
-	 * @return the category builder
-	 */
-	public static ConfigCategory builder(String name, String description, Consumer<CategoryBuilder> consumer) {
-		CategoryBuilder builder = new CategoryBuilder(null, Component.literal(name), Component.literal(description));
-		consumer.accept(builder);
-		return builder.buildCategory();
-	}
-
-	/**
-	 * Makes a new {@link CategoryBuilder}, lets the {@code consumer} consume it, builds it, and returns it
-	 *
-	 * @param name     the name of the category
-	 * @param consumer the lambda that consumes the builder
-	 * @return the category builder
-	 */
-	public static ConfigCategory builder(String name, Consumer<CategoryBuilder> consumer) {
-		CategoryBuilder builder = new CategoryBuilder(null, Component.literal(name), Component.empty());
-		consumer.accept(builder);
-		return builder.buildCategory();
+	public static ConfigCategory builder(CharSequence name, Consumer<CategoryBuilder> consumer) {
+		return builder(name, "", consumer);
 	}
 
 	/**
@@ -121,7 +69,7 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 * @param description the description of the category
 	 * @return a {@link CategoryBuilder} with the options of the class
 	 */
-	public static CategoryBuilder ofClassBuildable(Class<?> clazz, Component name, Component description) {
+	public static CategoryBuilder ofClassBuildable(Class<?> clazz, CharSequence name, CharSequence description) {
 		CategoryBuilder builder = builder(name, description);
 		SectionBuilder sectionBuilder = null;
 		for (Field f : clazz.getDeclaredFields()) {
@@ -147,20 +95,6 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 		return builder;
 	}
 
-
-	/**
-	 * Reads {@code clazz}'s fields for fields that extend {@link Option} and for @{@link Section} annotations and builds a {@link CategoryBuilder} for that
-	 *
-	 * @param clazz       the class to read
-	 * @param name        the name of the category
-	 * @param description the description of the category
-	 * @return a {@link CategoryBuilder} with the options of the class
-	 */
-	public static CategoryBuilder ofClassBuildable(Class<?> clazz, String name, String description) {
-		return ofClassBuildable(clazz, Component.literal(name), Component.literal(description));
-	}
-
-
 	/**
 	 * Reads {@code clazz}'s fields for fields that extend {@link Option} and for @{@link Section} annotations and builds a {@link CategoryBuilder} for that
 	 *
@@ -168,8 +102,8 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 * @param name  the name of the category
 	 * @return a {@link CategoryBuilder} with the options of the class
 	 */
-	public static CategoryBuilder ofClassBuildable(Class<?> clazz, String name) {
-		return ofClassBuildable(clazz, Component.literal(name), Component.empty());
+	public static CategoryBuilder ofClassBuildable(Class<?> clazz, CharSequence name) {
+		return ofClassBuildable(clazz, name, "");
 	}
 
 
@@ -181,31 +115,19 @@ public record ConfigCategory(Metadata metadata, List<OptionHolder> elements) {
 	 * @param description the description of the category
 	 * @return a {@link ConfigCategory} with the options of the class
 	 */
-	public static ConfigCategory ofClass(Class<?> clazz, Component name, Component description) {
+	public static ConfigCategory ofClass(Class<?> clazz, CharSequence name, CharSequence description) {
 		return ofClassBuildable(clazz, name, description).buildCategory();
 	}
 
 	/**
 	 * Reads {@code clazz}'s fields for fields that extend {@link Option} and for @{@link Section} annotations and makes a {@link ConfigCategory} for that
 	 *
-	 * @param clazz       the class to read
-	 * @param name        the name of the category
-	 * @param description the description of the category
-	 * @return a {@link ConfigCategory} with the options of the class
-	 */
-	public static ConfigCategory ofClass(Class<?> clazz, String name, String description) {
-		return ofClass(clazz, Component.nullToEmpty(name), Component.nullToEmpty(description));
-	}
-
-	/**
-	 * Reads {@code clazz}'s fields for fields that extend {@link Option} and for @{@link Section} annotations and makes a {@link ConfigCategory} for that
-	 *
 	 * @param clazz the class to read
 	 * @param name  the name of the category
 	 * @return a {@link ConfigCategory} with the options of the class
 	 */
-	public static ConfigCategory ofClass(Class<?> clazz, String name) {
-		return ofClass(clazz, Component.nullToEmpty(name), Component.empty());
+	public static ConfigCategory ofClass(Class<?> clazz, CharSequence name) {
+		return ofClass(clazz, name, "");
 	}
 
 	@Override

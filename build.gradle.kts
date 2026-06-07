@@ -23,7 +23,7 @@ loom {
         }
     }
 
-    accessWidenerPath = file("src/main/resources/gooberlib.accesswidener")
+    accessWidenerPath = file("src/main/resources/gooberlib.classtweaker")
 
     createRemapConfigurations(testmod.get())
 }

@@ -9,26 +9,24 @@ import java.awt.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import net.minecraft.network.chat.Component;
-
 public class ColorOption extends BaseOption<ColorOption> {
 	/// @implNote This is in ARGB
 	private final int defaultValue;
 	/// @implNote Modifying this value directly will *not* trigger .onChange(). This is in ARGB
 	public int value;
 
-	public ColorOption(Component name, Function<ColorOption, Component> description, int defaultValue, WidgetProvider<ColorOption> provider) {
+	public ColorOption(CharSequence name, Function<ColorOption, CharSequence> description, int defaultValue, WidgetProvider<ColorOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
 
-	public ColorOption(String name, String description) {
-		this(Component.literal(name), _ -> Component.literal(description), 0xFFFFFFFF, null);
+	public ColorOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, 0xFFFFFFFF, null);
 	}
 
-	public ColorOption(String name, String description, WidgetProvider<ColorOption> provider) {
-		this(Component.literal(name), _ -> Component.literal(description), 0xFFFFFFFF, provider);
+	public ColorOption(CharSequence name, CharSequence description, WidgetProvider<ColorOption> provider) {
+		this(name, _ -> description, 0xFFFFFFFF, provider);
 	}
 
 	@Override

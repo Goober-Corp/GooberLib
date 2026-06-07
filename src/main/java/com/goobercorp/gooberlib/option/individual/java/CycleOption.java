@@ -4,7 +4,6 @@ import com.goobercorp.gooberlib.interfaces.AdvanceableOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -13,11 +12,11 @@ import java.util.function.Function;
 public class CycleOption<T> extends BaseOption<CycleOption<T>> implements AdvanceableOption<CycleOption<T>> {
 	private final T defaultValue;
 	private final List<T> options;
-	private final Function<T, Component> displayNameProvider;
+	private final Function<T, CharSequence> displayNameProvider;
 	/// @implNote Modifying this value directly will *not* trigger .onChange()
 	public T value;
 
-	public CycleOption(Component name, Function<CycleOption<T>, Component> description, T defaultValue, List<T> options, WidgetProvider<CycleOption<T>> provider, @NotNull Function<T, Component> displayNameProvider) {
+	public CycleOption(CharSequence name, Function<CycleOption<T>, CharSequence> description, T defaultValue, List<T> options, WidgetProvider<CycleOption<T>> provider, @NotNull Function<T, CharSequence> displayNameProvider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -26,8 +25,8 @@ public class CycleOption<T> extends BaseOption<CycleOption<T>> implements Advanc
 	}
 
 	@SafeVarargs
-	public CycleOption(String name, String description, Function<T, String> displayNameProvider, T... options) {
-		this(Component.literal(name), _ -> Component.literal(description), options[0], List.of(options), null, s -> Component.nullToEmpty(displayNameProvider.apply(s)));
+	public CycleOption(String name, String description, Function<T, CharSequence> displayNameProvider, T... options) {
+		this(name, _ -> description, options[0], List.of(options), null, displayNameProvider);
 	}
 
 
@@ -67,7 +66,7 @@ public class CycleOption<T> extends BaseOption<CycleOption<T>> implements Advanc
 		return defaultValue;
 	}
 
-	public Function<CycleOption<T>, Component> getDisplayNameProvider() {
+	public Function<CycleOption<T>, CharSequence> getDisplayNameProvider() {
 		return o -> displayNameProvider.apply(o.value);
 	}
 

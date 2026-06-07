@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import com.goobercorp.gooberlib.util.Util;
 import net.minecraft.IdentifierException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -110,11 +111,11 @@ public class WidgetProviders {
 	}
 
 	public static <E> WidgetProvider<CycleOption<E>> cyclingOption() {
-		return (opt, x, y, width, height) -> new CyclingOptionWidget(opt, x, y, width, height, opt.getDisplayNameProvider());
+		return (opt, x, y, width, height) -> new CyclingOptionWidget(opt, x, y, width, height, Util.fromCharsFunction(opt.getDisplayNameProvider()));
 	}
 
-	public static <T extends NumberOption<T>> WidgetProvider<T> numberSliderWithFormatter(Function<T, Component> valueFormatter) {
-		return (theOption, x, y, width, height) -> new EvilSliderWidget(theOption, x, y, width, height, valueFormatter);
+	public static <T extends NumberOption<T>> WidgetProvider<T> numberSliderWithFormatter(Function<T, CharSequence> valueFormatter) {
+		return (theOption, x, y, width, height) -> new EvilSliderWidget(theOption, x, y, width, height, Util.fromCharsFunction(valueFormatter));
 	}
 
 	public static <T extends NumberOption<T>> WidgetProvider<T> numberField() {
@@ -167,12 +168,8 @@ public class WidgetProviders {
 		return (theOption, x, y, width, height) -> new CyclingOptionWidget(theOption, x, y, width, height, o -> CommonComponents.optionStatus(o.getValue()));
 	}
 
-	public static WidgetProvider<BooleanOption> booleanToggleWidget(Component whenTrue, Component whenFalse) {
-		return (theOption, x, y, width, height) -> new CyclingOptionWidget(theOption, x, y, width, height, o -> o.getValue() ? whenTrue : whenFalse);
-	}
-
-	public static WidgetProvider<BooleanOption> booleanToggleWidget(String whenTrue, String whenFalse) {
-		return booleanToggleWidget(Component.literal(whenTrue), Component.literal(whenFalse));
+	public static WidgetProvider<BooleanOption> booleanToggleWidget(CharSequence whenTrue, CharSequence whenFalse) {
+		return (theOption, x, y, width, height) -> new CyclingOptionWidget(theOption, x, y, width, height, Util.fromCharsFunction(o -> o.getValue() ? whenTrue : whenFalse));
 	}
 
 	public static WidgetProvider<StringOption> stringField() {

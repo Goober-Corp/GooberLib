@@ -4,9 +4,9 @@ import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.serialization.DynamicOps;
+
 import java.util.function.Function;
 import java.util.function.Predicate;
-import net.minecraft.network.chat.Component;
 
 import static java.lang.Math.clamp;
 
@@ -16,7 +16,7 @@ public class IntOption extends BaseOption<IntOption> implements NumberOption<Int
 	private final int max;
 	public int value;
 
-	public IntOption(Component name, Function<IntOption, Component> description, int defaultValue, int min, int max, WidgetProvider<IntOption> provider) {
+	public IntOption(CharSequence name, Function<IntOption, CharSequence> description, int defaultValue, int min, int max, WidgetProvider<IntOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -24,12 +24,12 @@ public class IntOption extends BaseOption<IntOption> implements NumberOption<Int
 		this.max = max;
 	}
 
-	public IntOption(String name, String description) {
-		this(Component.literal(name), _ -> Component.literal(description), 0, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
+	public IntOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
 	}
 
-	public IntOption(String name, String description, WidgetProvider<IntOption> provider) {
-		this(Component.literal(name), _ -> Component.literal(description), 0, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+	public IntOption(CharSequence name, CharSequence description, WidgetProvider<IntOption> provider) {
+		this(name, _ -> description, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
 	}
 
 	@Override

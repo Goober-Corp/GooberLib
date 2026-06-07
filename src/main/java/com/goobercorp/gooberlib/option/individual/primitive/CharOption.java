@@ -4,9 +4,9 @@ import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.serialization.DynamicOps;
+
 import java.util.function.Function;
 import java.util.function.Predicate;
-import net.minecraft.network.chat.Component;
 
 public class CharOption extends BaseOption<CharOption> implements NumberOption<CharOption> {
 	private final char defaultValue;
@@ -14,7 +14,7 @@ public class CharOption extends BaseOption<CharOption> implements NumberOption<C
 	private final char max;
 	public char value;
 
-	public CharOption(Component name, Function<CharOption, Component> description, char defaultValue, char min, char max, WidgetProvider<CharOption> provider) {
+	public CharOption(CharSequence name, Function<CharOption, CharSequence> description, char defaultValue, char min, char max, WidgetProvider<CharOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -22,12 +22,12 @@ public class CharOption extends BaseOption<CharOption> implements NumberOption<C
 		this.max = max;
 	}
 
-	public CharOption(String name, String description) {
-		this(Component.literal(name), _ -> Component.literal(description), (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, null);
+	public CharOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, null);
 	}
 
-	public CharOption(String name, String description, WidgetProvider<CharOption> provider) {
-		this(Component.literal(name), _ -> Component.literal(description), (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, provider);
+	public CharOption(CharSequence name, CharSequence description, WidgetProvider<CharOption> provider) {
+		this(name, _ -> description, (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, provider);
 	}
 
 	@Override

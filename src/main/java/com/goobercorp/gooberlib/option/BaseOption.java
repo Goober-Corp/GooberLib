@@ -3,6 +3,7 @@ package com.goobercorp.gooberlib.option;
 import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.interfaces.ValueChangeCallback;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
+import com.goobercorp.gooberlib.util.Util;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
@@ -16,9 +17,9 @@ public abstract class BaseOption<T extends Option<T>> implements Option<T> {
 	private ValueChangeCallback<T> callback;
 	private final WidgetProvider<T> provider;
 
-	protected BaseOption(Component name, Function<T, Component> description, @Nullable WidgetProvider<T> provider) {
-		this.name = name;
-		this.description = description;
+	protected BaseOption(CharSequence name, Function<T, CharSequence> description, @Nullable WidgetProvider<T> provider) {
+		this.name = Util.fromChars(name);
+		this.description = Util.fromCharsFunction(description);
 		this.provider = provider == null
 				? GooberLibApi.getDefaultWidgetProvider(thisT())
 				: provider;

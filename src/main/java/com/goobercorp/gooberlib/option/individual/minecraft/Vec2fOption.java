@@ -3,30 +3,31 @@ package com.goobercorp.gooberlib.option.individual.minecraft;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
+
 import java.util.function.Function;
-import net.minecraft.network.chat.Component;
+
 import net.minecraft.world.phys.Vec2;
 
 public class Vec2fOption extends BaseOption<Vec2fOption> {
 	private final Vec2 defaultValue;
 	private Vec2 value;
 
-	public Vec2fOption(Component name, Function<Vec2fOption, Component> description, Vec2 defaultValue, WidgetProvider<Vec2fOption> provider) {
+	public Vec2fOption(CharSequence name, Function<Vec2fOption, CharSequence> description, Vec2 defaultValue, WidgetProvider<Vec2fOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 	}
 
-	public Vec2fOption(String name, String description, Vec2 defaultValue) {
-		this(Component.literal(name), _ -> Component.literal(description), defaultValue, null);
+	public Vec2fOption(CharSequence name, CharSequence description, Vec2 defaultValue) {
+		this(name, _ -> description, defaultValue, null);
 	}
 
-	public Vec2fOption(String name, String description) {
-		this(Component.literal(name), _ -> Component.literal(description), Vec2.ZERO, null);
+	public Vec2fOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, Vec2.ZERO, null);
 	}
 
-	public Vec2fOption(String name, String description, Vec2 defaultValue, WidgetProvider<Vec2fOption> provider) {
-		this(Component.literal(name), _ -> Component.literal(description), defaultValue, provider);
+	public Vec2fOption(CharSequence name, CharSequence description, Vec2 defaultValue, WidgetProvider<Vec2fOption> provider) {
+		this(name, _ -> description, defaultValue, provider);
 	}
 
 	@Override

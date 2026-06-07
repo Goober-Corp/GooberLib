@@ -4,9 +4,9 @@ import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.serialization.DynamicOps;
+
 import java.util.function.Function;
 import java.util.function.Predicate;
-import net.minecraft.network.chat.Component;
 
 import static java.lang.Math.clamp;
 
@@ -16,7 +16,7 @@ public class LongOption extends BaseOption<LongOption> implements NumberOption<L
 	private final long max;
 	public long value;
 
-	public LongOption(Component name, Function<LongOption, Component> description, long defaultValue, long min, long max, WidgetProvider<LongOption> provider) {
+	public LongOption(CharSequence name, Function<LongOption, CharSequence> description, long defaultValue, long min, long max, WidgetProvider<LongOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -24,12 +24,12 @@ public class LongOption extends BaseOption<LongOption> implements NumberOption<L
 		this.max = max;
 	}
 
-	public LongOption(String name, String description) {
-		this(Component.literal(name), _ -> Component.literal(description), 0, Long.MIN_VALUE, Long.MAX_VALUE, null);
+	public LongOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, 0, Long.MIN_VALUE, Long.MAX_VALUE, null);
 	}
 
-	public LongOption(String name, String description, WidgetProvider<LongOption> provider) {
-		this(Component.literal(name), _ -> Component.literal(description), 0, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+	public LongOption(CharSequence name, CharSequence description, WidgetProvider<LongOption> provider) {
+		this(name, _ -> description, 0, Long.MIN_VALUE, Long.MAX_VALUE, provider);
 	}
 
 	@Override

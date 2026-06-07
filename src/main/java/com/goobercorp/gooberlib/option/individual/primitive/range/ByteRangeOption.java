@@ -5,11 +5,11 @@ import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DynamicOps;
+
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import net.minecraft.network.chat.Component;
 
 public class ByteRangeOption extends BaseOption<ByteRangeOption> implements NumberRangeOption<ByteRangeOption> {
 	private final byte defaultValueMin;
@@ -19,7 +19,7 @@ public class ByteRangeOption extends BaseOption<ByteRangeOption> implements Numb
 	public byte minValue;
 	public byte maxValue;
 
-	public ByteRangeOption(Component name, Function<ByteRangeOption, Component> description, byte defaultValueMin, byte defaultValueMax, byte min, byte max, WidgetProvider<ByteRangeOption> provider) {
+	public ByteRangeOption(CharSequence name, Function<ByteRangeOption, CharSequence> description, byte defaultValueMin, byte defaultValueMax, byte min, byte max, WidgetProvider<ByteRangeOption> provider) {
 		super(name, description, provider);
 		this.minValue = defaultValueMin;
 		this.maxValue = defaultValueMax;

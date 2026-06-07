@@ -7,25 +7,25 @@ import com.goobercorp.gooberlib.option.individual.hotkey.HotkeySettings.OrderedS
 import com.goobercorp.gooberlib.option.individual.hotkey.HotkeySettings.When;
 import com.goobercorp.gooberlib.util.HotkeyUtil;
 import com.mojang.serialization.DynamicOps;
+
 import java.util.Locale;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import net.minecraft.network.chat.Component;
 
 public class HotkeyOption extends BaseOption<HotkeyOption> {
 	public int[] keyCodes;
 	private final OnPress onPress;
 	public HotkeySettings settings;
 
-	public HotkeyOption(String name, String description, String defaultKeys, int maxKeyCount, Runnable onPress) {
-		this(Component.nullToEmpty(name), _ -> Component.nullToEmpty(description), null, defaultKeys, maxKeyCount, (_) -> {
+	public HotkeyOption(CharSequence name, CharSequence description, String defaultKeys, int maxKeyCount, Runnable onPress) {
+		this(name, _ -> description, null, defaultKeys, maxKeyCount, (_) -> {
 			onPress.run();
 			return true;
 		}, HotkeySettings.BOTH_PRESS);
 	}
 
-	public HotkeyOption(Component name, Function<HotkeyOption, Component> description, WidgetProvider<HotkeyOption> provider, String defaultKeys, int maxKeyCount, OnPress onPress, HotkeySettings settings) {
+	public HotkeyOption(CharSequence name, Function<HotkeyOption, CharSequence> description, WidgetProvider<HotkeyOption> provider, String defaultKeys, int maxKeyCount, OnPress onPress, HotkeySettings settings) {
 		super(name, description, provider);
 		String[] individualKeys = defaultKeys.replaceAll("\\s+", "").split(",");
 		if (individualKeys.length > maxKeyCount) {

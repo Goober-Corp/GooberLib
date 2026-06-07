@@ -24,7 +24,7 @@
   "mixins": [
     "gooberlib.mixins.json"
   ],
-  "accessWidener": "gooberlib.accesswidener",
+  "accessWidener": "gooberlib.classtweaker",
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric-api": "*",

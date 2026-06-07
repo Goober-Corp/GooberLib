@@ -4,9 +4,9 @@ import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.serialization.DynamicOps;
+
 import java.util.function.Function;
 import java.util.function.Predicate;
-import net.minecraft.network.chat.Component;
 
 import static java.lang.Math.clamp;
 
@@ -16,7 +16,7 @@ public class DoubleOption extends BaseOption<DoubleOption> implements NumberOpti
 	private final double max;
 	public double value;
 
-	public DoubleOption(Component name, Function<DoubleOption, Component> description, double defaultValue, double min, double max, WidgetProvider<DoubleOption> provider) {
+	public DoubleOption(CharSequence name, Function<DoubleOption, CharSequence> description, double defaultValue, double min, double max, WidgetProvider<DoubleOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;
 		this.defaultValue = defaultValue;
@@ -24,12 +24,12 @@ public class DoubleOption extends BaseOption<DoubleOption> implements NumberOpti
 		this.max = max;
 	}
 
-	public DoubleOption(String name, String description) {
-		this(Component.literal(name), _ -> Component.literal(description), 0, -Double.MAX_VALUE, Double.MAX_VALUE, null);
+	public DoubleOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, 0, -Double.MAX_VALUE, Double.MAX_VALUE, null);
 	}
 
-	public DoubleOption(String name, String description, WidgetProvider<DoubleOption> provider) {
-		this(Component.literal(name), _ -> Component.literal(description), 0, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+	public DoubleOption(CharSequence name, CharSequence description, WidgetProvider<DoubleOption> provider) {
+		this(name, _ -> description, 0, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
 	}
 
 	@Override

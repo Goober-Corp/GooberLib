@@ -33,9 +33,9 @@ public class ShowcaseScreen extends Screen {
 			case 1 ->
 					this.addRenderableWidget(new PrecisePositionWidgetWrapper<>(new BooleanOption("bool", "", WidgetProviders.booleanSliderWidget()).makeWidget(x, y, width, height), this.width / 2.0 - 100, this.height / 2.0, Component::empty));
 			case 2 ->
-					this.addRenderableWidget(new PrecisePositionWidgetWrapper<>(new IntOption(Component.literal("int"), _ -> Component.empty(), 0, -20, 20, null).makeWidget(x, y, width, height), this.width / 2.0 - 100, this.height / 2.0, Component::empty));
+					this.addRenderableWidget(new PrecisePositionWidgetWrapper<>(new IntOption("int", _ -> "", 0, -20, 20, null).makeWidget(x, y, width, height), this.width / 2.0 - 100, this.height / 2.0, Component::empty));
 			case 3 ->
-					this.addRenderableWidget(new PrecisePositionWidgetWrapper<>(new ColorOption("color", "", WidgetProviders.colorField()).makeWidget(x, y, width, height), this.width / 2.0 - 100, this.height / 2.0, Component::empty));
+					this.addRenderableWidget(new PrecisePositionWidgetWrapper<>(new ColorOption(Component.literal("color"), "", WidgetProviders.colorField()).makeWidget(x, y, width, height), this.width / 2.0 - 100, this.height / 2.0, Component::empty));
 			case 4 ->
 					this.addRenderableWidget(new PrecisePositionWidgetWrapper<>(new BlockPosOption("block pos", "").makeWidget(x, y, width, height), this.width / 2.0 - 100, this.height / 2.0, Component::empty));
 			case 5 ->

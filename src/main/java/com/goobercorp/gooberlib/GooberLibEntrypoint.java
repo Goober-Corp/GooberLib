@@ -39,6 +39,8 @@ public class GooberLibEntrypoint implements ModInitializer {
 			long start = System.nanoTime();
 
 			builtConfigMap.putAll(ConfigDiscovery.discover(true));
+			// ??? why is the below a thing
+			//noinspection LoggingSimilarMessage
 			LOGGER.info("Discovered {} late configs in {}ms", builtConfigMap.size(), Duration.ofNanos(System.nanoTime() - start).toMillis());
 
 			GooberLibApi.loadAll();

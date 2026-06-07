@@ -15,7 +15,6 @@ import com.goobercorp.gooberlib.option.individual.misc.ListOption;
 import com.goobercorp.gooberlib.option.individual.misc.ObjectOption;
 import com.goobercorp.gooberlib.option.individual.primitive.*;
 import com.goobercorp.gooberlib.option.individual.primitive.range.*;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.joml.Vector4i;
 
@@ -106,12 +105,12 @@ public class TheOne {
 	public static final HotkeyOption hotkeyOption = new HotkeyOption("hotkey option", "hotkey description", "g, c", 2, () -> System.out.println("meow meow"));
 
 	@Section("range options")
-	public static final ByteRangeOption byteRangeOption = new ByteRangeOption(Component.literal("byte range option"), floatRangeOption1 -> Component.literal("float range description"), (byte) 2, (byte) 4, (byte) 0, (byte) 10, WidgetProviders.rangeOption());
-	public static final ShortRangeOption shortRangeOption = new ShortRangeOption(Component.literal("short range option"), floatRangeOption1 -> Component.literal("float range description"), (short) 2, (short) 4, (short) 0, (short) 10, WidgetProviders.rangeOption());
-	public static final IntRangeOption intRangeOption = new IntRangeOption(Component.literal("int range option"), floatRangeOption1 -> Component.literal("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
-	public static final LongRangeOption longRangeOption = new LongRangeOption(Component.literal("long range option"), floatRangeOption1 -> Component.literal("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
-	public static final FloatRangeOption floatRangeOption = new FloatRangeOption(Component.literal("float range option"), floatRangeOption1 -> Component.literal("float range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
-	public static final DoubleRangeOption doubleRangeOption = new DoubleRangeOption(Component.literal("double range option"), floatRangeOption1 -> Component.literal("double range description"), 2, 4, 0, 10, WidgetProviders.rangeOption());
+	public static final ByteRangeOption byteRangeOption = new ByteRangeOption("byte range option", _ -> "byte range description", (byte) 2, (byte) 4, (byte) 0, (byte) 10, WidgetProviders.rangeOption());
+	public static final ShortRangeOption shortRangeOption = new ShortRangeOption("short range option", _ -> "short range description", (short) 2, (short) 4, (short) 0, (short) 10, WidgetProviders.rangeOption());
+	public static final IntRangeOption intRangeOption = new IntRangeOption("int range option", _ -> "int range description", 2, 4, 0, 10, WidgetProviders.rangeOption());
+	public static final LongRangeOption longRangeOption = new LongRangeOption("long range option", _ -> "long range description", 2, 4, 0, 10, WidgetProviders.rangeOption());
+	public static final FloatRangeOption floatRangeOption = new FloatRangeOption("float range option", _ -> "float range description", 2, 4, 0, 10, WidgetProviders.rangeOption());
+	public static final DoubleRangeOption doubleRangeOption = new DoubleRangeOption("double range option", _ -> "double range description", 2, 4, 0, 10, WidgetProviders.rangeOption());
 
 	public static class InstanceMeow {
 		public final StringOption s = new StringOption("Wow!", "");
@@ -126,7 +125,7 @@ public class TheOne {
 
 	public static class Vec4iOption extends ObjectOption<Vec4iOption.Vec4iModel> {
 		public Vec4iOption(String name, String description) {
-			super(Component.literal(name), new Vec4iModel(), _ -> Component.literal(description), null); // TOdo: pretend it has a custom widget provider
+			super(name, new Vec4iModel(), _ -> description, null); // TOdo: pretend it has a custom widget provider
 		}
 
 		public Vector4i getValue() {
@@ -182,7 +181,7 @@ public class TheOne {
 					s.option(new IntOption("option " + i, ""), o -> o.child(new DoubleOption("child option " + finalI, "")));
 				}
 			})
-			.options(new IntOption(Component.literal("meoww"), o -> Component.literal("meow: " + o.getValue()), 0, 0, 1000, null))
+			.options(new IntOption("meoww", o -> "meow: " + o.getValue(), 0, 0, 1000, null))
 			.addBuiltSection(testSection)
 		.buildCategory();
 	// @formatter:on

@@ -4,26 +4,25 @@ import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
-import net.minecraft.network.chat.Component;
 
 public class ButtonOption extends DummyOption<ButtonOption> {
 	private final Runnable r;
 
-	public ButtonOption(Component name, Function<ButtonOption, Component> description, Runnable r, @Nullable WidgetProvider<ButtonOption> provider) {
+	public ButtonOption(CharSequence name, Function<ButtonOption, CharSequence> description, Runnable r, @Nullable WidgetProvider<ButtonOption> provider) {
 		super(name, description, provider);
 		this.r = r;
 	}
 
-	public ButtonOption(Component name, Component description, Runnable r) {
+	public ButtonOption(CharSequence name, CharSequence description, Runnable r) {
 		this(name, _ -> description, r, null);
 	}
 
 	public ButtonOption(String name, String description, Runnable r) {
-		this(Component.nullToEmpty(name), _ -> Component.nullToEmpty(description), r, null);
+		this(name, _ -> description, r, null);
 	}
 
-	public ButtonOption(String name, Runnable r) {
-		this(Component.nullToEmpty(name), _ -> Component.empty(), r, null);
+	public ButtonOption(CharSequence name, Runnable r) {
+		this(name, _ -> "", r, null);
 	}
 
 	public void execute() {

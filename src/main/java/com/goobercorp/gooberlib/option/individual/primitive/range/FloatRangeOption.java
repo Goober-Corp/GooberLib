@@ -5,11 +5,11 @@ import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.util.Predicates;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DynamicOps;
+
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import net.minecraft.network.chat.Component;
 
 public class FloatRangeOption extends BaseOption<FloatRangeOption> implements NumberRangeOption<FloatRangeOption> {
 	private final float defaultValueMin;
@@ -19,7 +19,7 @@ public class FloatRangeOption extends BaseOption<FloatRangeOption> implements Nu
 	public float minValue;
 	public float maxValue;
 
-	public FloatRangeOption(Component name, Function<FloatRangeOption, Component> description, float defaultValueMin, float defaultValueMax, float min, float max, WidgetProvider<FloatRangeOption> provider) {
+	public FloatRangeOption(CharSequence name, Function<FloatRangeOption, CharSequence> description, float defaultValueMin, float defaultValueMax, float min, float max, WidgetProvider<FloatRangeOption> provider) {
 		super(name, description, provider);
 		this.minValue = defaultValueMin;
 		this.maxValue = defaultValueMax;
