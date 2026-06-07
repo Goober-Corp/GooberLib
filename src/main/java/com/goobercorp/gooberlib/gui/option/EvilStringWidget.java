@@ -23,6 +23,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import net.minecraft.util.Util;
 import org.jspecify.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -32,16 +33,16 @@ import java.util.function.Predicate;
 @SuppressWarnings("unused")
 public class EvilStringWidget extends EvilBaseWidget {
 	public static final Style PLACEHOLDER_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GRAY);
-	private final Font textRenderer;
+	final Font textRenderer;
 	private String text = "";
 	private int maxLength = 32;
 	private boolean drawsBackground = true;
 	private boolean focusUnlocked = true;
 	private boolean editable = true;
-	private boolean centered = false;
+	protected boolean centered = false;
 	private boolean textShadow = true;
 	private boolean invertSelectionBackground = true;
-	private int firstCharacterIndex;
+	int firstCharacterIndex;
 	private int selectionStart;
 	private int selectionEnd;
 	private int editableColor = MainConfig.primaryCol;
@@ -53,20 +54,21 @@ public class EvilStringWidget extends EvilBaseWidget {
 	@Nullable
 	private Component placeholder;
 	private long lastSwitchFocusTime = Util.getMillis();
-	private int textX;
-	private int textY;
+	int textX;
+	int textY;
 	private String lastAccepted;
-	private final TargetedTweener cursorXTweener = new TargetedTweener(10);
-	private final TargetedTweener cursorYTweener = new TargetedTweener(10);
-	private final TargetedTweener cursorWidthTweener = new TargetedTweener(10);
-	private final TargetedTweener cursorHeightTweener = new TargetedTweener(10);
-	private final TargetedTweener selectionX1Tweener = new TargetedTweener(10);
-	private final TargetedTweener selectionX2Tweener = new TargetedTweener(10);
+	private final TargetedTweener cursorXTweener = new TargetedTweener(15);
+	private final TargetedTweener cursorYTweener = new TargetedTweener(15);
+	private final TargetedTweener cursorWidthTweener = new TargetedTweener(15);
+	private final TargetedTweener cursorHeightTweener = new TargetedTweener(15);
+	private final TargetedTweener selectionX1Tweener = new TargetedTweener(15);
+	private final TargetedTweener selectionX2Tweener = new TargetedTweener(15);
 	private boolean isFirstAfterAtTarget = false;
 	private boolean firstAfterSelect = true;
 	private boolean justFocused;
 	private Function<String, List<String>> suggestionProvider = List::of;
 	private Function<String, Component> formatter = Component::literal;
+	protected boolean alignRight;
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial) {
 		super(Component.empty(), x, y, width, height);
@@ -77,12 +79,28 @@ public class EvilStringWidget extends EvilBaseWidget {
 		this.setChangedListener(changedListener);
 		this.predicate = predicate;
 		this.setMaxLength(100);
+		this.shouldDrawName = false;
 	}
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, int colorOverride) {
 		this(x, y, width, height, changedListener, predicate, immediatePredicate, initial);
 		//TODO: automatically calculate good selection color. blue text here means it's just white when selected.
 		this.editableColor = colorOverride;
+	}
+
+	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, int colorOverride, boolean centered) {
+		//TODO: maybe do builder-style stuff for alignment? e.g. ctor(args).alignNameRight()?
+		this(x, y, width, height, changedListener, predicate, immediatePredicate, initial);
+		this.editableColor = colorOverride;
+		this.centered = centered;
+		updateTextPosition();
+	}
+
+	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, boolean alignRight, boolean centered) {
+		this(x, y, width, height, changedListener, predicate, immediatePredicate, initial);
+		this.centered = centered;
+		this.alignRight = alignRight;
+		updateTextPosition();
 	}
 
 	public void setChangedListener(Consumer<String> consumer) {
@@ -279,24 +297,23 @@ public class EvilStringWidget extends EvilBaseWidget {
 		if (this.isActive() && this.isFocused()) {
 			switch (keyInput.key()) {
 				// todo rename these to GLFW.KEY_...
-				case 259:
+				case GLFW.GLFW_KEY_BACKSPACE:
 					if (this.editable) {
 						this.erase(-1, keyInput.hasControlDownWithQuirk());
 					}
 
 					return true;
-				case 260:
-				case 264:
-				case 265:
-				case 266:
-				case 267:
-				case 261:
+//				case GLFW.GLFW_KEY_INSERT:
+//				case GLFW.GLFW_KEY_DOWN:
+//				case GLFW.GLFW_KEY_UP:
+//				case GLFW.GLFW_KEY_PAGE_UP:
+//				case GLFW.GLFW_KEY_PAGE_DOWN:
+				case GLFW.GLFW_KEY_DELETE:
 					if (this.editable) {
 						this.erase(1, keyInput.hasControlDownWithQuirk());
 					}
-
 					return true;
-				case 262:
+				case GLFW.GLFW_KEY_RIGHT:
 					if (keyInput.hasControlDownWithQuirk()) {
 						this.setCursor(this.getWordSkipPosition(1), keyInput.hasShiftDown());
 					} else {
@@ -304,7 +321,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 					}
 
 					return true;
-				case 263:
+				case GLFW.GLFW_KEY_LEFT:
 					if (keyInput.hasControlDownWithQuirk()) {
 						this.setCursor(this.getWordSkipPosition(-1), keyInput.hasShiftDown());
 					} else {
@@ -312,10 +329,10 @@ public class EvilStringWidget extends EvilBaseWidget {
 					}
 
 					return true;
-				case 268:
+				case GLFW.GLFW_KEY_HOME:
 					this.setCursorToStart(keyInput.hasShiftDown());
 					return true;
-				case 269:
+				case GLFW.GLFW_KEY_END:
 					this.setCursorToEnd(keyInput.hasShiftDown());
 					return true;
 				default:
@@ -514,10 +531,19 @@ public class EvilStringWidget extends EvilBaseWidget {
 		this.formatter = formatter;
 	}
 
-	private void updateTextPosition() {
+	protected void updateTextPosition() {
 		if (this.textRenderer != null) {
 			String string = this.textRenderer.plainSubstrByWidth(this.text.substring(this.firstCharacterIndex), this.getInnerWidth());
-			this.textX = this.getX() + (this.isCentered() ? (this.getWidth() - this.textRenderer.width(string)) / 2 : (this.drawsBackground ? 4 : 0));
+			if (this.isCentered()) {
+				this.textX = this.getX() + (this.width / 2) - (textRenderer.width(string) / 2);
+			} else {
+				if (alignRight) {
+					//TODO: take into account width of the cursor
+					this.textX = this.width - 5 - textRenderer.width(string);
+				} else {
+					this.textX = this.getX() + (this.isCentered() ? (this.getWidth() - this.textRenderer.width(string)) / 2 : (this.drawsBackground ? 4 : 0));
+				}
+			}
 			this.textY = this.drawsBackground ? this.getY() + (this.height - 8) / 2 : this.getY();
 		}
 	}
@@ -564,7 +590,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 		this.editable = bl;
 	}
 
-	private boolean isCentered() {
+	boolean isCentered() {
 		return this.centered;
 	}
 

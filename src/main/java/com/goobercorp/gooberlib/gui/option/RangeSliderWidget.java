@@ -6,8 +6,6 @@ import com.goobercorp.gooberlib.option.individual.primitive.range.NumberRangeOpt
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import net.minecraft.client.InputType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,6 +19,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
@@ -42,6 +43,7 @@ public class RangeSliderWidget extends EvilBaseWidget {
 		this.minValue = getInterpolatedValue(numberOption.getNumberMinValue().doubleValue(), numberOption.getDoubleMin(), numberOption.getDoubleMax());
 		this.maxValue = getInterpolatedValue(numberOption.getNumberMaxValue().doubleValue(), numberOption.getDoubleMin(), numberOption.getDoubleMax());
 		this.valueFormatter = () -> valueFormatter.apply(numberOption);
+		this.shouldDrawName = true;
 	}
 
 	public <T extends NumberRangeOption<T>> RangeSliderWidget(T numberOption, int x, int y, int width, int height) {

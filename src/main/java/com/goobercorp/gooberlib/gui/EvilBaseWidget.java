@@ -25,6 +25,8 @@ public class EvilBaseWidget extends AbstractWidget {
 	protected float verticalPosOffset = 0;
 	protected float horizontalPosOffset = 0;
 	protected Tweener clickTweener;
+	protected boolean centerName;
+	protected boolean shouldDrawName;
 	//TODO: add back reference to BaseOption so we can easily reset on mouse middle click here
 	protected final Component name;
 	private final Function<BaseOption<?>, Component> valueFormatter;
@@ -84,7 +86,13 @@ public class EvilBaseWidget extends AbstractWidget {
 	}
 
 	protected void drawText(GuiGraphics drawContext) {
-		drawContext.drawCenteredString(Minecraft.getInstance().font, name, this.getX() + this.width / 2, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol);
+		if (shouldDrawName) {
+			if (centerName) {
+				drawContext.drawCenteredString(Minecraft.getInstance().font, name, this.getX() + this.width / 2, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol);
+			} else {
+				drawContext.drawString(Minecraft.getInstance().font, name, this.getX() + 5, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol);
+			}
+		}
 	}
 
 	@Override

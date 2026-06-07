@@ -29,10 +29,19 @@ public class CycleOption<T> extends BaseOption<CycleOption<T>> implements Advanc
 		this(name, _ -> description, options[0], List.of(options), null, displayNameProvider);
 	}
 
+	@SafeVarargs
+	public CycleOption(String name, String description, Function<T, CharSequence> displayNameProvider, WidgetProvider<CycleOption<T>> provider, T... options) {
+		this(name, _ -> description, options[0], List.of(options), provider, displayNameProvider);
+	}
 
 	@SafeVarargs
 	public CycleOption(String name, String description, T... options) {
 		this(name, description, Object::toString, options);
+	}
+
+	@SafeVarargs
+	public CycleOption(String name, String description, WidgetProvider<CycleOption<T>> provider, T... options) {
+		this(name, description, Object::toString, provider, options);
 	}
 
 	@Override

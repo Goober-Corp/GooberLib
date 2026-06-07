@@ -1,23 +1,42 @@
 package com.goobercorp.gooberlib.gui.option;
 
 import com.goobercorp.gooberlib.config.MainConfig;
-import org.jspecify.annotations.Nullable;
-
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
+
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
+import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 public class EvilStringWidgetWithName extends EvilStringWidget {
 	private final Component name;
 	private final int x;
+	private boolean drawInside;
 
 	public EvilStringWidgetWithName(Component name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial) {
 		super(x + font().width(name) + 2, y, width - font().width(name), height, changedListener, predicate, immediatePredicate, initial);
 		this.name = name;
 		this.x = x;
+		this.shouldDrawName = true;
+	}
+
+	public EvilStringWidgetWithName(Component name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, boolean alignRight, boolean centered, boolean drawInside) {
+		super(drawInside ? x : x + font().width(name) + 2, y, drawInside ? width : width - font().width(name), height, changedListener, predicate, immediatePredicate, initial);
+		this.name = name;
+		this.x = x;
+		this.shouldDrawName = true;
+		this.centered = centered;
+		this.alignRight = alignRight;
+		this.drawInside = drawInside;
+		if (drawInside) {
+			this.centered = false;
+			this.alignRight = true;
+		}
+		this.updateTextPosition();
 	}
 
 	public static Font font() {
@@ -26,7 +45,30 @@ public class EvilStringWidgetWithName extends EvilStringWidget {
 
 	@Override
 	public void renderWidget(GuiGraphics drawContext, int mouseX, int mouseY, float delta) {
-		drawContext.drawString(font(), name, x, getY() + 3, MainConfig.primaryCol, true);
 		super.renderWidget(drawContext, mouseX, mouseY, delta);
+		newMatrixScope(drawContext, stack -> {
+			if (drawInside) {
+				stack.translate(horizontalPosOffset, verticalPosOffset);
+			}
+			drawContext.drawString(Minecraft.getInstance().font, name, drawInside ? 5 : 0, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol);
+		});
+	}
+
+	@Override
+	protected void updateTextPosition() {
+		if (this.textRenderer != null) {
+			String string = this.textRenderer.plainSubstrByWidth(this.getText().substring(this.firstCharacterIndex), this.getInnerWidth());
+			if (this.isCentered()) {
+				this.textX = this.getX() + (this.width / 2) - (textRenderer.width(string) / 2);
+			} else {
+				if (alignRight) {
+					//TODO: take into account width of the cursor
+					this.textX = this.getRight() - 5 - textRenderer.width(string);
+				} else {
+					this.textX = this.getX() + (this.isCentered() ? (this.getWidth() - this.textRenderer.width(string)) / 2 : (this.drawsBackground() ? 4 : 0));
+				}
+			}
+			this.textY = this.drawsBackground() ? this.getY() + (this.height - 8) / 2 : this.getY();
+		}
 	}
 }

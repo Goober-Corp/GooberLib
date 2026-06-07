@@ -278,8 +278,7 @@ public class GooberScreen extends Screen {
 	@Override
 	public boolean mouseDragged(MouseButtonEvent click, double d, double e) {
 		if (super.mouseDragged(click, d, e)) return true;
-
-		if (tabNavigationWidget != null && click.button() == 0 && !tabNavigationWidget.isMouseOver(d, e)) {
+		if ((!showTabs || !tabNavigationWidget.isMouseOver(d, e)) && click.button() == 0) {
 			lastScrollTicks = 0;
 			scrollTweener.setInteractionState(true);
 			if ((scrollProgress < scrollTweener.min && e < 0) || (scrollProgress > scrollTweener.max && e > 0)) {
@@ -298,7 +297,7 @@ public class GooberScreen extends Screen {
 		if (!yeah) {
 			lastScrollTicks = 0;
 			scrollTweener.setInteractionState(true);
-			if (tabNavigationWidget != null && !tabNavigationWidget.isMouseOver(d, e)) {
+			if (!showTabs || !tabNavigationWidget.isMouseOver(d, e)) {
 				if ((scrollProgress < scrollTweener.min && g < 0) || (scrollProgress > scrollTweener.max && g > 0)) {
 					scrollProgress += g * 15 * Math.min(1 / Math.abs(scrollProgress - Math.clamp(scrollProgress, scrollTweener.min, scrollTweener.max)), 1);
 				} else {

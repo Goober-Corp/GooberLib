@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -126,6 +127,12 @@ public class SectionWidget extends ClickableParentWidget {
 		}
 
 		return addY;
+	}
+	
+	@Override
+	public boolean mouseClicked(MouseButtonEvent click, boolean bl) {
+		setFocused(null);
+		return super.mouseClicked(click, bl);
 	}
 
 	public float getHeightWithoutSectionDivider() {

@@ -24,6 +24,12 @@ public class TickBoxWidget extends EvilBaseWidget {
 				return isHovered() ? 0.2F : 0;
 			}
 		});
+		shouldDrawName = true;
+	}
+
+	public TickBoxWidget(BooleanOption opt, int x, int y, int width, int height, boolean centerName) {
+		this(opt, x, y, width, height);
+		this.centerName = centerName;
 	}
 
 	@Override

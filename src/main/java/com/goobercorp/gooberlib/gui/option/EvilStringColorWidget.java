@@ -4,17 +4,16 @@ import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.util.ColorTweener;
 import com.goobercorp.gooberlib.util.RenderUtils;
-import net.minecraft.network.chat.MutableComponent;
-import org.jspecify.annotations.Nullable;
-
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.phys.Vec2;
+import org.jspecify.annotations.Nullable;
+
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class EvilStringColorWidget extends EvilStringWidget {
 	private final Component name;
@@ -69,6 +68,7 @@ public class EvilStringColorWidget extends EvilStringWidget {
 			return component;
 		});
 		colorTweener = new ColorTweener(() -> opt.value, 5);
+		this.shouldDrawName = false;
 	}
 
 	public static Font font() {

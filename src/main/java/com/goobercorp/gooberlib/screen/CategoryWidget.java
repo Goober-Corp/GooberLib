@@ -12,6 +12,7 @@ import com.goobercorp.gooberlib.util.RenderUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,6 +64,7 @@ public class CategoryWidget extends ClickableParentWidget {
 
 	@Override
 	protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+		//TODO: somehow draw currently dragged widget above everything else
 		drawLines(guiGraphics);
 		double totalYOffset = 0;
 		double height = 0;
@@ -98,6 +100,12 @@ public class CategoryWidget extends ClickableParentWidget {
 			RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getRealX() + 5, (float) evilLayout.get(opt).getRealX(), (float) optionWidget.getRealY() + optionWidget.getWrapped().getHeight() / 2F, MainConfig.primaryCol);
 			drawLinesForOption(drawContext, opt);
 		}
+	}
+
+	@Override
+	public boolean mouseClicked(MouseButtonEvent click, boolean bl) {
+		setFocused(null);
+		return super.mouseClicked(click, bl);
 	}
 
 	@Override

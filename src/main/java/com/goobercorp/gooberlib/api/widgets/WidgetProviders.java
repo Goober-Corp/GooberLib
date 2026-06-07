@@ -1,5 +1,7 @@
 package com.goobercorp.gooberlib.api.widgets;
 
+import com.goobercorp.gooberlib.config.MainConfig;
+import com.goobercorp.gooberlib.gui.nav.PlainTextWidget;
 import com.goobercorp.gooberlib.gui.option.*;
 import com.goobercorp.gooberlib.gui.util.ClickableParentWidget;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
@@ -21,7 +23,6 @@ import com.goobercorp.gooberlib.util.Util;
 import net.minecraft.IdentifierException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.CommonComponents;
@@ -44,9 +45,9 @@ public class WidgetProviders {
 		return ((theOption, x, y, width, height) -> {
 			var widgetX = font().width(theOption.name()) + 2;
 			var widgetWidth = width - font().width(theOption.name());
-			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getX(), 0xFFFF0000);
-			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getY(), 0xFF00FF00);
-			var zWidget = new EvilStringWidget(widgetX + widgetWidth * 2 / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getZ(), 0xFF0000FF);
+			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getX(), 0xFFFF0000, true);
+			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getY(), 0xFF00FF00, true);
+			var zWidget = new EvilStringWidget(widgetX + widgetWidth * 2 / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getZ(), 0xFF0000FF, true);
 			Consumer<String> changedListener = _ -> {
 				try {
 					theOption.setValue(new BlockPos(Integer.parseInt(xWidget.getText()), Integer.parseInt(yWidget.getText()), Integer.parseInt(zWidget.getText())));
@@ -57,7 +58,7 @@ public class WidgetProviders {
 			yWidget.setChangedListener(changedListener);
 			zWidget.setChangedListener(changedListener);
 
-			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new StringWidget(x, y, width, height, theOption.name(), font()), xWidget, yWidget, zWidget));
+			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new PlainTextWidget(x, y, width, height, theOption.name(), MainConfig.primaryCol, false), xWidget, yWidget, zWidget));
 		});
 	}
 
@@ -78,7 +79,7 @@ public class WidgetProviders {
 			yWidget.setChangedListener(changedListener);
 			zWidget.setChangedListener(changedListener);
 
-			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new StringWidget(x, y, width, height, theOption.name(), font()), xWidget, yWidget, zWidget));
+			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new PlainTextWidget(x, y, width, height, theOption.name(), MainConfig.primaryCol, false), xWidget, yWidget, zWidget));
 		});
 	}
 
@@ -99,7 +100,7 @@ public class WidgetProviders {
 			yWidget.setChangedListener(changedListener);
 			zWidget.setChangedListener(changedListener);
 
-			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new StringWidget(x, y, width, height, theOption.name(), font()), xWidget, yWidget, zWidget));
+			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new PlainTextWidget(x, y, width, height, theOption.name(), MainConfig.primaryCol, false), xWidget, yWidget, zWidget));
 		});
 	}
 
@@ -115,11 +116,25 @@ public class WidgetProviders {
 		return (opt, x, y, width, height) -> new CyclingOptionWidget(opt, x, y, width, height, Util.fromCharsFunction(opt.getDisplayNameProvider()));
 	}
 
+	public static <E> WidgetProvider<CycleOption<E>> cyclingOptionWithButtons() {
+		return (opt, x, y, width, height) -> {
+			var yeah = new CyclingOptionWidget(opt, x + height, y, width - (height * 2), height, Util.fromCharsFunction(opt.getDisplayNameProvider()), true);
+			var rightArrowWidget = new EvilButtonWidget(">", opt::advance, width - height, y, height, height, true);
+			var leftArrowWidget = new EvilButtonWidget("<", opt::regress, x, y, height, height, true);
+			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(leftArrowWidget, yeah, rightArrowWidget));
+		};
+	}
+
+
 	public static <T extends NumberOption<T>> WidgetProvider<T> numberSliderWithFormatter(Function<T, CharSequence> valueFormatter) {
 		return (theOption, x, y, width, height) -> new EvilSliderWidget(theOption, x, y, width, height, Util.fromCharsFunction(valueFormatter));
 	}
 
 	public static <T extends NumberOption<T>> WidgetProvider<T> numberField() {
+		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setFromString, theOption.getPredicate(), theOption.getImmediatePredicate(), theOption instanceof CharOption c ? String.valueOf(c.value) : theOption.getNumberValue().toString()));
+	}
+
+	public static <T extends NumberOption<T>> WidgetProvider<T> numberHybrid() {
 		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setFromString, theOption.getPredicate(), theOption.getImmediatePredicate(), theOption instanceof CharOption c ? String.valueOf(c.value) : theOption.getNumberValue().toString()));
 	}
 
@@ -137,6 +152,7 @@ public class WidgetProviders {
 	}
 
 	public static WidgetProvider<IdentifierOption> identifierTwoFields() {
+		//TODO: make formatter for this option turn red if invalid identifier
 		return (theOption, x, y, width, height) -> {
 			var widgetX = font().width(theOption.name()) + 2;
 			var widgetWidth = width - font().width(theOption.name());
@@ -153,7 +169,7 @@ public class WidgetProviders {
 			namespace.setChangedListener(changedListener);
 			path.setChangedListener(changedListener);
 			//TODO: replace text widget with my own impl that allows a custom text color
-			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new StringWidget(x, y, width, height, theOption.name(), font()), namespace, path, new StringWidget(widgetX + widgetWidth / 2 - 3, y, width, height, Component.nullToEmpty(":"), font())));
+			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new PlainTextWidget(x, y, width, height, theOption.name(), MainConfig.primaryCol, false), namespace, path, new PlainTextWidget(widgetX + widgetWidth / 2 - 3, y, width, height, Component.nullToEmpty(":"), MainConfig.primaryCol, false)));
 		};
 	}
 
@@ -161,12 +177,24 @@ public class WidgetProviders {
 		return TickBoxWidget::new;
 	}
 
+	public static WidgetProvider<BooleanOption> booleanTickBoxWithCenteredName() {
+		return (theOption, x, y, width, height) -> new TickBoxWidget(theOption, x, y, width, height, true);
+	}
+
 	public static WidgetProvider<BooleanOption> booleanSliderWidget() {
 		return SliderToggleWidget::new;
 	}
 
+	public static WidgetProvider<BooleanOption> booleanSliderWidgetWithCenteredName() {
+		return (theOption, x, y, width, height) -> new SliderToggleWidget(theOption, x, y, width, height, true);
+	}
+
 	public static WidgetProvider<BooleanOption> booleanToggleWidget() {
 		return (theOption, x, y, width, height) -> new CyclingOptionWidget(theOption, x, y, width, height, o -> CommonComponents.optionStatus(o.getValue()));
+	}
+
+	public static WidgetProvider<BooleanOption> booleanToggleWidgetWithCenteredName() {
+		return (theOption, x, y, width, height) -> new CyclingOptionWidget(theOption, x, y, width, height, o -> CommonComponents.optionStatus(o.getValue()), true);
 	}
 
 	public static WidgetProvider<BooleanOption> booleanToggleWidget(CharSequence whenTrue, CharSequence whenFalse) {
@@ -175,6 +203,18 @@ public class WidgetProviders {
 
 	public static WidgetProvider<StringOption> stringField() {
 		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value));
+	}
+
+	public static WidgetProvider<StringOption> stringFieldAlignedRight() {
+		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value, true, false, false));
+	}
+
+	public static WidgetProvider<StringOption> stringFieldCentered() {
+		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value, false, true, false));
+	}
+
+	public static WidgetProvider<StringOption> stringFieldNameInsideAlignedRight() {
+		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value, false, true, true));
 	}
 
 	public static WidgetProvider<StringOption> stringField(Function<String, List<String>> suggestionProvider) {

@@ -24,6 +24,15 @@ public class CyclingOptionWidget extends EvilBaseWidget {
 		super(opt.name(), x, y, width, height);
 		this.valueFormatter = () -> valueFormatter.apply(opt);
 		this.opt = opt;
+		this.shouldDrawName = true;
+	}
+
+	public <T extends AdvanceableOption<T>> CyclingOptionWidget(T opt, int x, int y, int width, int height, Function<T, Component> valueFormatter, boolean centerName) {
+		this(opt, x, y, width, height, valueFormatter);
+		this.centerName = centerName;
+		if (centerName) {
+			this.shouldDrawName = false;
+		}
 	}
 
 	@Override
@@ -31,11 +40,15 @@ public class CyclingOptionWidget extends EvilBaseWidget {
 		newMatrixScope(drawContext, stack -> {
 			Component displayName = valueFormatter.get();
 			//TODO: give this text scaling effect to something like ButtonOption
-			stack.translate(this.getRight() - 5 - Minecraft.getInstance().font.width(displayName), this.getY() + this.height / 2F - Minecraft.getInstance().font.lineHeight / 2f);
+			if (this.centerName) {
+				stack.translate(this.getX() + (this.getRight() / 2F) - Minecraft.getInstance().font.width(displayName) / 2F, this.getY() + this.height / 2F - Minecraft.getInstance().font.lineHeight / 2f);
+			} else {
+				stack.translate(this.getRight() - 5 - Minecraft.getInstance().font.width(displayName), this.getY() + this.height / 2F - Minecraft.getInstance().font.lineHeight / 2f);
+			}
 			stack.scaleAround(1 - clickTweener.getF() * 0.25F, Minecraft.getInstance().font.width(displayName) / 2F, 5F);
 			drawContext.drawString(Minecraft.getInstance().font, displayName, 0, 0, MainConfig.primaryCol);
 		});
-		drawContext.drawString(Minecraft.getInstance().font, opt.name(), this.getX() + 5, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol);
+		super.drawText(drawContext);
 	}
 
 	@Override

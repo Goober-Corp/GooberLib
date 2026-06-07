@@ -24,8 +24,6 @@ import java.util.function.Supplier;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
-// todo: make option widgets widget
-//  widget? i think you meant wider
 public class EvilSliderWidget extends EvilBaseWidget {
 	protected double value;
 	private final Supplier<Component> valueFormatter;
@@ -44,6 +42,12 @@ public class EvilSliderWidget extends EvilBaseWidget {
 
 	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height) {
 		this(numberOption, x, y, width, height, t -> Component.nullToEmpty(t.getNumberValue().toString()));
+	}
+
+	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height, boolean includeName) {
+		this(numberOption, x, y, width, height, t -> Component.nullToEmpty(t.getNumberValue().toString()));
+		//TODO: add functionality
+		this.shouldDrawName = includeName;
 	}
 
 	@Override

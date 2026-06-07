@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 public class BooleanOption extends BaseOption<BooleanOption> implements AdvanceableOption<BooleanOption> {
 	private final boolean defaultValue;
-	/// @implNote Modifying this value directly will *not* trigger
+	/// @implNote Modifying this value directly will *not* trigger onChange()!
 	public boolean value;
 
 	public BooleanOption(CharSequence name, Function<BooleanOption, CharSequence> description, boolean defaultValue, WidgetProvider<BooleanOption> provider) {
