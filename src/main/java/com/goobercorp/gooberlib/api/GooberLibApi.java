@@ -20,6 +20,7 @@ import com.goobercorp.gooberlib.option.individual.minecraft.IdentifierOption;
 import com.goobercorp.gooberlib.option.individual.minecraft.Vec3dOption;
 import com.goobercorp.gooberlib.option.individual.minecraft.Vec3iOption;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
+import com.goobercorp.gooberlib.option.individual.misc.ObjectOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.option.individual.primitive.CharOption;
 import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
@@ -211,6 +212,7 @@ public class GooberLibApi {
 		registerWidgetProvider(t -> t instanceof Vec3iOption, WidgetProviders.vec3iFields(), -1);
 		registerWidgetProvider(t -> t instanceof Vec3dOption, WidgetProviders.vec3dFields(), -1);
 		registerWidgetProvider(t -> t instanceof CycleOption, WidgetProviders.cyclingOption(), -1);
+		registerWidgetProvider(t -> t instanceof ObjectOption<?>, WidgetProviders.objectOption(), -1);
 	}
 
 	/**

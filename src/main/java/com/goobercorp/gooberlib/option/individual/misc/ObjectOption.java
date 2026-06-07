@@ -18,7 +18,7 @@ import static org.apache.commons.io.function.Erase.rethrow;
 
 public class ObjectOption<T> extends BaseOption<ObjectOption<T>> {
 	private final T instance;
-	private final List<Option<?>> options;
+	public final List<Option<?>> options;
 
 	public ObjectOption(CharSequence name, T instance, Function<ObjectOption<T>, CharSequence> description, @Nullable WidgetProvider<ObjectOption<T>> provider) {
 		super(name, description, provider);

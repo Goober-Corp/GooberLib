@@ -10,16 +10,13 @@ import com.goobercorp.gooberlib.option.individual.minecraft.BlockPosOption;
 import com.goobercorp.gooberlib.option.individual.minecraft.IdentifierOption;
 import com.goobercorp.gooberlib.option.individual.minecraft.Vec3dOption;
 import com.goobercorp.gooberlib.option.individual.minecraft.Vec3iOption;
+import com.goobercorp.gooberlib.option.individual.misc.ObjectOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.option.individual.primitive.CharOption;
 import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
 import com.goobercorp.gooberlib.option.individual.primitive.range.NumberRangeOption;
+import com.goobercorp.gooberlib.screen.ObjectScreen;
 import com.goobercorp.gooberlib.util.Predicates;
-
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import com.goobercorp.gooberlib.util.Util;
 import net.minecraft.IdentifierException;
 import net.minecraft.client.Minecraft;
@@ -31,6 +28,10 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static com.google.common.base.Predicates.alwaysTrue;
 
@@ -182,5 +183,11 @@ public class WidgetProviders {
 			widget.setSuggestionProvider(suggestionProvider);
 			return widget;
 		};
+	}
+
+	public static <E> WidgetProvider<ObjectOption<E>> objectOption() {
+		return (theOption, x, y, width, height) -> new EvilButtonWidget(theOption.name(), () -> {
+			Minecraft.getInstance().setScreen(new ObjectScreen(Minecraft.getInstance().screen, theOption));
+		}, x, y, width, height, null);
 	}
 }

@@ -74,12 +74,12 @@ public class GroupDividerWidget extends AbstractStringWidget {
 		super.renderWidget(drawContext, i, j, f);
 		renderProgress = (float) RenderUtils.ease(renderProgress, 1, 5F);
 		//this requires the widget to be centered. fuck
-		float yeah = this.getX() - drawContext.guiWidth() / 2F + getFont().width(message) / 2F;
+		float yeah = this.getX() - getWidth() / 2F + getFont().width(message) / 2F;
 		RenderUtils.drawThinningHorizontalLine(drawContext, Mth.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 4.5F, 0, MainConfig.shadowCol, 2.25F, false);
 		RenderUtils.drawThinningHorizontalLine(drawContext, Mth.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 3.5F, 0, MainConfig.primaryCol, 2.25F, false);
 		int otherYeah = this.getX() + getFont().width(message);
-		RenderUtils.drawThinningHorizontalLine(drawContext, otherYeah + 1, Mth.lerp(1 - renderProgress, this.getX() + getFont().width(message) / 2f + drawContext.guiWidth() / 2F - 1, otherYeah), this.getY() + 4.5F, MainConfig.shadowCol, 0, 2.25F, true);
-		RenderUtils.drawThinningHorizontalLine(drawContext, otherYeah, Mth.lerp(1 - renderProgress, this.getX() + getFont().width(message) / 2f + drawContext.guiWidth() / 2F - 1, otherYeah), this.getY() + 3.5F, MainConfig.primaryCol, 0, 2.25F, true);
+		RenderUtils.drawThinningHorizontalLine(drawContext, otherYeah + 1, Mth.lerp(1 - renderProgress, this.getX() + getFont().width(message) / 2f + getWidth() / 2F - 1, otherYeah), this.getY() + 4.5F, MainConfig.shadowCol, 0, 2.25F, true);
+		RenderUtils.drawThinningHorizontalLine(drawContext, otherYeah, Mth.lerp(1 - renderProgress, this.getX() + getFont().width(message) / 2f + getWidth() / 2F - 1, otherYeah), this.getY() + 3.5F, MainConfig.primaryCol, 0, 2.25F, true);
 		drawContext.drawCenteredString(Minecraft.getInstance().font, message, Minecraft.getInstance().font.width(message) / 2, 0, MainConfig.primaryCol);
 	}
 

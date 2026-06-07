@@ -1,6 +1,5 @@
 package com.goobercorp.gooberlib.screen;
 
-import com.goobercorp.gooberlib.builder.misc.OptionHolder;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
 import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.gui.nav.GroupDividerWidget;
@@ -10,30 +9,33 @@ import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.TargetedTweener;
+import com.goobercorp.gooberlib.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.goobercorp.gooberlib.screen.GooberScreen.CHILD_INSET;
 import static com.goobercorp.gooberlib.screen.GooberScreen.VERTICAL_PADDING;
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 public class SectionWidget extends ClickableParentWidget {
-	private final HashMap<OptionHolder, PrecisePositionWidgetWrapper<?>> evilLayout = new HashMap<>();
+	private final HashMap<OptionContext<?>, PrecisePositionWidgetWrapper<?>> evilLayout = new HashMap<>();
 	private final PrecisePositionWidgetWrapper<GroupDividerWidget> dividerWidget;
-	private final ConfigSection section;
+	private final List<OptionContext<?>> options;
 	private final TargetedTweener collapsedTweener = new TargetedTweener();
 	public final int uncollapsedHeight;
 
 	public SectionWidget(ConfigSection section, int x, int y, int width, int height) {
 		super(x, y, width, height, section.metadata().name(), new ArrayList<>());
-		this.section = section;
+		this.options = section.childOptions();
 
-		GroupDividerWidget t = new GroupDividerWidget(section.metadata().name(), Minecraft.getInstance().font);
+		GroupDividerWidget t = new GroupDividerWidget(width, Minecraft.getInstance().font.lineHeight, section.metadata().name(), Minecraft.getInstance().font);
 		PrecisePositionWidgetWrapper<GroupDividerWidget> groupDivider = new PrecisePositionWidgetWrapper<>(t, x + ((double) Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2) - (double) Minecraft.getInstance().font.width(section.metadata().name()) / 2, y, section.metadata()::description);
 		dividerWidget = groupDivider;
 		if (new ScreenRectangle((int) groupDivider.getRealX(), (int) groupDivider.getRealY(), groupDivider.getWrapped().getRight(), groupDivider.getWrapped().getBottom()).overlaps(new ScreenRectangle(0, 0, width, height))) {
@@ -42,6 +44,29 @@ public class SectionWidget extends ClickableParentWidget {
 		children().add(groupDivider);
 		y += VERTICAL_PADDING;
 		for (OptionContext<?> yeah : section.childOptions()) {
+			y += addOptionWithChildren(yeah, y, x + CHILD_INSET);
+		}
+		this.setHeight(y);
+		this.uncollapsedHeight = y;
+	}
+
+	public SectionWidget(CharSequence name, List<Option<?>> options, int x, int y, int width, int height) {
+		super(x, y, width, height, Util.fromChars(name), new ArrayList<>());
+		this.options = new ArrayList<>();
+		for (Option<?> option : options) {
+			this.options.add(new OptionContext<>(null, option));
+		}
+		var nameComponent = Util.fromChars(name);
+
+		GroupDividerWidget t = new GroupDividerWidget(width, Minecraft.getInstance().font.lineHeight, nameComponent, Minecraft.getInstance().font);
+		PrecisePositionWidgetWrapper<GroupDividerWidget> groupDivider = new PrecisePositionWidgetWrapper<>(t, x + ((double) Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2) - (double) Minecraft.getInstance().font.width(nameComponent) / 2, y, Component::empty);
+		dividerWidget = groupDivider;
+		if (new ScreenRectangle((int) groupDivider.getRealX(), (int) groupDivider.getRealY(), groupDivider.getWrapped().getRight(), groupDivider.getWrapped().getBottom()).overlaps(new ScreenRectangle(0, 0, width, height))) {
+			t.renderProgress = 1;
+		}
+		children().add(groupDivider);
+		y += VERTICAL_PADDING;
+		for (OptionContext<?> yeah : this.options) {
 			y += addOptionWithChildren(yeah, y, x + CHILD_INSET);
 		}
 		this.setHeight(y);
@@ -67,18 +92,18 @@ public class SectionWidget extends ClickableParentWidget {
 	}
 
 	private void drawLines(GuiGraphics guiGraphics) {
-		for (OptionHolder o : section.childOptions()) {
+		for (OptionContext<?> o : options) {
 			drawLinesForOption(guiGraphics, o);
 		}
 	}
 
-	private void drawLinesForOption(GuiGraphics drawContext, OptionHolder o) {
+	private void drawLinesForOption(GuiGraphics drawContext, OptionContext<?> o) {
 		if (o.childOptions().isEmpty()) return;
 		PrecisePositionWidgetWrapper<?> mainWidget = evilLayout.get(o);
 		PrecisePositionWidgetWrapper<?> lastChildWidget = evilLayout.get(o.childOptions().getLast());
 		RenderUtils.drawVerticalLine(drawContext, (float) mainWidget.getRealX() + 6, (float) mainWidget.getRealY() + mainWidget.getWrapped().getHeight(), (float) lastChildWidget.getRealY() + (lastChildWidget.getWrapped().getHeight() / 2F) + 1, MainConfig.bgColor);
 		RenderUtils.drawVerticalLine(drawContext, (float) mainWidget.getRealX() + 5, (float) mainWidget.getRealY() + mainWidget.getWrapped().getHeight() - 1, (float) lastChildWidget.getRealY() + (lastChildWidget.getWrapped().getHeight() / 2F), MainConfig.primaryCol);
-		for (OptionHolder opt : o.childOptions()) {
+		for (OptionContext<?> opt : o.childOptions()) {
 			PrecisePositionWidgetWrapper<?> optionWidget = evilLayout.get(opt);
 			RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getRealX() + 6, (float) evilLayout.get(opt).getRealX(), (float) optionWidget.getRealY() + optionWidget.getWrapped().getHeight() / 2F + 1, MainConfig.bgColor);
 			RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getRealX() + 5, (float) evilLayout.get(opt).getRealX(), (float) optionWidget.getRealY() + optionWidget.getWrapped().getHeight() / 2F, MainConfig.primaryCol);
