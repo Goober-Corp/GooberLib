@@ -5,14 +5,13 @@ import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.option.individual.primitive.IntOption;
-import net.minecraft.network.chat.Component;
 
 import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 @GooberConfig(modId = "testmod")
 public class TestConfig {
-	public static final IntOption int1 = new IntOption(Component.literal("Standalone field"), _ -> Component.literal("meow"), 0, 0, 25, null);
+	public static final IntOption int1 = new IntOption("Standalone field", _ -> "meow", 0, 0, 25, null);
 	public static final IntOption int2 = new IntOption("standalone child", "");
 	public static final IntOption int3 = new IntOption("second standalone child", "");
 	public static final IntOption int4 = new IntOption("nested child", "");
@@ -26,7 +25,7 @@ public class TestConfig {
 	// @formatter:off
     public static final Supplier<GooberConfigBuilder> BUILDER = () -> GooberConfigBuilder.create("YEAH!!!")
             .category("Int fields", "A description")
-			.options(new BooleanOption("wa", ""))
+				.options(new BooleanOption("wa", ""))
                 .option(int1)
                     .child(int2)
 				    .childWithChildren(int3, int4, int8)

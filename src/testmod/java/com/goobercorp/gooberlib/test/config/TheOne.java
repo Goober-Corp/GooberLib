@@ -97,7 +97,7 @@ public class TheOne {
 	public static final EnumOption<SomeEnum> enumOption = new EnumOption<>("enum option", "enum description", SomeEnum.class);
 	public static final CycleOption<String> cycleOption = new CycleOption<>("cycle option", "cycle description", "Option one", "Option two", "Option three");
 	public static final IdentifierOption identifierOptionOne = new IdentifierOption("single string identifier", "identifier description", Identifier.parse("minecraft:stone"), WidgetProviders.identifierOneField());
-	public static final IdentifierOption identifierOptionTwo = new IdentifierOption("dual string", "identifier description", Identifier.parse("minecraft:stone"), WidgetProviders.identifierTwoFields());
+	public static final IdentifierOption identifierOptionTwo = new IdentifierOption("dual string identifier", "identifier description", Identifier.parse("minecraft:stone"), WidgetProviders.identifierTwoFields());
 	public static final BlockPosOption blockPosOption = new BlockPosOption("blockpos", "blockpos description");
 	public static final Vec2fOption vec2fOption = new Vec2fOption("vec2f option", "vec2f description");
 	public static final Vec3dOption vec3dOption = new Vec3dOption("vec3d option", "vec3d description");

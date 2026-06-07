@@ -62,7 +62,7 @@ public class Yacl {
 	public static final EnumOption<ChatFormatting> formattingOption = new EnumOption<>("Enum Dropdown", "", ChatFormatting.class); //todo: widget
 
 	public static final ListOption<StringOption> stringList = new ListOption<>("String List", List.of(), () -> new StringOption("", ""));
-	public static final ListOption<IntOption> intList = new ListOption<>("Slider List", List.of(), () -> new IntOption(Component.literal(""), _ -> Component.empty(), 0, 0, 10, null));
+	public static final ListOption<IntOption> intList = new ListOption<>("Slider List", List.of(), () -> new IntOption("", _ -> "", 0, 0, 10, null));
 
 	public static final BooleanOption groupTestRoot = new BooleanOption("Root Test", "");
 	public static final BooleanOption groupTestFirstGroup = new BooleanOption("First Group Test 1", "");
