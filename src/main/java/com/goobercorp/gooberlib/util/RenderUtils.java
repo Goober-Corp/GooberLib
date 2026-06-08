@@ -56,15 +56,32 @@ public class RenderUtils {
 		fillEvil(context, x1, y, x2 + 1, y + 1, col, col2);
 	}
 
-	//TODO: this sucks
-	public static void drawThinningHorizontalLine(GuiGraphics context, float x1, float x2, float y, int col, int col2, float thickness, boolean flip) {
-		if (x2 < x1) {
-			float m = x1;
+	public static void drawThinningHorizontalLine(GuiGraphics context, float x1, float x2, float y, int col1, int col2, float startingThickness) {
+		if (x1 < x2) {
+			var ax = x1;
+			var ay = y;
+			var bx = x2;
+			var by = y + startingThickness / 2;
+			var cx = x2;
+			var cy = y - startingThickness / 2;
+			drawQuad(context, ax, ay - 0.25f, ax, ay + 0.25f, bx, by, cx, cy, col1, col1, col2, col2);
+		} else {
+			var temp = x1;
 			x1 = x2;
-			x2 = m;
-		}
+			x2 = temp;
 
-		fillEviler(context, x1, y - thickness, x2 + 1, y + thickness, col, col2, flip);
+			var ax = x1;
+			var ay = y - startingThickness / 2;
+			var bx = x1;
+			var by = y + startingThickness / 2;
+			var cx = x2;
+			var cy = y;
+			drawQuad(context, ax, ay, bx, by, cx, cy + 0.25f, cx, cy - 0.25f, col1, col1, col2, col2);
+		}
+	}
+
+	public static void drawTriangle(GuiGraphics context, float ax, float ay, float bx, float by, float cx, float cy, int col1, int col2, int col3) {
+		drawQuad(context, cx, cy, bx, by, ax, ay, ax, ay, col3, col2, col1, col1);
 	}
 
 	public static void drawHorizontalLine(GuiGraphics context, float x1, float x2, float y, int col, int col2, int col3, int col4) {
@@ -114,11 +131,11 @@ public class RenderUtils {
 				);
 	}
 
-	public static void fillEviler(GuiGraphics context, float x, float y, float x2, float y2, int col, int col2, boolean flip) {
+	public static void drawQuad(GuiGraphics context, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, int col1, int col2, int col3, int col4) {
 		context.guiRenderState
 				.submitGuiElement(
 						new EvilerColoredQuadGuiElementRenderState(
-								RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), x, y, x2, y2, col, col, col2, col2, context.scissorStack.peek(), flip
+								RenderPipelines.GUI, TextureSetup.noTexture(), new Matrix3x2f(context.pose()), x1, y1, x2, y2, x3, y3, x4, y4, col1, col2, col3, col4, context.scissorStack.peek()
 						)
 				);
 	}

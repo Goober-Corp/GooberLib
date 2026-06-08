@@ -15,7 +15,6 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.Mth;
 
 @Environment(EnvType.CLIENT)
 public class GroupDividerWidget extends AbstractStringWidget {
@@ -25,10 +24,6 @@ public class GroupDividerWidget extends AbstractStringWidget {
 	private GroupDividerWidget.TextOverflow textOverflow = GroupDividerWidget.TextOverflow.CLAMPED;
 	public float renderProgress = 0;
 	public boolean isCollapsed;
-
-	public GroupDividerWidget(Component text, Font textRenderer) {
-		this(0, 0, textRenderer.width(text.getVisualOrderText()), 9, text, textRenderer);
-	}
 
 	public GroupDividerWidget(int i, int j, Component text, Font textRenderer) {
 		this(0, 0, i, j, text, textRenderer);
@@ -73,14 +68,25 @@ public class GroupDividerWidget extends AbstractStringWidget {
 	public void renderWidget(GuiGraphics drawContext, int i, int j, float f) {
 		super.renderWidget(drawContext, i, j, f);
 		renderProgress = (float) RenderUtils.ease(renderProgress, 1, 5F);
-		//this requires the widget to be centered. fuck
-		float yeah = this.getX() - getWidth() / 2F + getFont().width(message) / 2F;
-		RenderUtils.drawThinningHorizontalLine(drawContext, Mth.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 4.5F, 0, MainConfig.shadowCol, 2.25F, false);
-		RenderUtils.drawThinningHorizontalLine(drawContext, Mth.lerp(1 - renderProgress, yeah, this.getX() - 2), this.getX() - 2, this.getY() + 3.5F, 0, MainConfig.primaryCol, 2.25F, false);
-		int otherYeah = this.getX() + getFont().width(message);
-		RenderUtils.drawThinningHorizontalLine(drawContext, otherYeah + 1, Mth.lerp(1 - renderProgress, this.getX() + getFont().width(message) / 2f + getWidth() / 2F - 1, otherYeah), this.getY() + 4.5F, MainConfig.shadowCol, 0, 2.25F, true);
-		RenderUtils.drawThinningHorizontalLine(drawContext, otherYeah, Mth.lerp(1 - renderProgress, this.getX() + getFont().width(message) / 2f + getWidth() / 2F - 1, otherYeah), this.getY() + 3.5F, MainConfig.primaryCol, 0, 2.25F, true);
-		drawContext.drawCenteredString(Minecraft.getInstance().font, message, Minecraft.getInstance().font.width(message) / 2, 0, MainConfig.primaryCol);
+
+		RenderUtils.drawTriangle(drawContext, 10, 110, 60, 10, 110, 110, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF);
+
+		var halfWidth = getWidth() / 2f;
+		var halfTextWidth = getFont().width(message) / 2f;
+
+		var pos_1_x1 = this.getX();
+		var pos_1_x2 = getX() + halfWidth - halfTextWidth - 3;
+
+		var pos_2_x2 = getX() + halfWidth + halfTextWidth + 1;
+		var pos_2_x1 = getX() + getWidth();
+
+		RenderUtils.drawThinningHorizontalLine(drawContext, pos_1_x1, pos_1_x2, this.getY() + 4.5F, 0, MainConfig.shadowCol, 5.5f);
+		RenderUtils.drawThinningHorizontalLine(drawContext, pos_1_x1, pos_1_x2, this.getY() + 3.5F, 0, MainConfig.primaryCol, 5.5f);
+
+		RenderUtils.drawThinningHorizontalLine(drawContext, pos_2_x1, pos_2_x2, this.getY() + 4.5F, MainConfig.shadowCol, 0, 5.5f);
+		RenderUtils.drawThinningHorizontalLine(drawContext, pos_2_x1, pos_2_x2, this.getY() + 3.5F, MainConfig.primaryCol, 0, 5.5f);
+
+		drawContext.drawCenteredString(Minecraft.getInstance().font, message, (int) (this.getX() + halfWidth), 0, MainConfig.primaryCol);
 	}
 
 	@Override

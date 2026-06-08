@@ -37,7 +37,7 @@ public class SectionWidget extends ClickableParentWidget {
 		this.options = section.childOptions();
 
 		GroupDividerWidget t = new GroupDividerWidget(width, Minecraft.getInstance().font.lineHeight, section.metadata().name(), Minecraft.getInstance().font);
-		PrecisePositionWidgetWrapper<GroupDividerWidget> groupDivider = new PrecisePositionWidgetWrapper<>(t, x + ((double) Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2) - (double) Minecraft.getInstance().font.width(section.metadata().name()) / 2, y, section.metadata()::description);
+		PrecisePositionWidgetWrapper<GroupDividerWidget> groupDivider = new PrecisePositionWidgetWrapper<>(t, x, y, section.metadata()::description);
 		dividerWidget = groupDivider;
 		if (new ScreenRectangle((int) groupDivider.getRealX(), (int) groupDivider.getRealY(), groupDivider.getWrapped().getRight(), groupDivider.getWrapped().getBottom()).overlaps(new ScreenRectangle(0, 0, width, height))) {
 			t.renderProgress = 1;
@@ -128,7 +128,7 @@ public class SectionWidget extends ClickableParentWidget {
 
 		return addY;
 	}
-	
+
 	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean bl) {
 		setFocused(null);

@@ -12,40 +12,45 @@ public record EvilerColoredQuadGuiElementRenderState(
 		RenderPipeline pipeline,
 		TextureSetup textureSetup,
 		Matrix3x2fc matrix,
-		float x,
-		float y,
+		float x1,
+		float y1,
 		float x2,
 		float y2,
+		float x3,
+		float y3,
+		float x4,
+		float y4,
 		int col1,
 		int col2,
 		int col3,
 		int col4,
 		@Nullable ScreenRectangle scissorArea,
-		@Nullable ScreenRectangle bounds,
-		boolean flip
+		@Nullable ScreenRectangle bounds
 ) implements GuiElementRenderState {
 	public EvilerColoredQuadGuiElementRenderState(
-			RenderPipeline renderPipeline, TextureSetup textureSetup, Matrix3x2fc matrix3x2fc, float i, float j, float k, float l, int m, int n, int o, int p, @Nullable ScreenRectangle screenRect, boolean flip
+			RenderPipeline renderPipeline, TextureSetup textureSetup, Matrix3x2fc matrix3x2fc, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, int col1, int col2, int col3, int col4, @Nullable ScreenRectangle screenRect
 	) {
-		this(renderPipeline, textureSetup, matrix3x2fc, i, j, k, l, m, n, o, p, screenRect, createBounds((int) i, (int) j, (int) k, (int) l, matrix3x2fc, screenRect), flip);
+		this(renderPipeline, textureSetup, matrix3x2fc, x1, y1, x2, y2, x3, y3, x4, y4, col1, col2, col3, col4, screenRect, createBounds(x1, y1, x2, y2, x3, y3, x4, y4, matrix3x2fc, screenRect));
 	}
 
 	@Override
 	public void buildVertices(VertexConsumer vertexConsumer) {
-		float val = (y() + y2()) / 2F;
-		//top left
-		vertexConsumer.addVertexWith2DPose(this.matrix(), this.x(), flip ? y() : val).setColor(col1);
-		//bottom left
-		vertexConsumer.addVertexWith2DPose(this.matrix(), this.x(), flip ? y2() : val).setColor(this.col2());
-		//bottom right
-		vertexConsumer.addVertexWith2DPose(this.matrix(), this.x2(), flip ? val : y2()).setColor(col3);
-		//top right
-		vertexConsumer.addVertexWith2DPose(this.matrix(), this.x2(), flip ? val : y()).setColor(this.col4());
+		vertexConsumer.addVertexWith2DPose(this.matrix(), this.x3(), y3()).setColor(col3);
+		vertexConsumer.addVertexWith2DPose(this.matrix(), this.x4(), y4()).setColor(col4);
+		vertexConsumer.addVertexWith2DPose(this.matrix(), this.x1(), y1()).setColor(col1);
+		vertexConsumer.addVertexWith2DPose(this.matrix(), this.x2(), y2()).setColor(col2);
 	}
 
 	@Nullable
-	private static ScreenRectangle createBounds(int i, int j, int k, int l, Matrix3x2fc matrix3x2fc, @Nullable ScreenRectangle screenRect) {
-		ScreenRectangle screenRect2 = new ScreenRectangle(i, j, k - i, l - j).transformMaxBounds(matrix3x2fc);
+	private static ScreenRectangle createBounds(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, Matrix3x2fc matrix3x2fc, @Nullable ScreenRectangle screenRect) {
+		float minX = Math.min(Math.min(x1, x2), Math.min(x3, x4));
+		float minY = Math.min(Math.min(y1, y2), Math.min(y3, y4));
+		float maxX = Math.max(Math.max(x1, x2), Math.max(x3, x4));
+		float maxY = Math.max(Math.max(y1, y2), Math.max(y3, y4));
+
+		float width = maxX - minX;
+		float height = maxY - minY;
+		ScreenRectangle screenRect2 = new ScreenRectangle((int) minX, (int) minY, (int) width, (int) height).transformMaxBounds(matrix3x2fc);
 		return screenRect != null ? screenRect.intersection(screenRect2) : screenRect2;
 	}
 }

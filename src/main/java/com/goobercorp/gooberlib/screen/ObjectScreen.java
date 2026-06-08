@@ -19,7 +19,7 @@ public class ObjectScreen extends Screen {
 	@Override
 	protected void init() {
 		clearWidgets();
-		widget = this.addRenderableWidget(new SectionWidget(option.name(), option.options, (this.width / 2) - 10, 10, 20, this.height));
+		widget = this.addRenderableWidget(new SectionWidget(option.name(), option.options, 100, 100, 200, 200));
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class ObjectScreen extends Screen {
 	@Override
 	public void render(GuiGraphics guiGraphics, int i, int j, float f) {
 		this.parent.render(guiGraphics, -1, -1, f);
-		RenderUtils.fillEvil(guiGraphics, widget.getX(), widget.getY(), widget.getRight(), widget.getBottom(), -1);
+		RenderUtils.fillEvil(guiGraphics, widget.getX(), widget.getY(), widget.getRight(), widget.getX() + widget.uncollapsedHeight, -1);
 		super.render(guiGraphics, i, j, f);
 	}
 
