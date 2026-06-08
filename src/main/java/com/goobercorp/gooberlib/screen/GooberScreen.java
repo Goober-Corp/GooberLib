@@ -81,6 +81,9 @@ public class GooberScreen extends Screen {
 			PrecisePositionWidgetWrapper<CategoryWidget> pw = new PrecisePositionWidgetWrapper<>(cat, x, VERTICAL_PADDING, () -> c.metadata().description());
 			// TODO: maybe store scroll height for each category?
 			int catHeight = cat.getHeight();
+			if (catHeight > height) {
+				catHeight -= (height - VERTICAL_PADDING);
+			}
 			heights[config.categories().indexOf(c)] = catHeight;
 
 			this.addWidget(pw);
@@ -151,7 +154,7 @@ public class GooberScreen extends Screen {
 	}
 
 	private void setHoverText(double mouseX, double mouseY) {
-		Component hoverMessage = categoryWidgets.get(tabNavigationWidget.getCurrentTabIndex()).getHoverMessage(mouseX, mouseY);
+		Component hoverMessage = categoryWidgets.get(showTabs ? tabNavigationWidget.getCurrentTabIndex() : 0).getHoverMessage(mouseX, mouseY);
 		if (hoverMessage != null && !hoverMessage.isEmpty()) {
 			animateHoverDescription = true;
 			this.descriptionText = hoverMessage;
