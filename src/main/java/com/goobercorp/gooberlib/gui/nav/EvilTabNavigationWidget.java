@@ -4,7 +4,8 @@ import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.ScrollTweener;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.ComponentPath;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
@@ -185,13 +186,13 @@ public class EvilTabNavigationWidget extends AbstractContainerEventHandler imple
 
 	@Override
 	public boolean mouseReleased(MouseButtonEvent click) {
-		float speedX = (float) Math.abs(click.x() - prevDelta.x);
-		if (speedX > 1) {
-			this.targetX += speedX * 25;
-		}
-		if (click.button() == 0) {
-			scrollTweener.setInteractionState(false);
-		}
+//		float speedX = (float) Math.abs(click.x() - prevDelta.x);
+//		if (speedX > 1) {
+//			this.targetX += speedX * 25;
+//		}
+//		if (click.button() == 0) {
+//			scrollTweener.setInteractionState(false);
+//		}
 		return super.mouseReleased(click);
 	}
 
