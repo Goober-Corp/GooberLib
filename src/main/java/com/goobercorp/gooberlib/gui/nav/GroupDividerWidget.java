@@ -69,7 +69,7 @@ public class GroupDividerWidget extends AbstractStringWidget {
 		super.renderWidget(drawContext, i, j, f);
 		renderProgress = (float) RenderUtils.ease(renderProgress, 1, 5F);
 
-		RenderUtils.drawTriangle(drawContext, 10, 110, 60, 10, 110, 110, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF);
+//		RenderUtils.drawTriangle(drawContext, 10, 110, 60, 10, 110, 110, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF);
 
 		var halfWidth = getWidth() / 2f;
 		var halfTextWidth = getFont().width(message) / 2f;
