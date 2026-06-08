@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 
 public class Tweener {
 	//TODO: add easings
-	//TODO: have some sort of common interface for Tweener and ScrollTweener
 	Supplier<Number> target;
 	double value;
 	float speed;

@@ -152,7 +152,6 @@ public class WidgetProviders {
 	}
 
 	public static WidgetProvider<IdentifierOption> identifierTwoFields() {
-		//TODO: make formatter for this option turn red if invalid identifier
 		return (theOption, x, y, width, height) -> {
 			var widgetX = font().width(theOption.name()) + 2;
 			var widgetWidth = width - font().width(theOption.name());
@@ -168,7 +167,6 @@ public class WidgetProviders {
 			};
 			namespace.setChangedListener(changedListener);
 			path.setChangedListener(changedListener);
-			//TODO: replace text widget with my own impl that allows a custom text color
 			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new PlainTextWidget(x, y, width, height, theOption.name(), MainConfig.primaryCol, false), namespace, path, new PlainTextWidget(widgetX + widgetWidth / 2 - 3, y, width, height, Component.nullToEmpty(":"), MainConfig.primaryCol, false)));
 		};
 	}

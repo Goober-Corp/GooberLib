@@ -296,7 +296,6 @@ public class EvilStringWidget extends EvilBaseWidget {
 	public boolean keyPressed(KeyEvent keyInput) {
 		if (this.isActive() && this.isFocused()) {
 			switch (keyInput.key()) {
-				// todo rename these to GLFW.KEY_...
 				case GLFW.GLFW_KEY_BACKSPACE:
 					if (this.editable) {
 						this.erase(-1, keyInput.hasControlDownWithQuirk());
@@ -368,7 +367,6 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	public boolean isActive() {
-		//TODO: switching to mojmap somehow broke this??? I think i've fixed it but this needs to be looked into
 		return active && this.isEditable();
 	}
 

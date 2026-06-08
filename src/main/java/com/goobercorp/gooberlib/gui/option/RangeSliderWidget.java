@@ -25,8 +25,6 @@ import java.util.function.Supplier;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
-// todo: make option widgets widget
-//  widget? i think you meant wider
 public class RangeSliderWidget extends EvilBaseWidget {
 	protected double minValue;
 	protected double maxValue;
@@ -104,8 +102,6 @@ public class RangeSliderWidget extends EvilBaseWidget {
 
 	@Override
 	public boolean mouseScrolled(double d, double e, double f, double g) {
-//		this.setValue(this.value + g / (this.width - 8));
-		//TODO: make it move the nearest one? idk
 		return false;
 	}
 

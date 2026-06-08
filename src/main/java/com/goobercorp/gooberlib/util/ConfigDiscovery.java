@@ -59,7 +59,6 @@ public class ConfigDiscovery {
 									.filter(f -> Modifier.isFinal(f.getModifiers()))
 									.toList();
 
-							// todo document
 							// fixme: this is horrible.
 							List<Field> builderSupplierFields = Arrays.stream(configClass.getDeclaredFields())
 									.filter(f -> f.getType() == Supplier.class)

@@ -121,7 +121,7 @@ public class PrecisePositionWidgetWrapper<T extends AbstractWidget> implements R
 
 	@Override
 	public void render(GuiGraphics drawContext, int i, int j, float f) {
-		boolean isVisible = new ScreenRectangle((int) getRealX(), (int) /*getRealY() TODO FIX*/ 0, wrapped.getWidth(), wrapped.getHeight()).overlaps(new ScreenRectangle(0, 0, drawContext.guiWidth(), drawContext.guiHeight()));
+		boolean isVisible = new ScreenRectangle((int) getRealX(), (int) /*getRealY() fixme*/ 0, wrapped.getWidth(), wrapped.getHeight()).overlaps(new ScreenRectangle(0, 0, drawContext.guiWidth(), drawContext.guiHeight()));
 //		var isVisible = true;
 		this.x = RenderUtils.ease(this.x, targetInset, 10);
 		renderProgress = (float) RenderUtils.ease(renderProgress, 1, 15);

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 
-// todo?: tests fpr all options
 @SuppressWarnings("unused")
 public class TheOne {
 	/* commented out until all the options are implemented
@@ -125,7 +124,7 @@ public class TheOne {
 
 	public static class Vec4iOption extends ObjectOption<Vec4iOption.Vec4iModel> {
 		public Vec4iOption(String name, String description) {
-			super(name, new Vec4iModel(), _ -> description, null); // TOdo: pretend it has a custom widget provider
+			super(name, new Vec4iModel(), _ -> description, null);
 		}
 
 		public Vector4i getValue() {

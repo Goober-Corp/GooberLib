@@ -39,7 +39,6 @@ public class CyclingOptionWidget extends EvilBaseWidget {
 	protected void drawText(GuiGraphics drawContext) {
 		newMatrixScope(drawContext, stack -> {
 			Component displayName = valueFormatter.get();
-			//TODO: give this text scaling effect to something like ButtonOption
 			if (this.centerName) {
 				stack.translate(this.getX() + (this.getRight() / 2F) - Minecraft.getInstance().font.width(displayName) / 2F, this.getY() + this.height / 2F - Minecraft.getInstance().font.lineHeight / 2f);
 			} else {

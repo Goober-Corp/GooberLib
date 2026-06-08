@@ -27,7 +27,6 @@ public class EvilBaseWidget extends AbstractWidget {
 	protected Tweener clickTweener;
 	protected boolean centerName;
 	protected boolean shouldDrawName;
-	//TODO: add back reference to BaseOption so we can easily reset on mouse middle click here
 	protected final Component name;
 	private final Function<BaseOption<?>, Component> valueFormatter;
 
@@ -97,7 +96,6 @@ public class EvilBaseWidget extends AbstractWidget {
 
 	@Override
 	public boolean mouseDragged(MouseButtonEvent click, double d, double e) {
-		//TODO: i have no idea if this works how i think it should. it's good enough
 		this.verticalPosOffset += (float) e * 0.025F * Math.min(1 / Math.abs(verticalPosOffset) / 2, 1);
 		this.horizontalPosOffset += (float) d * 0.025F * Math.min(1 / Math.abs(horizontalPosOffset) / 2, 1);
 		return super.mouseDragged(click, d, e);

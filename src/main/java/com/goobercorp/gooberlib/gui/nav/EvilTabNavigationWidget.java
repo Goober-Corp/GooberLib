@@ -109,7 +109,6 @@ public class EvilTabNavigationWidget extends AbstractContainerEventHandler imple
 	@Override
 	public void setFocused(boolean bl) {
 		super.setFocused(bl);
-		// todo: possible bug? if this gets focused (bl == true) then no tab will be selected
 		if (this.getFocused() != null) {
 			this.setFocused(null);
 		}

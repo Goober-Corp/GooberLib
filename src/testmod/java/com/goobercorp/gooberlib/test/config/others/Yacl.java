@@ -25,21 +25,21 @@ import java.util.function.Consumer;
 // todo: overloads
 @GooberConfig(modId = "java")
 public class Yacl {
-	/*	public static final BooleanOption booleanToggle = new BooleanOption(Component.literal("Boolean Toggle"), _ -> Component.empty()
-				.append(Component.literal("a").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowComponent(Component.literal("a")))))
-				.append(Component.literal("b").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowComponent(Component.literal("b")))))
-				.append(Component.literal("c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowComponent(Component.literal("c")))))
-				.append(Component.literal("e").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowComponent(Component.literal("e")))))
-				.append(Component.literal("click me").withStyle(style -> style.withClickEvent(new ClickEvent.OpenUrl(URI.create("https://isxander.dev"))))), false, null
-		); // todo: widget*/
-//	public static final BooleanOption customBooleanToggle = new BooleanOption("Custom Boolean Toggle", "You can customize controllers like so! YACL is truly infinitely customizable! This tooltip is long in order to demonstrate the cool, smooth scrolling of these descriptions. Did you know, they are also super clickable?! I know, cool right, YACL 3.x really is amazing."); // todo: widget
+	public static final BooleanOption booleanToggle = new BooleanOption(Component.literal("Boolean Toggle"), _ -> Component.empty()
+			.append(Component.literal("a").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal("a")))))
+			.append(Component.literal("b").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal("b")))))
+			.append(Component.literal("c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal("c")))))
+			.append(Component.literal("e").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal("e")))))
+			.append(Component.literal("click me").withStyle(style -> style.withClickEvent(new ClickEvent.OpenUrl(URI.create("https://isxander.dev"))))), false, WidgetProviders.booleanToggleWidget()
+	);
+	public static final BooleanOption customBooleanToggle = new BooleanOption("Custom Boolean Toggle", "You can customize controllers like so! YACL is truly infinitely customizable! This tooltip is long in order to demonstrate the cool, smooth scrolling of these descriptions. Did you know, they are also super clickable?! I know, cool right, YACL 3.x really is amazing.", WidgetProviders.booleanToggleWidget("I am true", "I am false"));
 	public static final BooleanOption tickbox = new BooleanOption("Tick Box", "There are even alternate methods of displaying the same data type!");
 
 	public static final IntOption intSlider = new IntOption("Int Slider", _ -> "", 1, 0, 3, null);
 	public static final DoubleOption doubleSlider = new DoubleOption("Double Slider", _ -> "", 0.05, 0, 3, null);
 	public static final FloatOption floatSlider = new FloatOption("Double Slider", _ -> "", 0.1f, 0, 3, null);
 	public static final LongOption longSlider = new LongOption("Double Slider", _ -> "", 100, 0, 1_000_000, null);
-	public static final StringOption ComponentField = new StringOption("Component Option", ""); // todo: widget
+	public static final StringOption ComponentField = new StringOption("Component Option", "");
 	public static final ColorOption colorOption = new ColorOption("Color Option", ""); // todo: widget
 
 	// todo: labels
@@ -59,10 +59,10 @@ public class Yacl {
 	public static final StringOption stringSuggestions = new StringOption("String suggestions", "", WidgetProviders.stringField(s -> List.of(s + "1", s + "2", s + "3"))); // todo: widget
 
 	//	public static final ItemOption item = new ItemOption("Item Dropdown", ""); // todo: option
-	public static final EnumOption<ChatFormatting> formattingOption = new EnumOption<>("Enum Dropdown", "", ChatFormatting.class); //todo: widget
+	public static final EnumOption<ChatFormatting> formattingOption = new EnumOption<>("Enum Dropdown", "", ChatFormatting.class);
 
-	public static final ListOption<StringOption> stringList = new ListOption<>("String List", List.of(), () -> new StringOption("", ""));
-	public static final ListOption<IntOption> intList = new ListOption<>("Slider List", List.of(), () -> new IntOption("", _ -> "", 0, 0, 10, null));
+	public static final ListOption<StringOption> stringList = new ListOption<>("String List", List.of(), () -> new StringOption("", "")); //todo: widget
+	public static final ListOption<IntOption> intList = new ListOption<>("Slider List", List.of(), () -> new IntOption("", _ -> "", 0, 0, 10, null)); //todo: widget
 
 	public static final BooleanOption groupTestRoot = new BooleanOption("Root Test", "");
 	public static final BooleanOption groupTestFirstGroup = new BooleanOption("First Group Test 1", "");
@@ -78,9 +78,9 @@ public class Yacl {
 		config.category("Control Examples", "Example Category Description", cat -> {
 			cat.section("Boolean Controllers", section -> {
 				// todo: .flag(OptionFlag.GAME_RESTART)
-//				section.option(booleanToggle);
+				section.option(booleanToggle);
 				// todo: .setAvailable on options
-//				section.option(customBooleanToggle);
+				section.option(customBooleanToggle);
 				section.option(tickbox);
 			});
 			cat.section("Slider Controllers", section -> {
@@ -161,7 +161,7 @@ public class Yacl {
 			config.category("Category Test", testCategoryMaker);
 		}
 		config.category("Placeholder Category", _ -> {
-			// todo: custom screens for certain categories
+			// todo: custom screens (or i guess a custom CategoryWidget?) for certain categories
 		});
 	});
 }

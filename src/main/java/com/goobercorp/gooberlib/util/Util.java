@@ -5,7 +5,7 @@ import net.minecraft.network.chat.Component;
 import java.util.function.Function;
 
 public class Util {
-	//TODO: rename util package to GLUP. GooberLib Utils Package
+	// t o d o: rename util package to GLUP. GooberLib Utils Package
 	public static Component fromChars(CharSequence charSequence) {
 		if (charSequence instanceof Component c) return c;
 		if (charSequence == null) return Component.empty();

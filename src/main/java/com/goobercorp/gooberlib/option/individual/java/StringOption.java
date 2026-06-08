@@ -25,9 +25,6 @@ public class StringOption extends BaseOption<StringOption> {
 		this(name, _ -> description, "", provider);
 	}
 
-	// todo:
-	// new StringOption("name", "description").withDefaultValue("default value");
-
 	@Override
 	public <S> S serialize(DynamicOps<S> ops) {
 		return ops.createString(value);
