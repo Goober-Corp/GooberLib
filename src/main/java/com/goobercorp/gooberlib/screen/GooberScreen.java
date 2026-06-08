@@ -14,7 +14,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.tabs.GridLayoutTab;
 import net.minecraft.client.gui.components.tabs.Tab;
 import net.minecraft.client.gui.components.tabs.TabManager;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -48,7 +47,6 @@ public class GooberScreen extends Screen {
 	private final Tab[] tabs;
 	private final int[] heights;
 	private boolean animateHoverDescription = false;
-	public ScreenRectangle badbadbad = new ScreenRectangle(0, 0, 0, 0);
 	private final boolean showTabs;
 
 	private final String modId;
@@ -108,6 +106,7 @@ public class GooberScreen extends Screen {
 		double mX, mY;
 		mX = Minecraft.getInstance().mouseHandler.getScaledXPos(Minecraft.getInstance().getWindow());
 		mY = Minecraft.getInstance().mouseHandler.getScaledYPos(Minecraft.getInstance().getWindow());
+		setHoverText(mX, mY);
 		//Cursor glow
 		RenderUtils.fillEvil(drawContext, (float) mX, (float) mY, (float) (mX + 2.5f), (float) (mY + 2.5F), MainConfig.primaryCol);
 		newMatrixScope(drawContext, stack -> {
@@ -136,7 +135,6 @@ public class GooberScreen extends Screen {
 		mX = Minecraft.getInstance().mouseHandler.getScaledXPos(Minecraft.getInstance().getWindow());
 		mY = Minecraft.getInstance().mouseHandler.getScaledYPos(Minecraft.getInstance().getWindow());
 		drawCommon(drawContext, mouseX, mouseY, tickDelta);
-		setHoverText(mX, mY);
 
 		if (this.showTabs) {
 			if (tabNavigationWidget.isMouseOver(mX, mY)) {
@@ -153,12 +151,11 @@ public class GooberScreen extends Screen {
 	}
 
 	private void setHoverText(double mouseX, double mouseY) {
-		for (PrecisePositionWidgetWrapper<?> ppww : getAllWidgets()) {
-			if (ppww.isMouseOver(mouseX, mouseY)) {
-				descriptionText = ppww.getHoverMessage().get();
-				animateHoverDescription = true;
-				break;
-			}
+		Component hoverMessage = categoryWidgets.get(tabNavigationWidget.getCurrentTabIndex()).getHoverMessage(mouseX, mouseY);
+		if (hoverMessage != null && !hoverMessage.isEmpty()) {
+			animateHoverDescription = true;
+			this.descriptionText = hoverMessage;
+		} else {
 			animateHoverDescription = false;
 		}
 	}

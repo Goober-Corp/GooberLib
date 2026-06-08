@@ -5,6 +5,7 @@ import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.gui.nav.GroupDividerWidget;
 import com.goobercorp.gooberlib.gui.util.ClickableParentWidget;
 import com.goobercorp.gooberlib.gui.util.PrecisePositionWidgetWrapper;
+import com.goobercorp.gooberlib.interfaces.Hoverable;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
 import com.goobercorp.gooberlib.util.RenderUtils;
@@ -25,9 +26,9 @@ import static com.goobercorp.gooberlib.screen.GooberScreen.CHILD_INSET;
 import static com.goobercorp.gooberlib.screen.GooberScreen.VERTICAL_PADDING;
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
-public class SectionWidget extends ClickableParentWidget {
-	private final HashMap<OptionContext<?>, PrecisePositionWidgetWrapper<?>> evilLayout = new HashMap<>();
-	private final PrecisePositionWidgetWrapper<GroupDividerWidget> dividerWidget;
+public class SectionWidget extends ClickableParentWidget implements Hoverable {
+	public final HashMap<OptionContext<?>, PrecisePositionWidgetWrapper<?>> evilLayout = new HashMap<>();
+	public final PrecisePositionWidgetWrapper<GroupDividerWidget> dividerWidget;
 	private final List<OptionContext<?>> options;
 	private final TargetedTweener collapsedTweener = new TargetedTweener();
 	public final int uncollapsedHeight;
@@ -143,5 +144,18 @@ public class SectionWidget extends ClickableParentWidget {
 	public float getOffsetRequired() {
 		int dividerHeight = this.dividerWidget.getWrapped().getHeight() + VERTICAL_PADDING / 2;
 		return (float) ((this.uncollapsedHeight - dividerHeight) * (1 - this.collapsedTweener.get()));
+	}
+
+	@Override
+	public Component getHoverMessage(double mouseX, double mouseY) {
+		var dividerHoverMessage = dividerWidget.getHoverMessage(mouseX, mouseY);
+		if (dividerHoverMessage != null && !dividerHoverMessage.isEmpty())
+			return dividerWidget.getHoverMessage(mouseX, mouseY);
+		for (var child : evilLayout.values()) {
+			var childHoverMessage = child.getHoverMessage(mouseX, mouseY);
+			if (childHoverMessage != null && !childHoverMessage.isEmpty())
+				return child.getHoverMessage(mouseX, mouseY);
+		}
+		return null;
 	}
 }

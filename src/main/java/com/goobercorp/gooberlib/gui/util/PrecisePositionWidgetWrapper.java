@@ -1,6 +1,7 @@
 package com.goobercorp.gooberlib.gui.util;
 
 import com.goobercorp.gooberlib.config.MainConfig;
+import com.goobercorp.gooberlib.interfaces.Hoverable;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
@@ -81,8 +82,12 @@ public class PrecisePositionWidgetWrapper<T extends AbstractWidget> implements R
 		this.y = y;
 	}
 
-	public Supplier<Component> getHoverMessage() {
-		return hoverMessage;
+	public Component getHoverMessage(double mouseX, double mouseY) {
+		if (!isMouseOver(mouseX, mouseY)) return null;
+		if (wrapped instanceof Hoverable hoverable) {
+			return hoverable.getHoverMessage(mouseX - getRealX(), mouseY - getRealY());
+		}
+		return hoverMessage.get();
 	}
 
 

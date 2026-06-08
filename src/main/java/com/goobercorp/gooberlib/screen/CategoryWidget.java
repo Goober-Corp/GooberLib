@@ -6,6 +6,7 @@ import com.goobercorp.gooberlib.builder.section.ConfigSection;
 import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.gui.util.ClickableParentWidget;
 import com.goobercorp.gooberlib.gui.util.PrecisePositionWidgetWrapper;
+import com.goobercorp.gooberlib.interfaces.Hoverable;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
 import com.goobercorp.gooberlib.util.RenderUtils;
@@ -13,6 +14,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +23,7 @@ import java.util.List;
 import static com.goobercorp.gooberlib.screen.GooberScreen.CHILD_INSET;
 import static com.goobercorp.gooberlib.screen.GooberScreen.VERTICAL_PADDING;
 
-public class CategoryWidget extends ClickableParentWidget {
+public class CategoryWidget extends ClickableParentWidget implements Hoverable {
 	private final List<PrecisePositionWidgetWrapper<?>> values = new ArrayList<>();
 	private final HashMap<OptionHolder, PrecisePositionWidgetWrapper<?>> evilLayout = new HashMap<>();
 	private final ConfigCategory category;
@@ -75,7 +77,7 @@ public class CategoryWidget extends ClickableParentWidget {
 			if (wrapped instanceof SectionWidget section) {
 				totalYOffset -= section.getOffsetRequired();
 			}
-			height += entry.getWrapped().getHeight() + VERTICAL_PADDING / 2;
+			height += entry.getWrapped().getHeight() + VERTICAL_PADDING / 2f;
 		}
 		this.setHeight((int) height);
 	}
@@ -110,5 +112,15 @@ public class CategoryWidget extends ClickableParentWidget {
 
 	@Override
 	protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+	}
+
+	@Override
+	public Component getHoverMessage(double mouseX, double mouseY) {
+		for (var child : values) {
+			var childHoverMessage = child.getHoverMessage(mouseX, mouseY);
+			if (childHoverMessage != null && !childHoverMessage.isEmpty())
+				return childHoverMessage;
+		}
+		return null;
 	}
 }

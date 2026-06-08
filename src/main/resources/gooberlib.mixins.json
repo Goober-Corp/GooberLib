@@ -7,7 +7,6 @@
     "util.ComponentMixin"
   ],
   "client": [
-    "gui.GuiRendererMixin",
     "gui.InactivityFpsLimiterMixin",
     "gui.MinecraftClientMixin",
     "hotkey.KeyboardMixin",
