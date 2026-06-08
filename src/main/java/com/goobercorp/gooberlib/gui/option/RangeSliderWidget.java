@@ -42,6 +42,8 @@ public class RangeSliderWidget extends EvilBaseWidget {
 		this.maxValue = getInterpolatedValue(numberOption.getNumberMaxValue().doubleValue(), numberOption.getDoubleMin(), numberOption.getDoubleMax());
 		this.valueFormatter = () -> valueFormatter.apply(numberOption);
 		this.shouldDrawName = true;
+		minValTweener.snapToTarget();
+		maxValTweener.snapToTarget();
 	}
 
 	public <T extends NumberRangeOption<T>> RangeSliderWidget(T numberOption, int x, int y, int width, int height) {

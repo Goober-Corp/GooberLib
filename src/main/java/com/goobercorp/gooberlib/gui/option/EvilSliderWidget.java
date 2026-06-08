@@ -38,6 +38,7 @@ public class EvilSliderWidget extends EvilBaseWidget {
 		this.numberOption = numberOption;
 		this.value = getInterpolatedValue(numberOption.getNumberValue().doubleValue(), numberOption.getDoubleMin(), numberOption.getDoubleMax());
 		this.valueFormatter = () -> valueFormatter.apply(numberOption);
+		valTweener.snapToTarget();
 	}
 
 	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height) {
