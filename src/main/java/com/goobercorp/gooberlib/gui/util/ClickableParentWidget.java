@@ -1,6 +1,6 @@
 package com.goobercorp.gooberlib.gui.util;
 
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
@@ -68,6 +68,7 @@ public class ClickableParentWidget extends AbstractWidget implements ContainerEv
 	protected void renderWidget(GuiGraphics drawContext, int mouseX, int mouseY, float delta) {
 		for (var child : children) {
 			if (child instanceof Renderable widget) {
+				//TODO: render whichever widget is being interacted with on top
 				widget.render(drawContext, mouseX, mouseY, delta);
 			}
 		}

@@ -146,8 +146,12 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 	}
 
 	public float getOffsetRequired() {
-		int dividerHeight = this.dividerWidget.getWrapped().getHeight() + VERTICAL_PADDING / 2;
-		return (float) ((this.uncollapsedHeight - dividerHeight) * (1 - this.collapsedTweener.get()));
+		if (!options.isEmpty()) {
+			int dividerHeight = this.dividerWidget.getWrapped().getHeight() + VERTICAL_PADDING / 2;
+			return (float) ((this.uncollapsedHeight - dividerHeight) * (1 - this.collapsedTweener.get()));
+		} else {
+			return 0;
+		}
 	}
 
 	@Override

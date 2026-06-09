@@ -30,6 +30,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
+
 @SuppressWarnings("unused")
 public class EvilStringWidget extends EvilBaseWidget {
 	public static final Style PLACEHOLDER_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GRAY);
@@ -54,7 +56,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 	@Nullable
 	private Component placeholder;
 	private long lastSwitchFocusTime = Util.getMillis();
-	int textX;
+	float textX;
 	int textY;
 	private String lastAccepted;
 	private final TargetedTweener cursorXTweener = new TargetedTweener(15);
@@ -63,6 +65,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 	private final TargetedTweener cursorHeightTweener = new TargetedTweener(15);
 	private final TargetedTweener selectionX1Tweener = new TargetedTweener(15);
 	private final TargetedTweener selectionX2Tweener = new TargetedTweener(15);
+	protected final TargetedTweener textXTweener = new TargetedTweener(15);
 	private boolean isFirstAfterAtTarget = false;
 	private boolean firstAfterSelect = true;
 	private boolean justFocused;
@@ -386,7 +389,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	private int calculateCursorPos(MouseButtonEvent click) {
-		int i = Math.min(Mth.floor(click.x()) - this.textX, this.getInnerWidth());
+		int i = (int) Math.min(Mth.floor(click.x()) - textXTweener.get(), this.getInnerWidth());
 		String string = this.text.substring(this.firstCharacterIndex);
 		return this.firstCharacterIndex + this.textRenderer.plainSubstrByWidth(string, i).length();
 	}
@@ -420,6 +423,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 	@Override
 	public void renderWidget(GuiGraphics context, double mouseX, double mouseY, float delta) {
 		if (this.isVisible()) {
+			updateTextPosition();
 			int colorIShouldBe = this.editable ? this.editableColor : this.uneditableColor;
 			int cursorOffset = this.selectionStart - this.firstCharacterIndex;
 			String visibleText = this.textRenderer.plainSubstrByWidth(this.text.substring(this.firstCharacterIndex), this.getInnerWidth());
@@ -435,21 +439,25 @@ public class EvilStringWidget extends EvilBaseWidget {
 			}
 			boolean blink = this.isFocused() && (time - this.lastSwitchFocusTime) / 300L % 2L == 0L && cursorVisible;
 
-			int actualTextX = this.textX;
+			float actualTextX = this.textXTweener.getF();
 			int visibleSelectedCharacters = Mth.clamp(this.selectionEnd - this.firstCharacterIndex, 0, visibleText.length());
 			if (!visibleText.isEmpty()) {
 				String string2 = cursorVisible ? visibleText.substring(0, cursorOffset) : visibleText;
 				Component formatted = this.format(string2);
-				context.drawString(this.textRenderer, this.format(visibleText), actualTextX, this.textY, colorIShouldBe, this.textShadow);
+				float finalActualTextX = actualTextX;
+				newMatrixScope(context, stack -> {
+					stack.translate(finalActualTextX, this.textY);
+					context.drawString(this.textRenderer, this.format(visibleText), 0, 0, colorIShouldBe, this.textShadow);
+				});
 				actualTextX += this.textRenderer.width(formatted) + 1;
 			}
 
 			boolean shouldBePipe = this.selectionStart < this.text.length() || this.text.length() >= this.getMaxLength();
-			int cursorX = actualTextX;
+			int cursorX = (int) actualTextX;
 			if (!cursorVisible) {
-				cursorX = cursorOffset > 0 ? this.textX + this.width : this.textX;
+				cursorX = (int) (cursorOffset > 0 ? this.textXTweener.get() + this.width : this.textXTweener.get());
 			} else if (shouldBePipe) {
-				cursorX = --actualTextX;
+				cursorX = (int) --actualTextX;
 			}
 
 //			if (!visibleText.isEmpty() && cursorVisible && cursorOffset < visibleText.length()) {
@@ -457,11 +465,11 @@ public class EvilStringWidget extends EvilBaseWidget {
 //			}
 
 			if (this.placeholder != null && visibleText.isEmpty() && !this.isFocused()) {
-				context.drawString(this.textRenderer, this.placeholder, actualTextX, this.textY, colorIShouldBe);
+				context.drawString(this.textRenderer, this.placeholder, (int) actualTextX, this.textY, colorIShouldBe);
 			}
 
 			if (visibleSelectedCharacters != cursorOffset) {
-				int p = this.textX + this.textRenderer.width(visibleText.substring(0, visibleSelectedCharacters));
+				int p = (int) (textXTweener.get() + this.textRenderer.width(visibleText.substring(0, visibleSelectedCharacters)));
 //					context.drawSelection(
 //							Math.min(o, this.getX() + this.width), this.textY - 1, Math.min(p - 1, this.getX() + this.width), this.textY + 1 + 9, this.invertSelectionBackground
 //					);
@@ -533,16 +541,18 @@ public class EvilStringWidget extends EvilBaseWidget {
 		if (this.textRenderer != null) {
 			String string = this.textRenderer.plainSubstrByWidth(this.text.substring(this.firstCharacterIndex), this.getInnerWidth());
 			if (this.isCentered()) {
-				this.textX = this.getX() + (this.width / 2) - (textRenderer.width(string) / 2);
+				this.textXTweener.setTarget(this.getX() + (this.width / 2) - ((textRenderer.width(string)) / 2) - 5);
 			} else {
 				if (alignRight) {
 					//TODO: take into account width of the cursor
-					this.textX = this.width - 5 - textRenderer.width(string);
+					//TODO: cursor does weird thing where it overshoots by a few px when deleting a char?
+					this.textXTweener.setTarget(this.width - 5 - textRenderer.width(string));
 				} else {
-					this.textX = this.getX() + (this.isCentered() ? (this.getWidth() - this.textRenderer.width(string)) / 2 : (this.drawsBackground ? 4 : 0));
+					this.textXTweener.setTarget(this.getX() + (this.isCentered() ? (this.getWidth() - this.textRenderer.width(string)) / 2 : (this.drawsBackground ? 4 : 0)));
 				}
 			}
 			this.textY = this.drawsBackground ? this.getY() + (this.height - 8) / 2 : this.getY();
+			textXTweener.update();
 		}
 	}
 

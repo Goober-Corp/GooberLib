@@ -66,7 +66,6 @@ public class CategoryWidget extends ClickableParentWidget implements Hoverable {
 
 	@Override
 	protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-		//TODO: somehow draw currently dragged widget above everything else
 		drawLines(guiGraphics);
 		double totalYOffset = 0;
 		double height = 0;
