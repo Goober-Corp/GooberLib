@@ -23,7 +23,7 @@ public class GroupDividerWidget extends AbstractStringWidget {
 	private boolean cachedWidthDirty = true;
 	private GroupDividerWidget.TextOverflow textOverflow = GroupDividerWidget.TextOverflow.CLAMPED;
 	public float renderProgress = 0;
-	public boolean isCollapsed;
+	public boolean isCollapsed = false;
 
 	public GroupDividerWidget(int i, int j, Component text, Font textRenderer) {
 		this(0, 0, i, j, text, textRenderer);

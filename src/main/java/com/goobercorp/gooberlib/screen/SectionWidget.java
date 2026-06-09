@@ -50,6 +50,8 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 		}
 		this.setHeight(y);
 		this.uncollapsedHeight = y;
+		collapsedTweener.setTarget(dividerWidget.getWrapped().isCollapsed ? 0 : 1);
+		collapsedTweener.snapToTarget();
 	}
 
 	public SectionWidget(CharSequence name, List<Option<?>> options, int x, int y, int width, int height) {
@@ -73,6 +75,8 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 		}
 		this.setHeight(y);
 		this.uncollapsedHeight = y;
+		collapsedTweener.setTarget(dividerWidget.getWrapped().isCollapsed ? 0 : 1);
+		collapsedTweener.snapToTarget();
 	}
 
 	@Override
