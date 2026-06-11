@@ -5,6 +5,7 @@ import com.goobercorp.gooberlib.gui.nav.PlainTextWidget;
 import com.goobercorp.gooberlib.gui.option.*;
 import com.goobercorp.gooberlib.gui.util.ClickableParentWidget;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
+import com.goobercorp.gooberlib.option.individual.hotkey.HotkeyOption;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.option.individual.java.CycleOption;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
@@ -227,5 +228,9 @@ public class WidgetProviders {
 		return (theOption, x, y, width, height) -> new EvilButtonWidget(theOption.name(), () -> {
 			Minecraft.getInstance().setScreen(new ObjectScreen(Minecraft.getInstance().screen, theOption));
 		}, x, y, width, height, null);
+	}
+
+	public static WidgetProvider<HotkeyOption> hotkey() {
+		return HotkeyWidget::new;
 	}
 }

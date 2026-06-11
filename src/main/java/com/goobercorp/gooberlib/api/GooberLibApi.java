@@ -12,6 +12,7 @@ import com.goobercorp.gooberlib.gui.option.EvilButtonWidget;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
+import com.goobercorp.gooberlib.option.individual.hotkey.HotkeyOption;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.option.individual.java.CycleOption;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
@@ -39,7 +40,10 @@ import net.minecraft.client.gui.screens.Screen;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.Function;
 
 import static org.apache.commons.io.function.Erase.rethrow;
@@ -212,6 +216,7 @@ public class GooberLibApi {
 		registerWidgetProvider(t -> t instanceof Vec3dOption, WidgetProviders.vec3dFields(), -1);
 		registerWidgetProvider(t -> t instanceof CycleOption, WidgetProviders.cyclingOption(), -1);
 		registerWidgetProvider(t -> t instanceof ObjectOption<?>, WidgetProviders.objectOption(), -1);
+		registerWidgetProvider(t -> t instanceof HotkeyOption, WidgetProviders.hotkey(), -1);
 	}
 
 	/**
