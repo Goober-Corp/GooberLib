@@ -17,6 +17,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 public class SectionWidget extends ClickableParentWidget implements Hoverable {
 	public final HashMap<OptionContext<?>, PrecisePositionWidgetWrapper<?>> evilLayout = new HashMap<>();
+	@Nullable
 	public final PrecisePositionWidgetWrapper<GroupDividerWidget> dividerWidget;
 	private final List<OptionContext<?>> options;
 	private final TargetedTweener collapsedTweener = new TargetedTweener();
@@ -45,7 +47,7 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 		}
 		children().add(groupDivider);
 		y += VERTICAL_PADDING;
-		if (MainConfig.EXPERIMENTAL_DUAL_COLUMN_LAYOUT.value) {
+		if (MainConfig.EXPERIMENTAL_DUAL_COLUMN_LAYOUT.getValue()) {
 			if (section.childOptions().size() == 1) {
 				//TODO: make them wider here
 				//TODO: also make this work for section-less options
@@ -81,39 +83,39 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 		}
 		var nameComponent = Util.fromChars(name);
 
-		GroupDividerWidget t = new GroupDividerWidget(width, Minecraft.getInstance().font.lineHeight, nameComponent, Minecraft.getInstance().font);
-		PrecisePositionWidgetWrapper<GroupDividerWidget> groupDivider = new PrecisePositionWidgetWrapper<>(t, x + ((double) Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2) - (double) Minecraft.getInstance().font.width(nameComponent) / 2, y, Component::empty);
-		dividerWidget = groupDivider;
-		if (new ScreenRectangle((int) groupDivider.getRealX(), (int) groupDivider.getRealY(), groupDivider.getWrapped().getRight(), groupDivider.getWrapped().getBottom()).overlaps(new ScreenRectangle(0, 0, width, height))) {
-			t.renderProgress = 1;
-		}
-		children().add(groupDivider);
-		y += VERTICAL_PADDING;
+		dividerWidget = null;
+		y += VERTICAL_PADDING / 2;
 		for (OptionContext<?> yeah : this.options) {
 			y += addOptionWithChildren(yeah, y, x + CHILD_INSET, 0);
 		}
 		this.setHeight(y);
 		this.uncollapsedHeight = y;
-		collapsedTweener.setTarget(dividerWidget.getWrapped().isCollapsed ? 0 : 1);
+		collapsedTweener.setTarget(1);
 		collapsedTweener.snapToTarget();
 	}
 
 	@Override
 	protected void renderWidget(GuiGraphics drawContext, int mouseX, int mouseY, float delta) {
-		dividerWidget.render(drawContext, mouseX, mouseY, delta);
-		collapsedTweener.setTarget(dividerWidget.getWrapped().isCollapsed ? 0 : 1);
-		collapsedTweener.update();
-		if (dividerWidget.getWrapped().isCollapsed && collapsedTweener.isAtTarget()) {
-			return; // dont render if fully collapsed
+		if (dividerWidget != null) {
+			dividerWidget.render(drawContext, mouseX, mouseY, delta);
+			collapsedTweener.setTarget(dividerWidget.getWrapped().isCollapsed ? 0 : 1);
+			collapsedTweener.update();
+			if (dividerWidget.getWrapped().isCollapsed && collapsedTweener.isAtTarget()) {
+				return; // dont render if fully collapsed
+			}
 		}
 		newMatrixScope(drawContext, stack -> {
-			stack.scaleAround(1, collapsedTweener.getF(), this.getX() + this.getWidth() / 2F, this.getY() + dividerWidget.getWrapped().getHeight());
+			if (dividerWidget != null) {
+				stack.scaleAround(1, collapsedTweener.getF(), this.getX() + this.getWidth() / 2F, this.getY() + dividerWidget.getWrapped().getHeight());
+			}
 			drawLines(drawContext);
 			for (PrecisePositionWidgetWrapper<?> entry : evilLayout.values()) {
 				entry.render(drawContext, mouseX, mouseY, delta);
 			}
 		});
-		this.setHeight((int) getHeightWithoutSectionDivider() + this.dividerWidget.getWrapped().getHeight());
+		if (dividerWidget != null) {
+			this.setHeight((int) getHeightWithoutSectionDivider() + this.dividerWidget.getWrapped().getHeight());
+		}
 	}
 
 	private void drawLines(GuiGraphics guiGraphics) {
@@ -160,13 +162,13 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 	}
 
 	public float getHeightWithoutSectionDivider() {
-		int dividerHeight = this.dividerWidget.getWrapped().getHeight() + VERTICAL_PADDING / 2;
+		int dividerHeight = dividerWidget != null ? this.dividerWidget.getWrapped().getHeight() + VERTICAL_PADDING / 2 : 0;
 		return (float) ((this.uncollapsedHeight - dividerHeight) * (this.collapsedTweener.get()));
 	}
 
 	public float getOffsetRequired() {
 		if (!options.isEmpty()) {
-			int dividerHeight = this.dividerWidget.getWrapped().getHeight() + VERTICAL_PADDING / 2;
+			int dividerHeight = dividerWidget != null ? this.dividerWidget.getWrapped().getHeight() + VERTICAL_PADDING / 2 : 0;
 			return (float) ((this.uncollapsedHeight - dividerHeight) * (1 - this.collapsedTweener.get()));
 		} else {
 			return 0;
@@ -175,7 +177,7 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 
 	@Override
 	public Component getHoverMessage(double mouseX, double mouseY) {
-		var dividerHoverMessage = dividerWidget.getHoverMessage(mouseX, mouseY);
+		var dividerHoverMessage = dividerWidget != null ? dividerWidget.getHoverMessage(mouseX, mouseY) : null;
 		if (dividerHoverMessage != null && !dividerHoverMessage.isEmpty())
 			return dividerWidget.getHoverMessage(mouseX, mouseY);
 		for (var child : evilLayout.values()) {

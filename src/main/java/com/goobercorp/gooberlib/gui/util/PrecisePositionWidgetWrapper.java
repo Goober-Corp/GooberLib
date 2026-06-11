@@ -142,7 +142,7 @@ public class PrecisePositionWidgetWrapper<T extends AbstractWidget> implements R
 		}
 
 		// blue bounds for !isVisible, red for isVisible
-		if (MainConfig.PPWW_BOUNDS.value) {
+		if (MainConfig.PPWW_BOUNDS.getValue()) {
 			RenderUtils.fillEvil(drawContext, (float) getRealX(), (float) getRealY(), (float) (getRealX() + wrapped.getWidth()), (float) (getRealY() + wrapped.getHeight()), 0x11FFFFFF);
 			RenderUtils.drawBoxOutline(drawContext, (float) getRealX(), (float) getRealY(), (float) (getRealX() + wrapped.getWidth() - 1), (float) (getRealY() + wrapped.getHeight() - 1), isVisible ? 0xAAFF0000 : 0xAA0000FF);
 			drawContext.drawString(Minecraft.getInstance().font, wrapped.getMessage(), (int) getRealX(), (int) getRealY(), -1);
