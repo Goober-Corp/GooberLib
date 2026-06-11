@@ -8,10 +8,7 @@ import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.option.individual.java.CycleOption;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
-import com.goobercorp.gooberlib.option.individual.minecraft.BlockPosOption;
-import com.goobercorp.gooberlib.option.individual.minecraft.IdentifierOption;
-import com.goobercorp.gooberlib.option.individual.minecraft.Vec3dOption;
-import com.goobercorp.gooberlib.option.individual.minecraft.Vec3iOption;
+import com.goobercorp.gooberlib.option.individual.minecraft.*;
 import com.goobercorp.gooberlib.option.individual.misc.ObjectOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.option.individual.primitive.CharOption;
@@ -28,6 +25,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -39,6 +37,25 @@ import static com.google.common.base.Predicates.alwaysTrue;
 public class WidgetProviders {
 	private static Font font() {
 		return Minecraft.getInstance().font;
+	}
+
+	public static WidgetProvider<Vec2fOption> vec2fFields() {
+		return ((theOption, x, y, width, height) -> {
+			var widgetX = font().width(theOption.name()) + 2;
+			var widgetWidth = width - font().width(theOption.name());
+			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 2, height, null, Predicates.FLOAT, Predicates.FLOAT_IMMEDIATE, "" + theOption.getX(), 0xFFFFF000);
+			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 2, y, widgetWidth / 2, height, null, Predicates.FLOAT, Predicates.FLOAT_IMMEDIATE, "" + theOption.getY(), 0xFF000FFF);
+			Consumer<String> changedListener = _ -> {
+				try {
+					theOption.setValue(new Vec2(Float.parseFloat(xWidget.getText()), Float.parseFloat(yWidget.getText())));
+				} catch (NumberFormatException _) {
+				}
+			};
+			xWidget.setChangedListener(changedListener);
+			yWidget.setChangedListener(changedListener);
+
+			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new PlainTextWidget(x, y, width, height, theOption.name(), MainConfig.primaryCol, false), xWidget, yWidget));
+		});
 	}
 
 	public static WidgetProvider<BlockPosOption> blockPosFields() {
