@@ -23,7 +23,7 @@ public class SliderToggleWidget extends EvilBaseWidget {
 		super(opt.name(), x, y, width, height);
 		shouldDrawName = true;
 		this.opt = opt;
-		tweener = new Tweener(() -> opt.value ? 0 : 1);
+		tweener = new Tweener(() -> opt.getValue() ? 0 : 1);
 		boxHoverTweener = new Tweener(() -> Math.abs(0.5F - tweener.getF()), 10);
 	}
 
@@ -54,9 +54,9 @@ public class SliderToggleWidget extends EvilBaseWidget {
 	@Override
 	public void onClick(MouseButtonEvent click, boolean bl) {
 		if (RenderUtils.isInBounds(click.x(), click.y(), new ScreenRectangle(getRight() - width + 1, getY() + 1, getRight() - 2, getBottom() - 2))) {
-			opt.setValue(!opt.value);
+			opt.setValue(!opt.getValue());
 			//TODO: make this better
-			this.horizontalPosOffset += (opt.value ? 0.75F : -0.75F);
+			this.horizontalPosOffset += (opt.getValue() ? 0.75F : -0.75F);
 		}
 	}
 

@@ -18,7 +18,7 @@ public class TickBoxWidget extends EvilBaseWidget {
 		super(opt.name(), x, y, width, height);
 		this.opt = opt;
 		t = new Tweener(() -> {
-			if (opt.value) {
+			if (opt.getValue()) {
 				return isHovered() ? 0.8F : 1;
 			} else {
 				return isHovered() ? 0.2F : 0;
@@ -53,7 +53,7 @@ public class TickBoxWidget extends EvilBaseWidget {
 	@Override
 	public void onClick(MouseButtonEvent click, boolean bl) {
 		if (RenderUtils.isInBounds(click.x(), click.y(), new ScreenRectangle(getRight() - width + 1, getY() + 1, getRight() - 2, getBottom() - 2))) {
-			opt.setValue(!opt.value);
+			opt.setValue(!opt.getValue());
 		}
 	}
 

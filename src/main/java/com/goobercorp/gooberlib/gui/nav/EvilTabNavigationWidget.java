@@ -220,7 +220,7 @@ public class EvilTabNavigationWidget extends AbstractContainerEventHandler imple
 
 	@Override
 	public void render(GuiGraphics drawContext, int i, int j, float f) {
-		if (MainConfig.ENABLE_INFINITE_TAB_SCROLLING.value) {
+		if (MainConfig.ENABLE_INFINITE_TAB_SCROLLING.getValue()) {
 			scrollTweener.min = -10000;
 			scrollTweener.max = 10000;
 			page = scrollTweener.getI() / (tabNavWidth + 20);

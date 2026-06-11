@@ -2,6 +2,7 @@ package com.goobercorp.gooberlib.util;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+
 import net.minecraft.IdentifierException;
 import net.minecraft.resources.Identifier;
 
@@ -33,5 +34,6 @@ public class Predicates {
 	public static final Predicate<String> INTEGER_IMMEDIATE = s -> s.matches("^[0-9]*$");
 	public static final Predicate<String> HEX_IMMEDIATE = s -> s.matches("^[0-9a-fA-F]*$");
 	public static final Predicate<String> DOUBLE_IMMEDIATE = DOUBLE.or(String::isEmpty);
+	public static final Predicate<String> FLOAT_IMMEDIATE = FLOAT.or(String::isEmpty);
 	public static final Predicate<String> IDENTIFIER_IMMEDIATE = s -> s.matches("^[0-9a-z_:/.-]*$");
 }

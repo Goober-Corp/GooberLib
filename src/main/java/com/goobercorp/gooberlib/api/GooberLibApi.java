@@ -16,10 +16,7 @@ import com.goobercorp.gooberlib.option.individual.hotkey.HotkeyOption;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.option.individual.java.CycleOption;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
-import com.goobercorp.gooberlib.option.individual.minecraft.BlockPosOption;
-import com.goobercorp.gooberlib.option.individual.minecraft.IdentifierOption;
-import com.goobercorp.gooberlib.option.individual.minecraft.Vec3dOption;
-import com.goobercorp.gooberlib.option.individual.minecraft.Vec3iOption;
+import com.goobercorp.gooberlib.option.individual.minecraft.*;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import com.goobercorp.gooberlib.option.individual.misc.ObjectOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
@@ -214,6 +211,7 @@ public class GooberLibApi {
 		registerWidgetProvider(t -> t instanceof BlockPosOption, WidgetProviders.blockPosFields(), -1);
 		registerWidgetProvider(t -> t instanceof Vec3iOption, WidgetProviders.vec3iFields(), -1);
 		registerWidgetProvider(t -> t instanceof Vec3dOption, WidgetProviders.vec3dFields(), -1);
+		registerWidgetProvider(t -> t instanceof Vec2fOption, WidgetProviders.vec2fFields(), -1);
 		registerWidgetProvider(t -> t instanceof CycleOption, WidgetProviders.cyclingOption(), -1);
 		registerWidgetProvider(t -> t instanceof ObjectOption<?>, WidgetProviders.objectOption(), -1);
 		registerWidgetProvider(t -> t instanceof HotkeyOption, WidgetProviders.hotkey(), -1);
@@ -264,6 +262,7 @@ public class GooberLibApi {
 		if (bestSoFar != null) {
 			return bestSoFar.widgetProvider();
 		}
+		GooberLibEntrypoint.LOGGER.warn("Option class {} does not have a widget provider! Proceed with care.", option.getClass());
 		return (theOption, x, y, width, height) -> new StringWidget(x, y, width, height, theOption.name(), Minecraft.getInstance().font);
 //		throw new IllegalArgumentException("No default widget provider for " + optionClass);
 	}
