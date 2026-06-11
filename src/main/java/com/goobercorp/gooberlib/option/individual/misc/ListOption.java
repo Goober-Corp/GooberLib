@@ -4,6 +4,7 @@ import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.option.Option;
 import com.mojang.serialization.DynamicOps;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -16,6 +17,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 // todo: test lol
+@ApiStatus.Experimental
 public class ListOption<T extends Option<T>> extends BaseOption<ListOption<T>> implements Iterable<T> {
 	private final Supplier<T> initial;
 	private final boolean insertAtEnd;

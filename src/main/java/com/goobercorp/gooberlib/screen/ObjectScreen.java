@@ -9,7 +9,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 
-@ApiStatus.Internal
+@ApiStatus.Experimental
 public class ObjectScreen extends Screen {
 	private final Screen parent;
 	private final ObjectOption<?> option;
