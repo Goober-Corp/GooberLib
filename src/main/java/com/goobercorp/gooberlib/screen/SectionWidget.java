@@ -45,8 +45,23 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 		}
 		children().add(groupDivider);
 		y += VERTICAL_PADDING;
-		for (OptionContext<?> yeah : section.childOptions()) {
-			y += addOptionWithChildren(yeah, y, x + CHILD_INSET);
+		if (MainConfig.EXPERIMENTAL_DUAL_COLUMN_LAYOUT.value) {
+			if (section.childOptions().size() == 1) {
+				//TODO: make them wider here
+				//TODO: also make this work for section-less options
+				y += addOptionWithChildren(section.childOptions().getFirst(), y, x + CHILD_INSET, width / 4);
+			} else {
+				for (int i = 0; i < section.childOptions().size() - 1; i += 2) {
+					if (i + 1 < section.childOptions().size()) {
+						addOptionWithChildren(section.childOptions().get(i + 1), y, x + CHILD_INSET, width / 2);
+						y += addOptionWithChildren(section.childOptions().get(i), y, x + CHILD_INSET, 0);
+					}
+				}
+			}
+		} else {
+			for (OptionContext<?> yeah : section.childOptions()) {
+				y += addOptionWithChildren(yeah, y, x + CHILD_INSET, 0);
+			}
 		}
 		this.setHeight(y);
 		this.uncollapsedHeight = y;
@@ -71,7 +86,7 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 		children().add(groupDivider);
 		y += VERTICAL_PADDING;
 		for (OptionContext<?> yeah : this.options) {
-			y += addOptionWithChildren(yeah, y, x + CHILD_INSET);
+			y += addOptionWithChildren(yeah, y, x + CHILD_INSET, 0);
 		}
 		this.setHeight(y);
 		this.uncollapsedHeight = y;
@@ -117,18 +132,18 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 		}
 	}
 
-	private int addOptionWithChildren(OptionContext<?> optionContext, int y, int x) {
+	private int addOptionWithChildren(OptionContext<?> optionContext, int y, int x, int offset) {
 		int addY = 0;
 		Option<?> option = optionContext.option();
-		AbstractWidget widget = option.makeWidget(0, 0, width / 2 - (x % width), VERTICAL_PADDING / 2);
+		AbstractWidget widget = option.makeWidget(0, 0, width / 2 - (x % width) - CHILD_INSET, VERTICAL_PADDING / 2);
 
-		PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x, y + addY, option::getDescription);
+		PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x + offset, y + addY, option::getDescription);
 		children().add(pw);
 		evilLayout.put(optionContext, pw);
 		addY += VERTICAL_PADDING;
 
 		for (OptionContext<?> child : optionContext.childOptions()) {
-			addY += addOptionWithChildren(child, y + addY, x + CHILD_INSET);
+			addY += addOptionWithChildren(child, y + addY, x + CHILD_INSET, offset);
 		}
 
 		return addY;

@@ -111,6 +111,7 @@ public class Yacl {
 						.append(Component.literal("e").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal("e")))))
 						.append(Component.literal("click me").withStyle(style -> style.withClickEvent(new ClickEvent.OpenUrl(URI.create("https://isxander.dev")))))));
 			});
+			//TODO
 			cat.sectionWithOptions("Minecraft Bindings", "YACL can also bind Minecraft options!", new BooleanOption("Minecraft AutoJump", "You can even bind minecraft options!") {
 				@Override
 				public void setValue(boolean newValue) {
