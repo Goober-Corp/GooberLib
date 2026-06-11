@@ -50,7 +50,7 @@ public class EvilTabButtonWidget extends AbstractWidget.WithInactiveMessage {
 		RenderUtils.drawVerticalLine(context, this.getX() + 1, this.getY() + (isCurrentTab() ? 0 : 1), this.height - 1 - yeah, ohyeah);
 		RenderUtils.drawVerticalLine(context, getRight() - 2, this.getY() + (isCurrentTab() ? 0 : 1), this.height - 1 - yeah, ohyeah);
 		//bottom bullshit
-		// kr1v: :pleading_face:
+		// kr1v: 🥺
 		if (isCurrentTab()) {
 			context.vLine(getRight() - 1, getY() + 2, getY(), 0x33FFFFFF);
 			context.vLine(getX(), getY() + 2, getY(), 0x33FFFFFF);
