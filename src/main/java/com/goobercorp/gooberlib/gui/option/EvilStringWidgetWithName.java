@@ -50,7 +50,7 @@ public class EvilStringWidgetWithName extends EvilStringWidget {
 			if (drawInside) {
 				stack.translate(horizontalPosOffset, verticalPosOffset);
 			}
-			drawContext.drawString(Minecraft.getInstance().font, name, drawInside ? 5 : 0, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol);
+			drawContext.drawString(Minecraft.getInstance().font, name, this.getX() + (drawInside ? 5 : -font().width(name)), this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol);
 		});
 	}
 

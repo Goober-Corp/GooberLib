@@ -70,7 +70,7 @@ public class GroupDividerWidget extends AbstractStringWidget {
 		renderProgress = (float) RenderUtils.ease(renderProgress, 1, 5F);
 
 //		RenderUtils.drawTriangle(drawContext, 10, 110, 60, 10, 110, 110, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF);
-
+		//TODO: make the line get shorter based on collapsed state
 		var halfWidth = getWidth() / 2f;
 		var halfTextWidth = getFont().width(message) / 2f;
 
