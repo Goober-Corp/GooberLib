@@ -8,6 +8,7 @@ import com.goobercorp.gooberlib.option.individual.hotkey.HotkeySettings.When;
 import com.goobercorp.gooberlib.util.HotkeyUtil;
 import com.mojang.serialization.DynamicOps;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -60,7 +61,12 @@ public class HotkeyOption extends BaseOption<HotkeyOption> {
 		var listResult = ops.getStream(object);
 		if (listResult.isSuccess()) {
 			var list = listResult.getOrThrow().toList();
-			this.keyCodes = ops.getIntStream(list.getFirst()).getOrThrow().toArray();
+			var codes = ops.getIntStream(list.getFirst()).getOrThrow().toArray();
+			if (codes.length > keyCodes.length) keyCodes = codes;
+			else {
+				Arrays.fill(this.keyCodes, -1);
+				System.arraycopy(codes, 0, this.keyCodes, 0, codes.length);
+			}
 			Gui gui;
 			When when;
 			boolean allowExtra;
@@ -72,6 +78,27 @@ public class HotkeyOption extends BaseOption<HotkeyOption> {
 			ordered = (OrderedSetting.valueOf(ops.getStringValue(list.get(4)).getOrThrow()));
 			this.settings = HotkeySettings.of(gui, when, allowExtra, ordered);
 		}
+	}
+
+	public String keyCodesString() {
+		StringBuilder b = new StringBuilder();
+		for (int keycode : keyCodes) {
+			if (keycode == -1) break;
+			b.append(HotkeyUtil.MAP.get(keycode));
+			b.append(" + ");
+		}
+		b.delete(b.length() - 3, b.length());
+		return b.toString();
+	}
+
+	public void addCode(int code) {
+		long lastIndex = IntStream.of(keyCodes).filter(i -> i != -1).count();
+		if (lastIndex == keyCodes.length) return;
+		keyCodes[(int) lastIndex] = code;
+	}
+
+	public void clearKeyCodes() {
+		Arrays.fill(this.keyCodes, -1);
 	}
 
 	public interface OnPress {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+
 import net.minecraft.client.Minecraft;
 
 @SuppressWarnings("unused")
@@ -73,7 +74,7 @@ public class HotkeySettings {
 					== (when == When.PRESS);
 		}
 
-		List<Integer> required = Arrays.stream(thisHotkey.keyCodes).filter(i -> i != 0).collect(ArrayList::new, List::add, List::addAll);
+		List<Integer> required = Arrays.stream(thisHotkey.keyCodes).filter(i -> i != -1).collect(ArrayList::new, List::add, List::addAll);
 
 		if (ordered == OrderedSetting.ORDERED) {
 			if (allowExtra) {

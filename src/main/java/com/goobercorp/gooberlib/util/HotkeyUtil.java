@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 
@@ -33,6 +34,7 @@ public class HotkeyUtil {
 		for (HotkeyOption hotkey : ALL_HOTKEYS) {
 			if (hotkey.settings.matches(keyAction, PRESSED, hotkey)) {
 				for (int key : hotkey.keyCodes) {
+					if (key == -1) continue;
 					if (!isPressed(key)) continue main;
 				}
 				if (hotkey.onPress()) break;

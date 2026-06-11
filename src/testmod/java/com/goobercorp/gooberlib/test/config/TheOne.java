@@ -101,7 +101,7 @@ public class TheOne {
 	public static final Vec2fOption vec2fOption = new Vec2fOption("vec2f option", "vec2f description");
 	public static final Vec3dOption vec3dOption = new Vec3dOption("vec3d option", "vec3d description");
 	public static final Vec3iOption vec3iOption = new Vec3iOption("vec3i option", "vec3i description");
-	public static final HotkeyOption hotkeyOption = new HotkeyOption("hotkey option", "hotkey description", "g, c", 2, () -> System.out.println("meow meow"));
+	public static final HotkeyOption hotkeyOption = new HotkeyOption("hotkey option", "hotkey description", "g, c", 5, () -> System.out.println("meow meow"));
 
 	@Section("range options")
 	public static final ByteRangeOption byteRangeOption = new ByteRangeOption("byte range option", _ -> "byte range description", (byte) 2, (byte) 4, (byte) 0, (byte) 10, WidgetProviders.rangeOption());
