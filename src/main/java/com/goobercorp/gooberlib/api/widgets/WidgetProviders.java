@@ -119,8 +119,8 @@ public class WidgetProviders {
 	public static <E> WidgetProvider<CycleOption<E>> cyclingOptionWithButtons() {
 		return (opt, x, y, width, height) -> {
 			var yeah = new CyclingOptionWidget(opt, x + height, y, width - (height * 2), height, Util.fromCharsFunction(opt.getDisplayNameProvider()), true);
-			var rightArrowWidget = new EvilButtonWidget(">", opt::advance, width - height, y, height, height, true);
-			var leftArrowWidget = new EvilButtonWidget("<", opt::regress, x, y, height, height, true);
+			var rightArrowWidget = new EvilButtonWidget(">", opt::advance, width - height - 1, y, height + 1, height, true);
+			var leftArrowWidget = new EvilButtonWidget("<", opt::regress, x, y, height + 1, height, true);
 			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(leftArrowWidget, yeah, rightArrowWidget));
 		};
 	}

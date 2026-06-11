@@ -57,6 +57,10 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 						y += addOptionWithChildren(section.childOptions().get(i), y, x + CHILD_INSET, 0);
 					}
 				}
+				//TODO: there is a weird edge case here. see theone -> my section
+				if (section.childOptions().size() % 2 != 0) {
+					y += addOptionWithChildren(section.childOptions().getLast(), y, x + CHILD_INSET, width / 4);
+				}
 			}
 		} else {
 			for (OptionContext<?> yeah : section.childOptions()) {

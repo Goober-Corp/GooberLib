@@ -31,7 +31,7 @@ public class EvilBaseWidget extends AbstractWidget {
 	private final Function<BaseOption<?>, Component> valueFormatter;
 
 	public EvilBaseWidget(Component name, int x, int y, int width, int height, Function<BaseOption<?>, Component> valueFormatter) {
-		super(x, y, width, height, name);
+		super(x + 1, y, width - 1, height, name);
 		this.name = name;
 		this.valueFormatter = valueFormatter;
 		hoverTweener = new Tweener(() -> this.isHovered || mouseDown ? 1 : 0, 10);

@@ -138,6 +138,10 @@ public class GooberScreen extends Screen {
 		mX = Minecraft.getInstance().mouseHandler.getScaledXPos(Minecraft.getInstance().getWindow());
 		mY = Minecraft.getInstance().mouseHandler.getScaledYPos(Minecraft.getInstance().getWindow());
 		drawCommon(drawContext, mouseX, mouseY, tickDelta);
+//		drawVerticalLine(drawContext, CHILD_INSET, 0, height, -1);
+//		drawVerticalLine(drawContext, width / 2F + CHILD_INSET, 0, height, -1);
+//		drawVerticalLine(drawContext, width / 2F - CHILD_INSET, 0, height, -1);
+//		drawVerticalLine(drawContext, width - CHILD_INSET, 0, height, -1);
 
 		if (this.showTabs) {
 			if (tabNavigationWidget.isMouseOver(mX, mY)) {

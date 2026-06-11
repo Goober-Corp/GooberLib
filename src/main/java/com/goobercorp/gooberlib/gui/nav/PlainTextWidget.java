@@ -24,7 +24,7 @@ public class PlainTextWidget extends AbstractWidget {
 		if (centered) {
 			guiGraphics.drawCenteredString(Minecraft.getInstance().font, yeah, getX(), this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, col);
 		} else {
-			guiGraphics.drawString(Minecraft.getInstance().font, yeah, getX(), this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, col, true);
+			guiGraphics.drawString(Minecraft.getInstance().font, yeah, getX() + 1, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, col, true);
 		}
 	}
 

@@ -18,14 +18,14 @@ public class EvilStringWidgetWithName extends EvilStringWidget {
 	private boolean drawInside;
 
 	public EvilStringWidgetWithName(Component name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial) {
-		super(x + font().width(name) + 2, y, width - font().width(name), height, changedListener, predicate, immediatePredicate, initial);
+		super(x + font().width(name), y, width - font().width(name), height, changedListener, predicate, immediatePredicate, initial);
 		this.name = name;
 		this.x = x;
 		this.shouldDrawName = true;
 	}
 
 	public EvilStringWidgetWithName(Component name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, boolean alignRight, boolean centered, boolean drawInside) {
-		super(drawInside ? x : x + font().width(name) + 2, y, drawInside ? width : width - font().width(name), height, changedListener, predicate, immediatePredicate, initial);
+		super(drawInside ? x : x + font().width(name), y, drawInside ? width : width - font().width(name), height, changedListener, predicate, immediatePredicate, initial);
 		this.name = name;
 		this.x = x;
 		this.shouldDrawName = true;
