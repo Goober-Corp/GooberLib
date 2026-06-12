@@ -52,6 +52,12 @@ public class EvilBaseWidget extends AbstractWidget {
 	}
 
 	@Override
+	public void setFocused(boolean bl) {
+		super.setFocused(bl);
+		if (!bl) mouseDown = false;
+	}
+
+	@Override
 	public boolean mouseReleased(MouseButtonEvent click) {
 		mouseDown = false;
 		return super.mouseReleased(click);
