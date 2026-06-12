@@ -17,6 +17,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.FormattedCharSequence;
 
+import java.util.Objects;
+
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 @Environment(EnvType.CLIENT)
@@ -38,7 +40,7 @@ public class GroupDividerWidget extends AbstractStringWidget {
 	}
 
 	public GroupDividerWidget(int i, int j, int k, int l, Component text, Font textRenderer) {
-		super(i, j, k, l, text, textRenderer);
+		super(i, j, k, l, Objects.equals(text, Component.empty()) ? Component.literal("Gah !") : text, textRenderer);
 		hoverTweener = new Tweener(() -> this.isHovered || mouseDown ? 1 : 0, 10);
 		clickTweener = new Tweener(() -> this.mouseDown ? 1 : 0);
 		collapsedTweener = new Tweener(() -> isCollapsed ? -0.5F : 0);
