@@ -147,11 +147,14 @@ public class GooberScreen extends Screen {
 			});
 
 			// TODO: maybe store scroll height for each category?
-			var catHeight = -getCurrentCategoryWidget().getWrapped().getHeight() + this.height;
-			if (catHeight > height) {
-				catHeight -= (height - VERTICAL_PADDING);
+			var catHeight = getCurrentCategoryWidget().getWrapped().getHeight();
+			if (catHeight < height) {
+				catHeight += (height - VERTICAL_PADDING);
 			}
-			scrollTweener.min = catHeight;
+			catHeight -= height;
+			catHeight += VERTICAL_PADDING;
+
+			scrollTweener.min = -catHeight;
 		}
 	}
 
