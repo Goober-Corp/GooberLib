@@ -36,12 +36,9 @@ public class HotkeyWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	public void setFocused(boolean bl) {
-		super.setFocused(bl);
-		if (!bl) {
-			this.shouldClear = false;
-			this.isListening = false;
-		}
+	public void onLostFocus() {
+		this.shouldClear = false;
+		this.isListening = false;
 	}
 
 	@Override

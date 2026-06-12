@@ -55,6 +55,15 @@ public class EvilBaseWidget extends AbstractWidget {
 	public void setFocused(boolean bl) {
 		super.setFocused(bl);
 		if (!bl) mouseDown = false;
+
+		if (bl) onFocus();
+		else onLostFocus();
+	}
+
+	public void onFocus() {
+	}
+
+	public void onLostFocus() {
 	}
 
 	@Override

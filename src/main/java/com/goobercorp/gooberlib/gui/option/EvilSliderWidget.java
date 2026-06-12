@@ -114,16 +114,16 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	public void setFocused(boolean bl) {
-		super.setFocused(bl);
-		if (!bl) {
-			this.sliderFocused = false;
-		} else {
-			InputType guiNavigationType = Minecraft.getInstance().getLastInputType();
-			if (guiNavigationType == InputType.MOUSE || guiNavigationType == InputType.KEYBOARD_TAB) {
-				this.sliderFocused = true;
-			}
+	public void onFocus() {
+		InputType guiNavigationType = Minecraft.getInstance().getLastInputType();
+		if (guiNavigationType == InputType.MOUSE || guiNavigationType == InputType.KEYBOARD_TAB) {
+			this.sliderFocused = true;
 		}
+	}
+
+	@Override
+	public void onLostFocus() {
+		this.sliderFocused = false;
 	}
 
 	@Override
