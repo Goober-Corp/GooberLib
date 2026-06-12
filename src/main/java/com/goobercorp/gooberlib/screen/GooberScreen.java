@@ -128,8 +128,10 @@ public class GooberScreen extends Screen {
 				tabNavigationWidget.renderForBackgroundLayer(drawContext);
 			});
 		}
-		drawContext.nextStratum();
-		super.renderBackground(drawContext, mouseX, mouseY, tickDelta);
+		if (this == Minecraft.getInstance().screen) {
+			drawContext.nextStratum();
+			super.renderBackground(drawContext, mouseX, mouseY, tickDelta);
+		}
 	}
 
 	@Override

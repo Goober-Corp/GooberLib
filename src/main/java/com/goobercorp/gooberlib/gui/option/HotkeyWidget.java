@@ -29,8 +29,10 @@ public class HotkeyWidget extends EvilBaseWidget {
 		if (isListening) text += " <";
 		context.drawString(font, text, this.getX() + this.width - font.width(text) - 5, this.getY() + 4, MainConfig.primaryCol);
 
-		if (isListening && !isFocused())
+		if (isListening && !isFocused()) {
 			isListening = false;
+		}
+		opt.editing = isListening;
 	}
 
 	@Override
@@ -50,7 +52,6 @@ public class HotkeyWidget extends EvilBaseWidget {
 			boolean mouseOver = this.isMouseOver(mouseButtonEvent.x(), mouseButtonEvent.y());
 			if (mouseOver) {
 				this.playDownSound(Minecraft.getInstance().getSoundManager());
-
 				if (isListening) {
 					if (shouldClear) {
 						opt.clearKeyCodes();

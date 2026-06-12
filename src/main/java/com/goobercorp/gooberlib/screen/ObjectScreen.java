@@ -4,8 +4,10 @@ import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.gui.util.PrecisePositionWidgetWrapper;
 import com.goobercorp.gooberlib.option.individual.misc.ObjectOption;
 import com.goobercorp.gooberlib.util.RenderUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -19,6 +21,7 @@ public class ObjectScreen extends Screen {
 	private int popupY;
 	private int popupWidth;
 	private int popupHeight;
+	private double mX, mY;
 
 	public ObjectScreen(Screen parent, ObjectOption<?> option) {
 		super(option.name());
@@ -28,6 +31,8 @@ public class ObjectScreen extends Screen {
 
 	@Override
 	protected void init() {
+		mX = Minecraft.getInstance().mouseHandler.getScaledXPos(Minecraft.getInstance().getWindow());
+		mY = Minecraft.getInstance().mouseHandler.getScaledYPos(Minecraft.getInstance().getWindow());
 		clearWidgets();
 		popupX = width / 2 - 200;
 		popupY = 100;
@@ -38,19 +43,30 @@ public class ObjectScreen extends Screen {
 
 	@Override
 	public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-		this.parent.render(guiGraphics, -1, -1, f);
+		parent.renderWithTooltipAndSubtitles(guiGraphics, (int) mX, (int) mY, f);
 		super.renderBackground(guiGraphics, i, j, f);
 	}
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-		this.parent.render(guiGraphics, -1, -1, f);
 		RenderUtils.fillEvil(guiGraphics, popupX, popupY, popupX + popupWidth, popupY + widget.getWrapped().uncollapsedHeight, MainConfig.bgColor);
 		super.render(guiGraphics, i, j, f);
 	}
 
 	@Override
 	public void onClose() {
-		this.minecraft.setScreen(parent);
+		minecraft.screen = parent;
+	}
+
+	@Override
+	public void tick() {
+		parent.tick();
+		super.tick();
+	}
+
+	@Override
+	public boolean mouseReleased(MouseButtonEvent mouseButtonEvent) {
+		parent.mouseReleased(mouseButtonEvent);
+		return super.mouseReleased(mouseButtonEvent);
 	}
 }

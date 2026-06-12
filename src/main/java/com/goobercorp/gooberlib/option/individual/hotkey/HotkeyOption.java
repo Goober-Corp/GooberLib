@@ -1,12 +1,13 @@
 package com.goobercorp.gooberlib.option.individual.hotkey;
 
-import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
+import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.option.individual.hotkey.HotkeySettings.Gui;
 import com.goobercorp.gooberlib.option.individual.hotkey.HotkeySettings.OrderedSetting;
 import com.goobercorp.gooberlib.option.individual.hotkey.HotkeySettings.When;
 import com.goobercorp.gooberlib.util.HotkeyUtil;
 import com.mojang.serialization.DynamicOps;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -18,6 +19,7 @@ public class HotkeyOption extends BaseOption<HotkeyOption> {
 	public int[] keyCodes;
 	private final OnPress onPress;
 	public HotkeySettings settings;
+	public boolean editing = false;
 
 	public HotkeyOption(CharSequence name, CharSequence description, String defaultKeys, int maxKeyCount, Runnable onPress) {
 		this(name, _ -> description, null, defaultKeys, maxKeyCount, (_) -> {
@@ -42,7 +44,10 @@ public class HotkeyOption extends BaseOption<HotkeyOption> {
 	}
 
 	public boolean onPress() {
-		return this.onPress.press(this);
+		if (!editing) {
+			return this.onPress.press(this);
+		}
+		return false;
 	}
 
 	@Override
@@ -94,6 +99,7 @@ public class HotkeyOption extends BaseOption<HotkeyOption> {
 	public void addCode(int code) {
 		long lastIndex = IntStream.of(keyCodes).filter(i -> i != -1).count();
 		if (lastIndex == keyCodes.length) return;
+		if (ArrayUtils.contains(keyCodes, code)) return;
 		keyCodes[(int) lastIndex] = code;
 	}
 

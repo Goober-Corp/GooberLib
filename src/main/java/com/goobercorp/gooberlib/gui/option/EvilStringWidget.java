@@ -541,7 +541,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 		if (this.textRenderer != null) {
 			String string = this.textRenderer.plainSubstrByWidth(this.text.substring(this.firstCharacterIndex), this.getInnerWidth());
 			if (this.isCentered()) {
-				this.textXTweener.setTarget(this.getX() + (this.width / 2) - ((textRenderer.width(string)) / 2) - 5);
+				this.textXTweener.setTarget(this.getX() + (this.width / 2) - ((textRenderer.width(string)) / 2));
 			} else {
 				if (alignRight) {
 					//TODO: take into account width of the cursor

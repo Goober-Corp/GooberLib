@@ -1,27 +1,52 @@
 package com.goobercorp.gooberlib.gui.option;
 
+import com.goobercorp.gooberlib.config.MainConfig;
+import com.goobercorp.gooberlib.gui.EvilBaseWidget;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
+import com.goobercorp.gooberlib.util.ColorTweener;
 import com.goobercorp.gooberlib.util.RenderUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.world.phys.Vec2;
 
-public class ColorPickerWidget extends AbstractWidget {
+import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
+
+public class ColorPickerWidget extends EvilBaseWidget {
 	private final ColorOption option;
+	private final ColorTweener colorTweener;
 
 	public ColorPickerWidget(ColorOption theOption, int x, int y, int width, int height) {
-		super(x, y, width, height, theOption.name());
+		super(theOption.name(), x, y, width, height);
 		option = theOption;
+		colorTweener = new ColorTweener(() -> option.value, 5);
+		shouldDrawName = true;
 	}
 
 	@Override
-	protected void renderWidget(GuiGraphics drawContext, int i, int j, float f) {
-		drawRainbowGradient(drawContext, getX(), getY(), getRight(), getBottom());
+	protected void renderWidget(GuiGraphics context, int i, int j, float f) {
+		super.renderWidget(context, i, j, f);
+		newMatrixScope(context, stack -> {
+			stack.translate(horizontalPosOffset, verticalPosOffset);
+			float widthAndHeight = (getHeight() - getY() - 4);
+			float midpoint = (widthAndHeight / 2);
+			Vec2 center = new Vec2(getRight() - midpoint - 2, midpoint + 2);
+			midpoint *= 0.75F;
+			RenderUtils.fillEvil(context, center.x - midpoint + 1, center.y - midpoint + 1, center.x + midpoint - 1, center.y + midpoint - 1, colorTweener.get());
+			RenderUtils.drawBoxOutline(context, center.x - midpoint, center.y - midpoint, center.x + midpoint - 1, center.y + midpoint - 1, 0xFF000000);
+		});
+//		drawRainbowGradient(context, getX(), getY(), getRight(), getBottom());
 	}
 
 	@Override
-	protected void updateWidgetNarration(NarrationElementOutput narrationMessageBuilder) {
+	protected void drawText(GuiGraphics drawContext) {
+		super.drawText(drawContext);
+		drawContext.drawString(Minecraft.getInstance().font, "Edit", getRight() - getHeight() * 2, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol);
+	}
 
+	@Override
+	public boolean mouseClicked(MouseButtonEvent click, boolean bl) {
+		return super.mouseClicked(click, bl);
 	}
 
 	protected void drawRainbowGradient(GuiGraphics graphics, int x1, int y1, int x2, int y2) {
