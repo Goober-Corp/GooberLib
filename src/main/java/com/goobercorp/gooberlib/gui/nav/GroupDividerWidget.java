@@ -2,6 +2,7 @@ package com.goobercorp.gooberlib.gui.nav;
 
 import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.util.RenderUtils;
+import com.goobercorp.gooberlib.util.Tweener;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -16,6 +17,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.FormattedCharSequence;
 
+import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
+
 @Environment(EnvType.CLIENT)
 public class GroupDividerWidget extends AbstractStringWidget {
 	private int maxWidth = 0;
@@ -24,6 +27,11 @@ public class GroupDividerWidget extends AbstractStringWidget {
 	private GroupDividerWidget.TextOverflow textOverflow = GroupDividerWidget.TextOverflow.CLAMPED;
 	public float renderProgress = 0;
 	public boolean isCollapsed = false;
+	protected Tweener hoverTweener;
+	protected Tweener clickTweener;
+	protected Tweener collapsedTweener;
+	protected boolean mouseDown;
+
 
 	public GroupDividerWidget(int i, int j, Component text, Font textRenderer) {
 		this(0, 0, i, j, text, textRenderer);
@@ -31,6 +39,30 @@ public class GroupDividerWidget extends AbstractStringWidget {
 
 	public GroupDividerWidget(int i, int j, int k, int l, Component text, Font textRenderer) {
 		super(i, j, k, l, text, textRenderer);
+		hoverTweener = new Tweener(() -> this.isHovered || mouseDown ? 1 : 0, 10);
+		clickTweener = new Tweener(() -> this.mouseDown ? 1 : 0);
+		collapsedTweener = new Tweener(() -> isCollapsed ? -0.5F : 0);
+	}
+
+	@Override
+	public boolean mouseClicked(MouseButtonEvent click, boolean bl) {
+		if (super.mouseClicked(click, bl)) {
+			mouseDown = true;
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean mouseReleased(MouseButtonEvent click) {
+		mouseDown = false;
+		return super.mouseReleased(click);
+	}
+
+	@Override
+	public void setFocused(boolean bl) {
+		super.setFocused(bl);
+		if (!bl) mouseDown = false;
 	}
 
 	@Override
@@ -68,7 +100,9 @@ public class GroupDividerWidget extends AbstractStringWidget {
 	public void renderWidget(GuiGraphics drawContext, int i, int j, float f) {
 		super.renderWidget(drawContext, i, j, f);
 		renderProgress = (float) RenderUtils.ease(renderProgress, 1, 5F);
-
+		hoverTweener.update();
+		clickTweener.update();
+		collapsedTweener.update();
 //		RenderUtils.drawTriangle(drawContext, 10, 110, 60, 10, 110, 110, 0xFFFF0000, 0xFF00FF00, 0xFF0000FF);
 		//TODO: make the line get shorter based on collapsed state
 		var halfWidth = getWidth() / 2f;
@@ -80,13 +114,16 @@ public class GroupDividerWidget extends AbstractStringWidget {
 		var pos_2_x2 = getX() + halfWidth + halfTextWidth + 1;
 		var pos_2_x1 = getX() + getWidth();
 
-		RenderUtils.drawThinningHorizontalLine(drawContext, pos_1_x1, pos_1_x2, this.getY() + 4.5F, 0, MainConfig.shadowCol, 5.5f);
-		RenderUtils.drawThinningHorizontalLine(drawContext, pos_1_x1, pos_1_x2, this.getY() + 3.5F, 0, MainConfig.primaryCol, 5.5f);
+		RenderUtils.drawThinningHorizontalLine(drawContext, pos_1_x1 - (halfWidth * collapsedTweener.getF()), pos_1_x2, this.getY() + 4.5F, 0, MainConfig.shadowCol, 5.5f);
+		RenderUtils.drawThinningHorizontalLine(drawContext, pos_1_x1 - (halfWidth * collapsedTweener.getF()), pos_1_x2, this.getY() + 3.5F, 0, MainConfig.primaryCol, 5.5f);
 
-		RenderUtils.drawThinningHorizontalLine(drawContext, pos_2_x1, pos_2_x2, this.getY() + 4.5F, MainConfig.shadowCol, 0, 5.5f);
-		RenderUtils.drawThinningHorizontalLine(drawContext, pos_2_x1, pos_2_x2, this.getY() + 3.5F, MainConfig.primaryCol, 0, 5.5f);
-
-		drawContext.drawCenteredString(Minecraft.getInstance().font, message, (int) (this.getX() + halfWidth), 0, MainConfig.primaryCol);
+		RenderUtils.drawThinningHorizontalLine(drawContext, pos_2_x1 + (halfWidth * collapsedTweener.getF()), pos_2_x2, this.getY() + 4.5F, MainConfig.shadowCol, 0, 5.5f);
+		RenderUtils.drawThinningHorizontalLine(drawContext, pos_2_x1 + (halfWidth * collapsedTweener.getF()), pos_2_x2, this.getY() + 3.5F, MainConfig.primaryCol, 0, 5.5f);
+		newMatrixScope(drawContext, stack -> {
+			stack.translate(this.getX() + halfWidth, 0);
+			stack.scaleAround(1 - clickTweener.getF() * 0.25F, 0, getFont().lineHeight / 2F);
+			drawContext.drawCenteredString(Minecraft.getInstance().font, message, 0, 0, MainConfig.primaryCol);
+		});
 	}
 
 	@Override
