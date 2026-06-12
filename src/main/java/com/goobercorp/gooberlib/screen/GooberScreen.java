@@ -45,7 +45,6 @@ public class GooberScreen extends Screen {
 	private int lastScrollTicks = 0;
 	private final Tweener categoryTweener = new Tweener(() -> screenCategoryAnimationState);
 	private final Tab[] tabs;
-	private final int[] heights;
 	private boolean animateHoverDescription = false;
 	private final boolean showTabs;
 
@@ -62,7 +61,6 @@ public class GooberScreen extends Screen {
 		for (int i = 0; i < config.categories().size(); i++) {
 			tabs[i] = new GridLayoutTab(config.categories().get(i).metadata().name());
 		}
-		heights = new int[tabs.length];
 		showTabs = tabs.length > 1;
 	}
 
@@ -79,13 +77,6 @@ public class GooberScreen extends Screen {
 			int x = Minecraft.getInstance().getWindow().getGuiScaledWidth() * (config.categories().indexOf(c));
 			var cat = new CategoryWidget(c, 0, 0, width, height);
 			PrecisePositionWidgetWrapper<CategoryWidget> pw = new PrecisePositionWidgetWrapper<>(cat, x, VERTICAL_PADDING, () -> c.metadata().description());
-			// TODO: maybe store scroll height for each category?
-			int catHeight = cat.getHeight();
-			if (catHeight > height) {
-				catHeight -= (height - VERTICAL_PADDING);
-			}
-			heights[config.categories().indexOf(c)] = catHeight;
-
 			this.addWidget(pw);
 			categoryWidgets.add(pw);
 		}
@@ -155,12 +146,21 @@ public class GooberScreen extends Screen {
 				tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
 			});
 
-			scrollTweener.min = -heights[tabNavigationWidget.getCurrentTabIndex()];
+			// TODO: maybe store scroll height for each category?
+			var catHeight = -getCurrentCategoryWidget().getWrapped().getHeight() + this.height;
+			if (catHeight > height) {
+				catHeight -= (height - VERTICAL_PADDING);
+			}
+			scrollTweener.min = catHeight;
 		}
 	}
 
+	private PrecisePositionWidgetWrapper<CategoryWidget> getCurrentCategoryWidget() {
+		return categoryWidgets.get(showTabs ? tabNavigationWidget.getCurrentTabIndex() : 0);
+	}
+
 	private void setHoverText(double mouseX, double mouseY) {
-		Component hoverMessage = categoryWidgets.get(showTabs ? tabNavigationWidget.getCurrentTabIndex() : 0).getHoverMessage(mouseX, mouseY);
+		Component hoverMessage = getCurrentCategoryWidget().getHoverMessage(mouseX, mouseY);
 		if (hoverMessage != null && !hoverMessage.isEmpty()) {
 			animateHoverDescription = true;
 			this.descriptionText = hoverMessage;
