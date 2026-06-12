@@ -608,25 +608,22 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	@Override
-	public void setFocused(boolean bl) {
-		if (!bl) {
-			this.setSelectionEnd(0);
-			this.setSelectionStart(0);
-			if (this.predicate.test(this.getText())) {
-				if (this.changedListener != null) {
-					this.changedListener.accept(this.getText());
-				}
-				this.lastAccepted = this.getText();
-			} else {
-				this.setText(lastAccepted);
+	public void onFocus() {
+		this.lastSwitchFocusTime = Util.getMillis();
+		this.justFocused = true;
+	}
+
+	@Override
+	public void onLostFocus() {
+		this.setSelectionEnd(0);
+		this.setSelectionStart(0);
+		if (this.predicate.test(this.getText())) {
+			if (this.changedListener != null) {
+				this.changedListener.accept(this.getText());
 			}
-		}
-		if (this.focusUnlocked || bl) {
-			super.setFocused(bl);
-			if (bl) {
-				this.lastSwitchFocusTime = Util.getMillis();
-				this.justFocused = true;
-			}
+			this.lastAccepted = this.getText();
+		} else {
+			this.setText(lastAccepted);
 		}
 	}
 
