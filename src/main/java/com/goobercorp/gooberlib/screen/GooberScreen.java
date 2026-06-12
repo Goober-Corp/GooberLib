@@ -219,7 +219,11 @@ public class GooberScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(KeyEvent keyInput) {
-		return super.keyPressed(keyInput);
+		if (this.getFocused() != null && this.getFocused().keyPressed(keyInput)) {
+			return true;
+		} else {
+			return super.keyPressed(keyInput);
+		}
 	}
 
 	private void updateTweeners() {

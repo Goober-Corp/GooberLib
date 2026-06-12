@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ClickableParentWidget extends AbstractWidget implements ContainerEventHandler {
 	private final List<GuiEventListener> children;
@@ -105,7 +106,21 @@ public class ClickableParentWidget extends AbstractWidget implements ContainerEv
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean bl) {
-		return ContainerEventHandler.super.mouseClicked(click, bl);
+		Optional<GuiEventListener> optional = this.getChildAt(click.x(), click.y());
+		if (optional.isEmpty()) {
+			if (getFocused() != null) getFocused().setFocused(false);
+			return false;
+		} else {
+			GuiEventListener guiEventListener = optional.get();
+			if (guiEventListener.mouseClicked(click, bl) && guiEventListener.shouldTakeFocusAfterInteraction()) {
+				this.setFocused(guiEventListener);
+				if (click.button() == 0) {
+					this.setDragging(true);
+				}
+			}
+
+			return true;
+		}
 	}
 
 	@Override
