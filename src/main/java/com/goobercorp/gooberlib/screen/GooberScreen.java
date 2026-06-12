@@ -145,17 +145,17 @@ public class GooberScreen extends Screen {
 				matrix3x2fStack.translate(0, -26 * categoryHoverProgress);
 				tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
 			});
-
-			// TODO: maybe store scroll height for each category?
-			var catHeight = getCurrentCategoryWidget().getWrapped().getHeight();
-			if (catHeight < height) {
-				catHeight += (height - VERTICAL_PADDING);
-			}
-			catHeight -= height;
-			catHeight += VERTICAL_PADDING;
-
-			scrollTweener.min = -catHeight;
 		}
+
+		// TODO: maybe store scroll height for each category?
+		var catHeight = getCurrentCategoryWidget().getWrapped().getHeight();
+		if (catHeight < height) {
+			catHeight += (height - VERTICAL_PADDING);
+		}
+		catHeight -= height;
+		catHeight += VERTICAL_PADDING;
+
+		scrollTweener.min = -catHeight;
 	}
 
 	private PrecisePositionWidgetWrapper<CategoryWidget> getCurrentCategoryWidget() {
@@ -219,7 +219,11 @@ public class GooberScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(KeyEvent keyInput) {
-		return super.keyPressed(keyInput);
+		if (this.getFocused() != null && this.getFocused().keyPressed(keyInput)) {
+			return true;
+		} else {
+			return super.keyPressed(keyInput);
+		}
 	}
 
 	private void updateTweeners() {

@@ -29,9 +29,6 @@ public class HotkeyWidget extends EvilBaseWidget {
 		if (isListening) text += " <";
 		context.drawString(font, text, this.getX() + this.width - font.width(text) - 5, this.getY() + 4, MainConfig.primaryCol);
 
-		if (isListening && !isFocused()) {
-			isListening = false;
-		}
 		opt.editing = isListening;
 	}
 
@@ -43,9 +40,7 @@ public class HotkeyWidget extends EvilBaseWidget {
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean bl) {
-		if (!this.isActive()) {
-			return false;
-		} else {
+		if (this.isActive()) {
 			boolean mouseOver = this.isMouseOver(mouseButtonEvent.x(), mouseButtonEvent.y());
 			if (mouseOver) {
 				this.playDownSound(Minecraft.getInstance().getSoundManager());
@@ -62,20 +57,25 @@ public class HotkeyWidget extends EvilBaseWidget {
 
 				return true;
 			}
-
-			return false;
 		}
+		return false;
 	}
 
 	@Override
 	public boolean keyPressed(KeyEvent keyEvent) {
 		if (isListening) {
+			if (keyEvent.isEscape()) {
+				opt.clearKeyCodes();
+				isListening = false;
+				shouldClear = false;
+				return true;
+			}
 			if (shouldClear) {
 				opt.clearKeyCodes();
 				shouldClear = false;
 			}
 			opt.addCode(keyEvent.key());
 		}
-		return super.keyPressed(keyEvent);
+		return true;
 	}
 }

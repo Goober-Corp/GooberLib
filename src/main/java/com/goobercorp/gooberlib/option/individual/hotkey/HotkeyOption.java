@@ -92,6 +92,7 @@ public class HotkeyOption extends BaseOption<HotkeyOption> {
 			b.append(HotkeyUtil.MAP.get(keycode));
 			b.append(" + ");
 		}
+		if (b.isEmpty()) return "None";
 		b.delete(b.length() - 3, b.length());
 		return b.toString();
 	}

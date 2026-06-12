@@ -104,16 +104,6 @@ public class CategoryWidget extends ClickableParentWidget implements Hoverable {
 	}
 
 	@Override
-	public boolean mouseClicked(MouseButtonEvent click, boolean bl) {
-		setFocused(null);
-		return super.mouseClicked(click, bl);
-	}
-
-	@Override
-	protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
-	}
-
-	@Override
 	public Component getHoverMessage(double mouseX, double mouseY) {
 		for (var child : values) {
 			var childHoverMessage = child.getHoverMessage(mouseX, mouseY);

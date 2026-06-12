@@ -15,7 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,11 +76,11 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 
 	public SectionWidget(CharSequence name, List<Option<?>> options, int x, int y, int width, int height) {
 		super(x, y, width, height, Util.fromChars(name), new ArrayList<>());
+
 		this.options = new ArrayList<>();
 		for (Option<?> option : options) {
 			this.options.add(new OptionContext<>(null, option));
 		}
-		var nameComponent = Util.fromChars(name);
 
 		dividerWidget = null;
 		y += VERTICAL_PADDING / 2;
@@ -153,12 +152,6 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 		}
 
 		return addY;
-	}
-
-	@Override
-	public boolean mouseClicked(MouseButtonEvent click, boolean bl) {
-		setFocused(null);
-		return super.mouseClicked(click, bl);
 	}
 
 	public float getHeightWithoutSectionDivider() {
