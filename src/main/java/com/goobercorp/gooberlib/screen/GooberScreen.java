@@ -304,11 +304,17 @@ public class GooberScreen extends Screen {
 		if (!yeah) {
 			lastScrollTicks = 0;
 			scrollTweener.setInteractionState(true);
-			if ((!showTabs || !tabNavigationWidget.isMouseOver(click.x(), click.y())) && click.button() == 0) {
+			if ((!showTabs || !tabNavigationWidget.isMouseOver(click.x(), click.y()))) {
 				if ((scrollProgress < scrollTweener.min) || (scrollProgress > scrollTweener.max)) {
-					scrollProgress += deltaY * Math.min(1 / Math.abs(scrollProgress - Math.clamp(scrollProgress, scrollTweener.min, scrollTweener.max)), 1);
+					if (click.button() == 0 || click.button() == 2) {
+						scrollProgress += deltaY * Math.min(1 / Math.abs(scrollProgress - Math.clamp(scrollProgress, scrollTweener.min, scrollTweener.max)), 1);
+					}
 				} else {
-					scrollProgress += deltaY;
+					if (click.button() == 0) {
+						scrollProgress += deltaY;
+					} else if (click.button() == 2) {
+						scrollProgress += deltaY * 5;
+					}
 				}
 			}
 		}
