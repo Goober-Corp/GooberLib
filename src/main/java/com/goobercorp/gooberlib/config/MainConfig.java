@@ -11,8 +11,8 @@ import net.minecraft.client.Minecraft;
 @GooberConfig(modId = "gooberlib")
 public class MainConfig {
 
-	public static final int primaryCol = 0xFFffadd7;
-	public static final int shadowCol = 0xFF3f2b35;
+	public static final int primaryCol = 0xFFffaf5e;
+	public static final int shadowCol = 0xFF3f2b17;
 	public static final int bgColor = 0x80000000;
 	public static final BooleanOption ENABLE_INFINITE_TAB_SCROLLING = new BooleanOption("Enable infinite tab scrolling", "");
 	public static final BooleanOption PPWW_BOUNDS = new BooleanOption("Bounds for PPWW", "");

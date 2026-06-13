@@ -323,6 +323,7 @@ public class GooberScreen extends Screen {
 
 	@Override
 	public boolean mouseScrolled(double d, double e, double f, double g) {
+		//TODO: maybe make widget scrolling get ignored if scrolling fast enough? (scrolltweener interaction state is still true)
 		boolean yeah = super.mouseScrolled(d, e, f, g);
 		if (!yeah) {
 			lastScrollTicks = 0;
