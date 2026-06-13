@@ -9,6 +9,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class HotkeyWidget extends EvilBaseWidget {
 	HotkeyOption opt;
 	private final Font font = Minecraft.getInstance().font;
@@ -61,22 +64,35 @@ public class HotkeyWidget extends EvilBaseWidget {
 		return false;
 	}
 
+	private List<Integer> prevKeycodes;
+
 	@Override
 	public boolean keyPressed(KeyEvent keyEvent) {
-		//TODO: this keeps consuming escape key presses until another widget is focused
 		if (isListening) {
 			if (keyEvent.isEscape()) {
-				opt.clearKeyCodes();
+				if (shouldClear) {
+					prevKeycodes = Arrays.stream(opt.keyCodes).boxed().toList();
+					opt.clearKeyCodes();
+					shouldClear = false;
+				} else {
+					if (prevKeycodes != null) {
+						opt.clearKeyCodes();
+						for (int code : prevKeycodes) {
+							opt.addCode(code);
+						}
+					}
+				}
 				isListening = false;
-				shouldClear = false;
 				return true;
 			}
 			if (shouldClear) {
+				prevKeycodes = Arrays.stream(opt.keyCodes).boxed().toList();
 				opt.clearKeyCodes();
 				shouldClear = false;
 			}
 			opt.addCode(keyEvent.key());
+			return true;
 		}
-		return true;
+		return false;
 	}
 }
