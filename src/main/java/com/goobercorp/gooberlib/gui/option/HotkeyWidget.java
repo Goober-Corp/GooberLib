@@ -63,6 +63,7 @@ public class HotkeyWidget extends EvilBaseWidget {
 
 	@Override
 	public boolean keyPressed(KeyEvent keyEvent) {
+		//TODO: this keeps consuming escape key presses until another widget is focused
 		if (isListening) {
 			if (keyEvent.isEscape()) {
 				opt.clearKeyCodes();

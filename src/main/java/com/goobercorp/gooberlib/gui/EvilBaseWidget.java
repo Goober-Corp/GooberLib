@@ -85,7 +85,8 @@ public class EvilBaseWidget extends AbstractWidget {
 
 		newMatrixScope(drawContext, stack -> {
 			stack.translate(horizontalPosOffset, verticalPosOffset);
-			drawContext.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath("gooberlib", "widget/button"), this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0x80808080);
+			//TODO: add theming support to the actual button texture?
+			drawContext.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath("gooberlib", "widget/button"), this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0xA0A0A0A0);
 			drawText(drawContext);
 			RenderUtils.drawBoxOutline(drawContext, this.getX() + clickTweener.getF(), this.getY() + clickTweener.getF(), this.getRight() - 1 - clickTweener.getF(), this.getBottom() - 1 - clickTweener.getF(), ARGB.srgbLerp(hoverTweener.getF(), 0xFF000000, MainConfig.primaryCol));
 

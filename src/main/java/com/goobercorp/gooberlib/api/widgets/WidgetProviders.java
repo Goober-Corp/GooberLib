@@ -42,7 +42,7 @@ public class WidgetProviders {
 
 	public static WidgetProvider<Vec2fOption> vec2fFields() {
 		return ((theOption, x, y, width, height) -> {
-			var widgetX = font().width(theOption.name()) + 2;
+			var widgetX = font().width(theOption.name());
 			var widgetWidth = width - font().width(theOption.name());
 			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 2, height, null, Predicates.FLOAT, Predicates.FLOAT_IMMEDIATE, "" + theOption.getX(), 0xFFFFF000);
 			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 2, y, widgetWidth / 2, height, null, Predicates.FLOAT, Predicates.FLOAT_IMMEDIATE, "" + theOption.getY(), 0xFF000FFF);
@@ -61,7 +61,7 @@ public class WidgetProviders {
 
 	public static WidgetProvider<BlockPosOption> blockPosFields() {
 		return ((theOption, x, y, width, height) -> {
-			var widgetX = font().width(theOption.name()) + 2;
+			var widgetX = font().width(theOption.name());
 			var widgetWidth = width - font().width(theOption.name());
 			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getX(), 0xFFFF0000, true);
 			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getY(), 0xFF00FF00, true);
@@ -82,7 +82,7 @@ public class WidgetProviders {
 
 	public static WidgetProvider<Vec3iOption> vec3iFields() {
 		return ((theOption, x, y, width, height) -> {
-			var widgetX = font().width(theOption.name()) + 2;
+			var widgetX = font().width(theOption.name());
 			var widgetWidth = width - font().width(theOption.name());
 			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getX(), 0xFFFF0000);
 			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getY(), 0xFF00FF00);
@@ -103,7 +103,7 @@ public class WidgetProviders {
 
 	public static WidgetProvider<Vec3dOption> vec3dFields() {
 		return ((theOption, x, y, width, height) -> {
-			var widgetX = font().width(theOption.name()) + 2;
+			var widgetX = font().width(theOption.name());
 			var widgetWidth = width - font().width(theOption.name());
 			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.DOUBLE, Predicates.DOUBLE_IMMEDIATE, "" + theOption.getX(), 0xFFFF0000);
 			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, widgetWidth / 3, height, null, Predicates.DOUBLE, Predicates.DOUBLE_IMMEDIATE, "" + theOption.getY(), 0xFF00FF00);
@@ -171,11 +171,11 @@ public class WidgetProviders {
 
 	public static WidgetProvider<IdentifierOption> identifierTwoFields() {
 		return (theOption, x, y, width, height) -> {
-			var widgetX = font().width(theOption.name()) + 2;
+			var widgetX = font().width(theOption.name());
 			var widgetWidth = width - font().width(theOption.name());
 
-			var namespace = new EvilStringWidget(widgetX, y, widgetWidth / 2 - 4, height, null, Predicates.IDENTIFIER, Predicates.IDENTIFIER_IMMEDIATE, theOption.getValue().getNamespace());
-			var path = new EvilStringWidget(widgetX + widgetWidth / 2, y, widgetWidth / 2 + 4, height, null, Predicates.IDENTIFIER, Predicates.IDENTIFIER_IMMEDIATE, theOption.getValue().getNamespace());
+			var namespace = new EvilStringWidget(widgetX, y, widgetWidth / 2 - 3, height, null, Predicates.IDENTIFIER, Predicates.IDENTIFIER_IMMEDIATE, theOption.getValue().getNamespace());
+			var path = new EvilStringWidget(widgetX + widgetWidth / 2, y, widgetWidth / 2, height, null, Predicates.IDENTIFIER, Predicates.IDENTIFIER_IMMEDIATE, theOption.getValue().getNamespace());
 
 			Consumer<String> changedListener = _ -> {
 				try {

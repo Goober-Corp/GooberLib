@@ -12,8 +12,6 @@ import com.goobercorp.gooberlib.option.OptionContext;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -31,7 +29,8 @@ public class CategoryWidget extends ClickableParentWidget implements Hoverable {
 	public CategoryWidget(ConfigCategory category, int x, int y, int width, int height) {
 		super(x, y, width, height, category.metadata().name(), new ArrayList<>());
 		this.category = category;
-		for (OptionHolder o : category.elements()) {
+		for (int i = 0; i < category.elements().size(); i++) {
+			OptionHolder o = category.elements().get(i);
 			if (o instanceof ConfigSection section) {
 				var sectionWidget = new SectionWidget(section, 0, 0, width, height);
 				var wrapper = new PrecisePositionWidgetWrapper<>(sectionWidget, x, y, () -> section.metadata().description());
@@ -40,27 +39,63 @@ public class CategoryWidget extends ClickableParentWidget implements Hoverable {
 				values.add(wrapper);
 				y += sectionWidget.uncollapsedHeight;
 			} else {
-				y += addOptionWithChildren((OptionContext<?>) o, y, x + 5);
+				int index = i;
+				try {
+					while (true) {
+						if (!(category.elements().get(index) instanceof ConfigSection)) {
+							index++;
+						} else {
+							break;
+						}
+					}
+				} catch (Exception e) {
+					//BLEGHHHHHH
+				}
+				//note to self: this is the worst code i've written, maybe ever. but it worked first try.
+				List<OptionHolder> loneOptions = category.elements().subList(i, index);
+				if (MainConfig.EXPERIMENTAL_DUAL_COLUMN_LAYOUT.getValue()) {
+					if (loneOptions.size() == 1) {
+						//TODO: make them wider here
+						y += addOptionWithChildren((OptionContext<?>) loneOptions.getFirst(), y, x + (CHILD_INSET / 2), width / 4);
+					} else {
+						for (int j = 0; j < loneOptions.size() - 1; j += 2) {
+							if (j + 1 < loneOptions.size()) {
+								//TODO: center the smaller option vertically ?
+								int temp, temp2;
+								temp = addOptionWithChildren((OptionContext<?>) loneOptions.get(j + 1), y, x + (CHILD_INSET / 2), width / 2);
+								temp2 = addOptionWithChildren((OptionContext<?>) loneOptions.get(j), y, x + (CHILD_INSET / 2), 0);
+								y += Math.max(temp, temp2);
+							}
+						}
+						if (loneOptions.size() % 2 != 0) {
+							y += addOptionWithChildren((OptionContext<?>) loneOptions.getLast(), y, x + (CHILD_INSET / 2), width / 4);
+						}
+					}
+				} else {
+					for (OptionHolder yeah : loneOptions) {
+						y += addOptionWithChildren((OptionContext<?>) yeah, y, x + (CHILD_INSET / 2), 0);
+					}
+				}
+				i = index - 1;
 			}
 		}
 		this.setHeight(y);
 	}
 
-	private int addOptionWithChildren(OptionContext<?> optionContext, int y, int x) {
+	private int addOptionWithChildren(OptionContext<?> optionContext, int y, int x, int offset) {
 		int addY = 0;
 		Option<?> option = optionContext.option();
-		AbstractWidget widget = option.makeWidget(0, 0, width / 2 - (x % width), VERTICAL_PADDING / 2);
+		AbstractWidget widget = option.makeWidget(0, 0, width / 2 - (x % width) - (CHILD_INSET / 2), VERTICAL_PADDING / 2);
 
-		PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x, y + addY, option::getDescription);
+		PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x + offset, y + addY, option::getDescription);
 		children().add(pw);
 		evilLayout.put(optionContext, pw);
 		values.add(pw);
 		addY += VERTICAL_PADDING;
 
 		for (OptionContext<?> child : optionContext.childOptions()) {
-			addY += addOptionWithChildren(child, y + addY, x + CHILD_INSET);
+			addY += addOptionWithChildren(child, y + addY, x + CHILD_INSET, offset);
 		}
-
 		return addY;
 	}
 

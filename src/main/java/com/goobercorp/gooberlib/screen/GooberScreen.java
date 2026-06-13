@@ -8,6 +8,7 @@ import com.goobercorp.gooberlib.gui.nav.EvilTabNavigationWidget;
 import com.goobercorp.gooberlib.gui.util.PrecisePositionWidgetWrapper;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.ScrollTweener;
+import com.goobercorp.gooberlib.util.TargetedTweener;
 import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,8 +26,7 @@ import net.minecraft.util.FormattedCharSequence;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.goobercorp.gooberlib.util.RenderUtils.ease;
-import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
+import static com.goobercorp.gooberlib.util.RenderUtils.*;
 
 public class GooberScreen extends Screen {
 	public static final int VERTICAL_PADDING = 32;
@@ -47,6 +47,8 @@ public class GooberScreen extends Screen {
 	private final Tab[] tabs;
 	private boolean animateHoverDescription = false;
 	private final boolean showTabs;
+	private final TargetedTweener mouseXTweener = new TargetedTweener(20);
+	private final TargetedTweener mouseYTweener = new TargetedTweener(20);
 
 	private final String modId;
 	private final List<PrecisePositionWidgetWrapper<CategoryWidget>> categoryWidgets = new ArrayList<>();
@@ -95,16 +97,20 @@ public class GooberScreen extends Screen {
 	@Override
 	public void renderBackground(GuiGraphics drawContext, int mouseX, int mouseY, float tickDelta) {
 		//think of this as the pre-render
-		updateTweeners();
-		setWidgetOffsets();
 		double mX, mY;
 		mX = Minecraft.getInstance().mouseHandler.getScaledXPos(Minecraft.getInstance().getWindow());
 		mY = Minecraft.getInstance().mouseHandler.getScaledYPos(Minecraft.getInstance().getWindow());
+		mouseXTweener.setTarget(mX);
+		mouseYTweener.setTarget(mY);
+		updateTweeners();
+		setWidgetOffsets();
 		setHoverText(mX, mY);
 		//Cursor glow
-		RenderUtils.fillEvil(drawContext, (float) mX, (float) mY, (float) (mX + 2.5f), (float) (mY + 2.5F), MainConfig.primaryCol);
+		if (Minecraft.getInstance().options.getMenuBackgroundBlurriness() > 0) {
+			RenderUtils.fillEvil(drawContext, (float) mX, (float) mY, (float) (mX + 2.5f), (float) (mY + 2.5F), MainConfig.primaryCol);
+		}
 		newMatrixScope(drawContext, stack -> {
-			stack.translate((float) (-mX * 0.1F), (float) (-mY * 0.1F));
+			stack.translate((float) (-mouseXTweener.get() * 0.1F), (float) (-mouseYTweener.get() * 0.1F));
 			stack.translate(Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2F - 100, Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2F - 100);
 			stack.scale(2.5F, 2.5F);
 			drawContext.blit(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath("gooberlib", "textures/him.png"), 0, 0, 100, 100, 100, 100, 100, 100);
@@ -131,10 +137,12 @@ public class GooberScreen extends Screen {
 		mX = Minecraft.getInstance().mouseHandler.getScaledXPos(Minecraft.getInstance().getWindow());
 		mY = Minecraft.getInstance().mouseHandler.getScaledYPos(Minecraft.getInstance().getWindow());
 		drawCommon(drawContext, mouseX, mouseY, tickDelta);
-//		drawVerticalLine(drawContext, CHILD_INSET, 0, height, -1);
-//		drawVerticalLine(drawContext, width / 2F + CHILD_INSET, 0, height, -1);
-//		drawVerticalLine(drawContext, width / 2F - CHILD_INSET, 0, height, -1);
-//		drawVerticalLine(drawContext, width - CHILD_INSET, 0, height, -1);
+		if (MainConfig.DEBUG_GUIDELINES.value) {
+			drawVerticalLine(drawContext, CHILD_INSET / 2F, 0, height, -1);
+			drawVerticalLine(drawContext, width / 2F + CHILD_INSET / 2F, 0, height, -1);
+			drawVerticalLine(drawContext, width / 2F - CHILD_INSET / 2F, 0, height, -1);
+			drawVerticalLine(drawContext, width - CHILD_INSET / 2F, 0, height, -1);
+		}
 
 		if (this.showTabs) {
 			if (tabNavigationWidget.isMouseOver(mX, mY)) {
@@ -229,6 +237,8 @@ public class GooberScreen extends Screen {
 	private void updateTweeners() {
 		this.scrollTweener.update();
 		this.categoryTweener.update();
+		mouseXTweener.update();
+		mouseYTweener.update();
 		//TODO: convert to tweeners
 		categoryHoverProgress = (float) ease(categoryHoverProgress, tabHoldTicks > 0 ? 0 : 1, 15);
 		int yeah = showTabs ? tabNavigationWidget.getCurrentTabIndex() : 0;

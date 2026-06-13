@@ -90,6 +90,6 @@ public class EvilStringColorWidget extends EvilStringWidget {
 	public void renderWidget(GuiGraphics drawContext, int i, int j, float f) {
 		super.renderWidget(drawContext, i, j, f);
 		colorTweener.update();
-		drawContext.drawString(font(), name, x, getY() + 3, MainConfig.primaryCol, true);
+		drawContext.drawString(font(), name, x + 1, getY() + 3, MainConfig.primaryCol, true);
 	}
 }

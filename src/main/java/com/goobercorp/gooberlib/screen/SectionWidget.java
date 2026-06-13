@@ -49,23 +49,24 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 		if (MainConfig.EXPERIMENTAL_DUAL_COLUMN_LAYOUT.getValue()) {
 			if (section.childOptions().size() == 1) {
 				//TODO: make them wider here
-				//TODO: also make this work for section-less options
-				y += addOptionWithChildren(section.childOptions().getFirst(), y, x + CHILD_INSET, width / 4);
+				y += addOptionWithChildren(section.childOptions().getFirst(), y, x + (CHILD_INSET / 2), width / 4);
 			} else {
 				for (int i = 0; i < section.childOptions().size() - 1; i += 2) {
 					if (i + 1 < section.childOptions().size()) {
-						addOptionWithChildren(section.childOptions().get(i + 1), y, x + CHILD_INSET, width / 2);
-						y += addOptionWithChildren(section.childOptions().get(i), y, x + CHILD_INSET, 0);
+						//TODO: center the smaller option vertically ?
+						int temp, temp2;
+						temp = addOptionWithChildren(section.childOptions().get(i + 1), y, x + (CHILD_INSET / 2), width / 2);
+						temp2 = addOptionWithChildren(section.childOptions().get(i), y, x + (CHILD_INSET / 2), 0);
+						y += Math.max(temp, temp2);
 					}
 				}
-				//TODO: there is a weird edge case here. see theone -> my section
 				if (section.childOptions().size() % 2 != 0) {
-					y += addOptionWithChildren(section.childOptions().getLast(), y, x + CHILD_INSET, width / 4);
+					y += addOptionWithChildren(section.childOptions().getLast(), y, x + (CHILD_INSET / 2), width / 4);
 				}
 			}
 		} else {
 			for (OptionContext<?> yeah : section.childOptions()) {
-				y += addOptionWithChildren(yeah, y, x + CHILD_INSET, 0);
+				y += addOptionWithChildren(yeah, y, x + (CHILD_INSET / 2), 0);
 			}
 		}
 		this.setHeight(y);
@@ -85,7 +86,7 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 		dividerWidget = null;
 		y += VERTICAL_PADDING / 2;
 		for (OptionContext<?> yeah : this.options) {
-			y += addOptionWithChildren(yeah, y, x + CHILD_INSET, 0);
+			y += addOptionWithChildren(yeah, y, x + (CHILD_INSET / 2), 0);
 		}
 		this.setHeight(y);
 		this.uncollapsedHeight = y;
@@ -140,7 +141,7 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 	private int addOptionWithChildren(OptionContext<?> optionContext, int y, int x, int offset) {
 		int addY = 0;
 		Option<?> option = optionContext.option();
-		AbstractWidget widget = option.makeWidget(0, 0, width / 2 - (x % width) - CHILD_INSET, VERTICAL_PADDING / 2);
+		AbstractWidget widget = option.makeWidget(0, 0, width / 2 - (x % width) - (CHILD_INSET / 2), VERTICAL_PADDING / 2);
 
 		PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x + offset, y + addY, option::getDescription);
 		children().add(pw);
