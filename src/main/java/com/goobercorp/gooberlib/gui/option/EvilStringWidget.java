@@ -87,12 +87,10 @@ public class EvilStringWidget extends EvilBaseWidget {
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, int colorOverride) {
 		this(x, y, width, height, changedListener, predicate, immediatePredicate, initial);
-		//TODO: automatically calculate good selection color. blue text here means it's just white when selected.
 		this.editableColor = colorOverride;
 	}
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, int colorOverride, boolean centered) {
-		//TODO: maybe do builder-style stuff for alignment? e.g. ctor(args).alignNameRight()?
 		this(x, y, width, height, changedListener, predicate, immediatePredicate, initial);
 		this.editableColor = colorOverride;
 		this.centered = centered;

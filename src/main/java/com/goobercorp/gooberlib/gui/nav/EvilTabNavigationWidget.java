@@ -93,16 +93,8 @@ public class EvilTabNavigationWidget extends AbstractContainerEventHandler imple
 	@Override
 	public boolean mouseDragged(MouseButtonEvent click, double deltaX, double deltaY) {
 		prevDelta = new Vec2((float) (prevDelta.x + deltaX), (float) (prevDelta.y + deltaY));
-		Optional<GuiEventListener> optional = this.getChildAt(click.x(), click.y());
-		if (optional.isPresent()) {
-			//TODO: change this from checking if it's currently focused to if it was focused as of the initial click, so dragging doesn't stop if the tweener can't catch up.
-			if (optional.get().isFocused()) {
-				//dragging stops if cursor goes off of selected tab. intended
-				//dragging continues if cursor goes back onto selected tab. unintended.
-				//tell kr1v this is why i like my own dragging impl
-				// kr1v: glup
-				this.targetX += (float) deltaX;
-			}
+		if (isDragging()) {
+			this.targetX += (float) deltaX;
 		}
 		return super.mouseDragged(click, deltaX, deltaY);
 	}
@@ -171,8 +163,7 @@ public class EvilTabNavigationWidget extends AbstractContainerEventHandler imple
 //					} else if (currentTabIndex == tabs.size() - 1) {
 //						this.targetX = (double) tabNavWidth - 100 * tabs.size() - 5;
 //					} else {
-					//TODO: make this adjust to actual tab size and not snap if currently dragging stuff
-					this.targetX = (double) (-(100 * currentTabIndex + 1)) + tabNavWidth / 2 - 50;
+					this.targetX = -(getCurrentTabButton().getWidth() * currentTabIndex + 1) + tabNavWidth / 2.0 - 50;
 //					}
 				}
 				if (click.button() == 0) {
@@ -339,10 +330,12 @@ public class EvilTabNavigationWidget extends AbstractContainerEventHandler imple
 		return this.tabs.indexOf(tab);
 	}
 
-	@Nullable
 	private EvilTabButtonWidget getCurrentTabButton() {
 		int i = this.getCurrentTabIndex();
-		return i != -1 ? this.tabButtons.get(i) : null;
+		if (i == -1) {
+			throw new IllegalStateException("i == -1");
+		}
+		return this.tabButtons.get(i);
 	}
 
 

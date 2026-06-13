@@ -56,7 +56,7 @@ public class WidgetProviders {
 			xWidget.setChangedListener(changedListener);
 			yWidget.setChangedListener(changedListener);
 
-			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new PlainTextWidget(x, y, width, height, theOption.name(), MainConfig.primaryCol, false), xWidget, yWidget));
+			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new PlainTextWidget(x, y, width, height, theOption.name(), () -> MainConfig.primaryCol, false), xWidget, yWidget));
 		});
 	}
 
@@ -77,7 +77,7 @@ public class WidgetProviders {
 			yWidget.setChangedListener(changedListener);
 			zWidget.setChangedListener(changedListener);
 
-			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new PlainTextWidget(x, y, width, height, theOption.name(), MainConfig.primaryCol, false), xWidget, yWidget, zWidget));
+			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new PlainTextWidget(x, y, width, height, theOption.name(), () -> MainConfig.primaryCol, false), xWidget, yWidget, zWidget));
 		});
 	}
 
@@ -98,7 +98,7 @@ public class WidgetProviders {
 			yWidget.setChangedListener(changedListener);
 			zWidget.setChangedListener(changedListener);
 
-			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new PlainTextWidget(x, y, width, height, theOption.name(), MainConfig.primaryCol, false), xWidget, yWidget, zWidget));
+			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new PlainTextWidget(x, y, width, height, theOption.name(), () -> MainConfig.primaryCol, false), xWidget, yWidget, zWidget));
 		});
 	}
 
@@ -119,7 +119,7 @@ public class WidgetProviders {
 			yWidget.setChangedListener(changedListener);
 			zWidget.setChangedListener(changedListener);
 
-			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new PlainTextWidget(x, y, width, height, theOption.name(), MainConfig.primaryCol, false), xWidget, yWidget, zWidget));
+			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new PlainTextWidget(x, y, width, height, theOption.name(), () -> MainConfig.primaryCol, false), xWidget, yWidget, zWidget));
 		});
 	}
 
@@ -153,7 +153,7 @@ public class WidgetProviders {
 		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setFromString, theOption.getPredicate(), theOption.getImmediatePredicate(), theOption instanceof CharOption c ? String.valueOf(c.value) : theOption.getNumberValue().toString()));
 	}
 
-	public static <T extends NumberOption<T>> WidgetProvider<T> numberHybrid() {
+	public static <T extends NumberOption<T>> WidgetProvider<T> numberHybrid() { // todo? make this work? teal what are you doing
 		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setFromString, theOption.getPredicate(), theOption.getImmediatePredicate(), theOption instanceof CharOption c ? String.valueOf(c.value) : theOption.getNumberValue().toString()));
 	}
 
@@ -186,7 +186,7 @@ public class WidgetProviders {
 			};
 			namespace.setChangedListener(changedListener);
 			path.setChangedListener(changedListener);
-			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new PlainTextWidget(x, y, width, height, theOption.name(), MainConfig.primaryCol, false), namespace, path, new PlainTextWidget(widgetX + widgetWidth / 2 - 3, y, width, height, Component.nullToEmpty(":"), MainConfig.primaryCol, false)));
+			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(new PlainTextWidget(x, y, width, height, theOption.name(), () -> MainConfig.primaryCol, false), namespace, path, new PlainTextWidget(widgetX + widgetWidth / 2 - 3, y, width, height, Component.nullToEmpty(":"), () -> MainConfig.primaryCol, false)));
 		};
 	}
 
