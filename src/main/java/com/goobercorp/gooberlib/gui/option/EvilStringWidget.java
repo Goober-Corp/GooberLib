@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
@@ -47,7 +48,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 	int firstCharacterIndex;
 	private int selectionStart;
 	private int selectionEnd;
-	private int editableColor = MainConfig.primaryCol;
+	private Supplier<Integer> editableColor = () -> MainConfig.primaryCol;
 	private int uneditableColor = -9408400;
 	@Nullable
 	private Consumer<String> changedListener;
@@ -89,13 +90,13 @@ public class EvilStringWidget extends EvilBaseWidget {
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, int colorOverride) {
 		this(x, y, width, height, changedListener, predicate, immediatePredicate, initial);
-		this.editableColor = colorOverride;
+		this.editableColor = () -> colorOverride;
 		textXTweener.snapToTarget();
 	}
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, int colorOverride, boolean centered) {
 		this(x, y, width, height, changedListener, predicate, immediatePredicate, initial);
-		this.editableColor = colorOverride;
+		this.editableColor = () -> colorOverride;
 		this.centered = centered;
 		updateTextPosition();
 		textXTweener.snapToTarget();
@@ -427,7 +428,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 	public void renderWidget(GuiGraphics context, double mouseX, double mouseY, float delta) {
 		if (this.isVisible()) {
 			updateTextPosition();
-			int colorIShouldBe = this.editable ? this.editableColor : this.uneditableColor;
+			int colorIShouldBe = this.editable ? this.editableColor.get() : this.uneditableColor;
 			int cursorOffset = this.selectionStart - this.firstCharacterIndex;
 			String visibleText = this.textRenderer.plainSubstrByWidth(this.text.substring(this.firstCharacterIndex), this.getInnerWidth());
 			boolean cursorVisible = cursorOffset >= 0 && cursorOffset <= visibleText.length();
@@ -584,9 +585,9 @@ public class EvilStringWidget extends EvilBaseWidget {
 		this.updateTextPosition();
 	}
 
-	public void setEditableColor(int i) {
-		this.editableColor = i;
-	}
+//	public void setEditableColor(int i) {
+//		this.editableColor = i;
+//	}
 
 	public void setUneditableColor(int i) {
 		this.uneditableColor = i;

@@ -23,6 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,8 +95,18 @@ public class GooberScreen extends Screen {
 		}
 	}
 
+	public static int getRainbow(float delay, float speed, float saturation, float brightness) {
+		double rainbowState = Math.ceil((System.currentTimeMillis() + (int) (delay * 1000))) * speed / 20;
+		rainbowState %= 360;
+		return Color.getHSBColor((float) (rainbowState / 360.0f), saturation, brightness).getRGB();
+	}
+
 	@Override
 	public void renderBackground(GuiGraphics drawContext, int mouseX, int mouseY, float tickDelta) {
+		if (MainConfig.WOKE.getValue()) {
+			MainConfig.primaryCol = (0xFF << 24) | getRainbow(0, 1, MainConfig.WOKE_STRENGTH.value, 1);
+			MainConfig.shadowCol = (0xFF << 24) | getRainbow(0, 1, MainConfig.WOKE_STRENGTH.value, 0.25F);
+		}
 		//think of this as the pre-render
 		double mX, mY;
 		mX = Minecraft.getInstance().mouseHandler.getScaledXPos(Minecraft.getInstance().getWindow());

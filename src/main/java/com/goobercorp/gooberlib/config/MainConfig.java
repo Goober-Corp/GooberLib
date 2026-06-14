@@ -2,10 +2,12 @@ package com.goobercorp.gooberlib.config;
 
 import com.goobercorp.gooberlib.GooberLibEntrypoint;
 import com.goobercorp.gooberlib.annotations.GooberConfig;
+import com.goobercorp.gooberlib.api.widgets.WidgetProviders;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.goobercorp.gooberlib.option.individual.hotkey.HotkeyOption;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
+import com.goobercorp.gooberlib.option.individual.primitive.FloatOption;
 import com.goobercorp.gooberlib.screen.ShowcaseScreen;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
@@ -13,8 +15,8 @@ import net.minecraft.client.Minecraft;
 @GooberConfig(modId = "gooberlib")
 public class MainConfig {
 
-	public static final int primaryCol = 0xFFffaf5e;
-	public static final int shadowCol = 0xFF3f2b17;
+	public static int primaryCol = 0xFFffaf5e;
+	public static int shadowCol = 0xFF3f2b17;
 	public static final int bgColor = 0x80000000;
 	public static final BooleanOption ENABLE_INFINITE_TAB_SCROLLING = new BooleanOption("Enable infinite tab scrolling", "");
 
@@ -25,10 +27,12 @@ public class MainConfig {
 	public static final BooleanOption EXPERIMENTAL_DUAL_COLUMN_LAYOUT = new BooleanOption("Dual Column Layout", "don't tell kr1v...");
 	public static final BooleanOption DEBUG_GUIDELINES = new BooleanOption("Guidelines", "");
 	public static final BooleanOption CLOSE_SCREEN_ON_EXCEPTION = new BooleanOption("Close gooberlib config screens on exception", "");
+	public static final BooleanOption WOKE = new BooleanOption("Woke mode");
+	public static final FloatOption WOKE_STRENGTH = new FloatOption("Wokeness strength", 0.5F, 0F, 1F, WidgetProviders.numberSliderWithFormatter(floatOption -> (int) (floatOption.value * 100) + "%"));
 
 	public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.create("GooberLib", b -> {
 		b.category("Main", category -> {
-			category.options(ENABLE_INFINITE_TAB_SCROLLING);
+			category.options(ENABLE_INFINITE_TAB_SCROLLING, WOKE, WOKE_STRENGTH);
 			if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
 				category.options(PPWW_BOUNDS, A, SHOWCASE, HOTKEY, EXPERIMENTAL_DUAL_COLUMN_LAYOUT, DEBUG_GUIDELINES, CLOSE_SCREEN_ON_EXCEPTION);
 			}
