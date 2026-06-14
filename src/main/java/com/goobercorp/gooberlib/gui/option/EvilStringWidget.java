@@ -83,11 +83,13 @@ public class EvilStringWidget extends EvilBaseWidget {
 		this.predicate = predicate;
 		this.setMaxLength(100);
 		this.shouldDrawName = false;
+		textXTweener.snapToTarget();
 	}
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, int colorOverride) {
 		this(x, y, width, height, changedListener, predicate, immediatePredicate, initial);
 		this.editableColor = colorOverride;
+		textXTweener.snapToTarget();
 	}
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, int colorOverride, boolean centered) {
@@ -95,6 +97,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 		this.editableColor = colorOverride;
 		this.centered = centered;
 		updateTextPosition();
+		textXTweener.snapToTarget();
 	}
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, boolean alignRight, boolean centered) {
@@ -102,6 +105,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 		this.centered = centered;
 		this.alignRight = alignRight;
 		updateTextPosition();
+		textXTweener.snapToTarget();
 	}
 
 	public void setChangedListener(Consumer<String> consumer) {
