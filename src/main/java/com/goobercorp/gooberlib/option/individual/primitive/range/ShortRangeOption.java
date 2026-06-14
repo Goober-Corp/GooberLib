@@ -29,6 +29,38 @@ public class ShortRangeOption extends BaseOption<ShortRangeOption> implements Nu
 		this.max = max;
 	}
 
+	public ShortRangeOption(CharSequence name, CharSequence description, short defaultValueMin, short defaultValueMax, short min, short max, WidgetProvider<ShortRangeOption> provider) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, min, max, provider);
+	}
+
+	public ShortRangeOption(CharSequence name, CharSequence description, short defaultValueMin, short defaultValueMax, short min, short max) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, min, max, null);
+	}
+
+	public ShortRangeOption(CharSequence name, CharSequence description, short defaultValueMin, short defaultValueMax, WidgetProvider<ShortRangeOption> provider) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+	}
+
+	public ShortRangeOption(CharSequence name, CharSequence description, short defaultValueMin, short defaultValueMax) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, Short.MIN_VALUE, Short.MAX_VALUE, null);
+	}
+
+	public ShortRangeOption(CharSequence name, short defaultValueMin, short defaultValueMax, short min, short max, WidgetProvider<ShortRangeOption> provider) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, provider);
+	}
+
+	public ShortRangeOption(CharSequence name, short defaultValueMin, short defaultValueMax, short min, short max) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, null);
+	}
+
+	public ShortRangeOption(CharSequence name, short defaultValueMin, short defaultValueMax, WidgetProvider<ShortRangeOption> provider) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+	}
+
+	public ShortRangeOption(CharSequence name, short defaultValueMin, short defaultValueMax) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, Short.MIN_VALUE, Short.MAX_VALUE, null);
+	}
+
 	public short getMinValue() {
 		return minValue;
 	}

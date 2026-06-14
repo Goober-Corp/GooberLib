@@ -24,12 +24,52 @@ public class LongOption extends BaseOption<LongOption> implements NumberOption<L
 		this.max = max;
 	}
 
-	public LongOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, 0, Long.MIN_VALUE, Long.MAX_VALUE, null);
+	public LongOption(CharSequence name, CharSequence description, long defaultValue, long min, long max, WidgetProvider<LongOption> provider) {
+		this(name, _ -> description, defaultValue, min, max, provider);
+	}
+
+	public LongOption(CharSequence name, CharSequence description, long defaultValue, long min, long max) {
+		this(name, _ -> description, defaultValue, min, max, null);
+	}
+
+	public LongOption(CharSequence name, long defaultValue, long min, long max, WidgetProvider<LongOption> provider) {
+		this(name, _ -> "", defaultValue, min, max, provider);
+	}
+
+	public LongOption(CharSequence name, long defaultValue, long min, long max) {
+		this(name, _ -> "", defaultValue, min, max, null);
+	}
+
+	public LongOption(CharSequence name, CharSequence description, long defaultValue, WidgetProvider<LongOption> provider) {
+		this(name, _ -> description, defaultValue, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+	}
+
+	public LongOption(CharSequence name, CharSequence description, long defaultValue) {
+		this(name, _ -> description, defaultValue, Long.MIN_VALUE, Long.MAX_VALUE, null);
+	}
+
+	public LongOption(CharSequence name, long defaultValue, WidgetProvider<LongOption> provider) {
+		this(name, _ -> "", defaultValue, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+	}
+
+	public LongOption(CharSequence name, long defaultValue) {
+		this(name, _ -> "", defaultValue, Long.MIN_VALUE, Long.MAX_VALUE, null);
 	}
 
 	public LongOption(CharSequence name, CharSequence description, WidgetProvider<LongOption> provider) {
 		this(name, _ -> description, 0, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+	}
+
+	public LongOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, 0, Long.MIN_VALUE, Long.MAX_VALUE, null);
+	}
+
+	public LongOption(CharSequence name, WidgetProvider<LongOption> provider) {
+		this(name, _ -> "", 0, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+	}
+
+	public LongOption(CharSequence name) {
+		this(name, _ -> "", 0, Long.MIN_VALUE, Long.MAX_VALUE, null);
 	}
 
 	@Override

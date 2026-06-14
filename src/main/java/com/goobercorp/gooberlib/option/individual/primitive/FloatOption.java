@@ -24,12 +24,52 @@ public class FloatOption extends BaseOption<FloatOption> implements NumberOption
 		this.max = max;
 	}
 
-	public FloatOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, 0, -Float.MAX_VALUE, Float.MAX_VALUE, null);
+	public FloatOption(CharSequence name, CharSequence description, float defaultValue, float min, float max, WidgetProvider<FloatOption> provider) {
+		this(name, _ -> description, defaultValue, min, max, provider);
+	}
+
+	public FloatOption(CharSequence name, CharSequence description, float defaultValue, float min, float max) {
+		this(name, _ -> description, defaultValue, min, max, null);
+	}
+
+	public FloatOption(CharSequence name, float defaultValue, float min, float max, WidgetProvider<FloatOption> provider) {
+		this(name, _ -> "", defaultValue, min, max, provider);
+	}
+
+	public FloatOption(CharSequence name, float defaultValue, float min, float max) {
+		this(name, _ -> "", defaultValue, min, max, null);
+	}
+
+	public FloatOption(CharSequence name, CharSequence description, float defaultValue, WidgetProvider<FloatOption> provider) {
+		this(name, _ -> description, defaultValue, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+	}
+
+	public FloatOption(CharSequence name, CharSequence description, float defaultValue) {
+		this(name, _ -> description, defaultValue, -Float.MAX_VALUE, Float.MAX_VALUE, null);
+	}
+
+	public FloatOption(CharSequence name, float defaultValue, WidgetProvider<FloatOption> provider) {
+		this(name, _ -> "", defaultValue, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+	}
+
+	public FloatOption(CharSequence name, float defaultValue) {
+		this(name, _ -> "", defaultValue, -Float.MAX_VALUE, Float.MAX_VALUE, null);
 	}
 
 	public FloatOption(CharSequence name, CharSequence description, WidgetProvider<FloatOption> provider) {
 		this(name, _ -> description, 0, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+	}
+
+	public FloatOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, 0, -Float.MAX_VALUE, Float.MAX_VALUE, null);
+	}
+
+	public FloatOption(CharSequence name, WidgetProvider<FloatOption> provider) {
+		this(name, _ -> "", 0, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+	}
+
+	public FloatOption(CharSequence name) {
+		this(name, _ -> "", 0, -Float.MAX_VALUE, Float.MAX_VALUE, null);
 	}
 
 	@Override

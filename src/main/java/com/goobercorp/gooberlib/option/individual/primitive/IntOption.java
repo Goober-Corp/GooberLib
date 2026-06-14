@@ -24,12 +24,52 @@ public class IntOption extends BaseOption<IntOption> implements NumberOption<Int
 		this.max = max;
 	}
 
-	public IntOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
+	public IntOption(CharSequence name, CharSequence description, int defaultValue, int min, int max, WidgetProvider<IntOption> provider) {
+		this(name, _ -> description, defaultValue, min, max, provider);
+	}
+
+	public IntOption(CharSequence name, CharSequence description, int defaultValue, int min, int max) {
+		this(name, _ -> description, defaultValue, min, max, null);
+	}
+
+	public IntOption(CharSequence name, int defaultValue, int min, int max, WidgetProvider<IntOption> provider) {
+		this(name, _ -> "", defaultValue, min, max, provider);
+	}
+
+	public IntOption(CharSequence name, int defaultValue, int min, int max) {
+		this(name, _ -> "", defaultValue, min, max, null);
+	}
+
+	public IntOption(CharSequence name, CharSequence description, int defaultValue, WidgetProvider<IntOption> provider) {
+		this(name, _ -> description, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+	}
+
+	public IntOption(CharSequence name, CharSequence description, int defaultValue) {
+		this(name, _ -> description, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
+	}
+
+	public IntOption(CharSequence name, int defaultValue, WidgetProvider<IntOption> provider) {
+		this(name, _ -> "", defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+	}
+
+	public IntOption(CharSequence name, int defaultValue) {
+		this(name, _ -> "", defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
 	}
 
 	public IntOption(CharSequence name, CharSequence description, WidgetProvider<IntOption> provider) {
 		this(name, _ -> description, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+	}
+
+	public IntOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
+	}
+
+	public IntOption(CharSequence name, WidgetProvider<IntOption> provider) {
+		this(name, _ -> "", 0, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+	}
+
+	public IntOption(CharSequence name) {
+		this(name, _ -> "", 0, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
 	}
 
 	@Override

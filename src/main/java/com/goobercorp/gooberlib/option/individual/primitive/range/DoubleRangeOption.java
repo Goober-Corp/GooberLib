@@ -29,6 +29,38 @@ public class DoubleRangeOption extends BaseOption<DoubleRangeOption> implements 
 		this.max = max;
 	}
 
+	public DoubleRangeOption(CharSequence name, CharSequence description, double defaultValueMin, double defaultValueMax, double min, double max, WidgetProvider<DoubleRangeOption> provider) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, min, max, provider);
+	}
+
+	public DoubleRangeOption(CharSequence name, CharSequence description, double defaultValueMin, double defaultValueMax, double min, double max) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, min, max, null);
+	}
+
+	public DoubleRangeOption(CharSequence name, CharSequence description, double defaultValueMin, double defaultValueMax, WidgetProvider<DoubleRangeOption> provider) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+	}
+
+	public DoubleRangeOption(CharSequence name, CharSequence description, double defaultValueMin, double defaultValueMax) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, -Double.MAX_VALUE, Double.MAX_VALUE, null);
+	}
+
+	public DoubleRangeOption(CharSequence name, double defaultValueMin, double defaultValueMax, double min, double max, WidgetProvider<DoubleRangeOption> provider) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, provider);
+	}
+
+	public DoubleRangeOption(CharSequence name, double defaultValueMin, double defaultValueMax, double min, double max) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, null);
+	}
+
+	public DoubleRangeOption(CharSequence name, double defaultValueMin, double defaultValueMax, WidgetProvider<DoubleRangeOption> provider) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+	}
+
+	public DoubleRangeOption(CharSequence name, double defaultValueMin, double defaultValueMax) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, -Double.MAX_VALUE, Double.MAX_VALUE, null);
+	}
+
 	public double getMinValue() {
 		return minValue;
 	}

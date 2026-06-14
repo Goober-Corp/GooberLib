@@ -18,12 +18,20 @@ public class IdentifierOption extends BaseOption<IdentifierOption> {
 		this.defaultValue = defaultValue;
 	}
 
+	public IdentifierOption(CharSequence name, CharSequence description, Identifier defaultValue, WidgetProvider<IdentifierOption> provider) {
+		this(name, _ -> description, defaultValue, provider);
+	}
+
 	public IdentifierOption(CharSequence name, CharSequence description, Identifier defaultValue) {
 		this(name, _ -> description, defaultValue, null);
 	}
 
-	public IdentifierOption(CharSequence name, CharSequence description, Identifier defaultValue, WidgetProvider<IdentifierOption> provider) {
-		this(name, _ -> description, defaultValue, provider);
+	public IdentifierOption(CharSequence name, Identifier defaultValue, WidgetProvider<IdentifierOption> provider) {
+		this(name, _ -> "", defaultValue, provider);
+	}
+
+	public IdentifierOption(CharSequence name, Identifier defaultValue) {
+		this(name, _ -> "", defaultValue, null);
 	}
 
 	@Override

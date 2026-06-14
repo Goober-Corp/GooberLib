@@ -29,6 +29,38 @@ public class ByteRangeOption extends BaseOption<ByteRangeOption> implements Numb
 		this.max = max;
 	}
 
+	public ByteRangeOption(CharSequence name, CharSequence description, byte defaultValueMin, byte defaultValueMax, byte min, byte max, WidgetProvider<ByteRangeOption> provider) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, min, max, provider);
+	}
+
+	public ByteRangeOption(CharSequence name, CharSequence description, byte defaultValueMin, byte defaultValueMax, byte min, byte max) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, min, max, null);
+	}
+
+	public ByteRangeOption(CharSequence name, CharSequence description, byte defaultValueMin, byte defaultValueMax, WidgetProvider<ByteRangeOption> provider) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
+	}
+
+	public ByteRangeOption(CharSequence name, CharSequence description, byte defaultValueMin, byte defaultValueMax) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
+	}
+
+	public ByteRangeOption(CharSequence name, byte defaultValueMin, byte defaultValueMax, byte min, byte max, WidgetProvider<ByteRangeOption> provider) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, provider);
+	}
+
+	public ByteRangeOption(CharSequence name, byte defaultValueMin, byte defaultValueMax, byte min, byte max) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, null);
+	}
+
+	public ByteRangeOption(CharSequence name, byte defaultValueMin, byte defaultValueMax, WidgetProvider<ByteRangeOption> provider) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
+	}
+
+	public ByteRangeOption(CharSequence name, byte defaultValueMin, byte defaultValueMax) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
+	}
+
 	public byte getMinValue() {
 		return minValue;
 	}

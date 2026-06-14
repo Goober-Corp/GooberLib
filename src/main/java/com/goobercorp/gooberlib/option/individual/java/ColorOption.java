@@ -21,12 +21,36 @@ public class ColorOption extends BaseOption<ColorOption> {
 		this.defaultValue = defaultValue;
 	}
 
-	public ColorOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, 0xFFFFFFFF, null);
+	public ColorOption(CharSequence name, CharSequence description, int defaultValue, WidgetProvider<ColorOption> provider) {
+		this(name, _ -> description, defaultValue, provider);
+	}
+
+	public ColorOption(CharSequence name, CharSequence description, int defaultValue) {
+		this(name, _ -> description, defaultValue, null);
 	}
 
 	public ColorOption(CharSequence name, CharSequence description, WidgetProvider<ColorOption> provider) {
-		this(name, _ -> description, 0xFFFFFFFF, provider);
+		this(name, _ -> description, 0xff000000, provider);
+	}
+
+	public ColorOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, 0xff000000, null);
+	}
+
+	public ColorOption(CharSequence name, int defaultValue, WidgetProvider<ColorOption> provider) {
+		this(name, _ -> "", defaultValue, provider);
+	}
+
+	public ColorOption(CharSequence name, int defaultValue) {
+		this(name, _ -> "", defaultValue, null);
+	}
+
+	public ColorOption(CharSequence name, WidgetProvider<ColorOption> provider) {
+		this(name, _ -> "", 0xff000000, provider);
+	}
+
+	public ColorOption(CharSequence name) {
+		this(name, _ -> "", 0xff000000, null);
 	}
 
 	@Override

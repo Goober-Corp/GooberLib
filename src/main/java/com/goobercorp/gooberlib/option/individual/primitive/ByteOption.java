@@ -23,12 +23,52 @@ public class ByteOption extends BaseOption<ByteOption> implements NumberOption<B
 		this.max = max;
 	}
 
-	public ByteOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, (byte) 0, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
+	public ByteOption(CharSequence name, CharSequence description, byte defaultValue, byte min, byte max, WidgetProvider<ByteOption> provider) {
+		this(name, _ -> description, defaultValue, min, max, provider);
+	}
+
+	public ByteOption(CharSequence name, CharSequence description, byte defaultValue, byte min, byte max) {
+		this(name, _ -> description, defaultValue, min, max, null);
+	}
+
+	public ByteOption(CharSequence name, byte defaultValue, byte min, byte max, WidgetProvider<ByteOption> provider) {
+		this(name, _ -> "", defaultValue, min, max, provider);
+	}
+
+	public ByteOption(CharSequence name, byte defaultValue, byte min, byte max) {
+		this(name, _ -> "", defaultValue, min, max, null);
+	}
+
+	public ByteOption(CharSequence name, CharSequence description, byte defaultValue, WidgetProvider<ByteOption> provider) {
+		this(name, _ -> description, defaultValue, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
+	}
+
+	public ByteOption(CharSequence name, CharSequence description, byte defaultValue) {
+		this(name, _ -> description, defaultValue, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
+	}
+
+	public ByteOption(CharSequence name, byte defaultValue, WidgetProvider<ByteOption> provider) {
+		this(name, _ -> "", defaultValue, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
+	}
+
+	public ByteOption(CharSequence name, byte defaultValue) {
+		this(name, _ -> "", defaultValue, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
 	}
 
 	public ByteOption(CharSequence name, CharSequence description, WidgetProvider<ByteOption> provider) {
 		this(name, _ -> description, (byte) 0, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
+	}
+
+	public ByteOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, (byte) 0, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
+	}
+
+	public ByteOption(CharSequence name, WidgetProvider<ByteOption> provider) {
+		this(name, _ -> "", (byte) 0, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
+	}
+
+	public ByteOption(CharSequence name) {
+		this(name, _ -> "", (byte) 0, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
 	}
 
 	@Override

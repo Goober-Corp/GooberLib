@@ -29,6 +29,38 @@ public class LongRangeOption extends BaseOption<LongRangeOption> implements Numb
 		this.max = max;
 	}
 
+	public LongRangeOption(CharSequence name, CharSequence description, long defaultValueMin, long defaultValueMax, long min, long max, WidgetProvider<LongRangeOption> provider) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, min, max, provider);
+	}
+
+	public LongRangeOption(CharSequence name, CharSequence description, long defaultValueMin, long defaultValueMax, long min, long max) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, min, max, null);
+	}
+
+	public LongRangeOption(CharSequence name, CharSequence description, long defaultValueMin, long defaultValueMax, WidgetProvider<LongRangeOption> provider) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+	}
+
+	public LongRangeOption(CharSequence name, CharSequence description, long defaultValueMin, long defaultValueMax) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, Long.MIN_VALUE, Long.MAX_VALUE, null);
+	}
+
+	public LongRangeOption(CharSequence name, long defaultValueMin, long defaultValueMax, long min, long max, WidgetProvider<LongRangeOption> provider) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, provider);
+	}
+
+	public LongRangeOption(CharSequence name, long defaultValueMin, long defaultValueMax, long min, long max) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, null);
+	}
+
+	public LongRangeOption(CharSequence name, long defaultValueMin, long defaultValueMax, WidgetProvider<LongRangeOption> provider) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+	}
+
+	public LongRangeOption(CharSequence name, long defaultValueMin, long defaultValueMax) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, Long.MIN_VALUE, Long.MAX_VALUE, null);
+	}
+
 	public long getMinValue() {
 		return minValue;
 	}

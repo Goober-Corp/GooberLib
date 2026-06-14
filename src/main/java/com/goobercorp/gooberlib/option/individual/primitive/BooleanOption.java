@@ -18,12 +18,40 @@ public class BooleanOption extends BaseOption<BooleanOption> implements Advancea
 		this.defaultValue = defaultValue;
 	}
 
-	public BooleanOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, false, null);
+	public BooleanOption(CharSequence name, Function<BooleanOption, CharSequence> description, WidgetProvider<BooleanOption> provider) {
+		this(name, description, false, provider);
+	}
+
+	public BooleanOption(CharSequence name, Function<BooleanOption, CharSequence> description, boolean defaultValue) {
+		this(name, description, defaultValue, null);
+	}
+
+	public BooleanOption(CharSequence name, CharSequence description, boolean defaultValue, WidgetProvider<BooleanOption> provider) {
+		this(name, _ -> description, defaultValue, provider);
+	}
+
+	public BooleanOption(CharSequence name, CharSequence description, boolean defaultValue) {
+		this(name, _ -> description, defaultValue, null);
+	}
+
+	public BooleanOption(CharSequence name, boolean defaultValue) {
+		this(name, _ -> "", defaultValue, null);
+	}
+
+	public BooleanOption(CharSequence name, Function<BooleanOption, CharSequence> description) {
+		this(name, description, false, null);
 	}
 
 	public BooleanOption(CharSequence name, CharSequence description, WidgetProvider<BooleanOption> provider) {
 		this(name, _ -> description, false, provider);
+	}
+
+	public BooleanOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, false, null);
+	}
+
+	public BooleanOption(CharSequence name) {
+		this(name, _ -> "", false, null);
 	}
 
 	@Override

@@ -29,6 +29,38 @@ public class IntRangeOption extends BaseOption<IntRangeOption> implements Number
 		this.max = max;
 	}
 
+	public IntRangeOption(CharSequence name, CharSequence description, int defaultValueMin, int defaultValueMax, int min, int max, WidgetProvider<IntRangeOption> provider) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, min, max, provider);
+	}
+
+	public IntRangeOption(CharSequence name, CharSequence description, int defaultValueMin, int defaultValueMax, int min, int max) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, min, max, null);
+	}
+
+	public IntRangeOption(CharSequence name, CharSequence description, int defaultValueMin, int defaultValueMax, WidgetProvider<IntRangeOption> provider) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+	}
+
+	public IntRangeOption(CharSequence name, CharSequence description, int defaultValueMin, int defaultValueMax) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
+	}
+
+	public IntRangeOption(CharSequence name, int defaultValueMin, int defaultValueMax, int min, int max, WidgetProvider<IntRangeOption> provider) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, provider);
+	}
+
+	public IntRangeOption(CharSequence name, int defaultValueMin, int defaultValueMax, int min, int max) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, null);
+	}
+
+	public IntRangeOption(CharSequence name, int defaultValueMin, int defaultValueMax, WidgetProvider<IntRangeOption> provider) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+	}
+
+	public IntRangeOption(CharSequence name, int defaultValueMin, int defaultValueMax) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
+	}
+
 	public int getMinValue() {
 		return minValue;
 	}

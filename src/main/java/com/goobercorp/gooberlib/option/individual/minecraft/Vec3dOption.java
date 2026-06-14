@@ -18,16 +18,36 @@ public class Vec3dOption extends BaseOption<Vec3dOption> {
 		this.defaultValue = defaultValue;
 	}
 
+	public Vec3dOption(CharSequence name, CharSequence description, Vec3 defaultValue, WidgetProvider<Vec3dOption> provider) {
+		this(name, _ -> description, defaultValue, provider);
+	}
+
 	public Vec3dOption(CharSequence name, CharSequence description, Vec3 defaultValue) {
 		this(name, _ -> description, defaultValue, null);
+	}
+
+	public Vec3dOption(CharSequence name, CharSequence description, WidgetProvider<Vec3dOption> provider) {
+		this(name, _ -> description, Vec3.ZERO, provider);
 	}
 
 	public Vec3dOption(CharSequence name, CharSequence description) {
 		this(name, _ -> description, Vec3.ZERO, null);
 	}
 
-	public Vec3dOption(CharSequence name, CharSequence description, Vec3 defaultValue, WidgetProvider<Vec3dOption> provider) {
-		this(name, _ -> description, defaultValue, provider);
+	public Vec3dOption(CharSequence name, Vec3 defaultValue, WidgetProvider<Vec3dOption> provider) {
+		this(name, _ -> "", defaultValue, provider);
+	}
+
+	public Vec3dOption(CharSequence name, Vec3 defaultValue) {
+		this(name, _ -> "", defaultValue, null);
+	}
+
+	public Vec3dOption(CharSequence name, WidgetProvider<Vec3dOption> provider) {
+		this(name, _ -> "", Vec3.ZERO, provider);
+	}
+
+	public Vec3dOption(CharSequence name) {
+		this(name, _ -> "", Vec3.ZERO, null);
 	}
 
 	@Override

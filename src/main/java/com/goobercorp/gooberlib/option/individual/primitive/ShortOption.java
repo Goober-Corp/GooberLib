@@ -25,12 +25,52 @@ public class ShortOption extends BaseOption<ShortOption> implements NumberOption
 		this.max = max;
 	}
 
-	public ShortOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, (short) 0, Short.MIN_VALUE, Short.MAX_VALUE, null);
+	public ShortOption(CharSequence name, CharSequence description, short defaultValue, short min, short max, WidgetProvider<ShortOption> provider) {
+		this(name, _ -> description, defaultValue, min, max, provider);
+	}
+
+	public ShortOption(CharSequence name, CharSequence description, short defaultValue, short min, short max) {
+		this(name, _ -> description, defaultValue, min, max, null);
+	}
+
+	public ShortOption(CharSequence name, short defaultValue, short min, short max, WidgetProvider<ShortOption> provider) {
+		this(name, _ -> "", defaultValue, min, max, provider);
+	}
+
+	public ShortOption(CharSequence name, short defaultValue, short min, short max) {
+		this(name, _ -> "", defaultValue, min, max, null);
+	}
+
+	public ShortOption(CharSequence name, CharSequence description, short defaultValue, WidgetProvider<ShortOption> provider) {
+		this(name, _ -> description, defaultValue, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+	}
+
+	public ShortOption(CharSequence name, CharSequence description, short defaultValue) {
+		this(name, _ -> description, defaultValue, Short.MIN_VALUE, Short.MAX_VALUE, null);
+	}
+
+	public ShortOption(CharSequence name, short defaultValue, WidgetProvider<ShortOption> provider) {
+		this(name, _ -> "", defaultValue, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+	}
+
+	public ShortOption(CharSequence name, short defaultValue) {
+		this(name, _ -> "", defaultValue, Short.MIN_VALUE, Short.MAX_VALUE, null);
 	}
 
 	public ShortOption(CharSequence name, CharSequence description, WidgetProvider<ShortOption> provider) {
 		this(name, _ -> description, (short) 0, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+	}
+
+	public ShortOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, (short) 0, Short.MIN_VALUE, Short.MAX_VALUE, null);
+	}
+
+	public ShortOption(CharSequence name, WidgetProvider<ShortOption> provider) {
+		this(name, _ -> "", (short) 0, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+	}
+
+	public ShortOption(CharSequence name) {
+		this(name, _ -> "", (short) 0, Short.MIN_VALUE, Short.MAX_VALUE, null);
 	}
 
 	@Override

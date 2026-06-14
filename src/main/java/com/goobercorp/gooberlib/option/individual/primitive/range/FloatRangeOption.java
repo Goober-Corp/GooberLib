@@ -29,6 +29,38 @@ public class FloatRangeOption extends BaseOption<FloatRangeOption> implements Nu
 		this.max = max;
 	}
 
+	public FloatRangeOption(CharSequence name, CharSequence description, float defaultValueMin, float defaultValueMax, float min, float max, WidgetProvider<FloatRangeOption> provider) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, min, max, provider);
+	}
+
+	public FloatRangeOption(CharSequence name, CharSequence description, float defaultValueMin, float defaultValueMax, float min, float max) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, min, max, null);
+	}
+
+	public FloatRangeOption(CharSequence name, CharSequence description, float defaultValueMin, float defaultValueMax, WidgetProvider<FloatRangeOption> provider) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+	}
+
+	public FloatRangeOption(CharSequence name, CharSequence description, float defaultValueMin, float defaultValueMax) {
+		this(name, _ -> description, defaultValueMin, defaultValueMax, -Float.MAX_VALUE, Float.MAX_VALUE, null);
+	}
+
+	public FloatRangeOption(CharSequence name, float defaultValueMin, float defaultValueMax, float min, float max, WidgetProvider<FloatRangeOption> provider) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, provider);
+	}
+
+	public FloatRangeOption(CharSequence name, float defaultValueMin, float defaultValueMax, float min, float max) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, null);
+	}
+
+	public FloatRangeOption(CharSequence name, float defaultValueMin, float defaultValueMax, WidgetProvider<FloatRangeOption> provider) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+	}
+
+	public FloatRangeOption(CharSequence name, float defaultValueMin, float defaultValueMax) {
+		this(name, _ -> "", defaultValueMin, defaultValueMax, -Float.MAX_VALUE, Float.MAX_VALUE, null);
+	}
+
 	public float getMinValue() {
 		return minValue;
 	}

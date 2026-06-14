@@ -24,12 +24,52 @@ public class DoubleOption extends BaseOption<DoubleOption> implements NumberOpti
 		this.max = max;
 	}
 
-	public DoubleOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, 0, -Double.MAX_VALUE, Double.MAX_VALUE, null);
+	public DoubleOption(CharSequence name, CharSequence description, double defaultValue, double min, double max, WidgetProvider<DoubleOption> provider) {
+		this(name, _ -> description, defaultValue, min, max, provider);
+	}
+
+	public DoubleOption(CharSequence name, CharSequence description, double defaultValue, double min, double max) {
+		this(name, _ -> description, defaultValue, min, max, null);
+	}
+
+	public DoubleOption(CharSequence name, double defaultValue, double min, double max, WidgetProvider<DoubleOption> provider) {
+		this(name, _ -> "", defaultValue, min, max, provider);
+	}
+
+	public DoubleOption(CharSequence name, double defaultValue, double min, double max) {
+		this(name, _ -> "", defaultValue, min, max, null);
+	}
+
+	public DoubleOption(CharSequence name, CharSequence description, double defaultValue, WidgetProvider<DoubleOption> provider) {
+		this(name, _ -> description, defaultValue, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+	}
+
+	public DoubleOption(CharSequence name, CharSequence description, double defaultValue) {
+		this(name, _ -> description, defaultValue, -Double.MAX_VALUE, Double.MAX_VALUE, null);
+	}
+
+	public DoubleOption(CharSequence name, double defaultValue, WidgetProvider<DoubleOption> provider) {
+		this(name, _ -> "", defaultValue, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+	}
+
+	public DoubleOption(CharSequence name, double defaultValue) {
+		this(name, _ -> "", defaultValue, -Double.MAX_VALUE, Double.MAX_VALUE, null);
 	}
 
 	public DoubleOption(CharSequence name, CharSequence description, WidgetProvider<DoubleOption> provider) {
 		this(name, _ -> description, 0, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+	}
+
+	public DoubleOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, 0, -Double.MAX_VALUE, Double.MAX_VALUE, null);
+	}
+
+	public DoubleOption(CharSequence name, WidgetProvider<DoubleOption> provider) {
+		this(name, _ -> "", 0, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+	}
+
+	public DoubleOption(CharSequence name) {
+		this(name, _ -> "", 0, -Double.MAX_VALUE, Double.MAX_VALUE, null);
 	}
 
 	@Override

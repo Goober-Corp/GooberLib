@@ -18,8 +18,36 @@ public class BlockPosOption extends BaseOption<BlockPosOption> {
 		this.defaultValue = defaultValue;
 	}
 
+	public BlockPosOption(CharSequence name, CharSequence description, BlockPos defaultValue, WidgetProvider<BlockPosOption> provider) {
+		this(name, _ -> description, defaultValue, provider);
+	}
+
+	public BlockPosOption(CharSequence name, CharSequence description, BlockPos defaultValue) {
+		this(name, _ -> description, defaultValue, null);
+	}
+
+	public BlockPosOption(CharSequence name, CharSequence description, WidgetProvider<BlockPosOption> provider) {
+		this(name, _ -> description, BlockPos.ZERO, provider);
+	}
+
 	public BlockPosOption(CharSequence name, CharSequence description) {
 		this(name, _ -> description, BlockPos.ZERO, null);
+	}
+
+	public BlockPosOption(CharSequence name, BlockPos defaultValue, WidgetProvider<BlockPosOption> provider) {
+		this(name, _ -> "", defaultValue, provider);
+	}
+
+	public BlockPosOption(CharSequence name, BlockPos defaultValue) {
+		this(name, _ -> "", defaultValue, null);
+	}
+
+	public BlockPosOption(CharSequence name, WidgetProvider<BlockPosOption> provider) {
+		this(name, _ -> "", BlockPos.ZERO, provider);
+	}
+
+	public BlockPosOption(CharSequence name) {
+		this(name, _ -> "", BlockPos.ZERO, null);
 	}
 
 	@Override

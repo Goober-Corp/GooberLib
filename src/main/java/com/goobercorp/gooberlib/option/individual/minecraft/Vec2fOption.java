@@ -18,16 +18,36 @@ public class Vec2fOption extends BaseOption<Vec2fOption> {
 		this.defaultValue = defaultValue;
 	}
 
+	public Vec2fOption(CharSequence name, CharSequence description, Vec2 defaultValue, WidgetProvider<Vec2fOption> provider) {
+		this(name, _ -> description, defaultValue, provider);
+	}
+
 	public Vec2fOption(CharSequence name, CharSequence description, Vec2 defaultValue) {
 		this(name, _ -> description, defaultValue, null);
+	}
+
+	public Vec2fOption(CharSequence name, CharSequence description, WidgetProvider<Vec2fOption> provider) {
+		this(name, _ -> description, Vec2.ZERO, provider);
 	}
 
 	public Vec2fOption(CharSequence name, CharSequence description) {
 		this(name, _ -> description, Vec2.ZERO, null);
 	}
 
-	public Vec2fOption(CharSequence name, CharSequence description, Vec2 defaultValue, WidgetProvider<Vec2fOption> provider) {
-		this(name, _ -> description, defaultValue, provider);
+	public Vec2fOption(CharSequence name, Vec2 defaultValue, WidgetProvider<Vec2fOption> provider) {
+		this(name, _ -> "", defaultValue, provider);
+	}
+
+	public Vec2fOption(CharSequence name, Vec2 defaultValue) {
+		this(name, _ -> "", defaultValue, null);
+	}
+
+	public Vec2fOption(CharSequence name, WidgetProvider<Vec2fOption> provider) {
+		this(name, _ -> "", Vec2.ZERO, provider);
+	}
+
+	public Vec2fOption(CharSequence name) {
+		this(name, _ -> "", Vec2.ZERO, null);
 	}
 
 	@Override

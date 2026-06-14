@@ -22,12 +22,52 @@ public class CharOption extends BaseOption<CharOption> implements NumberOption<C
 		this.max = max;
 	}
 
-	public CharOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, null);
+	public CharOption(CharSequence name, CharSequence description, char defaultValue, char min, char max, WidgetProvider<CharOption> provider) {
+		this(name, _ -> description, defaultValue, min, max, provider);
+	}
+
+	public CharOption(CharSequence name, CharSequence description, char defaultValue, char min, char max) {
+		this(name, _ -> description, defaultValue, min, max, null);
+	}
+
+	public CharOption(CharSequence name, char defaultValue, char min, char max, WidgetProvider<CharOption> provider) {
+		this(name, _ -> "", defaultValue, min, max, provider);
+	}
+
+	public CharOption(CharSequence name, char defaultValue, char min, char max) {
+		this(name, _ -> "", defaultValue, min, max, null);
+	}
+
+	public CharOption(CharSequence name, CharSequence description, char defaultValue, WidgetProvider<CharOption> provider) {
+		this(name, _ -> description, defaultValue, Character.MIN_VALUE, Character.MAX_VALUE, provider);
+	}
+
+	public CharOption(CharSequence name, CharSequence description, char defaultValue) {
+		this(name, _ -> description, defaultValue, Character.MIN_VALUE, Character.MAX_VALUE, null);
+	}
+
+	public CharOption(CharSequence name, char defaultValue, WidgetProvider<CharOption> provider) {
+		this(name, _ -> "", defaultValue, Character.MIN_VALUE, Character.MAX_VALUE, provider);
+	}
+
+	public CharOption(CharSequence name, char defaultValue) {
+		this(name, _ -> "", defaultValue, Character.MIN_VALUE, Character.MAX_VALUE, null);
 	}
 
 	public CharOption(CharSequence name, CharSequence description, WidgetProvider<CharOption> provider) {
 		this(name, _ -> description, (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, provider);
+	}
+
+	public CharOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, null);
+	}
+
+	public CharOption(CharSequence name, WidgetProvider<CharOption> provider) {
+		this(name, _ -> "", (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, provider);
+	}
+
+	public CharOption(CharSequence name) {
+		this(name, _ -> "", (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, null);
 	}
 
 	@Override
