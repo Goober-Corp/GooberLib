@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.function.Consumer;
 
-@GooberConfig(modId = "java")
+@GooberConfig(modId = "yacl-test")
 public class Yacl {
 	public static final BooleanOption booleanToggle = new BooleanOption(Component.literal("Boolean Toggle"), _ -> Component.empty()
 			.append(Component.literal("a").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal("a")))))
@@ -109,7 +109,7 @@ public class Yacl {
 						.append(Component.literal("e").withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(Component.literal("e")))))
 						.append(Component.literal("click me").withStyle(style -> style.withClickEvent(new ClickEvent.OpenUrl(URI.create("https://isxander.dev")))))));
 			});
-			cat.sectionWithOptions("Minecraft Bindings", "YACL can also bind Minecraft options!", new BooleanOption("Minecraft AutoJump", "You can even bind minecraft options!") {
+			cat.sectionWithOptions("Minecrayacl-testft Bindings", "YACL can also bind Minecraft options!", new BooleanOption("Minecraft AutoJump", "You can even bind minecraft options!") {
 				@Override
 				public void setValue(boolean newValue) {
 					Minecraft.getInstance().options.autoJump().set(newValue);

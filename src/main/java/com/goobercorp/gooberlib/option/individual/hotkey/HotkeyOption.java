@@ -37,7 +37,9 @@ public class HotkeyOption extends BaseOption<HotkeyOption> {
 		this.onPress = onPress;
 		this.settings = settings;
 		this.keyCodes = new int[maxKeyCount];
+		Arrays.fill(keyCodes, -1);
 		for (int i = 0; i < individualKeys.length; i++) {
+			if (individualKeys[i].isEmpty()) continue;
 			keyCodes[i] = HotkeyUtil.fromName(individualKeys[i].toUpperCase(Locale.ROOT));
 		}
 		HotkeyUtil.ALL_HOTKEYS.add(this);

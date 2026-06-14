@@ -45,6 +45,10 @@ public class StringOption extends BaseOption<StringOption> {
 		this(name, _ -> description, "", null);
 	}
 
+	public StringOption(CharSequence name) {
+		this(name, _ -> "", "", null);
+	}
+
 	@Override
 	public <S> S serialize(DynamicOps<S> ops) {
 		return ops.createString(value);
