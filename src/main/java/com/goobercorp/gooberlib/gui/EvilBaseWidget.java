@@ -22,9 +22,9 @@ import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 public class EvilBaseWidget extends AbstractWidget {
 	protected Tweener hoverTweener;
 	protected boolean mouseDown = false;
-	protected float verticalPosOffset = 0;
-	protected float horizontalPosOffset = 0;
-	protected Tweener clickTweener;
+	public float verticalPosOffset = 0;
+	public float horizontalPosOffset = 0;
+	public Tweener clickTweener;
 	protected boolean centerName;
 	protected boolean shouldDrawName;
 	protected final Component name;

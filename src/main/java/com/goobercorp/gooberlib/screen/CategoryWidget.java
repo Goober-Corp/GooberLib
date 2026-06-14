@@ -4,6 +4,7 @@ import com.goobercorp.gooberlib.builder.category.ConfigCategory;
 import com.goobercorp.gooberlib.builder.misc.OptionHolder;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
 import com.goobercorp.gooberlib.config.MainConfig;
+import com.goobercorp.gooberlib.gui.EvilBaseWidget;
 import com.goobercorp.gooberlib.gui.util.ClickableParentWidget;
 import com.goobercorp.gooberlib.gui.util.PrecisePositionWidgetWrapper;
 import com.goobercorp.gooberlib.interfaces.Hoverable;
@@ -119,21 +120,41 @@ public class CategoryWidget extends ClickableParentWidget implements Hoverable {
 	private void drawLines(GuiGraphics guiGraphics) {
 		for (OptionHolder o : category.elements()) {
 			if (!(o instanceof ConfigSection)) {
-				drawLinesForOption(guiGraphics, o);
+				drawLinesForOption(guiGraphics, (OptionContext<?>) o);
 			}
 		}
 	}
 
-	private void drawLinesForOption(GuiGraphics drawContext, OptionHolder o) {
+	private void drawLinesForOption(GuiGraphics drawContext, OptionContext<?> o) {
 		if (o.childOptions().isEmpty()) return;
 		PrecisePositionWidgetWrapper<?> mainWidget = evilLayout.get(o);
 		PrecisePositionWidgetWrapper<?> lastChildWidget = evilLayout.get(o.childOptions().getLast());
-		RenderUtils.drawVerticalLine(drawContext, (float) mainWidget.getRealX() + 6, (float) mainWidget.getRealY() + mainWidget.getWrapped().getHeight(), (float) lastChildWidget.getRealY() + (lastChildWidget.getWrapped().getHeight() / 2F) + 1, MainConfig.bgColor);
-		RenderUtils.drawVerticalLine(drawContext, (float) mainWidget.getRealX() + 5, (float) mainWidget.getRealY() + mainWidget.getWrapped().getHeight() - 1, (float) lastChildWidget.getRealY() + (lastChildWidget.getWrapped().getHeight() / 2F), MainConfig.primaryCol);
-		for (OptionHolder opt : o.childOptions()) {
+		float offsetX = 0;
+		float offsetY = 0;
+		float clickVal = 0;
+		float yeah = 0;
+		if (mainWidget.getWrapped() instanceof EvilBaseWidget) {
+			offsetX = ((EvilBaseWidget) mainWidget.getWrapped()).horizontalPosOffset;
+			offsetY = ((EvilBaseWidget) mainWidget.getWrapped()).verticalPosOffset;
+			clickVal = ((EvilBaseWidget) mainWidget.getWrapped()).clickTweener.getF();
+		}
+		if (lastChildWidget.getWrapped() instanceof EvilBaseWidget) {
+			yeah = ((EvilBaseWidget) lastChildWidget.getWrapped()).verticalPosOffset;
+		}
+		RenderUtils.drawVerticalLine(drawContext, (float) mainWidget.getRealX() + 6 + offsetX, (float) mainWidget.getRealY() + mainWidget.getWrapped().getHeight() - 1 + offsetY - clickVal, (float) lastChildWidget.getRealY() + (lastChildWidget.getWrapped().getHeight() / 2F) + 1 + yeah, MainConfig.bgColor);
+		RenderUtils.drawVerticalLine(drawContext, (float) mainWidget.getRealX() + 5 + offsetX, (float) mainWidget.getRealY() + mainWidget.getWrapped().getHeight() - 1 + offsetY - clickVal, (float) lastChildWidget.getRealY() + (lastChildWidget.getWrapped().getHeight() / 2F) + yeah, MainConfig.primaryCol);
+		for (OptionContext<?> opt : o.childOptions()) {
 			PrecisePositionWidgetWrapper<?> optionWidget = evilLayout.get(opt);
-			RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getRealX() + 6, (float) evilLayout.get(opt).getRealX(), (float) optionWidget.getRealY() + optionWidget.getWrapped().getHeight() / 2F + 1, MainConfig.bgColor);
-			RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getRealX() + 5, (float) evilLayout.get(opt).getRealX(), (float) optionWidget.getRealY() + optionWidget.getWrapped().getHeight() / 2F, MainConfig.primaryCol);
+			float offX = 0;
+			float offY = 0;
+			float cVal = 0;
+			if (optionWidget.getWrapped() instanceof EvilBaseWidget) {
+				offX = ((EvilBaseWidget) optionWidget.getWrapped()).horizontalPosOffset;
+				offY = ((EvilBaseWidget) optionWidget.getWrapped()).verticalPosOffset;
+				cVal = ((EvilBaseWidget) optionWidget.getWrapped()).clickTweener.getF();
+			}
+			RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getRealX() + 6 + offsetX, (float) evilLayout.get(opt).getRealX() + offX + cVal, (float) optionWidget.getRealY() + optionWidget.getWrapped().getHeight() / 2F + 1 + offY, MainConfig.bgColor);
+			RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getRealX() + 5 + offsetX, (float) evilLayout.get(opt).getRealX() + offX + cVal, (float) optionWidget.getRealY() + optionWidget.getWrapped().getHeight() / 2F + offY, MainConfig.primaryCol);
 			drawLinesForOption(drawContext, opt);
 		}
 	}

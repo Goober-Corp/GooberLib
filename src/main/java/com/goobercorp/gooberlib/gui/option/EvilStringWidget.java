@@ -84,6 +84,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 		this.setMaxLength(100);
 		this.shouldDrawName = false;
 		textXTweener.snapToTarget();
+		setPlaceholder(Component.literal("..."));
 	}
 
 	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, int colorOverride) {
@@ -638,7 +639,7 @@ public class EvilStringWidget extends EvilBaseWidget {
 	}
 
 	public int getInnerWidth() {
-		return this.drawsBackground() ? this.width - 8 : this.width;
+		return this.width - 5;
 	}
 
 	public void setSelectionEnd(int i) {

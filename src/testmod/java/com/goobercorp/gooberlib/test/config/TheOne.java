@@ -177,7 +177,7 @@ public class TheOne {
 			.section("my section", "", s -> {
 				for (int i = 0; i < 5; i++) {
 					int finalI = i;
-					s.option(new IntOption("option " + i, ""), o -> o.child(new DoubleOption("child option " + finalI, "")));
+					s.option(new IntOption("option " + i, ""), o -> o.childWithChildren(new DoubleOption("child option " + finalI, ""), new BooleanOption("yeah", "")));
 				}
 			})
 			.options(new IntOption("meoww", o -> "meow: " + o.getValue(), 0, 0, 1000, null))

@@ -28,7 +28,7 @@ public class EvilStringWidgetWithName extends EvilStringWidget {
 	public EvilStringWidgetWithName(Component name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, boolean alignRight, boolean centered, boolean drawInside) {
 		super(drawInside ? x : x + font().width(name), y, drawInside ? width : width - font().width(name), height, changedListener, predicate, immediatePredicate, initial);
 		this.name = name;
-		this.x = x;
+		this.x = drawInside ? x + font().width(name) : x;
 		this.shouldDrawName = true;
 		this.centered = centered;
 		this.alignRight = alignRight;
@@ -65,9 +65,14 @@ public class EvilStringWidgetWithName extends EvilStringWidget {
 			} else {
 				if (alignRight) {
 					//TODO: take into account width of the cursor
-					this.textXTweener.setTarget(this.getRight() - 5 - textRenderer.width(string));
+					if (drawInside) {
+						//TODO: kr1v please fix this
+						this.textXTweener.setTarget(this.getRight() - x - textRenderer.width(string));
+					} else {
+						this.textXTweener.setTarget(this.getRight() - 10 - textRenderer.width(string));
+					}
 				} else {
-					this.textXTweener.setTarget(this.getX() + (this.isCentered() ? (this.getWidth() - this.textRenderer.width(string)) / 2 : (this.drawsBackground() ? 4 : 0)));
+					this.textXTweener.setTarget(this.getX() + (this.drawsBackground() ? 4 : 0));
 				}
 			}
 			this.textY = this.drawsBackground() ? this.getY() + (this.height - 8) / 2 : this.getY();
