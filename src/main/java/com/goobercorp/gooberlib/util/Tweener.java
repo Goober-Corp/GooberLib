@@ -5,7 +5,6 @@ import net.minecraft.util.Mth;
 import java.util.function.Supplier;
 
 public class Tweener {
-	//TODO: add easings
 	Supplier<Number> target;
 	double value;
 	float speed;

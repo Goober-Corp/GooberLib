@@ -24,7 +24,6 @@ public class GooberLibEntrypoint implements ModInitializer {
 			long start = System.nanoTime();
 
 			builtConfigMap = ConfigDiscovery.discover(false);
-			//TODO make this async
 			LOGGER.info("Discovered {} configs in {}ms", builtConfigMap.size(), Duration.ofNanos(System.nanoTime() - start).toMillis());
 
 			GooberLibApi.loadAll();

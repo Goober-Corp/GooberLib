@@ -22,7 +22,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.function.Consumer;
 
-// todo: overloads
 @GooberConfig(modId = "java")
 public class Yacl {
 	public static final BooleanOption booleanToggle = new BooleanOption(Component.literal("Boolean Toggle"), _ -> Component.empty()
@@ -42,7 +41,6 @@ public class Yacl {
 	public static final StringOption ComponentField = new StringOption("Component Option", "");
 	public static final ColorOption colorOption = new ColorOption("Color Option", ""); // todo: widget
 
-	// todo: labels
 	public static final ColorOption topColorOption = new ColorOption("Top Color Option", "A Color Controller's Color Picker will appear beneath the color if there is not enough room above it."); // todo: widget
 	public static final ColorOption alphaColorOption = new ColorOption("Alpha Color Option", "A Color Picker will also allow you to choose a Color Controller's alpha if it is enabled."); // todo: widget
 	public static final ColorOption buttonColorOption = new ColorOption("Button Color Option", "Other controller's buttons are disabled while a color picker is visible!"); // todo: widget

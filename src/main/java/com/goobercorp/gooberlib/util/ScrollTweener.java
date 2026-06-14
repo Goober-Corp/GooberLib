@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 
 public class ScrollTweener {
 	Supplier<Double> target;
-	//TODO: this sucks. we don't talk about it because it works
+	// this sucks. we don't talk about it because it works
 	Consumer<Double> targetWriter;
 	public boolean isBeingInteractedWith = false;
 	double value;

@@ -22,7 +22,7 @@ public class ConfigDiscovery {
 			"com.google", "com.jcraft", "org.apache", "org.joml",
 			"io.netty", "com.ibm", "com.llamalad7.mixinextras",
 			"oshi", "org.spongepowered", "java"
-	}; // TODO improve hacky approach
+	};
 
 
 	public static Map<String, BuiltConfig> discover(boolean late) throws IOException {
@@ -59,7 +59,6 @@ public class ConfigDiscovery {
 									.filter(f -> Modifier.isFinal(f.getModifiers()))
 									.toList();
 
-							// fixme: this is horrible.
 							List<Field> builderSupplierFields = Arrays.stream(configClass.getDeclaredFields())
 									.filter(f -> f.getType() == Supplier.class)
 									.filter(f -> f.getGenericType().getTypeName().equals("java.util.function.Supplier<com.goobercorp.gooberlib.builder.GooberConfigBuilder>"))
