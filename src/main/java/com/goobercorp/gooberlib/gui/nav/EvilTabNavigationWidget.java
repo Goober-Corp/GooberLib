@@ -163,7 +163,7 @@ public class EvilTabNavigationWidget extends AbstractContainerEventHandler imple
 //					} else if (currentTabIndex == tabs.size() - 1) {
 //						this.targetX = (double) tabNavWidth - 100 * tabs.size() - 5;
 //					} else {
-					this.targetX = -(getCurrentTabButton().getWidth() * currentTabIndex + 1) + tabNavWidth / 2.0 - 50;
+					this.targetX = -(getCurrentTabButton().getWidth() * currentTabIndex + 1) + tabNavWidth / 2.0 - getCurrentTabButton().getWidth() / 2F;
 //					}
 				}
 				if (click.button() == 0) {
@@ -218,6 +218,7 @@ public class EvilTabNavigationWidget extends AbstractContainerEventHandler imple
 			if ((grid.getX() + grid.getWidth()) < tabNavWidth + 20) {
 				tabs.forEach(tab -> {
 					EvilTabButtonWidget widget = new EvilTabButtonWidget(tabManager, tab, 0, 24);
+					//TODO
 					widget.setWidth(100);
 					tabButtons.add(grid.addChild(widget));
 				});

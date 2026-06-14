@@ -21,7 +21,7 @@ public class MainConfig {
 	public static final BooleanOption ENABLE_INFINITE_TAB_SCROLLING = new BooleanOption("Enable infinite tab scrolling", "");
 
 	public static final BooleanOption PPWW_BOUNDS = new BooleanOption("Bounds for PPWW", "");
-	public static final ButtonOption A = new ButtonOption("Rediscover configs", GooberLibEntrypoint::init);
+	public static final ButtonOption REDISCOVER = new ButtonOption("Rediscover configs", GooberLibEntrypoint::init);
 	public static final ButtonOption SHOWCASE = new ButtonOption("Open showcase screen", () -> Minecraft.getInstance().setScreen(new ShowcaseScreen()));
 	public static final HotkeyOption HOTKEY = new HotkeyOption("Rediscover configs (hotkey)", "", "LEFT_CONTROL, r", 5, GooberLibEntrypoint::init);
 	public static final BooleanOption EXPERIMENTAL_DUAL_COLUMN_LAYOUT = new BooleanOption("Dual Column Layout", "don't tell kr1v...");
@@ -31,11 +31,14 @@ public class MainConfig {
 	public static final FloatOption WOKE_STRENGTH = new FloatOption("Wokeness strength", 0.5F, 0F, 1F, WidgetProviders.numberSliderWithFormatter(floatOption -> (int) (floatOption.value * 100) + "%"));
 
 	public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.create("GooberLib", b -> {
-		b.category("Main", category -> {
-			category.options(ENABLE_INFINITE_TAB_SCROLLING, WOKE, WOKE_STRENGTH);
-			if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-				category.options(PPWW_BOUNDS, A, SHOWCASE, HOTKEY, EXPERIMENTAL_DUAL_COLUMN_LAYOUT, DEBUG_GUIDELINES, CLOSE_SCREEN_ON_EXCEPTION);
-			}
-		});
+		b.category("Visual", category -> {
+					category.options(ENABLE_INFINITE_TAB_SCROLLING, EXPERIMENTAL_DUAL_COLUMN_LAYOUT);
+					category.optionWithChildren(WOKE, WOKE_STRENGTH);
+				})
+				.category("Developer", builder -> {
+					if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+						builder.options(PPWW_BOUNDS, REDISCOVER, SHOWCASE, HOTKEY, DEBUG_GUIDELINES, CLOSE_SCREEN_ON_EXCEPTION);
+					}
+				});
 	});
 }
