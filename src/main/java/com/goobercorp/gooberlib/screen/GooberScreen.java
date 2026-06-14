@@ -100,8 +100,11 @@ public class GooberScreen extends Screen {
 		double mX, mY;
 		mX = Minecraft.getInstance().mouseHandler.getScaledXPos(Minecraft.getInstance().getWindow());
 		mY = Minecraft.getInstance().mouseHandler.getScaledYPos(Minecraft.getInstance().getWindow());
-		mouseXTweener.setTarget(mX);
-		mouseYTweener.setTarget(mY);
+		//TODO: maybe move this to the tweener?
+		if (!(Double.isNaN(mX) || Double.isInfinite(mX) || Double.isNaN(mY) || Double.isInfinite(mY))) {
+			mouseXTweener.setTarget(mX);
+			mouseYTweener.setTarget(mY);
+		}
 		updateTweeners();
 		setWidgetOffsets();
 		setHoverText(mX, mY);

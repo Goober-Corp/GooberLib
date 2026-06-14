@@ -22,6 +22,7 @@ public class EvilStringWidgetWithName extends EvilStringWidget {
 		this.name = name;
 		this.x = x;
 		this.shouldDrawName = true;
+		textXTweener.snapToTarget();
 	}
 
 	public EvilStringWidgetWithName(Component name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, boolean alignRight, boolean centered, boolean drawInside) {
@@ -37,6 +38,7 @@ public class EvilStringWidgetWithName extends EvilStringWidget {
 			this.alignRight = true;
 		}
 		this.updateTextPosition();
+		textXTweener.snapToTarget();
 	}
 
 	public static Font font() {
