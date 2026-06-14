@@ -6,6 +6,7 @@ import com.goobercorp.gooberlib.api.widgets.WidgetProviders;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.goobercorp.gooberlib.option.individual.hotkey.HotkeyOption;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
+import com.goobercorp.gooberlib.option.individual.misc.LabelOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.option.individual.primitive.FloatOption;
 import com.goobercorp.gooberlib.screen.ShowcaseScreen;
@@ -38,6 +39,8 @@ public class MainConfig {
 				.category("Developer", builder -> {
 					if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
 						builder.options(PPWW_BOUNDS, REDISCOVER, SHOWCASE, HOTKEY, DEBUG_GUIDELINES, CLOSE_SCREEN_ON_EXCEPTION);
+					} else {
+						builder.option(new LabelOption("LARP!!!"));
 					}
 				});
 	});

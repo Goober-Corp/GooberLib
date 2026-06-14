@@ -18,6 +18,7 @@ import com.goobercorp.gooberlib.option.individual.java.CycleOption;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
 import com.goobercorp.gooberlib.option.individual.minecraft.*;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
+import com.goobercorp.gooberlib.option.individual.misc.LabelOption;
 import com.goobercorp.gooberlib.option.individual.misc.ObjectOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.option.individual.primitive.CharOption;
@@ -215,6 +216,7 @@ public class GooberLibApi {
 		registerWidgetProvider(t -> t instanceof CycleOption, WidgetProviders.cyclingOption(), -1);
 		registerWidgetProvider(t -> t instanceof ObjectOption<?>, WidgetProviders.objectOption(), -1);
 		registerWidgetProvider(t -> t instanceof HotkeyOption, WidgetProviders.hotkey(), -1);
+		registerWidgetProvider(t -> t instanceof LabelOption, WidgetProviders.label(), -1);
 	}
 
 	/**
