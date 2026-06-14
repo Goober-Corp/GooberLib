@@ -12,6 +12,7 @@ import com.goobercorp.gooberlib.option.individual.primitive.FloatOption;
 import com.goobercorp.gooberlib.screen.ShowcaseScreen;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 
 @GooberConfig(modId = "gooberlib")
 public class MainConfig {
@@ -33,15 +34,15 @@ public class MainConfig {
 
 	public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.create("GooberLib", b -> {
 		b.category("Visual", category -> {
-					category.options(ENABLE_INFINITE_TAB_SCROLLING, EXPERIMENTAL_DUAL_COLUMN_LAYOUT);
-					category.optionWithChildren(WOKE, WOKE_STRENGTH);
-				})
-				.category("Developer", builder -> {
-					if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-						builder.options(PPWW_BOUNDS, REDISCOVER, SHOWCASE, HOTKEY, DEBUG_GUIDELINES, CLOSE_SCREEN_ON_EXCEPTION);
-					} else {
-						builder.option(new LabelOption("LARP!!!"));
-					}
-				});
+			category.options(ENABLE_INFINITE_TAB_SCROLLING, EXPERIMENTAL_DUAL_COLUMN_LAYOUT);
+			category.optionWithChildren(WOKE, WOKE_STRENGTH);
+		});
+		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+			b.category("Developer", category -> {
+				category.options(PPWW_BOUNDS, REDISCOVER, SHOWCASE, HOTKEY, DEBUG_GUIDELINES, CLOSE_SCREEN_ON_EXCEPTION);
+				category.option(new LabelOption("LARP!!!"));
+				category.option(new LabelOption(Component.literal("meow meow").withColor(0xFFFF00FF)));
+			});
+		}
 	});
 }
