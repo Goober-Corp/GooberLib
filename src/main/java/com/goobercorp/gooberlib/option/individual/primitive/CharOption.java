@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.option.individual.primitive;
 
+import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.util.Predicates;
@@ -39,35 +40,35 @@ public class CharOption extends BaseOption<CharOption> implements NumberOption<C
 	}
 
 	public CharOption(CharSequence name, CharSequence description, char defaultValue, WidgetProvider<CharOption> provider) {
-		this(name, _ -> description, defaultValue, Character.MIN_VALUE, Character.MAX_VALUE, provider);
+		this(name, _ -> description, defaultValue, GooberLibApi.Defaults.charDefaultMin, GooberLibApi.Defaults.charDefaultMax, provider);
 	}
 
 	public CharOption(CharSequence name, CharSequence description, char defaultValue) {
-		this(name, _ -> description, defaultValue, Character.MIN_VALUE, Character.MAX_VALUE, null);
+		this(name, _ -> description, defaultValue, GooberLibApi.Defaults.charDefaultMin, GooberLibApi.Defaults.charDefaultMax, null);
 	}
 
 	public CharOption(CharSequence name, char defaultValue, WidgetProvider<CharOption> provider) {
-		this(name, _ -> "", defaultValue, Character.MIN_VALUE, Character.MAX_VALUE, provider);
+		this(name, _ -> "", defaultValue, GooberLibApi.Defaults.charDefaultMin, GooberLibApi.Defaults.charDefaultMax, provider);
 	}
 
 	public CharOption(CharSequence name, char defaultValue) {
-		this(name, _ -> "", defaultValue, Character.MIN_VALUE, Character.MAX_VALUE, null);
+		this(name, _ -> "", defaultValue, GooberLibApi.Defaults.charDefaultMin, GooberLibApi.Defaults.charDefaultMax, null);
 	}
 
 	public CharOption(CharSequence name, CharSequence description, WidgetProvider<CharOption> provider) {
-		this(name, _ -> description, (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, provider);
+		this(name, _ -> description, GooberLibApi.Defaults.charDefault, GooberLibApi.Defaults.charDefaultMin, GooberLibApi.Defaults.charDefaultMax, provider);
 	}
 
 	public CharOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, null);
+		this(name, _ -> description, GooberLibApi.Defaults.charDefault, GooberLibApi.Defaults.charDefaultMin, GooberLibApi.Defaults.charDefaultMax, null);
 	}
 
 	public CharOption(CharSequence name, WidgetProvider<CharOption> provider) {
-		this(name, _ -> "", (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, provider);
+		this(name, _ -> "", GooberLibApi.Defaults.charDefault, GooberLibApi.Defaults.charDefaultMin, GooberLibApi.Defaults.charDefaultMax, provider);
 	}
 
 	public CharOption(CharSequence name) {
-		this(name, _ -> "", (char) 0, Character.MIN_VALUE, Character.MAX_VALUE, null);
+		this(name, _ -> "", GooberLibApi.Defaults.charDefault, GooberLibApi.Defaults.charDefaultMin, GooberLibApi.Defaults.charDefaultMax, null);
 	}
 
 	@Override

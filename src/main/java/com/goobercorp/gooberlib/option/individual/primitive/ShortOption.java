@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.option.individual.primitive;
 
+import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.util.Predicates;
@@ -42,35 +43,35 @@ public class ShortOption extends BaseOption<ShortOption> implements NumberOption
 	}
 
 	public ShortOption(CharSequence name, CharSequence description, short defaultValue, WidgetProvider<ShortOption> provider) {
-		this(name, _ -> description, defaultValue, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+		this(name, _ -> description, defaultValue, GooberLibApi.Defaults.shortDefaultMin, GooberLibApi.Defaults.shortDefaultMax, provider);
 	}
 
 	public ShortOption(CharSequence name, CharSequence description, short defaultValue) {
-		this(name, _ -> description, defaultValue, Short.MIN_VALUE, Short.MAX_VALUE, null);
+		this(name, _ -> description, defaultValue, GooberLibApi.Defaults.shortDefaultMin, GooberLibApi.Defaults.shortDefaultMax, null);
 	}
 
 	public ShortOption(CharSequence name, short defaultValue, WidgetProvider<ShortOption> provider) {
-		this(name, _ -> "", defaultValue, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+		this(name, _ -> "", defaultValue, GooberLibApi.Defaults.shortDefaultMin, GooberLibApi.Defaults.shortDefaultMax, provider);
 	}
 
 	public ShortOption(CharSequence name, short defaultValue) {
-		this(name, _ -> "", defaultValue, Short.MIN_VALUE, Short.MAX_VALUE, null);
+		this(name, _ -> "", defaultValue, GooberLibApi.Defaults.shortDefaultMin, GooberLibApi.Defaults.shortDefaultMax, null);
 	}
 
 	public ShortOption(CharSequence name, CharSequence description, WidgetProvider<ShortOption> provider) {
-		this(name, _ -> description, (short) 0, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+		this(name, _ -> description, GooberLibApi.Defaults.shortDefault, GooberLibApi.Defaults.shortDefaultMin, GooberLibApi.Defaults.shortDefaultMax, provider);
 	}
 
 	public ShortOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, (short) 0, Short.MIN_VALUE, Short.MAX_VALUE, null);
+		this(name, _ -> description, GooberLibApi.Defaults.shortDefault, GooberLibApi.Defaults.shortDefaultMin, GooberLibApi.Defaults.shortDefaultMax, null);
 	}
 
 	public ShortOption(CharSequence name, WidgetProvider<ShortOption> provider) {
-		this(name, _ -> "", (short) 0, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+		this(name, _ -> "", GooberLibApi.Defaults.shortDefault, GooberLibApi.Defaults.shortDefaultMin, GooberLibApi.Defaults.shortDefaultMax, provider);
 	}
 
 	public ShortOption(CharSequence name) {
-		this(name, _ -> "", (short) 0, Short.MIN_VALUE, Short.MAX_VALUE, null);
+		this(name, _ -> "", GooberLibApi.Defaults.shortDefault, GooberLibApi.Defaults.shortDefaultMin, GooberLibApi.Defaults.shortDefaultMax, null);
 	}
 
 	@Override

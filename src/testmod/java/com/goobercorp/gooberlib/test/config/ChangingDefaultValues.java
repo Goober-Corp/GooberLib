@@ -8,8 +8,8 @@ import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 @GooberConfig(modId = "changing-default-value-test")
 public class ChangingDefaultValues {
 	public static final BooleanOption DEFAULT_FALSE = new BooleanOption("Defaults to false");
-	static { GooberLibApi.Defaults.booleanValue = true; }
+	static { GooberLibApi.Defaults.booleanDefault = true; }
 	public static final BooleanOption DEFAULT_TRUE = new BooleanOption("Defaults to true");
-	static { GooberLibApi.Defaults.booleanValue = false; }
+	static { GooberLibApi.Defaults.booleanDefault = false; }
 	public static final BooleanOption DEFAULT_FALSE_2 = new BooleanOption("Defaults to false again");
 }

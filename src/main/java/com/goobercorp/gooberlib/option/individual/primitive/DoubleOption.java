@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.option.individual.primitive;
 
+import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.util.Predicates;
@@ -41,35 +42,35 @@ public class DoubleOption extends BaseOption<DoubleOption> implements NumberOpti
 	}
 
 	public DoubleOption(CharSequence name, CharSequence description, double defaultValue, WidgetProvider<DoubleOption> provider) {
-		this(name, _ -> description, defaultValue, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+		this(name, _ -> description, defaultValue, GooberLibApi.Defaults.doubleDefaultMin, GooberLibApi.Defaults.doubleDefaultMax, provider);
 	}
 
 	public DoubleOption(CharSequence name, CharSequence description, double defaultValue) {
-		this(name, _ -> description, defaultValue, -Double.MAX_VALUE, Double.MAX_VALUE, null);
+		this(name, _ -> description, defaultValue, GooberLibApi.Defaults.doubleDefaultMin, GooberLibApi.Defaults.doubleDefaultMax, null);
 	}
 
 	public DoubleOption(CharSequence name, double defaultValue, WidgetProvider<DoubleOption> provider) {
-		this(name, _ -> "", defaultValue, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+		this(name, _ -> "", defaultValue, GooberLibApi.Defaults.doubleDefaultMin, GooberLibApi.Defaults.doubleDefaultMax, provider);
 	}
 
 	public DoubleOption(CharSequence name, double defaultValue) {
-		this(name, _ -> "", defaultValue, -Double.MAX_VALUE, Double.MAX_VALUE, null);
+		this(name, _ -> "", defaultValue, GooberLibApi.Defaults.doubleDefaultMin, GooberLibApi.Defaults.doubleDefaultMax, null);
 	}
 
 	public DoubleOption(CharSequence name, CharSequence description, WidgetProvider<DoubleOption> provider) {
-		this(name, _ -> description, 0, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+		this(name, _ -> description, GooberLibApi.Defaults.doubleDefault, GooberLibApi.Defaults.doubleDefaultMin, GooberLibApi.Defaults.doubleDefaultMax, provider);
 	}
 
 	public DoubleOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, 0, -Double.MAX_VALUE, Double.MAX_VALUE, null);
+		this(name, _ -> description, GooberLibApi.Defaults.doubleDefault, GooberLibApi.Defaults.doubleDefaultMin, GooberLibApi.Defaults.doubleDefaultMax, null);
 	}
 
 	public DoubleOption(CharSequence name, WidgetProvider<DoubleOption> provider) {
-		this(name, _ -> "", 0, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+		this(name, _ -> "", GooberLibApi.Defaults.doubleDefault, GooberLibApi.Defaults.doubleDefaultMin, GooberLibApi.Defaults.doubleDefaultMax, provider);
 	}
 
 	public DoubleOption(CharSequence name) {
-		this(name, _ -> "", 0, -Double.MAX_VALUE, Double.MAX_VALUE, null);
+		this(name, _ -> "", GooberLibApi.Defaults.doubleDefault, GooberLibApi.Defaults.doubleDefaultMin, GooberLibApi.Defaults.doubleDefaultMax, null);
 	}
 
 	@Override

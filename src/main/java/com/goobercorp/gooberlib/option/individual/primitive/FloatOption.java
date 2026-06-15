@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.option.individual.primitive;
 
+import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.util.Predicates;
@@ -41,35 +42,35 @@ public class FloatOption extends BaseOption<FloatOption> implements NumberOption
 	}
 
 	public FloatOption(CharSequence name, CharSequence description, float defaultValue, WidgetProvider<FloatOption> provider) {
-		this(name, _ -> description, defaultValue, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+		this(name, _ -> description, defaultValue, GooberLibApi.Defaults.floatDefaultMin, GooberLibApi.Defaults.floatDefaultMax, provider);
 	}
 
 	public FloatOption(CharSequence name, CharSequence description, float defaultValue) {
-		this(name, _ -> description, defaultValue, -Float.MAX_VALUE, Float.MAX_VALUE, null);
+		this(name, _ -> description, defaultValue, GooberLibApi.Defaults.floatDefaultMin, GooberLibApi.Defaults.floatDefaultMax, null);
 	}
 
 	public FloatOption(CharSequence name, float defaultValue, WidgetProvider<FloatOption> provider) {
-		this(name, _ -> "", defaultValue, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+		this(name, _ -> "", defaultValue, GooberLibApi.Defaults.floatDefaultMin, GooberLibApi.Defaults.floatDefaultMax, provider);
 	}
 
 	public FloatOption(CharSequence name, float defaultValue) {
-		this(name, _ -> "", defaultValue, -Float.MAX_VALUE, Float.MAX_VALUE, null);
+		this(name, _ -> "", defaultValue, GooberLibApi.Defaults.floatDefaultMin, GooberLibApi.Defaults.floatDefaultMax, null);
 	}
 
 	public FloatOption(CharSequence name, CharSequence description, WidgetProvider<FloatOption> provider) {
-		this(name, _ -> description, 0, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+		this(name, _ -> description, GooberLibApi.Defaults.floatDefault, GooberLibApi.Defaults.floatDefaultMin, GooberLibApi.Defaults.floatDefaultMax, provider);
 	}
 
 	public FloatOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, 0, -Float.MAX_VALUE, Float.MAX_VALUE, null);
+		this(name, _ -> description, GooberLibApi.Defaults.floatDefault, GooberLibApi.Defaults.floatDefaultMin, GooberLibApi.Defaults.floatDefaultMax, null);
 	}
 
 	public FloatOption(CharSequence name, WidgetProvider<FloatOption> provider) {
-		this(name, _ -> "", 0, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+		this(name, _ -> "", GooberLibApi.Defaults.floatDefault, GooberLibApi.Defaults.floatDefaultMin, GooberLibApi.Defaults.floatDefaultMax, provider);
 	}
 
 	public FloatOption(CharSequence name) {
-		this(name, _ -> "", 0, -Float.MAX_VALUE, Float.MAX_VALUE, null);
+		this(name, _ -> "", GooberLibApi.Defaults.floatDefault, GooberLibApi.Defaults.floatDefaultMin, GooberLibApi.Defaults.floatDefaultMax, null);
 	}
 
 	@Override

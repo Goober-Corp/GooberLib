@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.option.individual.primitive;
 
+import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.util.Predicates;
@@ -41,35 +42,35 @@ public class IntOption extends BaseOption<IntOption> implements NumberOption<Int
 	}
 
 	public IntOption(CharSequence name, CharSequence description, int defaultValue, WidgetProvider<IntOption> provider) {
-		this(name, _ -> description, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+		this(name, _ -> description, defaultValue, GooberLibApi.Defaults.intDefaultMin, GooberLibApi.Defaults.intDefaultMax, provider);
 	}
 
 	public IntOption(CharSequence name, CharSequence description, int defaultValue) {
-		this(name, _ -> description, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
+		this(name, _ -> description, defaultValue, GooberLibApi.Defaults.intDefaultMin, GooberLibApi.Defaults.intDefaultMax, null);
 	}
 
 	public IntOption(CharSequence name, int defaultValue, WidgetProvider<IntOption> provider) {
-		this(name, _ -> "", defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+		this(name, _ -> "", defaultValue, GooberLibApi.Defaults.intDefaultMin, GooberLibApi.Defaults.intDefaultMax, provider);
 	}
 
 	public IntOption(CharSequence name, int defaultValue) {
-		this(name, _ -> "", defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
+		this(name, _ -> "", defaultValue, GooberLibApi.Defaults.intDefaultMin, GooberLibApi.Defaults.intDefaultMax, null);
 	}
 
 	public IntOption(CharSequence name, CharSequence description, WidgetProvider<IntOption> provider) {
-		this(name, _ -> description, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+		this(name, _ -> description, GooberLibApi.Defaults.intDefault, GooberLibApi.Defaults.intDefaultMin, GooberLibApi.Defaults.intDefaultMax, provider);
 	}
 
 	public IntOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
+		this(name, _ -> description, GooberLibApi.Defaults.intDefault, GooberLibApi.Defaults.intDefaultMin, GooberLibApi.Defaults.intDefaultMax, null);
 	}
 
 	public IntOption(CharSequence name, WidgetProvider<IntOption> provider) {
-		this(name, _ -> "", 0, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+		this(name, _ -> "", GooberLibApi.Defaults.intDefault, GooberLibApi.Defaults.intDefaultMin, GooberLibApi.Defaults.intDefaultMax, provider);
 	}
 
 	public IntOption(CharSequence name) {
-		this(name, _ -> "", 0, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
+		this(name, _ -> "", GooberLibApi.Defaults.intDefault, GooberLibApi.Defaults.intDefaultMin, GooberLibApi.Defaults.intDefaultMax, null);
 	}
 
 	@Override

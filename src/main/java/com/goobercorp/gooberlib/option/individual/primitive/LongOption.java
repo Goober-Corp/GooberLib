@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.option.individual.primitive;
 
+import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.util.Predicates;
@@ -41,35 +42,35 @@ public class LongOption extends BaseOption<LongOption> implements NumberOption<L
 	}
 
 	public LongOption(CharSequence name, CharSequence description, long defaultValue, WidgetProvider<LongOption> provider) {
-		this(name, _ -> description, defaultValue, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+		this(name, _ -> description, defaultValue, GooberLibApi.Defaults.longDefaultMin, GooberLibApi.Defaults.longDefaultMax, provider);
 	}
 
 	public LongOption(CharSequence name, CharSequence description, long defaultValue) {
-		this(name, _ -> description, defaultValue, Long.MIN_VALUE, Long.MAX_VALUE, null);
+		this(name, _ -> description, defaultValue, GooberLibApi.Defaults.longDefaultMin, GooberLibApi.Defaults.longDefaultMax, null);
 	}
 
 	public LongOption(CharSequence name, long defaultValue, WidgetProvider<LongOption> provider) {
-		this(name, _ -> "", defaultValue, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+		this(name, _ -> "", defaultValue, GooberLibApi.Defaults.longDefaultMin, GooberLibApi.Defaults.longDefaultMax, provider);
 	}
 
 	public LongOption(CharSequence name, long defaultValue) {
-		this(name, _ -> "", defaultValue, Long.MIN_VALUE, Long.MAX_VALUE, null);
+		this(name, _ -> "", defaultValue, GooberLibApi.Defaults.longDefaultMin, GooberLibApi.Defaults.longDefaultMax, null);
 	}
 
 	public LongOption(CharSequence name, CharSequence description, WidgetProvider<LongOption> provider) {
-		this(name, _ -> description, 0, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+		this(name, _ -> description, GooberLibApi.Defaults.longDefault, GooberLibApi.Defaults.longDefaultMin, GooberLibApi.Defaults.longDefaultMax, provider);
 	}
 
 	public LongOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, 0, Long.MIN_VALUE, Long.MAX_VALUE, null);
+		this(name, _ -> description, GooberLibApi.Defaults.longDefault, GooberLibApi.Defaults.longDefaultMin, GooberLibApi.Defaults.longDefaultMax, null);
 	}
 
 	public LongOption(CharSequence name, WidgetProvider<LongOption> provider) {
-		this(name, _ -> "", 0, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+		this(name, _ -> "", GooberLibApi.Defaults.longDefault, GooberLibApi.Defaults.longDefaultMin, GooberLibApi.Defaults.longDefaultMax, provider);
 	}
 
 	public LongOption(CharSequence name) {
-		this(name, _ -> "", 0, Long.MIN_VALUE, Long.MAX_VALUE, null);
+		this(name, _ -> "", GooberLibApi.Defaults.longDefault, GooberLibApi.Defaults.longDefaultMin, GooberLibApi.Defaults.longDefaultMax, null);
 	}
 
 	@Override

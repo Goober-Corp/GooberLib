@@ -28,11 +28,11 @@ public class BooleanOption extends BaseOption<BooleanOption> implements Advancea
 	}
 
 	public BooleanOption(CharSequence name, CharSequence description, WidgetProvider<BooleanOption> provider) {
-		this(name, _ -> description, GooberLibApi.Defaults.booleanValue, provider);
+		this(name, _ -> description, GooberLibApi.Defaults.booleanDefault, provider);
 	}
 
 	public BooleanOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, GooberLibApi.Defaults.booleanValue, null);
+		this(name, _ -> description, GooberLibApi.Defaults.booleanDefault, null);
 	}
 
 	public BooleanOption(CharSequence name, boolean defaultValue, WidgetProvider<BooleanOption> provider) {
@@ -44,11 +44,11 @@ public class BooleanOption extends BaseOption<BooleanOption> implements Advancea
 	}
 
 	public BooleanOption(CharSequence name, WidgetProvider<BooleanOption> provider) {
-		this(name, _ -> "", GooberLibApi.Defaults.booleanValue, provider);
+		this(name, _ -> "", GooberLibApi.Defaults.booleanDefault, provider);
 	}
 
 	public BooleanOption(CharSequence name) {
-		this(name, _ -> "", GooberLibApi.Defaults.booleanValue, null);
+		this(name, _ -> "", GooberLibApi.Defaults.booleanDefault, null);
 	}
 
 	@Override

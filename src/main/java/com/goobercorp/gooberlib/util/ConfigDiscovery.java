@@ -2,6 +2,7 @@ package com.goobercorp.gooberlib.util;
 
 import com.goobercorp.gooberlib.GooberLibEntrypoint;
 import com.goobercorp.gooberlib.annotations.GooberConfig;
+import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.builder.BuiltConfig;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.google.common.reflect.ClassPath;
@@ -29,6 +30,8 @@ public class ConfigDiscovery {
 		final Map<String, BuiltConfig> flattened = new HashMap<>();
 
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+		GooberLibApi.resetDefaultValues();
 
 		ClassPath.from(classLoader)
 				.getAllClasses()
@@ -91,6 +94,7 @@ public class ConfigDiscovery {
 								}
 							}
 							flattened.put(modId, gooberConfigBuilder.build());
+							GooberLibApi.resetDefaultValues();
 						}
 					} catch (IllegalAccessException | ClassNotFoundException e) {
 						throw rethrow(e);

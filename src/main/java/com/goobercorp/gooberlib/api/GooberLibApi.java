@@ -9,6 +9,7 @@ import com.goobercorp.gooberlib.builder.misc.OptionHolder;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
 import com.goobercorp.gooberlib.gui.option.ColorPickerWidget;
 import com.goobercorp.gooberlib.gui.option.EvilButtonWidget;
+import com.goobercorp.gooberlib.interfaces.DefaultHandler;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.OptionContext;
@@ -29,6 +30,7 @@ import com.goobercorp.gooberlib.util.ConfigDiscovery;
 import com.google.gson.*;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
@@ -38,10 +40,7 @@ import net.minecraft.client.gui.screens.Screen;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.function.Function;
 
 import static org.apache.commons.io.function.Erase.rethrow;
@@ -183,13 +182,61 @@ public class GooberLibApi {
 		out.add(optionName, jo);
 	}
 
+	private static final List<Pair<String, DefaultHandler>> defaultHandlers = new ArrayList<>();
+
+	public static void registerDefaultHandler(String name, DefaultHandler handler) {
+		defaultHandlers.add(new Pair<>(name, handler));
+	}
+
+	public static void resetDefaultValues() {
+		for (Pair<String, DefaultHandler> handler : defaultHandlers) {
+			try {
+				handler.getSecond().reset();
+			} catch (Throwable t) {
+				GooberLibEntrypoint.LOGGER.error("Handler {} failed: ", handler.getFirst(), t);
+				throw t;
+			}
+		}
+	}
+
+	static {
+		registerDefaultHandler("primitives", () -> {
+			Defaults.booleanDefault = false;
+			Defaults.byteDefault = (byte) 0;
+			Defaults.shortDefault = (short) 0;
+			Defaults.charDefault = (char) 0;
+			Defaults.intDefault = 0;
+			Defaults.longDefault = 0;
+			Defaults.floatDefault = 0;
+			Defaults.doubleDefault = 0;
+
+			Defaults.byteDefaultMin = Byte.MIN_VALUE;
+			Defaults.shortDefaultMin = Short.MIN_VALUE;
+			Defaults.charDefaultMin = Character.MIN_VALUE;
+			Defaults.intDefaultMin = Integer.MIN_VALUE;
+			Defaults.longDefaultMin = Long.MIN_VALUE;
+			Defaults.floatDefaultMin = -Float.MAX_VALUE;
+			Defaults.doubleDefaultMin = -Double.MIN_VALUE;
+
+			Defaults.byteDefaultMax = Byte.MAX_VALUE;
+			Defaults.shortDefaultMax = Short.MAX_VALUE;
+			Defaults.charDefaultMax = Character.MAX_VALUE;
+			Defaults.intDefaultMax = Integer.MAX_VALUE;
+			Defaults.longDefaultMax = Long.MAX_VALUE;
+			Defaults.floatDefaultMax = Float.MAX_VALUE;
+			Defaults.doubleDefaultMax = Double.MAX_VALUE;
+		});
+		registerDefaultHandler("primitive_range", () -> {
+		});
+	}
+
 	private record WidgetHandler<T extends Option<T>>(Function<T, Boolean> checkCanHandle, int priority,
 	                                                  WidgetProvider<T> widgetProvider) {
 		boolean genericCanHandle(Object o) {
 			try {
 				//noinspection unchecked
 				Boolean result = checkCanHandle.apply((T) o);
-				return result != null;
+				return result != null && result;
 			} catch (ClassCastException _) {
 				return false;
 			}
@@ -286,6 +333,30 @@ public class GooberLibApi {
 	}
 
 	public static class Defaults {
-		public static boolean booleanValue;
+		public static boolean booleanDefault;
+
+		public static byte byteDefault;
+		public static char charDefault;
+		public static double doubleDefault;
+		public static float floatDefault;
+		public static int intDefault;
+		public static long longDefault;
+		public static short shortDefault;
+
+		public static byte byteDefaultMin;
+		public static char charDefaultMin;
+		public static double doubleDefaultMin;
+		public static float floatDefaultMin;
+		public static int intDefaultMin;
+		public static long longDefaultMin;
+		public static short shortDefaultMin;
+
+		public static byte byteDefaultMax;
+		public static char charDefaultMax;
+		public static double doubleDefaultMax;
+		public static float floatDefaultMax;
+		public static int intDefaultMax;
+		public static long longDefaultMax;
+		public static short shortDefaultMax;
 	}
 }

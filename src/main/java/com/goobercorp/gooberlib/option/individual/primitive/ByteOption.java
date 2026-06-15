@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.option.individual.primitive;
 
+import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.util.Predicates;
@@ -40,35 +41,35 @@ public class ByteOption extends BaseOption<ByteOption> implements NumberOption<B
 	}
 
 	public ByteOption(CharSequence name, CharSequence description, byte defaultValue, WidgetProvider<ByteOption> provider) {
-		this(name, _ -> description, defaultValue, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
+		this(name, _ -> description, defaultValue, GooberLibApi.Defaults.byteDefaultMin, GooberLibApi.Defaults.byteDefaultMax, provider);
 	}
 
 	public ByteOption(CharSequence name, CharSequence description, byte defaultValue) {
-		this(name, _ -> description, defaultValue, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
+		this(name, _ -> description, defaultValue, GooberLibApi.Defaults.byteDefaultMin, GooberLibApi.Defaults.byteDefaultMax, null);
 	}
 
 	public ByteOption(CharSequence name, byte defaultValue, WidgetProvider<ByteOption> provider) {
-		this(name, _ -> "", defaultValue, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
+		this(name, _ -> "", defaultValue, GooberLibApi.Defaults.byteDefaultMin, GooberLibApi.Defaults.byteDefaultMax, provider);
 	}
 
 	public ByteOption(CharSequence name, byte defaultValue) {
-		this(name, _ -> "", defaultValue, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
+		this(name, _ -> "", defaultValue, GooberLibApi.Defaults.byteDefaultMin, GooberLibApi.Defaults.byteDefaultMax, null);
 	}
 
 	public ByteOption(CharSequence name, CharSequence description, WidgetProvider<ByteOption> provider) {
-		this(name, _ -> description, (byte) 0, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
+		this(name, _ -> description, GooberLibApi.Defaults.byteDefault, GooberLibApi.Defaults.byteDefaultMin, GooberLibApi.Defaults.byteDefaultMax, provider);
 	}
 
 	public ByteOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, (byte) 0, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
+		this(name, _ -> description, GooberLibApi.Defaults.byteDefault, GooberLibApi.Defaults.byteDefaultMin, GooberLibApi.Defaults.byteDefaultMax, null);
 	}
 
 	public ByteOption(CharSequence name, WidgetProvider<ByteOption> provider) {
-		this(name, _ -> "", (byte) 0, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
+		this(name, _ -> "", GooberLibApi.Defaults.byteDefault, GooberLibApi.Defaults.byteDefaultMin, GooberLibApi.Defaults.byteDefaultMax, provider);
 	}
 
 	public ByteOption(CharSequence name) {
-		this(name, _ -> "", (byte) 0, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
+		this(name, _ -> "", GooberLibApi.Defaults.byteDefault, GooberLibApi.Defaults.byteDefaultMin, GooberLibApi.Defaults.byteDefaultMax, null);
 	}
 
 	@Override
