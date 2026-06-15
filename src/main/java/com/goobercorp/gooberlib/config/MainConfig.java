@@ -30,7 +30,9 @@ public class MainConfig {
 	public static final BooleanOption EXPERIMENTAL_DUAL_COLUMN_LAYOUT = new BooleanOption("Dual Column Layout", "don't tell kr1v...");
 	public static final BooleanOption DEBUG_GUIDELINES = new BooleanOption("Guidelines");
 	public static final BooleanOption CLOSE_SCREEN_ON_EXCEPTION = new BooleanOption("Close gooberlib config screens on exception");
-	public static final BooleanOption WOKE = new BooleanOption("Woke mode");
+	public static final BooleanOption WOKE = new BooleanOption("Woke mode").setOnValueChange(b -> {
+		if (!b.getValue()) primaryCol = 0xFFffaf5e;
+	});
 	public static final FloatOption WOKE_STRENGTH = new FloatOption("Wokeness strength", 0.5F, 0F, 1F, WidgetProviders.numberSliderWithFormatter(floatOption -> (int) (floatOption.value * 100) + "%"));
 
 	public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.create("GooberLib", b -> {
