@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.option.individual.primitive.range;
 
+import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.util.Predicates;
@@ -38,19 +39,19 @@ public class FloatRangeOption extends BaseOption<FloatRangeOption> implements Nu
 	}
 
 	public FloatRangeOption(CharSequence name, CharSequence description, float defaultValueMin, float defaultValueMax, WidgetProvider<FloatRangeOption> provider) {
-		this(name, _ -> description, defaultValueMin, defaultValueMax, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+		this(name, _ -> description, defaultValueMin, defaultValueMax, GooberLibApi.Defaults.floatRangeDefaultMin, GooberLibApi.Defaults.floatRangeDefaultMin, provider);
 	}
 
 	public FloatRangeOption(CharSequence name, CharSequence description, float defaultValueMin, float defaultValueMax) {
-		this(name, _ -> description, defaultValueMin, defaultValueMax, -Float.MAX_VALUE, Float.MAX_VALUE, null);
+		this(name, _ -> description, defaultValueMin, defaultValueMax, GooberLibApi.Defaults.floatRangeDefaultMin, GooberLibApi.Defaults.floatRangeDefaultMin, null);
 	}
 
 	public FloatRangeOption(CharSequence name, CharSequence description, WidgetProvider<FloatRangeOption> provider) {
-		this(name, _ -> description, -1, 1, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+		this(name, _ -> description, GooberLibApi.Defaults.floatRangeDefaultMinValue, GooberLibApi.Defaults.floatRangeDefaultMaxValue, GooberLibApi.Defaults.floatRangeDefaultMin, GooberLibApi.Defaults.floatRangeDefaultMin, provider);
 	}
 
 	public FloatRangeOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, -1, 1, -Float.MAX_VALUE, Float.MAX_VALUE, null);
+		this(name, _ -> description, GooberLibApi.Defaults.floatRangeDefaultMinValue, GooberLibApi.Defaults.floatRangeDefaultMaxValue, GooberLibApi.Defaults.floatRangeDefaultMin, GooberLibApi.Defaults.floatRangeDefaultMin, null);
 	}
 
 	public FloatRangeOption(CharSequence name, float defaultValueMin, float defaultValueMax, float min, float max, WidgetProvider<FloatRangeOption> provider) {
@@ -62,19 +63,19 @@ public class FloatRangeOption extends BaseOption<FloatRangeOption> implements Nu
 	}
 
 	public FloatRangeOption(CharSequence name, float defaultValueMin, float defaultValueMax, WidgetProvider<FloatRangeOption> provider) {
-		this(name, _ -> "", defaultValueMin, defaultValueMax, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+		this(name, _ -> "", defaultValueMin, defaultValueMax, GooberLibApi.Defaults.floatRangeDefaultMin, GooberLibApi.Defaults.floatRangeDefaultMin, provider);
 	}
 
 	public FloatRangeOption(CharSequence name, float defaultValueMin, float defaultValueMax) {
-		this(name, _ -> "", defaultValueMin, defaultValueMax, -Float.MAX_VALUE, Float.MAX_VALUE, null);
+		this(name, _ -> "", defaultValueMin, defaultValueMax, GooberLibApi.Defaults.floatRangeDefaultMin, GooberLibApi.Defaults.floatRangeDefaultMin, null);
 	}
 
 	public FloatRangeOption(CharSequence name, WidgetProvider<FloatRangeOption> provider) {
-		this(name, _ -> "", -1, 1, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+		this(name, _ -> "", GooberLibApi.Defaults.floatRangeDefaultMinValue, GooberLibApi.Defaults.floatRangeDefaultMaxValue, GooberLibApi.Defaults.floatRangeDefaultMin, GooberLibApi.Defaults.floatRangeDefaultMin, provider);
 	}
 
 	public FloatRangeOption(CharSequence name) {
-		this(name, _ -> "", -1, 1, -Float.MAX_VALUE, Float.MAX_VALUE, null);
+		this(name, _ -> "", GooberLibApi.Defaults.floatRangeDefaultMinValue, GooberLibApi.Defaults.floatRangeDefaultMaxValue, GooberLibApi.Defaults.floatRangeDefaultMin, GooberLibApi.Defaults.floatRangeDefaultMin, null);
 	}
 
 	public float getMinValue() {

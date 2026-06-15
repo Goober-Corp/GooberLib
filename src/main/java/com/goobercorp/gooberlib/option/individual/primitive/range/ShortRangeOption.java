@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.option.individual.primitive.range;
 
+import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.util.Predicates;
@@ -38,19 +39,19 @@ public class ShortRangeOption extends BaseOption<ShortRangeOption> implements Nu
 	}
 
 	public ShortRangeOption(CharSequence name, CharSequence description, short defaultValueMin, short defaultValueMax, WidgetProvider<ShortRangeOption> provider) {
-		this(name, _ -> description, defaultValueMin, defaultValueMax, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+		this(name, _ -> description, defaultValueMin, defaultValueMax, GooberLibApi.Defaults.shortRangeDefaultMin, GooberLibApi.Defaults.shortRangeDefaultMin, provider);
 	}
 
 	public ShortRangeOption(CharSequence name, CharSequence description, short defaultValueMin, short defaultValueMax) {
-		this(name, _ -> description, defaultValueMin, defaultValueMax, Short.MIN_VALUE, Short.MAX_VALUE, null);
+		this(name, _ -> description, defaultValueMin, defaultValueMax, GooberLibApi.Defaults.shortRangeDefaultMin, GooberLibApi.Defaults.shortRangeDefaultMin, null);
 	}
 
 	public ShortRangeOption(CharSequence name, CharSequence description, WidgetProvider<ShortRangeOption> provider) {
-		this(name, _ -> description, (short) -1, (short) 1, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+		this(name, _ -> description, GooberLibApi.Defaults.shortRangeDefaultMinValue, GooberLibApi.Defaults.shortRangeDefaultMaxValue, GooberLibApi.Defaults.shortRangeDefaultMin, GooberLibApi.Defaults.shortRangeDefaultMin, provider);
 	}
 
 	public ShortRangeOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, (short) -1, (short) 1, Short.MIN_VALUE, Short.MAX_VALUE, null);
+		this(name, _ -> description, GooberLibApi.Defaults.shortRangeDefaultMinValue, GooberLibApi.Defaults.shortRangeDefaultMaxValue, GooberLibApi.Defaults.shortRangeDefaultMin, GooberLibApi.Defaults.shortRangeDefaultMin, null);
 	}
 
 	public ShortRangeOption(CharSequence name, short defaultValueMin, short defaultValueMax, short min, short max, WidgetProvider<ShortRangeOption> provider) {
@@ -62,19 +63,19 @@ public class ShortRangeOption extends BaseOption<ShortRangeOption> implements Nu
 	}
 
 	public ShortRangeOption(CharSequence name, short defaultValueMin, short defaultValueMax, WidgetProvider<ShortRangeOption> provider) {
-		this(name, _ -> "", defaultValueMin, defaultValueMax, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+		this(name, _ -> "", defaultValueMin, defaultValueMax, GooberLibApi.Defaults.shortRangeDefaultMin, GooberLibApi.Defaults.shortRangeDefaultMin, provider);
 	}
 
 	public ShortRangeOption(CharSequence name, short defaultValueMin, short defaultValueMax) {
-		this(name, _ -> "", defaultValueMin, defaultValueMax, Short.MIN_VALUE, Short.MAX_VALUE, null);
+		this(name, _ -> "", defaultValueMin, defaultValueMax, GooberLibApi.Defaults.shortRangeDefaultMin, GooberLibApi.Defaults.shortRangeDefaultMin, null);
 	}
 
 	public ShortRangeOption(CharSequence name, WidgetProvider<ShortRangeOption> provider) {
-		this(name, _ -> "", (short) -1, (short) 1, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+		this(name, _ -> "", GooberLibApi.Defaults.shortRangeDefaultMinValue, GooberLibApi.Defaults.shortRangeDefaultMaxValue, GooberLibApi.Defaults.shortRangeDefaultMin, GooberLibApi.Defaults.shortRangeDefaultMin, provider);
 	}
 
 	public ShortRangeOption(CharSequence name) {
-		this(name, _ -> "", (short) -1, (short) 1, Short.MIN_VALUE, Short.MAX_VALUE, null);
+		this(name, _ -> "", GooberLibApi.Defaults.shortRangeDefaultMinValue, GooberLibApi.Defaults.shortRangeDefaultMaxValue, GooberLibApi.Defaults.shortRangeDefaultMin, GooberLibApi.Defaults.shortRangeDefaultMin, null);
 	}
 
 	public short getMinValue() {

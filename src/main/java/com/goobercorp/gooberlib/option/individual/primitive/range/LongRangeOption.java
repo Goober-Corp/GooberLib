@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.option.individual.primitive.range;
 
+import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.util.Predicates;
@@ -38,19 +39,19 @@ public class LongRangeOption extends BaseOption<LongRangeOption> implements Numb
 	}
 
 	public LongRangeOption(CharSequence name, CharSequence description, long defaultValueMin, long defaultValueMax, WidgetProvider<LongRangeOption> provider) {
-		this(name, _ -> description, defaultValueMin, defaultValueMax, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+		this(name, _ -> description, defaultValueMin, defaultValueMax, GooberLibApi.Defaults.longRangeDefaultMin, GooberLibApi.Defaults.longRangeDefaultMin, provider);
 	}
 
 	public LongRangeOption(CharSequence name, CharSequence description, long defaultValueMin, long defaultValueMax) {
-		this(name, _ -> description, defaultValueMin, defaultValueMax, Long.MIN_VALUE, Long.MAX_VALUE, null);
+		this(name, _ -> description, defaultValueMin, defaultValueMax, GooberLibApi.Defaults.longRangeDefaultMin, GooberLibApi.Defaults.longRangeDefaultMin, null);
 	}
 
 	public LongRangeOption(CharSequence name, CharSequence description, WidgetProvider<LongRangeOption> provider) {
-		this(name, _ -> description, -1, 1, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+		this(name, _ -> description, GooberLibApi.Defaults.longRangeDefaultMinValue, GooberLibApi.Defaults.longRangeDefaultMaxValue, GooberLibApi.Defaults.longRangeDefaultMin, GooberLibApi.Defaults.longRangeDefaultMin, provider);
 	}
 
 	public LongRangeOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, -1, 1, Long.MIN_VALUE, Long.MAX_VALUE, null);
+		this(name, _ -> description, GooberLibApi.Defaults.longRangeDefaultMinValue, GooberLibApi.Defaults.longRangeDefaultMaxValue, GooberLibApi.Defaults.longRangeDefaultMin, GooberLibApi.Defaults.longRangeDefaultMin, null);
 	}
 
 	public LongRangeOption(CharSequence name, long defaultValueMin, long defaultValueMax, long min, long max, WidgetProvider<LongRangeOption> provider) {
@@ -62,20 +63,20 @@ public class LongRangeOption extends BaseOption<LongRangeOption> implements Numb
 	}
 
 	public LongRangeOption(CharSequence name, long defaultValueMin, long defaultValueMax, WidgetProvider<LongRangeOption> provider) {
-		this(name, _ -> "", defaultValueMin, defaultValueMax, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+		this(name, _ -> "", defaultValueMin, defaultValueMax, GooberLibApi.Defaults.longRangeDefaultMin, GooberLibApi.Defaults.longRangeDefaultMin, provider);
 	}
 
 	public LongRangeOption(CharSequence name, long defaultValueMin, long defaultValueMax) {
-		this(name, _ -> "", defaultValueMin, defaultValueMax, Long.MIN_VALUE, Long.MAX_VALUE, null);
+		this(name, _ -> "", defaultValueMin, defaultValueMax, GooberLibApi.Defaults.longRangeDefaultMin, GooberLibApi.Defaults.longRangeDefaultMin, null);
 	}
 
 
 	public LongRangeOption(CharSequence name, WidgetProvider<LongRangeOption> provider) {
-		this(name, _ -> "", -1, 1, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+		this(name, _ -> "", GooberLibApi.Defaults.longRangeDefaultMinValue, GooberLibApi.Defaults.longRangeDefaultMaxValue, GooberLibApi.Defaults.longRangeDefaultMin, GooberLibApi.Defaults.longRangeDefaultMin, provider);
 	}
 
 	public LongRangeOption(CharSequence name) {
-		this(name, _ -> "", -1, 1, Long.MIN_VALUE, Long.MAX_VALUE, null);
+		this(name, _ -> "", GooberLibApi.Defaults.longRangeDefaultMinValue, GooberLibApi.Defaults.longRangeDefaultMaxValue, GooberLibApi.Defaults.longRangeDefaultMin, GooberLibApi.Defaults.longRangeDefaultMin, null);
 	}
 
 	public long getMinValue() {

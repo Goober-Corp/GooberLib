@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.option.individual.primitive.range;
 
+import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.util.Predicates;
@@ -38,19 +39,19 @@ public class DoubleRangeOption extends BaseOption<DoubleRangeOption> implements 
 	}
 
 	public DoubleRangeOption(CharSequence name, CharSequence description, double defaultValueMin, double defaultValueMax, WidgetProvider<DoubleRangeOption> provider) {
-		this(name, _ -> description, defaultValueMin, defaultValueMax, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+		this(name, _ -> description, defaultValueMin, defaultValueMax, GooberLibApi.Defaults.doubleRangeDefaultMin, GooberLibApi.Defaults.doubleRangeDefaultMin, provider);
 	}
 
 	public DoubleRangeOption(CharSequence name, CharSequence description, double defaultValueMin, double defaultValueMax) {
-		this(name, _ -> description, defaultValueMin, defaultValueMax, -Double.MAX_VALUE, Double.MAX_VALUE, null);
+		this(name, _ -> description, defaultValueMin, defaultValueMax, GooberLibApi.Defaults.doubleRangeDefaultMin, GooberLibApi.Defaults.doubleRangeDefaultMin, null);
 	}
 
 	public DoubleRangeOption(CharSequence name, CharSequence description, WidgetProvider<DoubleRangeOption> provider) {
-		this(name, _ -> description, -1, 1, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+		this(name, _ -> description, GooberLibApi.Defaults.doubleRangeDefaultMinValue, GooberLibApi.Defaults.doubleRangeDefaultMaxValue, GooberLibApi.Defaults.doubleRangeDefaultMin, GooberLibApi.Defaults.doubleRangeDefaultMin, provider);
 	}
 
 	public DoubleRangeOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, -1, 1, -Double.MAX_VALUE, Double.MAX_VALUE, null);
+		this(name, _ -> description, GooberLibApi.Defaults.doubleRangeDefaultMinValue, GooberLibApi.Defaults.doubleRangeDefaultMaxValue, GooberLibApi.Defaults.doubleRangeDefaultMin, GooberLibApi.Defaults.doubleRangeDefaultMin, null);
 	}
 
 	public DoubleRangeOption(CharSequence name, double defaultValueMin, double defaultValueMax, double min, double max, WidgetProvider<DoubleRangeOption> provider) {
@@ -62,19 +63,19 @@ public class DoubleRangeOption extends BaseOption<DoubleRangeOption> implements 
 	}
 
 	public DoubleRangeOption(CharSequence name, double defaultValueMin, double defaultValueMax, WidgetProvider<DoubleRangeOption> provider) {
-		this(name, _ -> "", defaultValueMin, defaultValueMax, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+		this(name, _ -> "", defaultValueMin, defaultValueMax, GooberLibApi.Defaults.doubleRangeDefaultMin, GooberLibApi.Defaults.doubleRangeDefaultMin, provider);
 	}
 
 	public DoubleRangeOption(CharSequence name, double defaultValueMin, double defaultValueMax) {
-		this(name, _ -> "", defaultValueMin, defaultValueMax, -Double.MAX_VALUE, Double.MAX_VALUE, null);
+		this(name, _ -> "", defaultValueMin, defaultValueMax, GooberLibApi.Defaults.doubleRangeDefaultMin, GooberLibApi.Defaults.doubleRangeDefaultMin, null);
 	}
 
 	public DoubleRangeOption(CharSequence name, WidgetProvider<DoubleRangeOption> provider) {
-		this(name, _ -> "", -1, 1, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+		this(name, _ -> "", GooberLibApi.Defaults.doubleRangeDefaultMinValue, GooberLibApi.Defaults.doubleRangeDefaultMaxValue, GooberLibApi.Defaults.doubleRangeDefaultMin, GooberLibApi.Defaults.doubleRangeDefaultMin, provider);
 	}
 
 	public DoubleRangeOption(CharSequence name) {
-		this(name, _ -> "", -1, 1, -Double.MAX_VALUE, Double.MAX_VALUE, null);
+		this(name, _ -> "", GooberLibApi.Defaults.doubleRangeDefaultMinValue, GooberLibApi.Defaults.doubleRangeDefaultMaxValue, GooberLibApi.Defaults.doubleRangeDefaultMin, GooberLibApi.Defaults.doubleRangeDefaultMin, null);
 	}
 
 	public double getMinValue() {

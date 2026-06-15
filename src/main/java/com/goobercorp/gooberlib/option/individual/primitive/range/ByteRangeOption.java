@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.option.individual.primitive.range;
 
+import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.util.Predicates;
@@ -38,19 +39,19 @@ public class ByteRangeOption extends BaseOption<ByteRangeOption> implements Numb
 	}
 
 	public ByteRangeOption(CharSequence name, CharSequence description, byte defaultValueMin, byte defaultValueMax, WidgetProvider<ByteRangeOption> provider) {
-		this(name, _ -> description, defaultValueMin, defaultValueMax, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
+		this(name, _ -> description, defaultValueMin, defaultValueMax, GooberLibApi.Defaults.byteRangeDefaultMin, GooberLibApi.Defaults.byteRangeDefaultMin, provider);
 	}
 
 	public ByteRangeOption(CharSequence name, CharSequence description, byte defaultValueMin, byte defaultValueMax) {
-		this(name, _ -> description, defaultValueMin, defaultValueMax, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
+		this(name, _ -> description, defaultValueMin, defaultValueMax, GooberLibApi.Defaults.byteRangeDefaultMin, GooberLibApi.Defaults.byteRangeDefaultMin, null);
 	}
 
 	public ByteRangeOption(CharSequence name, CharSequence description, WidgetProvider<ByteRangeOption> provider) {
-		this(name, _ -> description, (byte) -1, (byte) 1, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
+		this(name, _ -> description, GooberLibApi.Defaults.byteRangeDefaultMinValue, GooberLibApi.Defaults.byteRangeDefaultMaxValue, GooberLibApi.Defaults.byteRangeDefaultMin, GooberLibApi.Defaults.byteRangeDefaultMin, provider);
 	}
 
 	public ByteRangeOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, (byte) -1, (byte) 1, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
+		this(name, _ -> description, GooberLibApi.Defaults.byteRangeDefaultMinValue, GooberLibApi.Defaults.byteRangeDefaultMaxValue, GooberLibApi.Defaults.byteRangeDefaultMin, GooberLibApi.Defaults.byteRangeDefaultMin, null);
 	}
 
 	public ByteRangeOption(CharSequence name, byte defaultValueMin, byte defaultValueMax, byte min, byte max, WidgetProvider<ByteRangeOption> provider) {
@@ -62,19 +63,19 @@ public class ByteRangeOption extends BaseOption<ByteRangeOption> implements Numb
 	}
 
 	public ByteRangeOption(CharSequence name, byte defaultValueMin, byte defaultValueMax, WidgetProvider<ByteRangeOption> provider) {
-		this(name, _ -> "", defaultValueMin, defaultValueMax, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
+		this(name, _ -> "", defaultValueMin, defaultValueMax, GooberLibApi.Defaults.byteRangeDefaultMin, GooberLibApi.Defaults.byteRangeDefaultMin, provider);
 	}
 
 	public ByteRangeOption(CharSequence name, byte defaultValueMin, byte defaultValueMax) {
-		this(name, _ -> "", defaultValueMin, defaultValueMax, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
+		this(name, _ -> "", defaultValueMin, defaultValueMax, GooberLibApi.Defaults.byteRangeDefaultMin, GooberLibApi.Defaults.byteRangeDefaultMin, null);
 	}
 
 	public ByteRangeOption(CharSequence name, WidgetProvider<ByteRangeOption> provider) {
-		this(name, _ -> "", (byte) -1, (byte) 1, Byte.MIN_VALUE, Byte.MAX_VALUE, provider);
+		this(name, _ -> "", GooberLibApi.Defaults.byteRangeDefaultMinValue, GooberLibApi.Defaults.byteRangeDefaultMaxValue, GooberLibApi.Defaults.byteRangeDefaultMin, GooberLibApi.Defaults.byteRangeDefaultMin, provider);
 	}
 
 	public ByteRangeOption(CharSequence name) {
-		this(name, _ -> "", (byte) -1, (byte) 1, Byte.MIN_VALUE, Byte.MAX_VALUE, null);
+		this(name, _ -> "", GooberLibApi.Defaults.byteRangeDefaultMinValue, GooberLibApi.Defaults.byteRangeDefaultMaxValue, GooberLibApi.Defaults.byteRangeDefaultMin, GooberLibApi.Defaults.byteRangeDefaultMin, null);
 	}
 
 	public byte getMinValue() {

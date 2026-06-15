@@ -227,6 +227,37 @@ public class GooberLibApi {
 			Defaults.doubleDefaultMax = Double.MAX_VALUE;
 		});
 		registerDefaultHandler("primitive_range", () -> {
+			Defaults.byteRangeDefaultMinValue = (byte) -1;
+			Defaults.shortRangeDefaultMinValue = (short) -1;
+			Defaults.charRangeDefaultMinValue = (char) 0;
+			Defaults.intRangeDefaultMinValue = -1;
+			Defaults.longRangeDefaultMinValue = -1;
+			Defaults.floatRangeDefaultMinValue = -1;
+			Defaults.doubleRangeDefaultMinValue = -1;
+
+			Defaults.byteRangeDefaultMaxValue = (byte) 1;
+			Defaults.shortRangeDefaultMaxValue = (short) 1;
+			Defaults.charRangeDefaultMaxValue = (char) 1;
+			Defaults.intRangeDefaultMaxValue = 1;
+			Defaults.longRangeDefaultMaxValue = 1;
+			Defaults.floatRangeDefaultMaxValue = 1;
+			Defaults.doubleRangeDefaultMaxValue = 1;
+
+			Defaults.byteRangeDefaultMin = Byte.MIN_VALUE;
+			Defaults.shortRangeDefaultMin = Short.MIN_VALUE;
+			Defaults.charRangeDefaultMin = Character.MIN_VALUE;
+			Defaults.intRangeDefaultMin = Integer.MIN_VALUE;
+			Defaults.longRangeDefaultMin = Long.MIN_VALUE;
+			Defaults.floatRangeDefaultMin = -Float.MAX_VALUE;
+			Defaults.doubleRangeDefaultMin = -Float.MAX_VALUE;
+
+			Defaults.byteRangeDefaultMax = Byte.MAX_VALUE;
+			Defaults.shortRangeDefaultMax = Short.MAX_VALUE;
+			Defaults.charRangeDefaultMax = Character.MAX_VALUE;
+			Defaults.intRangeDefaultMax = Integer.MAX_VALUE;
+			Defaults.longRangeDefaultMax = Long.MAX_VALUE;
+			Defaults.floatRangeDefaultMax = Float.MAX_VALUE;
+			Defaults.doubleRangeDefaultMax = Double.MAX_VALUE;
 		});
 	}
 
@@ -358,5 +389,37 @@ public class GooberLibApi {
 		public static int intDefaultMax;
 		public static long longDefaultMax;
 		public static short shortDefaultMax;
+
+		public static byte byteRangeDefaultMinValue;
+		public static char charRangeDefaultMinValue;
+		public static double doubleRangeDefaultMinValue;
+		public static float floatRangeDefaultMinValue;
+		public static int intRangeDefaultMinValue;
+		public static long longRangeDefaultMinValue;
+		public static short shortRangeDefaultMinValue;
+
+		public static byte byteRangeDefaultMaxValue;
+		public static char charRangeDefaultMaxValue;
+		public static double doubleRangeDefaultMaxValue;
+		public static float floatRangeDefaultMaxValue;
+		public static int intRangeDefaultMaxValue;
+		public static long longRangeDefaultMaxValue;
+		public static short shortRangeDefaultMaxValue;
+
+		public static byte byteRangeDefaultMin;
+		public static char charRangeDefaultMin;
+		public static double doubleRangeDefaultMin;
+		public static float floatRangeDefaultMin;
+		public static int intRangeDefaultMin;
+		public static long longRangeDefaultMin;
+		public static short shortRangeDefaultMin;
+
+		public static byte byteRangeDefaultMax;
+		public static char charRangeDefaultMax;
+		public static double doubleRangeDefaultMax;
+		public static float floatRangeDefaultMax;
+		public static int intRangeDefaultMax;
+		public static long longRangeDefaultMax;
+		public static short shortRangeDefaultMax;
 	}
 }

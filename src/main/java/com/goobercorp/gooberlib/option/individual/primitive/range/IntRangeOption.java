@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.option.individual.primitive.range;
 
+import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.util.Predicates;
@@ -38,19 +39,19 @@ public class IntRangeOption extends BaseOption<IntRangeOption> implements Number
 	}
 
 	public IntRangeOption(CharSequence name, CharSequence description, int defaultValueMin, int defaultValueMax, WidgetProvider<IntRangeOption> provider) {
-		this(name, _ -> description, defaultValueMin, defaultValueMax, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+		this(name, _ -> description, defaultValueMin, defaultValueMax, GooberLibApi.Defaults.intRangeDefaultMin, GooberLibApi.Defaults.intRangeDefaultMin, provider);
 	}
 
 	public IntRangeOption(CharSequence name, CharSequence description, int defaultValueMin, int defaultValueMax) {
-		this(name, _ -> description, defaultValueMin, defaultValueMax, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
+		this(name, _ -> description, defaultValueMin, defaultValueMax, GooberLibApi.Defaults.intRangeDefaultMin, GooberLibApi.Defaults.intRangeDefaultMin, null);
 	}
 
 	public IntRangeOption(CharSequence name, CharSequence description, WidgetProvider<IntRangeOption> provider) {
-		this(name, _ -> description, -1, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+		this(name, _ -> description, GooberLibApi.Defaults.intRangeDefaultMinValue, GooberLibApi.Defaults.intRangeDefaultMaxValue, GooberLibApi.Defaults.intRangeDefaultMin, GooberLibApi.Defaults.intRangeDefaultMin, provider);
 	}
 
 	public IntRangeOption(CharSequence name, CharSequence description) {
-		this(name, _ -> description, -1, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
+		this(name, _ -> description, GooberLibApi.Defaults.intRangeDefaultMinValue, GooberLibApi.Defaults.intRangeDefaultMaxValue, GooberLibApi.Defaults.intRangeDefaultMin, GooberLibApi.Defaults.intRangeDefaultMin, null);
 	}
 
 	public IntRangeOption(CharSequence name, int defaultValueMin, int defaultValueMax, int min, int max, WidgetProvider<IntRangeOption> provider) {
@@ -62,19 +63,19 @@ public class IntRangeOption extends BaseOption<IntRangeOption> implements Number
 	}
 
 	public IntRangeOption(CharSequence name, int defaultValueMin, int defaultValueMax, WidgetProvider<IntRangeOption> provider) {
-		this(name, _ -> "", defaultValueMin, defaultValueMax, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+		this(name, _ -> "", defaultValueMin, defaultValueMax, GooberLibApi.Defaults.intRangeDefaultMin, GooberLibApi.Defaults.intRangeDefaultMin, provider);
 	}
 
 	public IntRangeOption(CharSequence name, int defaultValueMin, int defaultValueMax) {
-		this(name, _ -> "", defaultValueMin, defaultValueMax, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
+		this(name, _ -> "", defaultValueMin, defaultValueMax, GooberLibApi.Defaults.intRangeDefaultMin, GooberLibApi.Defaults.intRangeDefaultMin, null);
 	}
 
 	public IntRangeOption(CharSequence name, WidgetProvider<IntRangeOption> provider) {
-		this(name, _ -> "", -1, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+		this(name, _ -> "", GooberLibApi.Defaults.intRangeDefaultMinValue, GooberLibApi.Defaults.intRangeDefaultMaxValue, GooberLibApi.Defaults.intRangeDefaultMin, GooberLibApi.Defaults.intRangeDefaultMin, provider);
 	}
 
 	public IntRangeOption(CharSequence name) {
-		this(name, _ -> "", -1, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
+		this(name, _ -> "", GooberLibApi.Defaults.intRangeDefaultMinValue, GooberLibApi.Defaults.intRangeDefaultMaxValue, GooberLibApi.Defaults.intRangeDefaultMin, GooberLibApi.Defaults.intRangeDefaultMin, null);
 	}
 
 	public int getMinValue() {
