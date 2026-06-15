@@ -45,6 +45,14 @@ public class ShortRangeOption extends BaseOption<ShortRangeOption> implements Nu
 		this(name, _ -> description, defaultValueMin, defaultValueMax, Short.MIN_VALUE, Short.MAX_VALUE, null);
 	}
 
+	public ShortRangeOption(CharSequence name, CharSequence description, WidgetProvider<ShortRangeOption> provider) {
+		this(name, _ -> description, (short) -1, (short) 1, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+	}
+
+	public ShortRangeOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, (short) -1, (short) 1, Short.MIN_VALUE, Short.MAX_VALUE, null);
+	}
+
 	public ShortRangeOption(CharSequence name, short defaultValueMin, short defaultValueMax, short min, short max, WidgetProvider<ShortRangeOption> provider) {
 		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, provider);
 	}
@@ -59,6 +67,14 @@ public class ShortRangeOption extends BaseOption<ShortRangeOption> implements Nu
 
 	public ShortRangeOption(CharSequence name, short defaultValueMin, short defaultValueMax) {
 		this(name, _ -> "", defaultValueMin, defaultValueMax, Short.MIN_VALUE, Short.MAX_VALUE, null);
+	}
+
+	public ShortRangeOption(CharSequence name, WidgetProvider<ShortRangeOption> provider) {
+		this(name, _ -> "", (short) -1, (short) 1, Short.MIN_VALUE, Short.MAX_VALUE, provider);
+	}
+
+	public ShortRangeOption(CharSequence name) {
+		this(name, _ -> "", (short) -1, (short) 1, Short.MIN_VALUE, Short.MAX_VALUE, null);
 	}
 
 	public short getMinValue() {

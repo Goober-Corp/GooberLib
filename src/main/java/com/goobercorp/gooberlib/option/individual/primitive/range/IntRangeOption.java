@@ -45,6 +45,14 @@ public class IntRangeOption extends BaseOption<IntRangeOption> implements Number
 		this(name, _ -> description, defaultValueMin, defaultValueMax, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
 	}
 
+	public IntRangeOption(CharSequence name, CharSequence description, WidgetProvider<IntRangeOption> provider) {
+		this(name, _ -> description, -1, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+	}
+
+	public IntRangeOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, -1, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
+	}
+
 	public IntRangeOption(CharSequence name, int defaultValueMin, int defaultValueMax, int min, int max, WidgetProvider<IntRangeOption> provider) {
 		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, provider);
 	}
@@ -59,6 +67,14 @@ public class IntRangeOption extends BaseOption<IntRangeOption> implements Number
 
 	public IntRangeOption(CharSequence name, int defaultValueMin, int defaultValueMax) {
 		this(name, _ -> "", defaultValueMin, defaultValueMax, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
+	}
+
+	public IntRangeOption(CharSequence name, WidgetProvider<IntRangeOption> provider) {
+		this(name, _ -> "", -1, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, provider);
+	}
+
+	public IntRangeOption(CharSequence name) {
+		this(name, _ -> "", -1, 1, Integer.MIN_VALUE, Integer.MAX_VALUE, null);
 	}
 
 	public int getMinValue() {

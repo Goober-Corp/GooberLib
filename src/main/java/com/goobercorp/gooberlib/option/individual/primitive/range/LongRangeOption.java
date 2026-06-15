@@ -45,6 +45,14 @@ public class LongRangeOption extends BaseOption<LongRangeOption> implements Numb
 		this(name, _ -> description, defaultValueMin, defaultValueMax, Long.MIN_VALUE, Long.MAX_VALUE, null);
 	}
 
+	public LongRangeOption(CharSequence name, CharSequence description, WidgetProvider<LongRangeOption> provider) {
+		this(name, _ -> description, -1, 1, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+	}
+
+	public LongRangeOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, -1, 1, Long.MIN_VALUE, Long.MAX_VALUE, null);
+	}
+
 	public LongRangeOption(CharSequence name, long defaultValueMin, long defaultValueMax, long min, long max, WidgetProvider<LongRangeOption> provider) {
 		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, provider);
 	}
@@ -59,6 +67,15 @@ public class LongRangeOption extends BaseOption<LongRangeOption> implements Numb
 
 	public LongRangeOption(CharSequence name, long defaultValueMin, long defaultValueMax) {
 		this(name, _ -> "", defaultValueMin, defaultValueMax, Long.MIN_VALUE, Long.MAX_VALUE, null);
+	}
+
+
+	public LongRangeOption(CharSequence name, WidgetProvider<LongRangeOption> provider) {
+		this(name, _ -> "", -1, 1, Long.MIN_VALUE, Long.MAX_VALUE, provider);
+	}
+
+	public LongRangeOption(CharSequence name) {
+		this(name, _ -> "", -1, 1, Long.MIN_VALUE, Long.MAX_VALUE, null);
 	}
 
 	public long getMinValue() {

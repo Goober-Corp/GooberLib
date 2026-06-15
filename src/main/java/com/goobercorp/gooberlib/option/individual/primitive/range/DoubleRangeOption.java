@@ -45,6 +45,14 @@ public class DoubleRangeOption extends BaseOption<DoubleRangeOption> implements 
 		this(name, _ -> description, defaultValueMin, defaultValueMax, -Double.MAX_VALUE, Double.MAX_VALUE, null);
 	}
 
+	public DoubleRangeOption(CharSequence name, CharSequence description, WidgetProvider<DoubleRangeOption> provider) {
+		this(name, _ -> description, -1, 1, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+	}
+
+	public DoubleRangeOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, -1, 1, -Double.MAX_VALUE, Double.MAX_VALUE, null);
+	}
+
 	public DoubleRangeOption(CharSequence name, double defaultValueMin, double defaultValueMax, double min, double max, WidgetProvider<DoubleRangeOption> provider) {
 		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, provider);
 	}
@@ -59,6 +67,14 @@ public class DoubleRangeOption extends BaseOption<DoubleRangeOption> implements 
 
 	public DoubleRangeOption(CharSequence name, double defaultValueMin, double defaultValueMax) {
 		this(name, _ -> "", defaultValueMin, defaultValueMax, -Double.MAX_VALUE, Double.MAX_VALUE, null);
+	}
+
+	public DoubleRangeOption(CharSequence name, WidgetProvider<DoubleRangeOption> provider) {
+		this(name, _ -> "", -1, 1, -Double.MAX_VALUE, Double.MAX_VALUE, provider);
+	}
+
+	public DoubleRangeOption(CharSequence name) {
+		this(name, _ -> "", -1, 1, -Double.MAX_VALUE, Double.MAX_VALUE, null);
 	}
 
 	public double getMinValue() {

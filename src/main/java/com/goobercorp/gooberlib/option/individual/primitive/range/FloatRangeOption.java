@@ -45,6 +45,14 @@ public class FloatRangeOption extends BaseOption<FloatRangeOption> implements Nu
 		this(name, _ -> description, defaultValueMin, defaultValueMax, -Float.MAX_VALUE, Float.MAX_VALUE, null);
 	}
 
+	public FloatRangeOption(CharSequence name, CharSequence description, WidgetProvider<FloatRangeOption> provider) {
+		this(name, _ -> description, -1, 1, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+	}
+
+	public FloatRangeOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, -1, 1, -Float.MAX_VALUE, Float.MAX_VALUE, null);
+	}
+
 	public FloatRangeOption(CharSequence name, float defaultValueMin, float defaultValueMax, float min, float max, WidgetProvider<FloatRangeOption> provider) {
 		this(name, _ -> "", defaultValueMin, defaultValueMax, min, max, provider);
 	}
@@ -59,6 +67,14 @@ public class FloatRangeOption extends BaseOption<FloatRangeOption> implements Nu
 
 	public FloatRangeOption(CharSequence name, float defaultValueMin, float defaultValueMax) {
 		this(name, _ -> "", defaultValueMin, defaultValueMax, -Float.MAX_VALUE, Float.MAX_VALUE, null);
+	}
+
+	public FloatRangeOption(CharSequence name, WidgetProvider<FloatRangeOption> provider) {
+		this(name, _ -> "", -1, 1, -Float.MAX_VALUE, Float.MAX_VALUE, provider);
+	}
+
+	public FloatRangeOption(CharSequence name) {
+		this(name, _ -> "", -1, 1, -Float.MAX_VALUE, Float.MAX_VALUE, null);
 	}
 
 	public float getMinValue() {
