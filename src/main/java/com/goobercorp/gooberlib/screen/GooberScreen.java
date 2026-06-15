@@ -162,6 +162,9 @@ public class GooberScreen extends Screen {
 			if (tabNavigationWidget.isMouseOver(mX, mY)) {
 				tabHoldTicks = 10;
 			}
+			if (!MainConfig.HIDE_TABS.getValue()) {
+				tabHoldTicks = 10;
+			}
 
 			newMatrixScope(drawContext, matrix3x2fStack -> {
 				matrix3x2fStack.translate(0, -26 * categoryHoverProgress);
