@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.test;
 
+import com.goobercorp.gooberlib.GooberLibEntrypoint;
 import com.terraformersmc.modmenu.ModMenu;
 import com.terraformersmc.modmenu.api.UpdateChecker;
 import com.terraformersmc.modmenu.api.UpdateInfo;
@@ -18,12 +19,17 @@ public class GooberLibTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		registerTestMod("yacl-test", "Yacl Parity Test Mod");
-		registerTestMod("mapi-test", "MaLiLib API Parity Test Mod");
+		for (String modId : GooberLibEntrypoint.builtConfigMap.keySet()) {
+			if (!ModMenu.MODS.containsKey(modId))
+				registerTestMod(modId, modId);
+		}
+//		registerTestMod("yacl-test", "Yacl Parity Test Mod");
+//		registerTestMod("mapi-test", "MaLiLib API Parity Test Mod");
+//		registerTestMod("changing-default-value-test", "Test mod for changing default values");
 	}
 
 	private void registerTestMod(String id, String name) {
-		ModMenu.MODS.put("yacl-test", new Mod() {
+		ModMenu.MODS.put(id, new Mod() {
 			@Override
 			public @NotNull String getId() {
 				return id;
@@ -38,9 +44,9 @@ public class GooberLibTest implements ModInitializer {
 			public @NotNull DynamicTexture getIcon(FabricIconHandler iconHandler, int i) {
 				return Objects.requireNonNull(iconHandler.createIcon(
 						FabricLoader.getInstance()
-								.getModContainer(ModMenu.MOD_ID)
+								.getModContainer("testmod")
 								.orElseThrow(() -> new RuntimeException("Cannot get ModContainer for Fabric mod with id " + ModMenu.MOD_ID)),
-						"assets/" + ModMenu.MOD_ID + "/unknown_icon.png"
+						"icon.png"
 				));
 			}
 

@@ -284,4 +284,8 @@ public class GooberLibApi {
 	private static BuiltConfig getConfigFor(String modId) {
 		return ConfigDiscovery.getConfigs().get(modId);
 	}
+
+	public static class Defaults {
+		public static boolean booleanValue;
+	}
 }

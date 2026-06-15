@@ -10,8 +10,7 @@ import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 
 import java.util.function.Supplier;
 
-@GooberConfig(modId = "mixinextras")
-
+@GooberConfig(modId = "widget-variations")
 public class WidgetVariations {
 
 	public static final BooleanOption boolopt = new BooleanOption("yeah", "", WidgetProviders.booleanTickBox());

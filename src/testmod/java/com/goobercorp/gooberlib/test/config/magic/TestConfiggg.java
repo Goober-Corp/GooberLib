@@ -4,7 +4,7 @@ import com.goobercorp.gooberlib.annotations.GooberConfig;
 import com.goobercorp.gooberlib.annotations.Section;
 import com.goobercorp.gooberlib.option.individual.primitive.CharOption;
 
-@GooberConfig(modId = "fabricloader", lazy = true) // tehe
+@GooberConfig(modId = "lazy-and-magic-test", lazy = true)
 public class TestConfiggg {
 	@Section("meow meow")
 	public static final CharOption charOption = new CharOption("char option", "char description");
