@@ -36,6 +36,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.resources.Identifier;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -188,6 +189,7 @@ public class GooberLibApi {
 		defaultHandlers.add(new Pair<>(name, handler));
 	}
 
+	// todo: figure out when to call this
 	public static void resetDefaultValues() {
 		for (Pair<String, DefaultHandler> handler : defaultHandlers) {
 			try {
@@ -258,6 +260,10 @@ public class GooberLibApi {
 			Defaults.longRangeDefaultMax = Long.MAX_VALUE;
 			Defaults.floatRangeDefaultMax = Float.MAX_VALUE;
 			Defaults.doubleRangeDefaultMax = Double.MAX_VALUE;
+		});
+		registerDefaultHandler("misc", () -> {
+			Defaults.identifierDefault = Identifier.parse("minecraft:stone");
+			Defaults.colorDefault = 0xFF000000;
 		});
 	}
 
@@ -421,5 +427,8 @@ public class GooberLibApi {
 		public static int intRangeDefaultMax;
 		public static long longRangeDefaultMax;
 		public static short shortRangeDefaultMax;
+
+		public static Identifier identifierDefault;
+		public static int colorDefault;
 	}
 }

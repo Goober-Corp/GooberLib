@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.option.individual.minecraft;
 
+import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
@@ -32,6 +33,23 @@ public class IdentifierOption extends BaseOption<IdentifierOption> {
 
 	public IdentifierOption(CharSequence name, Identifier defaultValue) {
 		this(name, _ -> "", defaultValue, null);
+	}
+
+
+	public IdentifierOption(CharSequence name, CharSequence description, WidgetProvider<IdentifierOption> provider) {
+		this(name, _ -> description, GooberLibApi.Defaults.identifierDefault, provider);
+	}
+
+	public IdentifierOption(CharSequence name, CharSequence description) {
+		this(name, _ -> description, GooberLibApi.Defaults.identifierDefault, null);
+	}
+
+	public IdentifierOption(CharSequence name, WidgetProvider<IdentifierOption> provider) {
+		this(name, _ -> "", GooberLibApi.Defaults.identifierDefault, provider);
+	}
+
+	public IdentifierOption(CharSequence name) {
+		this(name, _ -> "", GooberLibApi.Defaults.identifierDefault, null);
 	}
 
 	@Override
