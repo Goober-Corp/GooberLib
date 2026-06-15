@@ -172,4 +172,9 @@ public class EvilSliderWidget extends EvilBaseWidget {
 		super.playDownSound(Minecraft.getInstance().getSoundManager());
 	}
 
+	@Override
+	public void reset() {
+		numberOption.resetToDefault();
+		this.value = getInterpolatedValue(numberOption.getNumberValue().doubleValue(), numberOption.getDoubleMin(), numberOption.getDoubleMax());
+	}
 }

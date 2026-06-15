@@ -95,4 +95,9 @@ public class HotkeyWidget extends EvilBaseWidget {
 		}
 		return false;
 	}
+
+	@Override
+	public void reset() {
+		opt.resetToDefault();
+	}
 }

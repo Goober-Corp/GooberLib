@@ -44,11 +44,20 @@ public class EvilBaseWidget extends AbstractWidget {
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean bl) {
+		if (click.button() == 2) {
+			playDownSound(Minecraft.getInstance().getSoundManager());
+			this.reset();
+			return true;
+		}
 		if (super.mouseClicked(click, bl)) {
 			mouseDown = true;
 			return true;
 		}
 		return false;
+	}
+
+	public void reset() {
+		//Override
 	}
 
 	@Override

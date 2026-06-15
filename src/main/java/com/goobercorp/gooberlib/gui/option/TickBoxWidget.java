@@ -57,4 +57,8 @@ public class TickBoxWidget extends EvilBaseWidget {
 		}
 	}
 
+	@Override
+	public void reset() {
+		opt.resetToDefault();
+	}
 }

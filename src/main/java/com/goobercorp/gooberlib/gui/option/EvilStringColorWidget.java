@@ -22,7 +22,8 @@ public class EvilStringColorWidget extends EvilStringWidget {
 	private final ColorTweener colorTweener;
 
 	public EvilStringColorWidget(Component name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, ColorOption opt) {
-		super(x + font().width(name), y, width - font().width(name), height, changedListener, predicate, immediatePredicate, initial);
+		super(x + font().width(name), y, width - font().width(name), height, changedListener, predicate, immediatePredicate, initial, () -> {
+		});
 		this.name = name;
 		this.x = x;
 		this.opt = opt;
@@ -91,5 +92,10 @@ public class EvilStringColorWidget extends EvilStringWidget {
 		super.renderWidget(drawContext, i, j, f);
 		colorTweener.update();
 		drawContext.drawString(font(), name, x + 1, getY() + 3, MainConfig.primaryCol, true);
+	}
+
+	@Override
+	public void reset() {
+		opt.resetToDefault();
 	}
 }

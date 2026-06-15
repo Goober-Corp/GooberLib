@@ -64,4 +64,9 @@ public class CyclingOptionWidget extends EvilBaseWidget {
 		int button = mouseButtonInfo.button();
 		return button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
 	}
+
+	@Override
+	public void reset() {
+		opt.resetToDefault();
+	}
 }

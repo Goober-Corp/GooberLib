@@ -53,6 +53,11 @@ public class ListOption<T extends Option<T>> extends BaseOption<ListOption<T>> i
 	}
 
 	@Override
+	public void resetToDefault() {
+		forEach(Option::resetToDefault);
+	}
+
+	@Override
 	public Iterator<T> iterator() {
 		return value.iterator();
 	}

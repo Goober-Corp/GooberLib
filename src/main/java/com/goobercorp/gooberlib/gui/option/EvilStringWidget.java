@@ -73,8 +73,10 @@ public class EvilStringWidget extends EvilBaseWidget {
 	private Function<String, List<String>> suggestionProvider = List::of;
 	private Function<String, Component> formatter = Component::literal;
 	protected boolean alignRight;
+	private Runnable onReset;
 
-	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial) {
+	//TODO: make good reset method
+	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, Runnable onReset) {
 		super(Component.empty(), x, y, width, height);
 		this.immediatePredicate = immediatePredicate;
 		this.textRenderer = Minecraft.getInstance().font;
@@ -86,28 +88,34 @@ public class EvilStringWidget extends EvilBaseWidget {
 		this.shouldDrawName = false;
 		textXTweener.snapToTarget();
 		setPlaceholder(Component.literal("..."));
+		this.onReset = onReset;
 	}
 
-	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, int colorOverride) {
-		this(x, y, width, height, changedListener, predicate, immediatePredicate, initial);
+	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, Runnable onReset, int colorOverride) {
+		this(x, y, width, height, changedListener, predicate, immediatePredicate, initial, onReset);
 		this.editableColor = () -> colorOverride;
 		textXTweener.snapToTarget();
 	}
 
-	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, int colorOverride, boolean centered) {
-		this(x, y, width, height, changedListener, predicate, immediatePredicate, initial);
+	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, Runnable onReset, int colorOverride, boolean centered) {
+		this(x, y, width, height, changedListener, predicate, immediatePredicate, initial, onReset);
 		this.editableColor = () -> colorOverride;
 		this.centered = centered;
 		updateTextPosition();
 		textXTweener.snapToTarget();
 	}
 
-	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, boolean alignRight, boolean centered) {
-		this(x, y, width, height, changedListener, predicate, immediatePredicate, initial);
+	public EvilStringWidget(int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, Runnable onReset, boolean alignRight, boolean centered) {
+		this(x, y, width, height, changedListener, predicate, immediatePredicate, initial, onReset);
 		this.centered = centered;
 		this.alignRight = alignRight;
 		updateTextPosition();
 		textXTweener.snapToTarget();
+	}
+
+	@Override
+	public void reset() {
+		onReset.run();
 	}
 
 	public void setChangedListener(Consumer<String> consumer) {

@@ -13,13 +13,13 @@ import net.minecraft.world.phys.Vec2;
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 public class ColorPickerWidget extends EvilBaseWidget {
-	private final ColorOption option;
+	private final ColorOption opt;
 	private final ColorTweener colorTweener;
 
 	public ColorPickerWidget(ColorOption theOption, int x, int y, int width, int height) {
 		super(theOption.name(), x, y, width, height);
-		option = theOption;
-		colorTweener = new ColorTweener(() -> option.value, 5);
+		opt = theOption;
+		colorTweener = new ColorTweener(() -> opt.value, 5);
 		shouldDrawName = true;
 	}
 
@@ -68,5 +68,10 @@ public class ColorPickerWidget extends EvilBaseWidget {
 			);
 		}
 
+	}
+
+	@Override
+	public void reset() {
+		opt.resetToDefault();
 	}
 }

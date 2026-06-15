@@ -23,4 +23,9 @@ public class ConfigClass extends BaseOption<ConfigClass> {
 	@Override
 	public <S> void deserialize(DynamicOps<S> ops, S object) {
 	}
+
+	@Override
+	public void resetToDefault() {
+		//TODO: glup ?
+	}
 }

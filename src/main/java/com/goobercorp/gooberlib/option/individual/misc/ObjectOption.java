@@ -63,6 +63,13 @@ public class ObjectOption<T> extends BaseOption<ObjectOption<T>> {
 		});
 	}
 
+	@Override
+	public void resetToDefault() {
+		for (Option<?> opt : options) {
+			opt.resetToDefault();
+		}
+	}
+
 	public T getInstance() {
 		return instance;
 	}

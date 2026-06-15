@@ -2,7 +2,6 @@ package com.goobercorp.gooberlib.screen;
 
 
 import com.goobercorp.gooberlib.api.widgets.WidgetProviders;
-import com.goobercorp.gooberlib.gui.option.EvilStringWidget;
 import com.goobercorp.gooberlib.gui.util.PrecisePositionWidgetWrapper;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.option.individual.minecraft.BlockPosOption;
@@ -28,8 +27,8 @@ public class ShowcaseScreen extends Screen {
 		var width = 200;
 		var height = 15;
 		switch (index) {
-			case 0 ->
-					this.addRenderableWidget(new PrecisePositionWidgetWrapper<>(new EvilStringWidget(0, 0, 200, 15, null, _ -> true, _ -> true, "", -1), this.width / 2.0 - 100, this.height / 2.0, Component::empty));
+//			case 0 ->
+//					this.addRenderableWidget(new PrecisePositionWidgetWrapper<>(new EvilStringWidget(0, 0, 200, 15, null, _ -> true, _ -> true, "",  -1), this.width / 2.0 - 100, this.height / 2.0, Component::empty));
 			case 1 ->
 					this.addRenderableWidget(new PrecisePositionWidgetWrapper<>(new BooleanOption("bool", "", WidgetProviders.booleanSliderWidget()).makeWidget(x, y, width, height), this.width / 2.0 - 100, this.height / 2.0, Component::empty));
 			case 2 ->

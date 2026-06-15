@@ -64,4 +64,9 @@ public class SliderToggleWidget extends EvilBaseWidget {
 		int button = mouseButtonInfo.button();
 		return button == GLFW.GLFW_MOUSE_BUTTON_LEFT;
 	}
+
+	@Override
+	public void reset() {
+		opt.resetToDefault();
+	}
 }

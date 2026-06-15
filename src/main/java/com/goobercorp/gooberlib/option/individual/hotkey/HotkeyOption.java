@@ -20,6 +20,7 @@ public class HotkeyOption extends BaseOption<HotkeyOption> {
 	private final OnPress onPress;
 	public HotkeySettings settings;
 	public boolean editing = false;
+	private final String defaultKeys;
 
 	public HotkeyOption(CharSequence name, CharSequence description, String defaultKeys, int maxKeyCount, Runnable onPress) {
 		this(name, _ -> description, null, defaultKeys, maxKeyCount, (_) -> {
@@ -30,6 +31,7 @@ public class HotkeyOption extends BaseOption<HotkeyOption> {
 
 	public HotkeyOption(CharSequence name, Function<HotkeyOption, CharSequence> description, WidgetProvider<HotkeyOption> provider, String defaultKeys, int maxKeyCount, OnPress onPress, HotkeySettings settings) {
 		super(name, description, provider);
+		this.defaultKeys = defaultKeys;
 		String[] individualKeys = defaultKeys.replaceAll("\\s+", "").split(",");
 		if (individualKeys.length > maxKeyCount) {
 			throw new IllegalArgumentException("Default keys size (" + individualKeys.length + ") is more than provided max keys (" + maxKeyCount + ")");
@@ -84,6 +86,16 @@ public class HotkeyOption extends BaseOption<HotkeyOption> {
 			allowExtra = (ops.getBooleanValue(list.get(3)).getOrThrow());
 			ordered = (OrderedSetting.valueOf(ops.getStringValue(list.get(4)).getOrThrow()));
 			this.settings = HotkeySettings.of(gui, when, allowExtra, ordered);
+		}
+	}
+
+	@Override
+	public void resetToDefault() {
+		String[] individualKeys = defaultKeys.replaceAll("\\s+", "").split(",");
+		Arrays.fill(keyCodes, -1);
+		for (int i = 0; i < individualKeys.length; i++) {
+			if (individualKeys[i].isEmpty()) continue;
+			keyCodes[i] = HotkeyUtil.fromName(individualKeys[i].toUpperCase(Locale.ROOT));
 		}
 	}
 
