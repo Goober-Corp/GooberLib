@@ -15,7 +15,6 @@ import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -426,10 +425,6 @@ public class EvilStringWidget extends EvilBaseWidget {
 	@Override
 	protected void onDrag(MouseButtonEvent click, double d, double e) {
 		this.setCursor(this.calculateCursorPos(click), true);
-	}
-
-	@Override
-	public void playDownSound(SoundManager soundManager) {
 	}
 
 	@Override
