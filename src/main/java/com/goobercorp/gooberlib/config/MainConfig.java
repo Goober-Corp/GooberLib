@@ -33,11 +33,14 @@ public class MainConfig {
 	public static final BooleanOption WOKE = new BooleanOption("Woke mode").setOnValueChange(b -> {
 		if (!b.getValue()) primaryCol = 0xFFffaf5e;
 	});
+	public static final BooleanOption BACKGROUND_GLOW = new BooleanOption("Background Glow");
+	public static final BooleanOption CATEGORY_ANIMATIONS = new BooleanOption("Category Animations");
+
 	public static final FloatOption WOKE_STRENGTH = new FloatOption("Wokeness strength", 0.5F, 0F, 1F, WidgetProviders.numberSliderWithFormatter(floatOption -> (int) (floatOption.value * 100) + "%"));
 
 	public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.create("GooberLib", b -> {
 		b.category("Visual", category -> {
-			category.options(ENABLE_INFINITE_TAB_SCROLLING, HIDE_TABS, EXPERIMENTAL_DUAL_COLUMN_LAYOUT);
+			category.options(ENABLE_INFINITE_TAB_SCROLLING, HIDE_TABS, EXPERIMENTAL_DUAL_COLUMN_LAYOUT, BACKGROUND_GLOW, CATEGORY_ANIMATIONS);
 			category.optionWithChildren(WOKE, WOKE_STRENGTH);
 		});
 		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {

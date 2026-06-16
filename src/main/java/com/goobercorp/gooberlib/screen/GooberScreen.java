@@ -120,25 +120,25 @@ public class GooberScreen extends Screen {
 		setWidgetOffsets();
 		setHoverText(mX, mY);
 		//Cursor glow
-		if (Minecraft.getInstance().options.getMenuBackgroundBlurriness() > 0) {
-			RenderUtils.fillEvil(drawContext, (float) mX, (float) mY, (float) (mX + 2.5f), (float) (mY + 2.5F), MainConfig.primaryCol);
-		}
 		newMatrixScope(drawContext, stack -> {
 			stack.translate((float) (-mouseXTweener.get() * 0.1F), (float) (-mouseYTweener.get() * 0.1F));
 			stack.translate(Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2F - 100, Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2F - 100);
 			stack.scale(2.5F, 2.5F);
 			drawContext.blit(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath("gooberlib", "textures/him.png"), 0, 0, 100, 100, 100, 100, 100, 100);
 		});
-
-
-		drawCommon(drawContext, mouseX, mouseY, tickDelta);
-
-		if (this.showTabs) {
-			newMatrixScope(drawContext, stack -> {
-				stack.translate(0, -26 * categoryHoverProgress);
-				tabNavigationWidget.renderForBackgroundLayer(drawContext);
-			});
+		if (MainConfig.BACKGROUND_GLOW.value) {
+			if (Minecraft.getInstance().options.getMenuBackgroundBlurriness() > 0) {
+				RenderUtils.fillEvil(drawContext, (float) mX, (float) mY, (float) (mX + 2.5f), (float) (mY + 2.5F), MainConfig.primaryCol);
+			}
+			drawCommon(drawContext, mouseX, mouseY, tickDelta);
+			if (this.showTabs) {
+				newMatrixScope(drawContext, stack -> {
+					stack.translate(0, -26 * categoryHoverProgress);
+					tabNavigationWidget.renderForBackgroundLayer(drawContext);
+				});
+			}
 		}
+
 		if (this == Minecraft.getInstance().screen) {
 			drawContext.nextStratum();
 			super.renderBackground(drawContext, mouseX, mouseY, tickDelta);
@@ -252,13 +252,16 @@ public class GooberScreen extends Screen {
 
 	private void updateTweeners() {
 		this.scrollTweener.update();
-		this.categoryTweener.update();
 		mouseXTweener.update();
 		mouseYTweener.update();
 		//TODO: convert to tweeners
 		categoryHoverProgress = (float) ease(categoryHoverProgress, tabHoldTicks > 0 ? 0 : 1, 15);
-		int yeah = showTabs ? tabNavigationWidget.getCurrentTabIndex() : 0;
-		screenCategoryAnimationState = (float) ease(screenCategoryAnimationState, yeah == -1 ? 0 : yeah, 15);
+		screenCategoryAnimationState = showTabs ? tabNavigationWidget.getCurrentTabIndex() : 0;
+		if (MainConfig.CATEGORY_ANIMATIONS.value) {
+			this.categoryTweener.update();
+		} else {
+			categoryTweener.snapToTarget();
+		}
 		descriptionAnimationProgress = (float) ease(descriptionAnimationProgress, animateHoverDescription ? 1 : 0, 20);
 	}
 
