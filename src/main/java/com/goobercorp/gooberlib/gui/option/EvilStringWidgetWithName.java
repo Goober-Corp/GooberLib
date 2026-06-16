@@ -17,18 +17,16 @@ public class EvilStringWidgetWithName extends EvilStringWidget {
 	private final int x;
 	private boolean drawInside;
 
-	public EvilStringWidgetWithName(Component name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial) {
-		super(x + font().width(name), y, width - font().width(name), height, changedListener, predicate, immediatePredicate, initial, () -> {
-		});
+	public EvilStringWidgetWithName(Component name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, Consumer<EvilStringWidget> onReset) {
+		super(x + font().width(name), y, width - font().width(name), height, changedListener, predicate, immediatePredicate, initial, onReset);
 		this.name = name;
 		this.x = x;
 		this.shouldDrawName = true;
 		textXTweener.snapToTarget();
 	}
 
-	public EvilStringWidgetWithName(Component name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, boolean alignRight, boolean centered, boolean drawInside) {
-		super(drawInside ? x : x + font().width(name), y, drawInside ? width : width - font().width(name), height, changedListener, predicate, immediatePredicate, initial, () -> {
-		});
+	public EvilStringWidgetWithName(Component name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, Consumer<EvilStringWidget> onReset, boolean alignRight, boolean centered, boolean drawInside) {
+		super(drawInside ? x : x + font().width(name), y, drawInside ? width : width - font().width(name), height, changedListener, predicate, immediatePredicate, initial, onReset);
 		this.name = name;
 		this.x = drawInside ? x + font().width(name) : x;
 		this.shouldDrawName = true;

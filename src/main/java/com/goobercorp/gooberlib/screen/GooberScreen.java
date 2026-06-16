@@ -172,7 +172,6 @@ public class GooberScreen extends Screen {
 			});
 		}
 
-		// TODO: maybe store scroll height for each category?
 		var catHeight = getCurrentCategoryWidget().getWrapped().getHeight();
 		if (catHeight < height) {
 			catHeight += (height - VERTICAL_PADDING);

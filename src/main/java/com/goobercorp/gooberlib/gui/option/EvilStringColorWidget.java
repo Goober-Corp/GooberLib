@@ -22,7 +22,9 @@ public class EvilStringColorWidget extends EvilStringWidget {
 	private final ColorTweener colorTweener;
 
 	public EvilStringColorWidget(Component name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, ColorOption opt) {
-		super(x + font().width(name), y, width - font().width(name), height, changedListener, predicate, immediatePredicate, initial, () -> {
+		super(x + font().width(name), y, width - font().width(name), height, changedListener, predicate, immediatePredicate, initial, widget -> {
+			opt.resetToDefault();
+			widget.setText("#" + Integer.toHexString(opt.value));
 		});
 		this.name = name;
 		this.x = x;

@@ -46,9 +46,13 @@ public class WidgetProviders {
 		return ((theOption, x, y, width, height) -> {
 			var widgetX = font().width(theOption.name());
 			var widgetWidth = width - font().width(theOption.name());
-			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 2, height, null, Predicates.FLOAT, Predicates.FLOAT_IMMEDIATE, "" + theOption.getX(), () -> {
+			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 2, height, null, Predicates.FLOAT, Predicates.FLOAT_IMMEDIATE, "" + theOption.getX(), widget -> {
+				theOption.setValue(new Vec2(theOption.getDefaultValue().x, theOption.getY()));
+				widget.setText(String.valueOf(theOption.getX()));
 			}, 0xFFE0F000);
-			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 2, y, Mth.ceil(widgetWidth / 2F), height, null, Predicates.FLOAT, Predicates.FLOAT_IMMEDIATE, "" + theOption.getY(), () -> {
+			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 2, y, Mth.ceil(widgetWidth / 2F), height, null, Predicates.FLOAT, Predicates.FLOAT_IMMEDIATE, "" + theOption.getY(), widget -> {
+				theOption.setValue(new Vec2(theOption.getX(), theOption.getDefaultValue().y));
+				widget.setText(String.valueOf(theOption.getY()));
 			}, 0xFF0000E0);
 			Consumer<String> changedListener = _ -> {
 				try {
@@ -67,11 +71,17 @@ public class WidgetProviders {
 		return ((theOption, x, y, width, height) -> {
 			var widgetX = font().width(theOption.name());
 			var widgetWidth = width - font().width(theOption.name());
-			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getX(), () -> {
+			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getX(), widget -> {
+				theOption.setValue(new BlockPos(theOption.getDefaultValue().getX(), theOption.getY(), theOption.getZ()));
+				widget.setText(String.valueOf(theOption.getX()));
 			}, 0xFFE00000, true);
-			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getY(), () -> {
+			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getY(), widget -> {
+				theOption.setValue(new BlockPos(theOption.getX(), theOption.getDefaultValue().getY(), theOption.getZ()));
+				widget.setText(String.valueOf(theOption.getY()));
 			}, 0xFF00E000, true);
-			var zWidget = new EvilStringWidget(widgetX + widgetWidth * 2 / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getZ(), () -> {
+			var zWidget = new EvilStringWidget(widgetX + widgetWidth * 2 / 3, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getZ(), widget -> {
+				theOption.setValue(new BlockPos(theOption.getX(), theOption.getY(), theOption.getDefaultValue().getZ()));
+				widget.setText(String.valueOf(theOption.getZ()));
 			}, 0xFF0000E0, true);
 			Consumer<String> changedListener = _ -> {
 				try {
@@ -91,11 +101,17 @@ public class WidgetProviders {
 		return ((theOption, x, y, width, height) -> {
 			var widgetX = font().width(theOption.name());
 			var widgetWidth = width - font().width(theOption.name());
-			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getX(), () -> {
+			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getX(), widget -> {
+				theOption.setValue(new Vec3i(theOption.getDefaultValue().getX(), theOption.getY(), theOption.getZ()));
+				widget.setText(String.valueOf(theOption.getX()));
 			}, 0xFFE00000);
-			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, Mth.ceil(widgetWidth / 3F), height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getY(), () -> {
+			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, Mth.ceil(widgetWidth / 3F), height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getY(), widget -> {
+				theOption.setValue(new Vec3i(theOption.getX(), theOption.getDefaultValue().getY(), theOption.getZ()));
+				widget.setText(String.valueOf(theOption.getY()));
 			}, 0xFF00E000);
-			var zWidget = new EvilStringWidget(widgetX + widgetWidth * 2 / 3, y, Mth.ceil(widgetWidth / 3F), height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getZ(), () -> {
+			var zWidget = new EvilStringWidget(widgetX + widgetWidth * 2 / 3, y, Mth.ceil(widgetWidth / 3F), height, null, Predicates.INTEGER, Predicates.INTEGER_IMMEDIATE, "" + theOption.getZ(), widget -> {
+				theOption.setValue(new Vec3i(theOption.getX(), theOption.getY(), theOption.getDefaultValue().getZ()));
+				widget.setText(String.valueOf(theOption.getZ()));
 			}, 0xFF0000E0);
 			Consumer<String> changedListener = _ -> {
 				try {
@@ -115,11 +131,17 @@ public class WidgetProviders {
 		return ((theOption, x, y, width, height) -> {
 			var widgetX = font().width(theOption.name());
 			var widgetWidth = width - font().width(theOption.name());
-			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.DOUBLE, Predicates.DOUBLE_IMMEDIATE, "" + theOption.getX(), () -> {
+			var xWidget = new EvilStringWidget(widgetX, y, widgetWidth / 3, height, null, Predicates.DOUBLE, Predicates.DOUBLE_IMMEDIATE, "" + theOption.getX(), widget -> {
+				theOption.setValue(new Vec3(theOption.getDefaultValue().x, theOption.getY(), theOption.getZ()));
+				widget.setText(String.valueOf(theOption.getX()));
 			}, 0xFFE00000);
-			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, Mth.floor(widgetWidth / 3F), height, null, Predicates.DOUBLE, Predicates.DOUBLE_IMMEDIATE, "" + theOption.getY(), () -> {
+			var yWidget = new EvilStringWidget(widgetX + widgetWidth / 3, y, Mth.floor(widgetWidth / 3F), height, null, Predicates.DOUBLE, Predicates.DOUBLE_IMMEDIATE, "" + theOption.getY(), widget -> {
+				theOption.setValue(new Vec3(theOption.getX(), theOption.getDefaultValue().y, theOption.getZ()));
+				widget.setText(String.valueOf(theOption.getY()));
 			}, 0xFF00E000);
-			var zWidget = new EvilStringWidget(widgetX + widgetWidth * 2 / 3, y, Mth.ceil(widgetWidth / 3F), height, null, Predicates.DOUBLE, Predicates.DOUBLE_IMMEDIATE, "" + theOption.getZ(), () -> {
+			var zWidget = new EvilStringWidget(widgetX + widgetWidth * 2 / 3, y, Mth.ceil(widgetWidth / 3F), height, null, Predicates.DOUBLE, Predicates.DOUBLE_IMMEDIATE, "" + theOption.getZ(), widget -> {
+				theOption.setValue(new Vec3(theOption.getX(), theOption.getY(), theOption.getDefaultValue().z));
+				widget.setText(String.valueOf(theOption.getZ()));
 			}, 0xFF0000E0);
 			Consumer<String> changedListener = _ -> {
 				try {
@@ -162,11 +184,17 @@ public class WidgetProviders {
 	}
 
 	public static <T extends NumberOption<T>> WidgetProvider<T> numberField() {
-		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setFromString, theOption.getPredicate(), theOption.getImmediatePredicate(), theOption instanceof CharOption c ? String.valueOf(c.value) : theOption.getNumberValue().toString()));
+		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setFromString, theOption.getPredicate(), theOption.getImmediatePredicate(), theOption instanceof CharOption c ? String.valueOf(c.value) : theOption.getNumberValue().toString(), widget -> {
+			theOption.resetToDefault();
+			widget.setText(theOption instanceof CharOption c ? String.valueOf(c.value) : theOption.getNumberValue().toString());
+		}));
 	}
 
 	public static <T extends NumberOption<T>> WidgetProvider<T> numberHybrid() { // todo? make this work? teal what are you doing
-		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setFromString, theOption.getPredicate(), theOption.getImmediatePredicate(), theOption instanceof CharOption c ? String.valueOf(c.value) : theOption.getNumberValue().toString()));
+		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setFromString, theOption.getPredicate(), theOption.getImmediatePredicate(), theOption instanceof CharOption c ? String.valueOf(c.value) : theOption.getNumberValue().toString(), widget -> {
+			theOption.resetToDefault();
+			widget.setText(theOption instanceof CharOption c ? String.valueOf(c.value) : theOption.getNumberValue().toString());
+		}));
 	}
 
 	public static WidgetProvider<ColorOption> colorField() {
@@ -179,7 +207,10 @@ public class WidgetProviders {
 				theOption.setValue(Identifier.parse(s));
 			} catch (IdentifierException _) {
 			}
-		}, Predicates.IDENTIFIER, Predicates.IDENTIFIER_IMMEDIATE, theOption.getValue().toShortString());
+		}, Predicates.IDENTIFIER, Predicates.IDENTIFIER_IMMEDIATE, theOption.getValue().toShortString(), widget -> {
+			theOption.resetToDefault();
+			widget.setText(theOption.getValue().toShortString());
+		});
 	}
 
 	public static WidgetProvider<IdentifierOption> identifierTwoFields() {
@@ -187,9 +218,13 @@ public class WidgetProviders {
 			var widgetX = font().width(theOption.name());
 			var widgetWidth = width - font().width(theOption.name());
 
-			var namespace = new EvilStringWidget(widgetX, y, widgetWidth / 2 - 3, height, null, Predicates.IDENTIFIER, Predicates.IDENTIFIER_IMMEDIATE, theOption.getValue().getNamespace(), () -> {
+			var namespace = new EvilStringWidget(widgetX, y, widgetWidth / 2 - 3, height, null, Predicates.IDENTIFIER, Predicates.IDENTIFIER_IMMEDIATE, theOption.getValue().getNamespace(), widget -> {
+				theOption.setValue(Identifier.fromNamespaceAndPath(theOption.getValue().getNamespace(), theOption.getDefaultValue().getPath()));
+				widget.setText(theOption.getValue().getNamespace());
 			});
-			var path = new EvilStringWidget(widgetX + widgetWidth / 2, y, widgetWidth / 2, height, null, Predicates.IDENTIFIER, Predicates.IDENTIFIER_IMMEDIATE, theOption.getValue().getNamespace(), () -> {
+			var path = new EvilStringWidget(widgetX + widgetWidth / 2, y, widgetWidth / 2, height, null, Predicates.IDENTIFIER, Predicates.IDENTIFIER_IMMEDIATE, theOption.getValue().getNamespace(), widget -> {
+				theOption.setValue(Identifier.fromNamespaceAndPath(theOption.getDefaultValue().getNamespace(), theOption.getValue().getPath()));
+				widget.setText(theOption.getValue().getPath());
 			});
 
 			Consumer<String> changedListener = _ -> {
@@ -233,24 +268,39 @@ public class WidgetProviders {
 	}
 
 	public static WidgetProvider<StringOption> stringField() {
-		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value));
+		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value, widget -> {
+			theOption.resetToDefault();
+			widget.setText(theOption.getValue());
+		}));
 	}
 
 	public static WidgetProvider<StringOption> stringFieldAlignedRight() {
-		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value, true, false, false));
+		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value, widget -> {
+			theOption.resetToDefault();
+			widget.setText(theOption.getValue());
+		}, true, false, false));
 	}
 
 	public static WidgetProvider<StringOption> stringFieldCentered() {
-		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value, false, true, false));
+		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value, widget -> {
+			theOption.resetToDefault();
+			widget.setText(theOption.getValue());
+		}, false, true, false));
 	}
 
 	public static WidgetProvider<StringOption> stringFieldNameInsideAlignedRight() {
-		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value, false, true, true));
+		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value, widget -> {
+			theOption.resetToDefault();
+			widget.setText(theOption.getValue());
+		}, false, true, true));
 	}
 
 	public static WidgetProvider<StringOption> stringField(Function<String, List<String>> suggestionProvider) {
 		return (theOption, x, y, width, height) -> {
-			var widget = new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value);
+			var widget = new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setValue, alwaysTrue(), alwaysTrue(), theOption.value, widget1 -> {
+				theOption.resetToDefault();
+				widget1.setText(theOption.getValue());
+			});
 			widget.setSuggestionProvider(suggestionProvider);
 			return widget;
 		};
