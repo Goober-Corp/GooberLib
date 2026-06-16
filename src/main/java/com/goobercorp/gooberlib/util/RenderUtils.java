@@ -1,11 +1,7 @@
 package com.goobercorp.gooberlib.util;
 
 import com.goobercorp.gooberlib.GooberLibEntrypoint;
-import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.DepthTestFunction;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fStack;
 
@@ -20,21 +16,12 @@ import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.renderer.RenderPipelines;
 
 import static java.lang.Math.exp;
-import static net.minecraft.client.renderer.RenderPipelines.MATRICES_PROJECTION_SNIPPET;
 
 public class RenderUtils {
 	public static double ease(double start, double end, float speed) {
 		var dt = 1.0F / Minecraft.getInstance().getFps();
 		return start + (end - start) * (1 - exp(-dt * speed));
 	}
-
-	public static final RenderPipeline.Snippet GUI_SNIPPET = RenderPipeline.builder(MATRICES_PROJECTION_SNIPPET)
-			.withVertexShader("core/gui")
-			.withFragmentShader("core/gui")
-			.withBlend(BlendFunction.TRANSLUCENT)
-			.withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
-			.withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
-			.buildSnippet();
 
 	public static void drawHorizontalLine(GuiGraphics context, float x1, float x2, float y, int col) {
 		if (x2 < x1) {

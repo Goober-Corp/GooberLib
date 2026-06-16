@@ -33,7 +33,6 @@ public class PrecisePositionWidgetWrapper<T extends AbstractWidget> implements R
 	private double y;
 	private float renderProgress = 0;
 	// todo: move this outside of this class (not related to a precise position wrapper gui element; should extend this or be handled in the screen)
-	private float targetInset;
 
 	public void setHoverMessage(Supplier<Component> hoverMessage) {
 		this.hoverMessage = hoverMessage;
@@ -45,15 +44,6 @@ public class PrecisePositionWidgetWrapper<T extends AbstractWidget> implements R
 
 	public void setRenderProgress(float renderProgress) {
 		this.renderProgress = renderProgress;
-	}
-
-
-	public float getTargetInset() {
-		return targetInset;
-	}
-
-	public void setTargetInset(float targetInset) {
-		this.targetInset = targetInset;
 	}
 
 	public double getOffsetX() {
@@ -114,8 +104,7 @@ public class PrecisePositionWidgetWrapper<T extends AbstractWidget> implements R
 	public PrecisePositionWidgetWrapper(T wrapped, double x, double y, Supplier<Component> description) {
 		this.wrapped = wrapped;
 		renderProgress = new ScreenRectangle((int) getRealX(), (int) getRealY(), wrapped.getRight(), wrapped.getBottom()).overlaps(new ScreenRectangle(0, 0, Minecraft.getInstance().getWindow().getGuiScaledWidth(), Minecraft.getInstance().getWindow().getGuiScaledHeight())) ? 1 : 0;
-		this.x = x - wrapped.getWidth() + 1;
-		this.targetInset = (float) x;
+		this.x = x;
 		this.y = y;
 		if (description != null) {
 			this.hoverMessage = description;
@@ -131,7 +120,6 @@ public class PrecisePositionWidgetWrapper<T extends AbstractWidget> implements R
 
 		boolean isVisible = new ScreenRectangle((int) screenX, (int) screenY, wrapped.getWidth(), wrapped.getHeight()).overlaps(new ScreenRectangle(0, 0, drawContext.guiWidth(), drawContext.guiHeight()));
 
-		this.x = RenderUtils.ease(this.x, targetInset, 10);
 		renderProgress = (float) RenderUtils.ease(renderProgress, 1, 15);
 		if (isVisible) {
 			newMatrixScope(drawContext, matrix3x2fStack -> {
