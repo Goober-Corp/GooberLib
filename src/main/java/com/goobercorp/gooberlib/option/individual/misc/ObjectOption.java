@@ -5,7 +5,6 @@ import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.option.Option;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DynamicOps;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
@@ -17,7 +16,6 @@ import java.util.stream.Stream;
 
 import static org.apache.commons.io.function.Erase.rethrow;
 
-@ApiStatus.Experimental
 public class ObjectOption<T> extends BaseOption<ObjectOption<T>> {
 	private final T instance;
 	public final List<Option<?>> options;
