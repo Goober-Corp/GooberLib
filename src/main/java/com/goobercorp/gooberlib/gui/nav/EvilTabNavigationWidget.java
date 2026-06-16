@@ -164,6 +164,9 @@ public class EvilTabNavigationWidget extends AbstractContainerEventHandler imple
 //						this.targetX = (double) tabNavWidth - 100 * tabs.size() - 5;
 //					} else {
 					this.targetX = -(getCurrentTabButton().getWidth() * currentTabIndex + 1) + tabNavWidth / 2.0 - getCurrentTabButton().getWidth() / 2F;
+					if (!MainConfig.CATEGORY_ANIMATIONS.value) {
+						scrollTweener.snap();
+					}
 //					}
 				}
 				if (click.button() == 0) {

@@ -39,6 +39,10 @@ public class ScrollTweener {
 		value = RenderUtils.ease(value, target.get(), speed);
 	}
 
+	public void snap() {
+		value = target.get();
+	}
+
 	public double get() {
 		return value;
 	}
