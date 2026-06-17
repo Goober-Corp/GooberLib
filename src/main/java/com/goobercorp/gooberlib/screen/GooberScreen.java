@@ -196,29 +196,6 @@ public class GooberScreen extends Screen {
 		}
 	}
 
-	private List<PrecisePositionWidgetWrapper<?>> getAllWidgets() {
-		List<PrecisePositionWidgetWrapper<?>> list = new ArrayList<>();
-
-		for (PrecisePositionWidgetWrapper<CategoryWidget> pw : categoryWidgets) {
-			CategoryWidget categoryWidget = pw.getWrapped();
-			for (var child : categoryWidget.children()) {
-				if (child instanceof PrecisePositionWidgetWrapper<?> p) {
-					var wrapped = p.getWrapped();
-					if (wrapped instanceof SectionWidget section) {
-						for (var sectionChild : section.children()) {
-							if (sectionChild instanceof PrecisePositionWidgetWrapper<?> ppww) {
-								list.add(ppww);
-							}
-						}
-					}
-					list.add(p);
-				}
-			}
-		}
-
-		return list;
-	}
-
 	private void drawCommon(GuiGraphics drawContext, int mouseX, int mouseY, float tickDelta) {
 		for (PrecisePositionWidgetWrapper<CategoryWidget> categoryWidget : categoryWidgets) {
 			categoryWidget.render(drawContext, mouseX, mouseY, tickDelta);
@@ -342,7 +319,6 @@ public class GooberScreen extends Screen {
 
 	@Override
 	public boolean mouseScrolled(double d, double e, double f, double g) {
-		//TODO: maybe make widget scrolling get ignored if scrolling fast enough? (scrolltweener interaction state is still true)
 		boolean yeah;
 		if (scrollTweener.isBeingInteractedWith) {
 			yeah = false;
