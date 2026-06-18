@@ -55,6 +55,7 @@ public class GooberScreen extends Screen {
 	protected final List<PrecisePositionWidgetWrapper<CategoryWidget>> categoryWidgets = new ArrayList<>();
 
 	public GooberScreen(BuiltConfig config, Screen parent, String modId) {
+		//TODO: prevent keybind for opening screen from opening said screen if it is already the current screen
 		super(config.title());
 		this.config = config;
 		this.parent = parent;
