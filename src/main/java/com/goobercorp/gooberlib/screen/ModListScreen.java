@@ -24,7 +24,7 @@ public class ModListScreen extends GooberScreen {
 				return;
 			}
 			//TODO: decide whether to show title or modid. or both. idk
-			b.option(new ButtonOption(config1.title(), () -> Minecraft.getInstance().setScreen(GooberLibApi.getScreenFor(s, null))));
+			b.option(new ButtonOption(config1.title(), () -> Minecraft.getInstance().setScreen(GooberLibApi.getScreenFor(s, this))));
 		})), 0, 0, width, height);
 		PrecisePositionWidgetWrapper<CategoryWidget> pw = new PrecisePositionWidgetWrapper<>(cat, 0, VERTICAL_PADDING, () -> Util.fromChars(""));
 		this.addWidget(pw);

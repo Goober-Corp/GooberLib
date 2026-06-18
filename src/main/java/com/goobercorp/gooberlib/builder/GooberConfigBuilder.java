@@ -48,7 +48,7 @@ public class GooberConfigBuilder {
 	 * @param screenSupplier the screen supplier
 	 * @return this
 	 */
-	public GooberConfigBuilder screenSupplier(TriFunction<BuiltConfig, Screen, String, Screen> screenSupplier) {
+	public GooberConfigBuilder screenSupplier(TriFunction<BuiltConfig, Screen, String, Screen> screenSupplier) { // todo: extract to its own interface
 		this.screenSupplier = screenSupplier;
 		return this;
 	}

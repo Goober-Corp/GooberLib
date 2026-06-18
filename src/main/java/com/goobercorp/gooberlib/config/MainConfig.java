@@ -4,6 +4,7 @@ import com.goobercorp.gooberlib.GooberLibEntrypoint;
 import com.goobercorp.gooberlib.annotations.GooberConfig;
 import com.goobercorp.gooberlib.api.widgets.WidgetProviders;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
+import com.goobercorp.gooberlib.gui.option.EvilButtonWidget;
 import com.goobercorp.gooberlib.gui.util.PrecisePositionWidgetWrapper;
 import com.goobercorp.gooberlib.option.individual.hotkey.HotkeyOption;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
@@ -71,7 +72,7 @@ public class MainConfig {
 				category.option(new LabelOption(Component.literal("meow meow").withColor(0xFFFF00FF)));
 			});
 		}
-		b.screenSupplier((config, screen, modid) -> new Screen(Component.literal("GooberLib")) {
+		b.screenSupplier((config, parent, modid) -> new Screen(Component.literal("GooberLib")) {
 			final int textWidth = font.width("GooberLib");
 			private final List<PrecisePositionWidgetWrapper<?>> widgets = new ArrayList<>();
 			private final TargetedTweener mouseXTweener = new TargetedTweener(20);
@@ -81,13 +82,11 @@ public class MainConfig {
 			protected void init() {
 				super.init();
 				widgets.clear();
-				PrecisePositionWidgetWrapper<AbstractWidget> settings = new PrecisePositionWidgetWrapper<>(new ButtonOption("GooberLib Settings", () -> Minecraft.getInstance().setScreen(new GooberScreen(config, screen, modid))).makeWidget(0, 0, textWidth * 4 + 1, GooberScreen.VERTICAL_PADDING / 2), this.width / 2.0 - textWidth * 2 - 1, this.height / 2.0, Component::empty);
-				PrecisePositionWidgetWrapper<AbstractWidget> detectedMods = new PrecisePositionWidgetWrapper<>(new ButtonOption("Mod List", () -> {
-					Minecraft.getInstance().setScreen(new ModListScreen(config, screen, modid));
-				}).makeWidget(0, 0, textWidth * 4 + 1, GooberScreen.VERTICAL_PADDING / 2), this.width / 2.0 - textWidth * 2 - 1, this.height / 2.0 + GooberScreen.VERTICAL_PADDING, Component::empty);
-				PrecisePositionWidgetWrapper<AbstractWidget> userGuide = new PrecisePositionWidgetWrapper<>(new ButtonOption("User Guide", () -> {
-					Util.getPlatform().openUri(URI.create("https://docs.goobercorp.com/userguide"));
-				}).makeWidget(0, 0, textWidth * 4 + 1, GooberScreen.VERTICAL_PADDING / 2), this.width / 2.0 - textWidth * 2 - 1, this.height / 2.0 + GooberScreen.VERTICAL_PADDING * 2, Component::empty);
+
+				PrecisePositionWidgetWrapper<AbstractWidget> settings = new PrecisePositionWidgetWrapper<>(new EvilButtonWidget("GooberLib Settings", () -> Minecraft.getInstance().setScreen(new GooberScreen(config, this, modid)), 0, 0, textWidth * 4 + 1, GooberScreen.VERTICAL_PADDING / 2, true), this.width / 2.0 - textWidth * 2 - 1, this.height / 2.0, Component::empty);
+				PrecisePositionWidgetWrapper<AbstractWidget> detectedMods = new PrecisePositionWidgetWrapper<>(new EvilButtonWidget("Mod List", () -> Minecraft.getInstance().setScreen(new ModListScreen(config, this, modid)), 0, 0, textWidth * 4 + 1, GooberScreen.VERTICAL_PADDING / 2, true), this.width / 2.0 - textWidth * 2 - 1, this.height / 2.0 + GooberScreen.VERTICAL_PADDING, Component::empty);
+				PrecisePositionWidgetWrapper<AbstractWidget> userGuide = new PrecisePositionWidgetWrapper<>(new EvilButtonWidget("User Guide", () -> Util.getPlatform().openUri(URI.create("https://docs.goobercorp.com/userguide")), 0, 0, textWidth * 4 + 1, GooberScreen.VERTICAL_PADDING / 2, true), this.width / 2.0 - textWidth * 2 - 1, this.height / 2.0 + GooberScreen.VERTICAL_PADDING * 2, Component::empty);
+
 				widgets.add(this.addRenderableWidget(settings));
 				widgets.add(this.addRenderableWidget(detectedMods));
 				widgets.add(this.addRenderableWidget(userGuide));
@@ -120,16 +119,13 @@ public class MainConfig {
 					stack.scale(2.5F, 2.5F);
 					guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath("gooberlib", "textures/him.png"), 0, 0, 100, 100, 100, 100, 100, 100);
 				});
-				widgets.forEach(widget -> {
-					widget.render(guiGraphics, i, j, f);
-				});
+				widgets.forEach(widget -> widget.render(guiGraphics, i, j, f));
 				drawCommon(guiGraphics);
 				guiGraphics.nextStratum();
 				super.renderBackground(guiGraphics, i, j, f);
 			}
 
 			private void drawCommon(GuiGraphics guiGraphics) {
-
 				newMatrixScope(guiGraphics, stack -> {
 					stack.translate(width / 2F, height / 4F);
 					//tektonikal will write this shit and then still have the balls to tell u "ya but it's centered doe"
@@ -138,12 +134,17 @@ public class MainConfig {
 					guiGraphics.drawString(font, "GooberLib", 0, 0, MainConfig.primaryCol);
 				});
 				newMatrixScope(guiGraphics, stack -> {
+					//noinspection OptionalGetWithoutIsPresent
 					String s = "v" + FabricLoader.getInstance().getModContainer(modid).get().getMetadata().getVersion().getFriendlyString();
 					stack.translate(width / 2F + textWidth * 2 - font.width(s) / 2F, height / 4F + font.lineHeight + 4);
 					guiGraphics.drawString(font, s, 0, 0, MainConfig.primaryCol, true);
 //					guiGraphics.drawString(font, "™", 14, -30, MainConfig.primaryCol, true);
-
 				});
+			}
+
+			@Override
+			public void onClose() {
+				this.minecraft.setScreen(parent);
 			}
 		});
 	});
