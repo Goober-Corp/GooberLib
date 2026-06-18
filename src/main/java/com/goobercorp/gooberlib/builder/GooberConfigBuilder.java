@@ -4,19 +4,18 @@ import com.goobercorp.gooberlib.builder.category.CategoryBuilder;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
 import com.goobercorp.gooberlib.screen.GooberScreen;
 import com.goobercorp.gooberlib.util.Util;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-
 public class GooberConfigBuilder {
 	private final Component title;
 	private final List<ConfigCategory> categories = new ArrayList<>();
-	private TriFunction<BuiltConfig, Screen, String, GooberScreen> screenSupplier = GooberScreen::new;
+	private TriFunction<BuiltConfig, Screen, String, Screen> screenSupplier = GooberScreen::new;
 
 	public GooberConfigBuilder(CharSequence title) {
 		this.title = Util.fromChars(title);
@@ -49,7 +48,7 @@ public class GooberConfigBuilder {
 	 * @param screenSupplier the screen supplier
 	 * @return this
 	 */
-	public GooberConfigBuilder screenSupplier(TriFunction<BuiltConfig, Screen, String, GooberScreen> screenSupplier) {
+	public GooberConfigBuilder screenSupplier(TriFunction<BuiltConfig, Screen, String, Screen> screenSupplier) {
 		this.screenSupplier = screenSupplier;
 		return this;
 	}

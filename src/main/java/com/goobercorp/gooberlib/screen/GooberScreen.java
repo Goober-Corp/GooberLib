@@ -119,7 +119,6 @@ public class GooberScreen extends Screen {
 		updateTweeners();
 		setWidgetOffsets();
 		setHoverText(mX, mY);
-		//Cursor glow
 		newMatrixScope(drawContext, stack -> {
 			stack.translate((float) (-mouseXTweener.get() * 0.1F), (float) (-mouseYTweener.get() * 0.1F));
 			stack.translate(Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2F - 100, Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2F - 100);

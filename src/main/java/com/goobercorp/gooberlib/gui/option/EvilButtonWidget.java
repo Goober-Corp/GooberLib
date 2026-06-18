@@ -22,6 +22,7 @@ public class EvilButtonWidget extends EvilBaseWidget {
 	//|<name>                          "EXECUTE"|
 	public EvilButtonWidget(ButtonOption opt, int x, int y, int width, int height, Function<BaseOption<?>, Component> valueFormatter) {
 		super(opt.name(), x, y, width, height, valueFormatter);
+		centerName = true;
 		r = opt.getRunnable();
 	}
 

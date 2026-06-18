@@ -25,7 +25,6 @@ import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.option.individual.primitive.CharOption;
 import com.goobercorp.gooberlib.option.individual.primitive.NumberOption;
 import com.goobercorp.gooberlib.option.individual.primitive.range.NumberRangeOption;
-import com.goobercorp.gooberlib.screen.GooberScreen;
 import com.goobercorp.gooberlib.util.ConfigDiscovery;
 import com.google.gson.*;
 import com.google.gson.internal.Streams;
@@ -360,7 +359,7 @@ public class GooberLibApi {
 	 * @param parent the parent that should be used
 	 * @return a GooberScreen instance
 	 */
-	public static GooberScreen getScreenFor(String modId, Screen parent) {
+	public static Screen getScreenFor(String modId, Screen parent) {
 		BuiltConfig config = getConfigFor(modId);
 		return config.getScreen(parent, modId);
 	}
