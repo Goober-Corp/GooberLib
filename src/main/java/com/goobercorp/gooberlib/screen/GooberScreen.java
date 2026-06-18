@@ -12,6 +12,7 @@ import com.goobercorp.gooberlib.util.TargetedTweener;
 import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.components.tabs.GridLayoutTab;
 import net.minecraft.client.gui.components.tabs.Tab;
 import net.minecraft.client.gui.components.tabs.TabManager;
@@ -26,6 +27,7 @@ import net.minecraft.util.FormattedCharSequence;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.*;
 
@@ -271,11 +273,19 @@ public class GooberScreen extends Screen {
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean bl) {
-		boolean b = super.mouseClicked(click, bl);
-		if (!b) {
+		Optional<GuiEventListener> optional = this.getChildAt(click.x(), click.y());
+		if (optional.isEmpty()) {
 			setFocused(null);
+			return false;
+		} else {
+			GuiEventListener guiEventListener = optional.get();
+			if (guiEventListener.mouseClicked(click, bl) && guiEventListener.shouldTakeFocusAfterInteraction()) {
+				this.setFocused(guiEventListener);
+				this.setDragging(true);
+			}
+
+			return true;
 		}
-		return b;
 	}
 
 	@Override
@@ -291,7 +301,7 @@ public class GooberScreen extends Screen {
 
 	@Override
 	public boolean mouseDragged(MouseButtonEvent click, double deltaX, double deltaY) {
-		boolean yeah = super.mouseDragged(click, deltaX, deltaY);
+		boolean yeah = this.getFocused() != null && this.isDragging() && this.getFocused().mouseDragged(click, deltaX, deltaY);
 		if (!yeah) {
 			lastScrollTicks = 0;
 			scrollTweener.setInteractionState(true);

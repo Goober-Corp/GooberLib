@@ -114,9 +114,7 @@ public class ClickableParentWidget extends AbstractWidget implements ContainerEv
 			GuiEventListener guiEventListener = optional.get();
 			if (guiEventListener.mouseClicked(click, bl) && guiEventListener.shouldTakeFocusAfterInteraction()) {
 				this.setFocused(guiEventListener);
-				if (click.button() == 0) {
-					this.setDragging(true);
-				}
+				this.setDragging(true);
 			}
 
 			return true;
@@ -125,11 +123,18 @@ public class ClickableParentWidget extends AbstractWidget implements ContainerEv
 
 	@Override
 	public boolean mouseReleased(MouseButtonEvent click) {
-		return ContainerEventHandler.super.mouseReleased(click);
+		if (this.isDragging()) {
+			this.setDragging(false);
+			if (this.getFocused() != null) {
+				return this.getFocused().mouseReleased(click);
+			}
+		}
+
+		return false;
 	}
 
 	@Override
 	public boolean mouseDragged(MouseButtonEvent click, double d, double e) {
-		return ContainerEventHandler.super.mouseDragged(click, d, e);
+		return this.getFocused() != null && this.isDragging() && this.getFocused().mouseDragged(click, d, e);
 	}
 }

@@ -56,6 +56,12 @@ public class EvilBaseWidget extends AbstractWidget {
 		return false;
 	}
 
+	@Override
+	public boolean mouseReleased(MouseButtonEvent click) {
+		mouseDown = false;
+		return super.mouseReleased(click);
+	}
+
 	public void reset() {
 		//Override
 	}
@@ -73,12 +79,6 @@ public class EvilBaseWidget extends AbstractWidget {
 	}
 
 	public void onLostFocus() {
-	}
-
-	@Override
-	public boolean mouseReleased(MouseButtonEvent click) {
-		mouseDown = false;
-		return super.mouseReleased(click);
 	}
 
 	/// Override this if you don't want the moving effect

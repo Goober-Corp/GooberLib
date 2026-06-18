@@ -60,6 +60,11 @@ public class CyclingOptionWidget extends EvilBaseWidget {
 	}
 
 	@Override
+	public void onRelease(MouseButtonEvent mouseButtonEvent) {
+		this.mouseDown = false;
+	}
+
+	@Override
 	protected boolean isValidClickButton(MouseButtonInfo mouseButtonInfo) {
 		int button = mouseButtonInfo.button();
 		return button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
