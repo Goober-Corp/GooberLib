@@ -41,22 +41,19 @@ public class CategoryWidget extends ClickableParentWidget implements Hoverable {
 				y += sectionWidget.uncollapsedHeight;
 			} else {
 				int index = i;
-				try {
-					while (true) {
-						if (!(category.elements().get(index) instanceof ConfigSection)) {
-							index++;
-						} else {
-							break;
-						}
+				while (index < category.elements().size()) {
+					if (!(category.elements().get(index) instanceof ConfigSection)) {
+						index++;
+					} else {
+						break;
 					}
-				} catch (Exception e) {
-					//BLEGHHHHHH
 				}
 				//note to self: this is the worst code i've written, maybe ever. but it worked first try.
 				List<OptionHolder> loneOptions = category.elements().subList(i, index);
 				if (MainConfig.EXPERIMENTAL_DUAL_COLUMN_LAYOUT.getValue()) {
 					if (loneOptions.size() == 1) {
 						//TODO: make them wider here
+						// TODO: teal for the love of god please write descriptive todos
 						y += addOptionWithChildren((OptionContext<?>) loneOptions.getFirst(), y, x + (CHILD_INSET / 2), width / 4);
 					} else {
 						for (int j = 0; j < loneOptions.size() - 1; j += 2) {

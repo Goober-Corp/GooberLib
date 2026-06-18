@@ -37,8 +37,8 @@ public class GooberScreen extends Screen {
 	protected final BuiltConfig config;
 	protected final Screen parent;
 	protected Component descriptionText = Component.literal("");
-	protected float descriptionAnimationProgress = 0;
-	protected float categoryHoverProgress = 1;
+	protected TargetedTweener descriptionAnimationProgress = new TargetedTweener();
+	protected TargetedTweener categoryHoverProgress = new TargetedTweener(15);
 	protected float screenCategoryAnimationState = 0;
 	protected EvilTabNavigationWidget tabNavigationWidget;
 	protected int tabHoldTicks = 20;
@@ -57,7 +57,6 @@ public class GooberScreen extends Screen {
 	protected final List<PrecisePositionWidgetWrapper<CategoryWidget>> categoryWidgets = new ArrayList<>();
 
 	public GooberScreen(BuiltConfig config, Screen parent, String modId) {
-		//TODO: prevent keybind for opening screen from opening said screen if it is already the current screen
 		super(config.title());
 		this.config = config;
 		this.parent = parent;
@@ -135,7 +134,7 @@ public class GooberScreen extends Screen {
 			drawCommon(drawContext, mouseX, mouseY, tickDelta);
 			if (this.showTabs) {
 				newMatrixScope(drawContext, stack -> {
-					stack.translate(0, -26 * categoryHoverProgress);
+					stack.translate(0, -26 * categoryHoverProgress.getF());
 					tabNavigationWidget.renderForBackgroundLayer(drawContext);
 				});
 			}
@@ -169,7 +168,7 @@ public class GooberScreen extends Screen {
 			}
 
 			newMatrixScope(drawContext, matrix3x2fStack -> {
-				matrix3x2fStack.translate(0, -26 * categoryHoverProgress);
+				matrix3x2fStack.translate(0, -26 * categoryHoverProgress.getF());
 				tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
 			});
 		}
@@ -205,7 +204,7 @@ public class GooberScreen extends Screen {
 		newMatrixScope(drawContext, stack -> {
 			List<FormattedCharSequence> lines = font.split(descriptionText, width);
 			int linesHeight = lines.size() * 9;
-			stack.translate((float) (drawContext.guiWidth() / 2), this.height - linesHeight * descriptionAnimationProgress);
+			stack.translate((float) (drawContext.guiWidth() / 2), this.height - linesHeight * descriptionAnimationProgress.getF());
 //			RenderUtils.fillEvil(drawContext, 0, -1, width / 2F, linesHeight, MainConfig.shadowCol, 0x00000000);
 //			RenderUtils.fillEvil(drawContext, -width / 2F, -1, 0, linesHeight, 0x00000000, MainConfig.shadowCol);
 			RenderUtils.fillEvil(drawContext, -width / 2F, -1, width / 2F, linesHeight, 0, MainConfig.shadowCol, MainConfig.shadowCol, 0);
@@ -226,18 +225,21 @@ public class GooberScreen extends Screen {
 	}
 
 	protected void updateTweeners() {
-		this.scrollTweener.update();
+		categoryHoverProgress.setTarget(tabHoldTicks > 0 ? 0 : 1);
+		descriptionAnimationProgress.setTarget(animateHoverDescription ? 1 : 0);
+
+		screenCategoryAnimationState = showTabs ? tabNavigationWidget.getCurrentTabIndex() : 0;
+
+		descriptionAnimationProgress.update();
+		scrollTweener.update();
 		mouseXTweener.update();
 		mouseYTweener.update();
-		//TODO: convert to tweeners
-		categoryHoverProgress = (float) ease(categoryHoverProgress, tabHoldTicks > 0 ? 0 : 1, 15);
-		screenCategoryAnimationState = showTabs ? tabNavigationWidget.getCurrentTabIndex() : 0;
+		categoryHoverProgress.update();
 		if (MainConfig.CATEGORY_ANIMATIONS.value) {
 			this.categoryTweener.update();
 		} else {
 			categoryTweener.snapToTarget();
 		}
-		descriptionAnimationProgress = (float) ease(descriptionAnimationProgress, animateHoverDescription ? 1 : 0, 20);
 	}
 
 	@Override
