@@ -171,13 +171,9 @@ public class GooberScreen extends Screen {
 				tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
 			});
 		}
-		//TODO: this still breaks
-		var catHeight = getCurrentCategoryWidget().getWrapped().getHeight();
-		if (catHeight < height) {
-			catHeight += (height - VERTICAL_PADDING);
-		}
-		catHeight -= height;
-		catHeight += VERTICAL_PADDING;
+		double catHeight = getCurrentCategoryWidget().getWrapped().getHeight() - height + VERTICAL_PADDING;
+
+		if (catHeight < scrollTweener.max) catHeight = scrollTweener.max + 1;
 
 		scrollTweener.min = -catHeight;
 	}
