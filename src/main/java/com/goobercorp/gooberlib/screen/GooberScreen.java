@@ -48,8 +48,8 @@ public class GooberScreen extends Screen {
 	protected final Tab[] tabs;
 	protected boolean animateHoverDescription = false;
 	protected boolean showTabs;
-	protected final TargetedTweener mouseXTweener = new TargetedTweener(20);
-	protected final TargetedTweener mouseYTweener = new TargetedTweener(20);
+	public TargetedTweener mouseXTweener = new TargetedTweener(20);
+	public TargetedTweener mouseYTweener = new TargetedTweener(20);
 
 	protected final String modId;
 	protected final List<PrecisePositionWidgetWrapper<CategoryWidget>> categoryWidgets = new ArrayList<>();

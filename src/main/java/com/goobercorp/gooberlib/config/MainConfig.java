@@ -83,8 +83,18 @@ public class MainConfig {
 				super.init();
 				widgets.clear();
 
-				PrecisePositionWidgetWrapper<AbstractWidget> settings = new PrecisePositionWidgetWrapper<>(new EvilButtonWidget("GooberLib Settings", () -> Minecraft.getInstance().setScreen(new GooberScreen(config, this, modid)), 0, 0, textWidth * 4 + 1, GooberScreen.VERTICAL_PADDING / 2, true), this.width / 2.0 - textWidth * 2 - 1, this.height / 2.0, Component::empty);
-				PrecisePositionWidgetWrapper<AbstractWidget> detectedMods = new PrecisePositionWidgetWrapper<>(new EvilButtonWidget("Mod List", () -> Minecraft.getInstance().setScreen(new ModListScreen(config, this, modid)), 0, 0, textWidth * 4 + 1, GooberScreen.VERTICAL_PADDING / 2, true), this.width / 2.0 - textWidth * 2 - 1, this.height / 2.0 + GooberScreen.VERTICAL_PADDING, Component::empty);
+				PrecisePositionWidgetWrapper<AbstractWidget> settings = new PrecisePositionWidgetWrapper<>(new EvilButtonWidget("GooberLib Settings", () -> {
+					GooberScreen screen = new GooberScreen(config, this, modid);
+					screen.mouseXTweener = this.mouseXTweener;
+					screen.mouseYTweener = this.mouseYTweener;
+					Minecraft.getInstance().setScreen(screen);
+				}, 0, 0, textWidth * 4 + 1, GooberScreen.VERTICAL_PADDING / 2, true), this.width / 2.0 - textWidth * 2 - 1, this.height / 2.0, Component::empty);
+				PrecisePositionWidgetWrapper<AbstractWidget> detectedMods = new PrecisePositionWidgetWrapper<>(new EvilButtonWidget("Mod List", () -> {
+					ModListScreen screen = new ModListScreen(config, this, modid);
+					screen.mouseXTweener = this.mouseXTweener;
+					screen.mouseYTweener = this.mouseYTweener;
+					Minecraft.getInstance().setScreen(screen);
+				}, 0, 0, textWidth * 4 + 1, GooberScreen.VERTICAL_PADDING / 2, true), this.width / 2.0 - textWidth * 2 - 1, this.height / 2.0 + GooberScreen.VERTICAL_PADDING, Component::empty);
 				PrecisePositionWidgetWrapper<AbstractWidget> userGuide = new PrecisePositionWidgetWrapper<>(new EvilButtonWidget("User Guide", () -> Util.getPlatform().openUri(URI.create("https://docs.goobercorp.com/userguide")), 0, 0, textWidth * 4 + 1, GooberScreen.VERTICAL_PADDING / 2, true), this.width / 2.0 - textWidth * 2 - 1, this.height / 2.0 + GooberScreen.VERTICAL_PADDING * 2, Component::empty);
 
 				widgets.add(this.addRenderableWidget(settings));
