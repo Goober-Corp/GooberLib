@@ -32,27 +32,27 @@ import static com.goobercorp.gooberlib.util.RenderUtils.*;
 public class GooberScreen extends Screen {
 	public static final int VERTICAL_PADDING = 32;
 	public static final int CHILD_INSET = 16;
-	private final BuiltConfig config;
-	private final Screen parent;
-	private Component descriptionText = Component.literal("");
-	private float descriptionAnimationProgress = 0;
-	private float categoryHoverProgress = 1;
-	private float screenCategoryAnimationState = 0;
-	private EvilTabNavigationWidget tabNavigationWidget;
-	private int tabHoldTicks = 20;
-	private final TabManager tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
-	private double scrollProgress = 0;
-	private final ScrollTweener scrollTweener = new ScrollTweener(() -> scrollProgress, writeTo -> scrollProgress = writeTo, -1000, 0);
-	private int lastScrollTicks = 0;
-	private final Tweener categoryTweener = new Tweener(() -> screenCategoryAnimationState);
-	private final Tab[] tabs;
-	private boolean animateHoverDescription = false;
-	private final boolean showTabs;
-	private final TargetedTweener mouseXTweener = new TargetedTweener(20);
-	private final TargetedTweener mouseYTweener = new TargetedTweener(20);
+	protected final BuiltConfig config;
+	protected final Screen parent;
+	protected Component descriptionText = Component.literal("");
+	protected float descriptionAnimationProgress = 0;
+	protected float categoryHoverProgress = 1;
+	protected float screenCategoryAnimationState = 0;
+	protected EvilTabNavigationWidget tabNavigationWidget;
+	protected int tabHoldTicks = 20;
+	protected final TabManager tabManager = new TabManager(this::addRenderableWidget, this::removeWidget);
+	protected double scrollProgress = 0;
+	protected final ScrollTweener scrollTweener = new ScrollTweener(() -> scrollProgress, writeTo -> scrollProgress = writeTo, -1000, 0);
+	protected int lastScrollTicks = 0;
+	protected final Tweener categoryTweener = new Tweener(() -> screenCategoryAnimationState);
+	protected final Tab[] tabs;
+	protected boolean animateHoverDescription = false;
+	protected boolean showTabs;
+	protected final TargetedTweener mouseXTweener = new TargetedTweener(20);
+	protected final TargetedTweener mouseYTweener = new TargetedTweener(20);
 
-	private final String modId;
-	private final List<PrecisePositionWidgetWrapper<CategoryWidget>> categoryWidgets = new ArrayList<>();
+	protected final String modId;
+	protected final List<PrecisePositionWidgetWrapper<CategoryWidget>> categoryWidgets = new ArrayList<>();
 
 	public GooberScreen(BuiltConfig config, Screen parent, String modId) {
 		super(config.title());
@@ -87,7 +87,7 @@ public class GooberScreen extends Screen {
 		setWidgetOffsets();
 	}
 
-	private void setWidgetOffsets() {
+	protected void setWidgetOffsets() {
 		for (PrecisePositionWidgetWrapper<?> entry : categoryWidgets) {
 			//TODO: sticky groups
 			entry.setOffsetY(scrollTweener.get());
@@ -170,7 +170,7 @@ public class GooberScreen extends Screen {
 				tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
 			});
 		}
-
+		//TODO: this still breaks
 		var catHeight = getCurrentCategoryWidget().getWrapped().getHeight();
 		if (catHeight < height) {
 			catHeight += (height - VERTICAL_PADDING);
@@ -181,11 +181,11 @@ public class GooberScreen extends Screen {
 		scrollTweener.min = -catHeight;
 	}
 
-	private PrecisePositionWidgetWrapper<CategoryWidget> getCurrentCategoryWidget() {
+	protected PrecisePositionWidgetWrapper<CategoryWidget> getCurrentCategoryWidget() {
 		return categoryWidgets.get(showTabs ? tabNavigationWidget.getCurrentTabIndex() : 0);
 	}
 
-	private void setHoverText(double mouseX, double mouseY) {
+	protected void setHoverText(double mouseX, double mouseY) {
 		Component hoverMessage = getCurrentCategoryWidget().getHoverMessage(mouseX, mouseY);
 		if (hoverMessage != null && !hoverMessage.isEmpty()) {
 			animateHoverDescription = true;
@@ -195,14 +195,14 @@ public class GooberScreen extends Screen {
 		}
 	}
 
-	private void drawCommon(GuiGraphics drawContext, int mouseX, int mouseY, float tickDelta) {
+	protected void drawCommon(GuiGraphics drawContext, int mouseX, int mouseY, float tickDelta) {
 		for (PrecisePositionWidgetWrapper<CategoryWidget> categoryWidget : categoryWidgets) {
 			categoryWidget.render(drawContext, mouseX, mouseY, tickDelta);
 		}
 		drawHoveredDescription(drawContext);
 	}
 
-	private void drawHoveredDescription(GuiGraphics drawContext) {
+	protected void drawHoveredDescription(GuiGraphics drawContext) {
 		newMatrixScope(drawContext, stack -> {
 			List<FormattedCharSequence> lines = font.split(descriptionText, width);
 			int linesHeight = lines.size() * 9;
@@ -226,7 +226,7 @@ public class GooberScreen extends Screen {
 		}
 	}
 
-	private void updateTweeners() {
+	protected void updateTweeners() {
 		this.scrollTweener.update();
 		mouseXTweener.update();
 		mouseYTweener.update();

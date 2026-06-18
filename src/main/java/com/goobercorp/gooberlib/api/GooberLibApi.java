@@ -368,6 +368,10 @@ public class GooberLibApi {
 		return ConfigDiscovery.getConfigs().get(modId);
 	}
 
+	public static Map<String, BuiltConfig> getAllConfigs() {
+		return ConfigDiscovery.getConfigs();
+	}
+
 	public static class Defaults {
 		public static boolean booleanDefault;
 

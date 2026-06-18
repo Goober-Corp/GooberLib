@@ -11,6 +11,7 @@ import com.goobercorp.gooberlib.option.individual.misc.LabelOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.option.individual.primitive.FloatOption;
 import com.goobercorp.gooberlib.screen.GooberScreen;
+import com.goobercorp.gooberlib.screen.ModListScreen;
 import com.goobercorp.gooberlib.screen.ShowcaseScreen;
 import com.goobercorp.gooberlib.util.TargetedTweener;
 import net.fabricmc.loader.api.FabricLoader;
@@ -82,7 +83,7 @@ public class MainConfig {
 				widgets.clear();
 				PrecisePositionWidgetWrapper<AbstractWidget> settings = new PrecisePositionWidgetWrapper<>(new ButtonOption("GooberLib Settings", () -> Minecraft.getInstance().setScreen(new GooberScreen(config, screen, modid))).makeWidget(0, 0, textWidth * 4 + 1, GooberScreen.VERTICAL_PADDING / 2), this.width / 2.0 - textWidth * 2 - 1, this.height / 2.0, Component::empty);
 				PrecisePositionWidgetWrapper<AbstractWidget> detectedMods = new PrecisePositionWidgetWrapper<>(new ButtonOption("Mod List", () -> {
-					//TODO: loaded mods list
+					Minecraft.getInstance().setScreen(new ModListScreen(config, screen, modid));
 				}).makeWidget(0, 0, textWidth * 4 + 1, GooberScreen.VERTICAL_PADDING / 2), this.width / 2.0 - textWidth * 2 - 1, this.height / 2.0 + GooberScreen.VERTICAL_PADDING, Component::empty);
 				PrecisePositionWidgetWrapper<AbstractWidget> userGuide = new PrecisePositionWidgetWrapper<>(new ButtonOption("User Guide", () -> {
 					Util.getPlatform().openUri(URI.create("https://docs.goobercorp.com/userguide"));
@@ -140,6 +141,8 @@ public class MainConfig {
 					String s = "v" + FabricLoader.getInstance().getModContainer(modid).get().getMetadata().getVersion().getFriendlyString();
 					stack.translate(width / 2F + textWidth * 2 - font.width(s) / 2F, height / 4F + font.lineHeight + 4);
 					guiGraphics.drawString(font, s, 0, 0, MainConfig.primaryCol, true);
+//					guiGraphics.drawString(font, "™", 14, -30, MainConfig.primaryCol, true);
+
 				});
 			}
 		});
