@@ -2,6 +2,7 @@ package com.goobercorp.gooberlib.builder;
 
 import com.goobercorp.gooberlib.builder.category.CategoryBuilder;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
+import com.goobercorp.gooberlib.interfaces.ScreenSupplier;
 import com.goobercorp.gooberlib.screen.GooberScreen;
 import com.goobercorp.gooberlib.util.Util;
 import net.minecraft.client.gui.screens.Screen;
@@ -15,7 +16,7 @@ import java.util.function.Consumer;
 public class GooberConfigBuilder {
 	private final Component title;
 	private final List<ConfigCategory> categories = new ArrayList<>();
-	private TriFunction<BuiltConfig, Screen, String, Screen> screenSupplier = GooberScreen::new;
+	private ScreenSupplier screenSupplier = GooberScreen::new;
 
 	public GooberConfigBuilder(CharSequence title) {
 		this.title = Util.fromChars(title);
@@ -48,7 +49,7 @@ public class GooberConfigBuilder {
 	 * @param screenSupplier the screen supplier
 	 * @return this
 	 */
-	public GooberConfigBuilder screenSupplier(TriFunction<BuiltConfig, Screen, String, Screen> screenSupplier) { // todo: extract to its own interface
+	public GooberConfigBuilder screenSupplier(ScreenSupplier screenSupplier) {
 		this.screenSupplier = screenSupplier;
 		return this;
 	}
