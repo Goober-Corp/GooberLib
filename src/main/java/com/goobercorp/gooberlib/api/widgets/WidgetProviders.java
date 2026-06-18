@@ -307,9 +307,7 @@ public class WidgetProviders {
 	}
 
 	public static <E> WidgetProvider<ObjectOption<E>> objectOption() {
-		return (theOption, x, y, width, height) -> new EvilButtonWidget(theOption.name(), () -> {
-			Minecraft.getInstance().setScreen(new ObjectScreen(Minecraft.getInstance().screen, theOption));
-		}, x, y, width, height, null);
+		return (theOption, x, y, width, height) -> new EvilButtonWidget(theOption.name(), () -> Minecraft.getInstance().setScreen(new ObjectScreen(Minecraft.getInstance().screen, theOption)), x, y, width, height);
 	}
 
 	public static WidgetProvider<HotkeyOption> hotkey() {

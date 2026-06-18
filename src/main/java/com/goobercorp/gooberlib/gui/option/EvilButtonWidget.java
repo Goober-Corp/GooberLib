@@ -2,15 +2,11 @@ package com.goobercorp.gooberlib.gui.option;
 
 import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.gui.EvilBaseWidget;
-import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import com.goobercorp.gooberlib.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.network.chat.Component;
-
-import java.util.function.Function;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
@@ -20,28 +16,20 @@ public class EvilButtonWidget extends EvilBaseWidget {
 
 	//TODO: add "execute" text field like in YACL
 	//|<name>                          "EXECUTE"|
-	public EvilButtonWidget(ButtonOption opt, int x, int y, int width, int height, Function<BaseOption<?>, Component> valueFormatter) {
-		super(opt.name(), x, y, width, height, valueFormatter);
-		centerName = true;
-		r = opt.getRunnable();
-	}
-
 	public EvilButtonWidget(ButtonOption opt, int x, int y, int width, int height) {
-		this(opt, x, y, width, height, BaseOption::name);
+		this(opt, x, y, width, height, true);
 	}
 
 	public EvilButtonWidget(ButtonOption opt, int x, int y, int width, int height, boolean centerName) {
-		this(opt, x, y, width, height, BaseOption::name);
-		this.centerName = centerName;
+		this(opt.name(), opt.getRunnable(), x, y, width, height, centerName);
 	}
 
-	public EvilButtonWidget(CharSequence name, Runnable r, int x, int y, int width, int height, Function<BaseOption<?>, Component> valueFormatter) {
-		super(Util.fromChars(name), x, y, width, height, valueFormatter);
-		this.r = r;
+	public EvilButtonWidget(CharSequence name, Runnable r, int x, int y, int width, int height) {
+		this(name, r, x, y, width, height, true);
 	}
 
 	public EvilButtonWidget(CharSequence name, Runnable r, int x, int y, int width, int height, boolean centerName) {
-		super(Util.fromChars(name), x, y, width, height, BaseOption::name);
+		super(Util.fromChars(name), x, y, width, height);
 		this.r = r;
 		this.centerName = centerName;
 	}

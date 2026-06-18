@@ -1,7 +1,6 @@
 package com.goobercorp.gooberlib.gui;
 
 import com.goobercorp.gooberlib.config.MainConfig;
-import com.goobercorp.gooberlib.option.BaseOption;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.Tweener;
 import net.minecraft.client.Minecraft;
@@ -13,8 +12,6 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
-
-import java.util.function.Function;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.ease;
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
@@ -28,18 +25,12 @@ public class EvilBaseWidget extends AbstractWidget {
 	protected boolean centerName;
 	protected boolean shouldDrawName;
 	protected final Component name;
-	private final Function<BaseOption<?>, Component> valueFormatter;
-
-	public EvilBaseWidget(Component name, int x, int y, int width, int height, Function<BaseOption<?>, Component> valueFormatter) {
-		super(x + 1, y, width - 1, height, name);
-		this.name = name;
-		this.valueFormatter = valueFormatter;
-		hoverTweener = new Tweener(() -> this.isHovered || mouseDown ? 1 : 0, 10);
-		clickTweener = new Tweener(() -> this.mouseDown ? 1 : 0);
-	}
 
 	public EvilBaseWidget(Component name, int x, int y, int width, int height) {
-		this(name, x, y, width, height, BaseOption::name);
+		super(x + 1, y, width - 1, height, name);
+		this.name = name;
+		hoverTweener = new Tweener(() -> this.isHovered || mouseDown ? 1 : 0, 10);
+		clickTweener = new Tweener(() -> this.mouseDown ? 1 : 0);
 	}
 
 	@Override
@@ -123,10 +114,6 @@ public class EvilBaseWidget extends AbstractWidget {
 		this.verticalPosOffset += (float) e * 0.025F * Math.min(1 / Math.abs(verticalPosOffset) / 2, 1);
 		this.horizontalPosOffset += (float) d * 0.025F * Math.min(1 / Math.abs(horizontalPosOffset) / 2, 1);
 		return super.mouseDragged(click, d, e);
-	}
-
-	public Function<BaseOption<?>, Component> getValueFormatter() {
-		return valueFormatter;
 	}
 
 	@Override
