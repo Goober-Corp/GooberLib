@@ -18,6 +18,7 @@ public class PlainTextWidget extends AbstractWidget {
 		this.centered = centered;
 		this.width = Minecraft.getInstance().font.width(component);
 	}
+	//BIG TODO: actually correctly draw and process components instead of strings, like AbstractStringWidget
 
 	@Override
 	protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
