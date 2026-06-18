@@ -40,7 +40,6 @@ public class EvilTabNavigationWidget extends AbstractContainerEventHandler imple
 	private double targetX = 0d;
 	private ScrollTweener scrollTweener;
 	private int ticksSinceLastScroll = 0;
-	private int page = 0;
 	private Vec2 prevDelta;
 
 	EvilTabNavigationWidget(int i, TabManager tabManager, Iterable<Tab> iterable) {
@@ -214,23 +213,23 @@ public class EvilTabNavigationWidget extends AbstractContainerEventHandler imple
 
 	@Override
 	public void render(GuiGraphics drawContext, int i, int j, float f) {
-		if (MainConfig.ENABLE_INFINITE_TAB_SCROLLING.getValue()) {
-			scrollTweener.min = -10000;
-			scrollTweener.max = 10000;
-			page = scrollTweener.getI() / (tabNavWidth + 20);
-			if ((grid.getX() + grid.getWidth()) < tabNavWidth + 20) {
-				tabs.forEach(tab -> {
-					EvilTabButtonWidget widget = new EvilTabButtonWidget(tabManager, tab, 0, 24);
-					//TODO
-					widget.setWidth(100);
-					tabButtons.add(grid.addChild(widget));
-				});
-				grid.arrangeElements();
-			}
-			if (tabButtons.size() > tabs.size() * 2 && scrollTweener.get() < tabNavWidth) {
-				tabs.forEach(_ -> tabButtons.removeFirst());
-			}
-		}
+//		if (MainConfig.ENABLE_INFINITE_TAB_SCROLLING.getValue()) {
+//			scrollTweener.min = -10000;
+//			scrollTweener.max = 10000;
+//			page = scrollTweener.getI() / (tabNavWidth + 20);
+//			if ((grid.getX() + grid.getWidth()) < tabNavWidth + 20) {
+//				tabs.forEach(tab -> {
+//					EvilTabButtonWidget widget = new EvilTabButtonWidget(tabManager, tab, 0, 24);
+//					int meow = Mth.roundToward(tabs.indexOf(tab) / this.tabs.size(), 2);
+//					widget.setWidth(Math.max(meow, 100));
+//					tabButtons.add(grid.addChild(widget));
+//				});
+//				grid.arrangeElements();
+//			}
+//			if (tabButtons.size() > tabs.size() * 2 && scrollTweener.get() < tabNavWidth) {
+//				tabs.forEach(_ -> tabButtons.removeFirst());
+//			}
+//		}
 
 		scrollTweener.update();
 		this.grid.setX(scrollTweener.getI());

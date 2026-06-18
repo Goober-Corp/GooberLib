@@ -35,11 +35,11 @@ import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 @GooberConfig(modId = "gooberlib")
 public class MainConfig {
-
 	public static int primaryCol = 0xFFffaf5e;
 	public static int shadowCol = 0xFF3f2b17;
 	public static final int bgColor = 0x80000000;
-	public static final BooleanOption ENABLE_INFINITE_TAB_SCROLLING = new BooleanOption("Enable infinite tab scrolling");
+
+	//	public static final BooleanOption ENABLE_INFINITE_TAB_SCROLLING = new BooleanOption("Enable infinite tab scrolling");
 	public static final BooleanOption HIDE_TABS = new BooleanOption("Hide tabs", true);
 
 	public static final BooleanOption PPWW_BOUNDS = new BooleanOption("Bounds for PPWW");
@@ -62,7 +62,7 @@ public class MainConfig {
 
 	public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.create("GooberLib", b -> {
 		b.category("Visual", category -> {
-			category.options(ENABLE_INFINITE_TAB_SCROLLING, HIDE_TABS, EXPERIMENTAL_DUAL_COLUMN_LAYOUT, BACKGROUND_GLOW, CATEGORY_ANIMATIONS);
+			category.options(/*ENABLE_INFINITE_TAB_SCROLLING,*/HIDE_TABS, EXPERIMENTAL_DUAL_COLUMN_LAYOUT, BACKGROUND_GLOW, CATEGORY_ANIMATIONS);
 			category.optionWithChildren(WOKE, WOKE_STRENGTH);
 		});
 		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
