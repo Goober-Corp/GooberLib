@@ -72,7 +72,7 @@ public class Yacl {
 	}
 
 
-	public static final GooberConfigBuilder CONFIG = GooberConfigBuilder.create("Test GUI", config -> {
+	public static final GooberConfigBuilder CONFIG = GooberConfigBuilder.create("YACL Test", config -> {
 		config.category("Control Examples", "Example Category Description", cat -> {
 			cat.section("Boolean Controllers", section -> {
 				// todo: .flag(OptionFlag.GAME_RESTART)

@@ -23,7 +23,7 @@ public class TestConfig {
 	public static final ButtonOption evilButtonOpt = new ButtonOption("yeah2", "yeah", () -> System.out.println("YEAH!!!"));
 
 	// @formatter:off
-    public static final Supplier<GooberConfigBuilder> BUILDER = () -> GooberConfigBuilder.create("YEAH!!!")
+    public static final Supplier<GooberConfigBuilder> BUILDER = () -> GooberConfigBuilder.create("Test Mod")
             .category("Int fields", "A description")
 				.options(new BooleanOption("wa", ""))
                 .option(int1)

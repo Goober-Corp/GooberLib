@@ -112,7 +112,7 @@ public class Mapi {
 	}
 
 	public static class Silly {
-		public static final ConfigCategory CATEGORY = ConfigCategory.builder("Silly", cat -> {
+		public static final ConfigCategory CATEGORY = ConfigCategory.builder("MAPI Test", cat -> {
 			Consumer<CategoryBuilder> wawa1 = cat1 -> cat1.options(new LabelOption("meow :3"));
 			Consumer<CategoryBuilder> wawa2 = cat1 -> cat1.options(new LabelOption("meow 1"));
 			Consumer<CategoryBuilder> wawa3 = cat1 -> cat1.options(new LabelOption("meow 2"));

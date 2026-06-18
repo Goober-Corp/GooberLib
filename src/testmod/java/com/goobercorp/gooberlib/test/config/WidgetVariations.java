@@ -28,7 +28,7 @@ public class WidgetVariations {
 	public static final CycleOption<String> cycleOption = new CycleOption<>("cycle option", "cycle description", WidgetProviders.cyclingOptionWithButtons(), "Option one", "Option two", "Option three");
 	public static final CycleOption<String> cycleOption2 = new CycleOption<>("cycle option", "cycle description", "Option one", "Option two", "Option three");
 
-	public static final Supplier<GooberConfigBuilder> BUILDER = () -> GooberConfigBuilder.create("widget_variations")
+	public static final Supplier<GooberConfigBuilder> BUILDER = () -> GooberConfigBuilder.create("Widget Variations")
 			.category("Widget Variations")
 			.section("Tick Box Widget", "")
 			.options(boolopt, boolopt2)
