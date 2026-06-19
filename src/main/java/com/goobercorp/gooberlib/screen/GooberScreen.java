@@ -31,6 +31,7 @@ import java.util.Optional;
 
 import static com.goobercorp.gooberlib.util.RenderUtils.*;
 
+// todo?: Screen wrapper that is better
 public class GooberScreen extends Screen {
 	public static final int VERTICAL_PADDING = 32;
 	public static final int CHILD_INSET = 16;
@@ -113,7 +114,6 @@ public class GooberScreen extends Screen {
 		double mX, mY;
 		mX = Minecraft.getInstance().mouseHandler.getScaledXPos(Minecraft.getInstance().getWindow());
 		mY = Minecraft.getInstance().mouseHandler.getScaledYPos(Minecraft.getInstance().getWindow());
-		//TODO: maybe move this to the tweener?
 		if (!(Double.isNaN(mX) || Double.isInfinite(mX) || Double.isNaN(mY) || Double.isInfinite(mY))) {
 			mouseXTweener.setTarget(mX);
 			mouseYTweener.setTarget(mY);
@@ -167,10 +167,15 @@ public class GooberScreen extends Screen {
 				tabHoldTicks = 10;
 			}
 
-			newMatrixScope(drawContext, matrix3x2fStack -> {
-				matrix3x2fStack.translate(0, -26 * categoryHoverProgress.getF());
+//			newMatrixScope(drawContext, stack -> {
+//				stack.translate(0, -26 * categoryHoverProgress.getF());
+//				tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
+//			});
+
+			try (var stack = newMatrixScope(drawContext)) {
+				stack.translate(0, -26 * categoryHoverProgress.getF());
 				tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
-			});
+			}
 		}
 		double catHeight = getCurrentCategoryWidget().getWrapped().getHeight() - height + VERTICAL_PADDING;
 
