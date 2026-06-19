@@ -10,6 +10,7 @@ import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.option.individual.java.CycleOption;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
 import com.goobercorp.gooberlib.option.individual.minecraft.*;
+import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import com.goobercorp.gooberlib.option.individual.misc.LabelOption;
 import com.goobercorp.gooberlib.option.individual.misc.ObjectOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
@@ -317,5 +318,13 @@ public class WidgetProviders {
 	public static WidgetProvider<LabelOption> label() {
 		//TODO: this gets treated as a standard widget, add edge cases for dual-column stuff
 		return (theOption, x, y, width, height) -> new PlainTextWidget(x + 5, y, width, height, theOption.name(), () -> MainConfig.primaryCol, false);
+	}
+
+	public static WidgetProvider<ButtonOption> button() {
+		return (theOption, x, y, width, height) -> new EvilButtonWidget(theOption, x, y, width, height, false);
+	}
+
+	public static WidgetProvider<ButtonOption> buttonWithCenteredName() {
+		return (theOption, x, y, width, height) -> new EvilButtonWidget(theOption, x, y, width, height, true);
 	}
 }

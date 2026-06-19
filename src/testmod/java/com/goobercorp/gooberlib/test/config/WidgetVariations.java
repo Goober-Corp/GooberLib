@@ -3,6 +3,7 @@ package com.goobercorp.gooberlib.test.config;
 import com.goobercorp.gooberlib.annotations.GooberConfig;
 import com.goobercorp.gooberlib.api.widgets.WidgetProviders;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
+import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.individual.java.CycleOption;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
@@ -23,7 +24,8 @@ public class WidgetVariations {
 	public static final StringOption right = new StringOption("right", "", WidgetProviders.stringFieldAlignedRight());
 	public static final StringOption evil = new StringOption("evil", "", WidgetProviders.stringFieldNameInsideAlignedRight());
 
-	public static final ButtonOption yeah = new ButtonOption("yeah", () -> System.out.println("yah"));
+	private static final ButtonOption buttonOption = new ButtonOption("left button option", () -> System.out.println("yah"), WidgetProviders.button());
+	private static final ButtonOption buttonOptionCentered = new ButtonOption("centered button option", () -> System.out.println("yah"), WidgetProviders.buttonWithCenteredName());
 
 	public static final CycleOption<String> cycleOption = new CycleOption<>("cycle option", "cycle description", WidgetProviders.cyclingOptionWithButtons(), "Option one", "Option two", "Option three");
 	public static final CycleOption<String> cycleOption2 = new CycleOption<>("cycle option", "cycle description", "Option one", "Option two", "Option three");
@@ -39,9 +41,8 @@ public class WidgetVariations {
 			.section("String Widget", "")
 			.options(left, centered, right, evil)
 			.build()
-			//TODO:
 			.section("Button Widget", "")
-			.options()
+			.options(buttonOption, buttonOptionCentered)
 			.build()
 			.section("Cycling Widget", "")
 			.options(cycleOption, cycleOption2)
