@@ -14,21 +14,18 @@ import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 public class EvilStringWidgetWithName extends EvilStringWidget {
 	private final Component name;
-	private final int x;
 	private boolean drawInside;
 
 	public EvilStringWidgetWithName(Component name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, Consumer<EvilStringWidget> onReset) {
-		super(x + font().width(name), y, width - font().width(name), height, changedListener, predicate, immediatePredicate, initial, onReset);
 		this.name = name;
-		this.x = x;
+		super(x + font().width(name), y, width - font().width(name), height, changedListener, predicate, immediatePredicate, initial, onReset);
 		this.shouldDrawName = true;
 		textXTweener.snapToTarget();
 	}
 
 	public EvilStringWidgetWithName(Component name, int x, int y, int width, int height, @Nullable Consumer<String> changedListener, Predicate<String> predicate, Predicate<String> immediatePredicate, String initial, Consumer<EvilStringWidget> onReset, boolean alignRight, boolean centered, boolean drawInside) {
-		super(drawInside ? x : x + font().width(name), y, drawInside ? width : width - font().width(name), height, changedListener, predicate, immediatePredicate, initial, onReset);
 		this.name = name;
-		this.x = drawInside ? x + font().width(name) : x;
+		super(drawInside ? x : x + font().width(name), y, drawInside ? width : width - font().width(name), height, changedListener, predicate, immediatePredicate, initial, onReset);
 		this.shouldDrawName = true;
 		this.centered = centered;
 		this.alignRight = alignRight;
@@ -57,19 +54,26 @@ public class EvilStringWidgetWithName extends EvilStringWidget {
 	}
 
 	@Override
+	public int getInnerWidth() {
+		if (drawInside) {
+			return super.getInnerWidth() - textRenderer.width(name) - 10;
+		} else {
+			return super.getInnerWidth() - 8;
+		}
+	}
+
+	@Override
 	protected void updateTextPosition() {
 		if (this.textRenderer != null) {
 			String string = this.textRenderer.plainSubstrByWidth(this.getText().substring(this.firstCharacterIndex), this.getInnerWidth());
 			if (this.isCentered()) {
-				this.textXTweener.setTarget(this.getX() + (this.width / 2) - (textRenderer.width(string) / 2));
+				this.textXTweener.setTarget(this.getX() + (this.width / 2) - (textRenderer.width(string) / 2) - 2);
 			} else {
 				if (alignRight) {
-					//TODO: take into account width of the cursor
 					if (drawInside) {
-						//TODO: kr1v please fix this
-						this.textXTweener.setTarget(this.getRight() - x - textRenderer.width(string));
+						this.textXTweener.setTarget(this.width - 8 - textRenderer.width(string));
 					} else {
-						this.textXTweener.setTarget(this.getRight() - 10 - textRenderer.width(string));
+						this.textXTweener.setTarget(this.width + 16 - textRenderer.width(string));
 					}
 				} else {
 					this.textXTweener.setTarget(this.getX() + (this.drawsBackground() ? 4 : 0));

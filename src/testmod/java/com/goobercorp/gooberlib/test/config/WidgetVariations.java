@@ -3,7 +3,6 @@ package com.goobercorp.gooberlib.test.config;
 import com.goobercorp.gooberlib.annotations.GooberConfig;
 import com.goobercorp.gooberlib.api.widgets.WidgetProviders;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
-import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.individual.java.CycleOption;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
@@ -11,9 +10,9 @@ import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 @GooberConfig(modId = "widget-variations")
 public class WidgetVariations {
-
 	public static final BooleanOption boolopt = new BooleanOption("yeah", "", WidgetProviders.booleanTickBox());
 	public static final BooleanOption boolopt2 = new BooleanOption("yeah", "", WidgetProviders.booleanTickBoxWithCenteredName());
 	public static final BooleanOption boolopt3 = new BooleanOption("yeah", "", WidgetProviders.booleanSliderWidget());
@@ -39,7 +38,7 @@ public class WidgetVariations {
 			.options(boolopt3, boolopt4)
 			.build()
 			.section("String Widget", "")
-			.options(left, centered, right, evil)
+			.options(right, centered, evil, left)
 			.build()
 			.section("Button Widget", "")
 			.options(buttonOption, buttonOptionCentered)
