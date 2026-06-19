@@ -188,7 +188,6 @@ public class GooberLibApi {
 		defaultHandlers.add(new Pair<>(name, handler));
 	}
 
-	// todo: figure out when to call this
 	public static void resetDefaultValues() {
 		for (Pair<String, DefaultHandler> handler : defaultHandlers) {
 			try {

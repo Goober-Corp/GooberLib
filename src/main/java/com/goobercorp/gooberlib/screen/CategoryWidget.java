@@ -51,10 +51,9 @@ public class CategoryWidget extends ClickableParentWidget implements Hoverable {
 				//note to self: this is the worst code i've written, maybe ever. but it worked first try.
 				List<OptionHolder> loneOptions = category.elements().subList(i, index);
 				if (MainConfig.EXPERIMENTAL_DUAL_COLUMN_LAYOUT.getValue()) {
+					int width1 = ((width * 2) / 3) - (x % width) - (CHILD_INSET / 3);
 					if (loneOptions.size() == 1) {
-						//TODO: make them wider here
-						// TODO: teal for the love of god please write descriptive todos
-						y += addOptionWithChildren((OptionContext<?>) loneOptions.getFirst(), y, x + (CHILD_INSET / 2), width / 4);
+						y += addOptionWithChildren((OptionContext<?>) loneOptions.getFirst(), y, x + (CHILD_INSET / 2), width1, width / 6);
 					} else {
 						for (int j = 0; j < loneOptions.size() - 1; j += 2) {
 							if (j + 1 < loneOptions.size()) {
@@ -66,7 +65,7 @@ public class CategoryWidget extends ClickableParentWidget implements Hoverable {
 							}
 						}
 						if (loneOptions.size() % 2 != 0) {
-							y += addOptionWithChildren((OptionContext<?>) loneOptions.getLast(), y, x + (CHILD_INSET / 2), width / 4);
+							y += addOptionWithChildren((OptionContext<?>) loneOptions.getLast(), y, x + (CHILD_INSET / 2), width1, width / 6);
 						}
 					}
 				} else {
@@ -81,9 +80,13 @@ public class CategoryWidget extends ClickableParentWidget implements Hoverable {
 	}
 
 	private int addOptionWithChildren(OptionContext<?> optionContext, int y, int x, int offset) {
+		return addOptionWithChildren(optionContext, y, x, width / 2 - (x % width) - (CHILD_INSET / 2), offset);
+	}
+
+	private int addOptionWithChildren(OptionContext<?> optionContext, int y, int x, int width, int offset) {
 		int addY = 0;
 		Option<?> option = optionContext.option();
-		AbstractWidget widget = option.makeWidget(0, 0, width / 2 - (x % width) - (CHILD_INSET / 2), VERTICAL_PADDING / 2);
+		AbstractWidget widget = option.makeWidget(0, 0, width, VERTICAL_PADDING / 2);
 
 		PrecisePositionWidgetWrapper<?> pw = new PrecisePositionWidgetWrapper<>(widget, x + offset, y + addY, option::getDescription);
 		children().add(pw);
@@ -92,7 +95,7 @@ public class CategoryWidget extends ClickableParentWidget implements Hoverable {
 		addY += VERTICAL_PADDING;
 
 		for (OptionContext<?> child : optionContext.childOptions()) {
-			addY += addOptionWithChildren(child, y + addY, x + CHILD_INSET, offset);
+			addY += addOptionWithChildren(child, y + addY, x + CHILD_INSET, width - CHILD_INSET, offset);
 		}
 		return addY;
 	}
