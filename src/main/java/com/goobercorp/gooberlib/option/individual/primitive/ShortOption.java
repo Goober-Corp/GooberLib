@@ -15,9 +15,6 @@ public class ShortOption extends BaseOption<ShortOption> implements NumberOption
 	private final short max;
 	public short value;
 
-	// TODO overloads for taking in default, min and max as ints, and making sure they're within bound, so the user doesn't need to do (short) 0, and can instead just do 0
-	//  also needs to be done for .getValueInt(), .setValueInt(), getMinInt() etc
-	//  also needs to be done for ByteOption, CharOption
 	public ShortOption(CharSequence name, Function<ShortOption, CharSequence> description, short defaultValue, short min, short max, WidgetProvider<ShortOption> provider) {
 		super(name, description, provider);
 		this.value = defaultValue;

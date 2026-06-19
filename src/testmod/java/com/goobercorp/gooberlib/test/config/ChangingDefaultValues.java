@@ -5,7 +5,7 @@ import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 
 // @formatter:off
-@GooberConfig(modId = "changing-default-value-test")
+@GooberConfig(modId = "changing-default-value-test", title = "Changing default values test")
 public class ChangingDefaultValues {
 	public static final BooleanOption DEFAULT_FALSE = new BooleanOption("Defaults to false");
 	static { GooberLibApi.Defaults.booleanDefault = true; }

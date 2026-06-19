@@ -23,7 +23,6 @@ public class ModListScreen extends GooberScreen {
 			if (s.equals(modId)) {
 				return;
 			}
-			//TODO: decide whether to show title or modid. or both. idk
 			b.option(new ButtonOption(config1.title(), () -> {
 				Screen screen = GooberLibApi.getScreenFor(s, this);
 				if (screen instanceof GooberScreen gs) {
