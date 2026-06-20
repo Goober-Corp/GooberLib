@@ -18,15 +18,14 @@ public class PlainTextWidget extends AbstractWidget {
 		this.centered = centered;
 		this.width = Minecraft.getInstance().font.width(component);
 	}
-	//BIG TODO: actually correctly draw and process components instead of strings, like AbstractStringWidget
+	//BIG TODO: actually correctly draw and process components instead of strings, like AbstractStringWidget. Also hover n click type shit
 
 	@Override
 	protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-		String yeah = Minecraft.getInstance().font.plainSubstrByWidth(message.getString(), this.width);
 		if (centered) {
-			guiGraphics.drawCenteredString(Minecraft.getInstance().font, yeah, getX(), this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, col.getAsInt());
+			guiGraphics.drawCenteredString(Minecraft.getInstance().font, message, getX(), this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, col.getAsInt());
 		} else {
-			guiGraphics.drawString(Minecraft.getInstance().font, yeah, getX() + 1, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, col.getAsInt(), true);
+			guiGraphics.drawString(Minecraft.getInstance().font, message, getX() + 1, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, col.getAsInt(), true);
 		}
 	}
 
