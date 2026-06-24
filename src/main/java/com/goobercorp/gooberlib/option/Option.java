@@ -29,4 +29,7 @@ public interface Option<T extends Option<T>> {
 
 	AbstractWidget makeWidget(int x, int y, int width, int height);
 
+	boolean isEnabled();
+
+	void setEnabled(boolean var);
 }

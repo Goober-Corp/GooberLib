@@ -16,6 +16,7 @@ public abstract class BaseOption<T extends Option<T>> implements Option<T> {
 	protected Function<T, Component> description;
 	private ValueChangeCallback<T> callback;
 	private final WidgetProvider<T> provider;
+	private boolean enabled;
 
 	protected BaseOption(CharSequence name, Function<T, CharSequence> description, @Nullable WidgetProvider<T> provider) {
 		this.name = Util.fromChars(name);
@@ -68,5 +69,15 @@ public abstract class BaseOption<T extends Option<T>> implements Option<T> {
 	private T thisT() {
 		//noinspection unchecked
 		return (T) this;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return this.enabled;
+	}
+
+	@Override
+	public void setEnabled(boolean var) {
+		this.enabled = var;
 	}
 }
