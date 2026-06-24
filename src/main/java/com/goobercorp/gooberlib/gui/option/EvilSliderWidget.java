@@ -26,6 +26,7 @@ import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 public class EvilSliderWidget extends EvilBaseWidget {
 	protected double value;
+	private final double spaceBetweenSteps;
 	private final Supplier<Component> valueFormatter;
 	protected boolean sliderFocused;
 	private boolean dragging;
@@ -33,20 +34,21 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	private final Tweener valTweener = new Tweener(() -> value);
 	private float scrollAmount = 0;
 
-	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height, Function<T, Component> valueFormatter) {
+	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height, Function<T, Component> valueFormatter, double spaceBetweenSteps) {
 		super(numberOption.name(), x, y, width, height);
 		this.numberOption = numberOption;
 		this.value = getInterpolatedValue(numberOption.getNumberValue().doubleValue(), numberOption.getDoubleMin(), numberOption.getDoubleMax());
+		this.spaceBetweenSteps = spaceBetweenSteps;
 		this.valueFormatter = () -> valueFormatter.apply(numberOption);
 		valTweener.snapToTarget();
 	}
 
 	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height) {
-		this(numberOption, x, y, width, height, t -> Component.nullToEmpty(t.getNumberValue().toString()));
+		this(numberOption, x, y, width, height, t -> Component.nullToEmpty(t.getNumberValue().toString()), 0);
 	}
 
 	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height, boolean includeName) {
-		this(numberOption, x, y, width, height, t -> Component.nullToEmpty(t.getNumberValue().toString()));
+		this(numberOption, x, y, width, height, t -> Component.nullToEmpty(t.getNumberValue().toString()), 0);
 		//TODO: add functionality
 		this.shouldDrawName = includeName;
 	}
@@ -152,7 +154,9 @@ public class EvilSliderWidget extends EvilBaseWidget {
 
 	protected void setValue(double d) {
 		this.value = Mth.clamp(d, 0.0, 1.0);
-		numberOption.setDoubleValue((1.0 - value) * numberOption.getDoubleMin() + value * numberOption.getDoubleMax());
+		double doubleVal = (1.0 - value) * numberOption.getDoubleMin() + value * numberOption.getDoubleMax();
+		doubleVal = doubleVal % spaceBetweenSteps;
+		numberOption.setDoubleValue(doubleVal);
 	}
 
 	@Override

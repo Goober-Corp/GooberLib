@@ -158,10 +158,6 @@ public class WidgetProviders {
 		});
 	}
 
-	public static <T extends NumberOption<T>> WidgetProvider<T> numberSlider() {
-		return EvilSliderWidget::new;
-	}
-
 	public static <T extends NumberRangeOption<T>> WidgetProvider<T> rangeOption() {
 		return RangeSliderWidget::new;
 	}
@@ -179,9 +175,20 @@ public class WidgetProviders {
 		};
 	}
 
+	public static <T extends NumberOption<T>> WidgetProvider<T> numberSlider() {
+		return EvilSliderWidget::new;
+	}
 
 	public static <T extends NumberOption<T>> WidgetProvider<T> numberSliderWithFormatter(Function<T, CharSequence> valueFormatter) {
-		return (theOption, x, y, width, height) -> new EvilSliderWidget(theOption, x, y, width, height, Util.fromCharsFunction(valueFormatter));
+		return (theOption, x, y, width, height) -> new EvilSliderWidget(theOption, x, y, width, height, Util.fromCharsFunction(valueFormatter), 0);
+	}
+
+	public static <T extends NumberOption<T>> WidgetProvider<T> numberSliderWithStep(double spaceBetweenSteps) {
+		return (theOption, x, y, width, height) -> new EvilSliderWidget(theOption, x, y, width, height, t -> Component.nullToEmpty(t.getNumberValue().toString()), spaceBetweenSteps);
+	}
+
+	public static <T extends NumberOption<T>> WidgetProvider<T> numberSliderWithFormatterAndStep(Function<T, CharSequence> valueFormatter, double spaceBetweenSteps) {
+		return (theOption, x, y, width, height) -> new EvilSliderWidget(theOption, x, y, width, height, Util.fromCharsFunction(valueFormatter), spaceBetweenSteps);
 	}
 
 	public static <T extends NumberOption<T>> WidgetProvider<T> numberField() {

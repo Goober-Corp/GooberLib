@@ -7,6 +7,7 @@ import com.goobercorp.gooberlib.option.individual.java.CycleOption;
 import com.goobercorp.gooberlib.option.individual.java.StringOption;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
+import com.goobercorp.gooberlib.option.individual.primitive.DoubleOption;
 
 import java.util.function.Supplier;
 
@@ -29,22 +30,14 @@ public class WidgetVariations {
 	public static final CycleOption<String> cycleOption = new CycleOption<>("cycle option", "cycle description", WidgetProviders.cyclingOptionWithButtons(), "Option one", "Option two", "Option three");
 	public static final CycleOption<String> cycleOption2 = new CycleOption<>("cycle option", "cycle description", "Option one", "Option two", "Option three");
 
-	public static final Supplier<GooberConfigBuilder> BUILDER = () -> GooberConfigBuilder.create("Widget Variations")
-			.category("Widget Variations")
-			.section("Tick Box Widget", "")
-			.options(boolopt, boolopt2)
-			.build()
-			.section("Slider Toggle Widget", "")
-			.options(boolopt3, boolopt4)
-			.build()
-			.section("String Widget", "")
-			.options(right, centered, evil, left)
-			.build()
-			.section("Button Widget", "")
-			.options(buttonOption, buttonOptionCentered)
-			.build()
-			.section("Cycling Widget", "")
-			.options(cycleOption, cycleOption2)
-			.build()
-			.build();
+	public static final DoubleOption doubleOption = new DoubleOption("double step", 0, 0, 10, WidgetProviders.numberSliderWithStep(0.5));
+
+	public static final Supplier<GooberConfigBuilder> BUILDER = () -> GooberConfigBuilder.create("Widget Variations", builder -> builder.category("Widget Variations", category -> {
+		category.sectionWithOptions("Tick Box Widget", boolopt, boolopt2);
+		category.sectionWithOptions("Slider Toggle Widget", boolopt3, boolopt4);
+		category.sectionWithOptions("String Widget", right, centered, evil, left);
+		category.sectionWithOptions("Button Widget", buttonOption, buttonOptionCentered);
+		category.sectionWithOptions("Cycling Widget", cycleOption, cycleOption2);
+		category.sectionWithOptions("Steps", doubleOption);
+	}));
 }
