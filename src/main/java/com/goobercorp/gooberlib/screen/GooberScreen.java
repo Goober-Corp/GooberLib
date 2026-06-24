@@ -29,7 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.goobercorp.gooberlib.util.RenderUtils.*;
+import static com.goobercorp.gooberlib.util.RenderUtils.drawVerticalLine;
+import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 // todo?: Screen wrapper that is better
 public class GooberScreen extends Screen {
@@ -212,7 +213,7 @@ public class GooberScreen extends Screen {
 			stack.translate((float) (drawContext.guiWidth() / 2), this.height - linesHeight * descriptionAnimationProgress.getF());
 //			RenderUtils.fillEvil(drawContext, 0, -1, width / 2F, linesHeight, MainConfig.shadowCol, 0x00000000);
 //			RenderUtils.fillEvil(drawContext, -width / 2F, -1, 0, linesHeight, 0x00000000, MainConfig.shadowCol);
-			RenderUtils.fillEvil(drawContext, -width / 2F, -1, width / 2F, linesHeight, 0, MainConfig.shadowCol, MainConfig.shadowCol, 0);
+			RenderUtils.fillEvil(drawContext, -width / 2F, -(font.lineHeight / 2F), width / 2F, linesHeight, 0, MainConfig.shadowCol, MainConfig.shadowCol, 0);
 			for (FormattedCharSequence orderedText : lines) {
 				drawContext.drawCenteredString(font, orderedText, 0, 9 * lines.indexOf(orderedText), MainConfig.primaryCol);
 			}
