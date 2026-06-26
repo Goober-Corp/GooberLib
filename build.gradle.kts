@@ -42,6 +42,8 @@ dependencies {
     mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:${loaderVersion}")
     modImplementation(libs.fabric.api)
+
+    implementation("com.github.kwhat:jnativehook:2.2.2")
 }
 
 tasks {
