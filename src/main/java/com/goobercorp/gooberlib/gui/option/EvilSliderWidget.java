@@ -16,7 +16,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 import java.util.function.Function;
@@ -33,6 +32,8 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	private final NumberOption<?> numberOption;
 	private final Tweener valTweener = new Tweener(() -> value);
 	private float scrollAmount = 0;
+	//if true, the slider will fill the space available to it, otherwise will stick to 50%. don't forget about shouldDrawName though
+	private final boolean flexible = false;
 
 	public <T extends NumberOption<T>> EvilSliderWidget(T numberOption, int x, int y, int width, int height, Function<T, Component> valueFormatter, double spaceBetweenSteps) {
 		super(numberOption.name(), x, y, width, height);
@@ -55,11 +56,6 @@ public class EvilSliderWidget extends EvilBaseWidget {
 
 	@Override
 	protected void drawText(GuiGraphics drawContext) {
-		newMatrixScope(drawContext, stack -> {
-//			stack.scale(0.5F, 0.5F);
-			stack.translate(((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2 * (this.width - 5))) + 1, this.getY() - 10);
-			drawContext.drawCenteredString(Minecraft.getInstance().font, valueFormatter.get(), 0, 0, ARGB.color(Math.max(clickTweener.getF(), Math.clamp(scrollAmount, 0, 1)), MainConfig.primaryCol));
-		});
 		drawContext.drawString(Minecraft.getInstance().font, numberOption.name(), getX() + 5, getY() + Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol, true);
 	}
 
@@ -92,10 +88,22 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	public void renderWidget(GuiGraphics context, double mouseX, double mouseY, float delta) {
 		valTweener.update();
 		scrollAmount = (float) RenderUtils.ease(scrollAmount, 0, 5);
-		RenderUtils.drawHorizontalLine(context, (getX() + (this.width - 5) / 2F) - 0.5F, this.getRight() - 5.5F, getY() + getHeight() / 2F, MainConfig.primaryCol);
-		RenderUtils.drawVerticalLine(context, ((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2F * (this.width - 5)) - 0.5F) + 1, getY() + 4, getBottom() - 2, MainConfig.shadowCol);
-		RenderUtils.drawHorizontalLine(context, (getX() + (this.width - 5) / 2F) - 0.5F + 1, this.getRight() - 5.5F + 1, getY() + getHeight() / 2F + 1, MainConfig.shadowCol);
-		RenderUtils.drawVerticalLine(context, ((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2 * (this.width - 5)) - 0.5F), getY() + 3, getBottom() - 3, MainConfig.primaryCol);
+		newMatrixScope(context, stack -> {
+			float yeah = getX() + (this.width - 5) / 2F;
+			stack.translate(yeah, 0);
+			stack.scale(hoverTweener.getF(), 1);
+			RenderUtils.drawHorizontalLine(context, -0.5F, this.getRight() - 5.5F - yeah, getY() + getHeight() / 2F, MainConfig.primaryCol);
+			RenderUtils.drawVerticalLine(context, ((valTweener.getF() / 2F * (this.width - 5)) - 0.5F) + 1, getY() + 4, getBottom() - 2, MainConfig.shadowCol);
+			RenderUtils.drawHorizontalLine(context, -0.5F + 1, this.getRight() - 5.5F + 1 - yeah, getY() + getHeight() / 2F + 1, MainConfig.shadowCol);
+			RenderUtils.drawVerticalLine(context, ((valTweener.getF() / 2 * (this.width - 5)) - 0.5F), getY() + 3, getBottom() - 3, MainConfig.primaryCol);
+		});
+		newMatrixScope(context, stack -> {
+//			stack.scale(0.5F, 0.5F);
+			//TODO: standardize horizontal padding of 5
+			float xOffset = Mth.lerp(hoverTweener.getF(), getRight() - 5 - Minecraft.getInstance().font.width(valueFormatter.get()), ((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2 * (this.width - 5))) + 1 - Minecraft.getInstance().font.width(valueFormatter.get()) / 2F);
+			stack.translate(xOffset, Mth.lerp(hoverTweener.getF(), 9 / 2F, this.getY() - 10));
+			context.drawString(Minecraft.getInstance().font, valueFormatter.get(), 0, 0, MainConfig.primaryCol);
+		});
 		if (this.isHovered()) {
 			context.requestCursor(this.dragging ? CursorTypes.RESIZE_EW : CursorTypes.POINTING_HAND);
 		}
@@ -155,7 +163,10 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	protected void setValue(double d) {
 		this.value = Mth.clamp(d, 0.0, 1.0);
 		double doubleVal = (1.0 - value) * numberOption.getDoubleMin() + value * numberOption.getDoubleMax();
-		doubleVal = doubleVal % spaceBetweenSteps;
+		if (spaceBetweenSteps != 0) {
+			//TODO: add checks for negative? or clamp?
+			doubleVal = doubleVal % spaceBetweenSteps;
+		}
 		numberOption.setDoubleValue(doubleVal);
 	}
 
