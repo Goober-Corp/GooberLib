@@ -5,6 +5,7 @@ import com.goobercorp.gooberlib.builder.BuiltConfig;
 import com.goobercorp.gooberlib.builder.category.ConfigCategory;
 import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.gui.nav.EvilTabNavigationWidget;
+import com.goobercorp.gooberlib.gui.nav.Scrollbar;
 import com.goobercorp.gooberlib.gui.util.PrecisePositionWidgetWrapper;
 import com.goobercorp.gooberlib.util.RenderUtils;
 import com.goobercorp.gooberlib.util.ScrollTweener;
@@ -57,6 +58,7 @@ public class GooberScreen extends Screen {
 
 	protected final String modId;
 	protected final List<PrecisePositionWidgetWrapper<CategoryWidget>> categoryWidgets = new ArrayList<>();
+	private Scrollbar scrollbar;
 
 	public GooberScreen(BuiltConfig config, Screen parent, String modId) {
 		super(config.title());
@@ -74,6 +76,9 @@ public class GooberScreen extends Screen {
 	@Override
 	protected void init() {
 		categoryWidgets.clear();
+
+		this.scrollbar = addWidget(new Scrollbar(this.width - 10, 28, 8, this.height - 2 - 28 - 5));
+
 		if (this.showTabs) {
 			this.tabNavigationWidget = this.addWidget(EvilTabNavigationWidget.builder(tabManager, width).tabs(tabs).build());
 			this.tabNavigationWidget.init();
@@ -87,6 +92,7 @@ public class GooberScreen extends Screen {
 			this.addWidget(pw);
 			categoryWidgets.add(pw);
 		}
+
 		//to prevent weirdness on resize
 		setWidgetOffsets();
 	}
@@ -183,6 +189,9 @@ public class GooberScreen extends Screen {
 		if (catHeight < scrollTweener.max) catHeight = scrollTweener.max + 1;
 
 		scrollTweener.min = -catHeight;
+
+//		this.scrollbar.setKnobProgress(this.scrollTweener.getUnlerped());
+		this.scrollbar.render(drawContext, mouseX, mouseY, tickDelta);
 	}
 
 	protected PrecisePositionWidgetWrapper<CategoryWidget> getCurrentCategoryWidget() {

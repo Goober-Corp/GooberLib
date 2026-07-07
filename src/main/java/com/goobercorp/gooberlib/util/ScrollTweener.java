@@ -62,4 +62,8 @@ public class ScrollTweener {
 	public double getLerped(double start, double end) {
 		return Mth.lerp(value, start, end);
 	}
+
+	public double getUnlerped() {
+		return (value - min) / (max - min);
+	}
 }
