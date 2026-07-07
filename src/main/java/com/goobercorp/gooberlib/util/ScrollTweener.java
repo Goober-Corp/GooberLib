@@ -13,7 +13,7 @@ public class ScrollTweener {
 	double value;
 	public double min;
 	public double max;
-	private float speed;
+	private final float speed;
 
 	public ScrollTweener(Supplier<Double> target, Consumer<Double> targetWriter, double min, double max, float speed) {
 		this.target = target;
@@ -63,6 +63,7 @@ public class ScrollTweener {
 		return Mth.lerp(value, start, end);
 	}
 
+	// from 0 to 1
 	public double getUnlerped() {
 		return (value - min) / (max - min);
 	}

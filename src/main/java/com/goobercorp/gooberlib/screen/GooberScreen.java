@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -77,7 +78,8 @@ public class GooberScreen extends Screen {
 	protected void init() {
 		categoryWidgets.clear();
 
-		this.scrollbar = addWidget(new Scrollbar(this.width - 10, 28, 8, this.height - 2 - 28 - 5));
+		this.scrollbar = addWidget(new Scrollbar(this.width - 10, 28, 8, this.height - 2 - 28 - 5, val -> scrollProgress = -Mth.lerp(-val, scrollTweener.max, scrollTweener.min)));
+		this.scrollbar.setValue(1 - ((scrollProgress - scrollTweener.min) / (scrollTweener.max - scrollTweener.min)));
 
 		if (this.showTabs) {
 			this.tabNavigationWidget = this.addWidget(EvilTabNavigationWidget.builder(tabManager, width).tabs(tabs).build());
@@ -174,23 +176,18 @@ public class GooberScreen extends Screen {
 				tabHoldTicks = 10;
 			}
 
-//			newMatrixScope(drawContext, stack -> {
-//				stack.translate(0, -26 * categoryHoverProgress.getF());
-//				tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
-//			});
-
 			try (var stack = newMatrixScope(drawContext)) {
 				stack.translate(0, -26 * categoryHoverProgress.getF());
 				tabNavigationWidget.render(drawContext, mouseX, mouseY, tickDelta);
 			}
 		}
+
 		double catHeight = getCurrentCategoryWidget().getWrapped().getHeight() - height + VERTICAL_PADDING;
 
 		if (catHeight < scrollTweener.max) catHeight = scrollTweener.max + 1;
 
 		scrollTweener.min = -catHeight;
 
-//		this.scrollbar.setKnobProgress(this.scrollTweener.getUnlerped());
 		this.scrollbar.render(drawContext, mouseX, mouseY, tickDelta);
 	}
 
@@ -327,6 +324,7 @@ public class GooberScreen extends Screen {
 				if ((scrollProgress < scrollTweener.min) || (scrollProgress > scrollTweener.max)) {
 					if (click.button() == 0 || click.button() == 2) {
 						scrollProgress += deltaY * Math.min(1 / Math.abs(scrollProgress - Math.clamp(scrollProgress, scrollTweener.min, scrollTweener.max)), 1);
+						scrollbar.setValue(1 - ((scrollProgress - scrollTweener.min) / (scrollTweener.max - scrollTweener.min)));
 					}
 				} else {
 					if (click.button() == 0) {
@@ -334,6 +332,7 @@ public class GooberScreen extends Screen {
 					} else if (click.button() == 2) {
 						scrollProgress += deltaY * 5;
 					}
+					scrollbar.setValue(1 - ((scrollProgress - scrollTweener.min) / (scrollTweener.max - scrollTweener.min)));
 				}
 			}
 		}
@@ -357,6 +356,7 @@ public class GooberScreen extends Screen {
 				} else {
 					scrollProgress += g * 20;
 				}
+				scrollbar.setValue(1 - ((scrollProgress - scrollTweener.min) / (scrollTweener.max - scrollTweener.min)));
 			}
 		}
 		return yeah;
