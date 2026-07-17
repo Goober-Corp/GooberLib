@@ -19,9 +19,9 @@ public class TickBoxWidget extends EvilBaseWidget {
 		this.opt = opt;
 		t = new Tweener(() -> {
 			if (opt.getValue()) {
-				return isHovered() ? 0.8F : 1;
+				return isHovered() && active ? 0.8F : 1;
 			} else {
-				return isHovered() ? 0.2F : 0;
+				return isHovered() && active ? 0.2F : 0;
 			}
 		});
 		shouldDrawName = true;
@@ -34,18 +34,19 @@ public class TickBoxWidget extends EvilBaseWidget {
 
 	@Override
 	public void renderWidget(GuiGraphics drawContext, double mouseX, double mouseY, float delta) {
+		active = opt.isEnabled();
 		t.update();
 		float widthAndHeight = (getHeight() - getY() - 4);
 		float midpoint = (widthAndHeight / 2);
 		Vec2 center = new Vec2(getRight() - midpoint - 2, midpoint + 2);
 		midpoint *= 0.75F;
 		RenderUtils.drawBoxOutline(drawContext, center.x - midpoint + 1, center.y - midpoint + 1, center.x + midpoint, center.y + midpoint, MainConfig.shadowCol);
-		RenderUtils.drawBoxOutline(drawContext, center.x - midpoint, center.y - midpoint, center.x + midpoint - 1, center.y + midpoint - 1, MainConfig.primaryCol);
+		RenderUtils.drawBoxOutline(drawContext, center.x - midpoint, center.y - midpoint, center.x + midpoint - 1, center.y + midpoint - 1, getColor());
 		if (t.get() > 0.05F) {
 			midpoint *= 0.65F;
 			midpoint *= t.getF() * 0.9F;
 			RenderUtils.fillEvil(drawContext, center.x - midpoint + 1, center.y - midpoint + 1, center.x + midpoint + 1, center.y + midpoint + 1, MainConfig.shadowCol);
-			RenderUtils.fillEvil(drawContext, center.x - midpoint, center.y - midpoint, center.x + midpoint, center.y + midpoint, MainConfig.primaryCol);
+			RenderUtils.fillEvil(drawContext, center.x - midpoint, center.y - midpoint, center.x + midpoint, center.y + midpoint, getColor());
 		}
 //		drawContext.drawText(MinecraftClient.getInstance().textRenderer, this.message, getX() + 5, getY() + MinecraftClient.getInstance().textRenderer.fontHeight / 2, MainConfig.primaryCol, true);
 	}

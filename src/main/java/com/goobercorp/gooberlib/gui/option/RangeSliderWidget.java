@@ -56,7 +56,7 @@ public class RangeSliderWidget extends EvilBaseWidget {
 //			stack.scale(0.5F, 0.5F);
 			drawContext.drawCenteredString(Minecraft.getInstance().font, valueFormatter.get(), this.getRight() - this.getWidth() / 4, this.getY() - 10, ARGB.color(clickTweener.getF(), MainConfig.primaryCol));
 		});
-		drawContext.drawString(Minecraft.getInstance().font, numberOption.name(), getX() + 5, getY() + Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol, true);
+		drawContext.drawString(Minecraft.getInstance().font, numberOption.name(), getX() + 5, getY() + Minecraft.getInstance().font.lineHeight / 2, getColor(), true);
 //		super.drawText(drawContext);
 	}
 

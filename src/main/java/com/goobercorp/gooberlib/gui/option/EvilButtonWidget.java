@@ -1,6 +1,5 @@
 package com.goobercorp.gooberlib.gui.option;
 
-import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.gui.EvilBaseWidget;
 import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import com.goobercorp.gooberlib.util.Util;
@@ -39,10 +38,10 @@ public class EvilButtonWidget extends EvilBaseWidget {
 		newMatrixScope(drawContext, stack -> {
 			if (this.centerName) {
 				stack.scaleAround(1 - clickTweener.getF() * 0.25F, this.getX() + this.getWidth() / 2F, Minecraft.getInstance().font.lineHeight / 2F + 2.5F);
-				drawContext.drawCenteredString(Minecraft.getInstance().font, name, this.getX() + this.getWidth() / 2, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol);
+				drawContext.drawCenteredString(Minecraft.getInstance().font, name, this.getX() + this.getWidth() / 2, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, getColor());
 			} else {
 				stack.scaleAround(1 - clickTweener.getF() * 0.25F, Minecraft.getInstance().font.width(name) / 2F, Minecraft.getInstance().font.lineHeight / 2F);
-				drawContext.drawString(Minecraft.getInstance().font, name, this.getX() + 5, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol);
+				drawContext.drawString(Minecraft.getInstance().font, name, this.getX() + 5, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, getColor());
 			}
 		});
 	}

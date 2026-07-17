@@ -56,7 +56,7 @@ public class EvilSliderWidget extends EvilBaseWidget {
 
 	@Override
 	protected void drawText(GuiGraphics drawContext) {
-		drawContext.drawString(Minecraft.getInstance().font, numberOption.name(), getX() + 5, getY() + Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol, true);
+		drawContext.drawString(Minecraft.getInstance().font, numberOption.name(), getX() + 5, getY() + Minecraft.getInstance().font.lineHeight / 2, getColor(), true);
 	}
 
 	public static double getInterpolatedValue(double val, double min, double max) {
@@ -87,6 +87,7 @@ public class EvilSliderWidget extends EvilBaseWidget {
 	@Override
 	public void renderWidget(GuiGraphics context, double mouseX, double mouseY, float delta) {
 		valTweener.update();
+		active = numberOption.isEnabled();
 		scrollAmount = (float) RenderUtils.ease(scrollAmount, 0, 5);
 		newMatrixScope(context, stack -> {
 			float yeah = getX() + (this.width - 5) / 2F;
@@ -102,9 +103,9 @@ public class EvilSliderWidget extends EvilBaseWidget {
 			//TODO: standardize horizontal padding of 5
 			float xOffset = Mth.lerp(hoverTweener.getF(), getRight() - 5 - Minecraft.getInstance().font.width(valueFormatter.get()), ((getX() + (this.width - 5) / 2F) + (valTweener.getF() / 2 * (this.width - 5))) + 1 - Minecraft.getInstance().font.width(valueFormatter.get()) / 2F);
 			stack.translate(xOffset, Mth.lerp(hoverTweener.getF(), 9 / 2F, this.getY() - 10));
-			context.drawString(Minecraft.getInstance().font, valueFormatter.get(), 0, 0, MainConfig.primaryCol);
+			context.drawString(Minecraft.getInstance().font, valueFormatter.get(), 0, 0, getColor());
 		});
-		if (this.isHovered()) {
+		if (this.isHovered() && active) {
 			context.requestCursor(this.dragging ? CursorTypes.RESIZE_EW : CursorTypes.POINTING_HAND);
 		}
 	}
@@ -119,6 +120,7 @@ public class EvilSliderWidget extends EvilBaseWidget {
 
 	@Override
 	public void onClick(MouseButtonEvent click, boolean bl) {
+
 		this.dragging = this.active;
 		this.setValueFromMouse(click);
 	}

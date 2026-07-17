@@ -49,16 +49,17 @@ public class MainConfig {
 	public static final BooleanOption EXPERIMENTAL_DUAL_COLUMN_LAYOUT = new BooleanOption("Dual Column Layout", "don't tell kr1v...");
 	public static final BooleanOption DEBUG_GUIDELINES = new BooleanOption("Guidelines");
 	public static final BooleanOption CLOSE_SCREEN_ON_EXCEPTION = new BooleanOption("Close gooberlib config screens on exception");
+	public static final BooleanOption BACKGROUND_GLOW = new BooleanOption("Background Glow", true);
+	public static final BooleanOption CATEGORY_ANIMATIONS = new BooleanOption("Category Animations", true);
+
+	public static final FloatOption WOKE_STRENGTH = new FloatOption("Wokeness strength", 0.5F, 0F, 1F, WidgetProviders.numberSliderWithFormatter(floatOption -> (int) (floatOption.value * 100) + "%"));
 	public static final BooleanOption WOKE = new BooleanOption("Woke mode").setOnValueChange(b -> {
 		if (!b.getValue()) {
 			primaryCol = 0xFFffaf5e;
 			shadowCol = ARGB.scaleRGB(primaryCol, 0.25F);
 		}
+		WOKE_STRENGTH.setEnabled(b.getValue());
 	});
-	public static final BooleanOption BACKGROUND_GLOW = new BooleanOption("Background Glow", true);
-	public static final BooleanOption CATEGORY_ANIMATIONS = new BooleanOption("Category Animations", true);
-
-	public static final FloatOption WOKE_STRENGTH = new FloatOption("Wokeness strength", 0.5F, 0F, 1F, WidgetProviders.numberSliderWithFormatter(floatOption -> (int) (floatOption.value * 100) + "%"));
 
 	public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.create("GooberLib", b -> {
 		b.category("Visual", category -> {

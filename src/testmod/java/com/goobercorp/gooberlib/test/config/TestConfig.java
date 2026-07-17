@@ -22,6 +22,9 @@ public class TestConfig {
 	public static final IntOption hotkey = new IntOption("nya gothkey", "");
 	public static final ButtonOption evilButtonOpt = new ButtonOption("yeah2", "yeah", () -> System.out.println("YEAH!!!"));
 
+	public static final BooleanOption child = new BooleanOption("child", true);
+	public static final BooleanOption parent = new BooleanOption("parent", true).setOnValueChange(optionInstance -> child.setEnabled(optionInstance.getValue()));
+
 	// @formatter:off
     public static final Supplier<GooberConfigBuilder> BUILDER = () -> GooberConfigBuilder.create("Test Mod")
             .category("Int fields", "A description")
@@ -39,6 +42,9 @@ public class TestConfig {
                 .build()
             .category("second category")
                 .section("second page section", "yah")
+			.option(parent)
+			.child(child)
+			.build()
                     .build()
                 .build()
 			.addBuiltCategory(TheOne.category)

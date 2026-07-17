@@ -25,16 +25,20 @@ public class EvilBaseWidget extends AbstractWidget {
 	protected boolean centerName;
 	protected boolean shouldDrawName;
 	protected final Component name;
+	protected boolean active = true;
 
 	public EvilBaseWidget(Component name, int x, int y, int width, int height) {
 		super(x + 1, y, width - 1, height, name);
 		this.name = name;
-		hoverTweener = new Tweener(() -> this.isHovered || mouseDown ? 1 : 0, 10);
+		hoverTweener = new Tweener(() -> (this.isHovered || mouseDown) && active ? 1 : 0, 10);
 		clickTweener = new Tweener(() -> this.mouseDown ? 1 : 0);
 	}
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent click, boolean bl) {
+		if (!active) {
+			return false;
+		}
 		if (click.button() == 2) {
 			playDownSound(Minecraft.getInstance().getSoundManager());
 			this.reset();
@@ -85,7 +89,7 @@ public class EvilBaseWidget extends AbstractWidget {
 
 		newMatrixScope(drawContext, stack -> {
 			stack.translate(horizontalPosOffset, verticalPosOffset);
-			drawContext.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath("gooberlib", "widget/button"), this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0xA0A0A0A0);
+			drawContext.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath("gooberlib", "widget/button"), this.getX(), this.getY(), this.getWidth(), this.getHeight(), active ? 0xA0A0A0A0 : 0xA0808080);
 			drawText(drawContext);
 			RenderUtils.drawBoxOutline(drawContext, this.getX() + clickTweener.getF(), this.getY() + clickTweener.getF(), this.getRight() - 1 - clickTweener.getF(), this.getBottom() - 1 - clickTweener.getF(), ARGB.srgbLerp(hoverTweener.getF(), 0xFF000000, MainConfig.primaryCol));
 
@@ -102,11 +106,15 @@ public class EvilBaseWidget extends AbstractWidget {
 	protected void drawText(GuiGraphics drawContext) {
 		if (shouldDrawName) {
 			if (centerName) {
-				drawContext.drawCenteredString(Minecraft.getInstance().font, name, this.getX() + this.width / 2, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol);
+				drawContext.drawCenteredString(Minecraft.getInstance().font, name, this.getX() + this.width / 2, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, getColor());
 			} else {
-				drawContext.drawString(Minecraft.getInstance().font, name, this.getX() + 5, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol);
+				drawContext.drawString(Minecraft.getInstance().font, name, this.getX() + 5, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, getColor());
 			}
 		}
+	}
+
+	protected int getColor() {
+		return active ? MainConfig.primaryCol : ARGB.srgbLerp(0.75F, 0xFF000000, MainConfig.primaryCol);
 	}
 
 	@Override

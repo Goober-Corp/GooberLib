@@ -1,6 +1,5 @@
 package com.goobercorp.gooberlib.gui.option;
 
-import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.gui.EvilBaseWidget;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.util.ColorTweener;
@@ -41,7 +40,7 @@ public class ColorPickerWidget extends EvilBaseWidget {
 	@Override
 	protected void drawText(GuiGraphics drawContext) {
 		super.drawText(drawContext);
-		drawContext.drawString(Minecraft.getInstance().font, "Edit", getRight() - getHeight() * 2, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, MainConfig.primaryCol);
+		drawContext.drawString(Minecraft.getInstance().font, "Edit", getRight() - getHeight() * 2, this.getY() + this.height / 2 - Minecraft.getInstance().font.lineHeight / 2, getColor());
 	}
 
 	@Override

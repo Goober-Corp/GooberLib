@@ -78,7 +78,7 @@ public class GooberScreen extends Screen {
 	protected void init() {
 		categoryWidgets.clear();
 
-		this.scrollbar = addWidget(new Scrollbar(this.width - 10, 28, 8, this.height - 2 - 28 - 5, val -> scrollProgress = -Mth.lerp(-val, scrollTweener.max, scrollTweener.min)));
+		this.scrollbar = addWidget(new Scrollbar(this.width - 2, 28, 2, this.height - 2 - 28 - 5, val -> scrollProgress = -Mth.lerp(-val, scrollTweener.max, scrollTweener.min)));
 		this.scrollbar.setValue(1 - ((scrollProgress - scrollTweener.min) / (scrollTweener.max - scrollTweener.min)));
 
 		if (this.showTabs) {
@@ -184,11 +184,25 @@ public class GooberScreen extends Screen {
 
 		double catHeight = getCurrentCategoryWidget().getWrapped().getHeight() - height + VERTICAL_PADDING;
 
-		if (catHeight < scrollTweener.max) catHeight = scrollTweener.max + 1;
+		if (catHeight < scrollTweener.max) {
+			catHeight = scrollTweener.max + 1;
+			if (scrollbar != null) {
+				scrollbar.shouldRender = false;
+			}
+		} else {
+			if (scrollbar != null) {
+				scrollbar.shouldRender = true;
+			}
+		}
+		if (scrollbar != null) {
+			scrollbar.setValue(scrollProgress / scrollTweener.min);
+		}
 
 		scrollTweener.min = -catHeight;
 
-		this.scrollbar.render(drawContext, mouseX, mouseY, tickDelta);
+		if (scrollbar != null) {
+			this.scrollbar.render(drawContext, mouseX, mouseY, tickDelta);
+		}
 	}
 
 	protected PrecisePositionWidgetWrapper<CategoryWidget> getCurrentCategoryWidget() {
@@ -324,7 +338,9 @@ public class GooberScreen extends Screen {
 				if ((scrollProgress < scrollTweener.min) || (scrollProgress > scrollTweener.max)) {
 					if (click.button() == 0 || click.button() == 2) {
 						scrollProgress += deltaY * Math.min(1 / Math.abs(scrollProgress - Math.clamp(scrollProgress, scrollTweener.min, scrollTweener.max)), 1);
-						scrollbar.setValue(1 - ((scrollProgress - scrollTweener.min) / (scrollTweener.max - scrollTweener.min)));
+						if (scrollbar != null) {
+							scrollbar.setValue(1 - ((scrollProgress - scrollTweener.min) / (scrollTweener.max - scrollTweener.min)));
+						}
 					}
 				} else {
 					if (click.button() == 0) {
@@ -332,7 +348,9 @@ public class GooberScreen extends Screen {
 					} else if (click.button() == 2) {
 						scrollProgress += deltaY * 5;
 					}
-					scrollbar.setValue(1 - ((scrollProgress - scrollTweener.min) / (scrollTweener.max - scrollTweener.min)));
+					if (scrollbar != null) {
+						scrollbar.setValue(1 - ((scrollProgress - scrollTweener.min) / (scrollTweener.max - scrollTweener.min)));
+					}
 				}
 			}
 		}
@@ -356,7 +374,9 @@ public class GooberScreen extends Screen {
 				} else {
 					scrollProgress += g * 20;
 				}
-				scrollbar.setValue(1 - ((scrollProgress - scrollTweener.min) / (scrollTweener.max - scrollTweener.min)));
+				if (scrollbar != null) {
+					scrollbar.setValue(1 - ((scrollProgress - scrollTweener.min) / (scrollTweener.max - scrollTweener.min)));
+				}
 			}
 		}
 		return yeah;

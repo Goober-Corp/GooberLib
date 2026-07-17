@@ -1,6 +1,5 @@
 package com.goobercorp.gooberlib.gui.option;
 
-import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.gui.EvilBaseWidget;
 import com.goobercorp.gooberlib.interfaces.AdvanceableOption;
 import net.minecraft.client.Minecraft;
@@ -45,7 +44,7 @@ public class CyclingOptionWidget extends EvilBaseWidget {
 				stack.translate(this.getRight() - 5 - Minecraft.getInstance().font.width(displayName), this.getY() + this.height / 2F - Minecraft.getInstance().font.lineHeight / 2f);
 			}
 			stack.scaleAround(1 - clickTweener.getF() * 0.25F, Minecraft.getInstance().font.width(displayName) / 2F, 5F);
-			drawContext.drawString(Minecraft.getInstance().font, displayName, 0, 0, MainConfig.primaryCol);
+			drawContext.drawString(Minecraft.getInstance().font, displayName, 0, 0, getColor());
 		});
 		super.drawText(drawContext);
 	}

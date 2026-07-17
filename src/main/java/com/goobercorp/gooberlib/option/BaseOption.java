@@ -4,19 +4,18 @@ import com.goobercorp.gooberlib.api.GooberLibApi;
 import com.goobercorp.gooberlib.interfaces.ValueChangeCallback;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.util.Util;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
-
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.network.chat.Component;
 
 public abstract class BaseOption<T extends Option<T>> implements Option<T> {
 	protected Component name;
 	protected Function<T, Component> description;
 	private ValueChangeCallback<T> callback;
 	private final WidgetProvider<T> provider;
-	private boolean enabled;
+	private boolean enabled = true;
 
 	protected BaseOption(CharSequence name, Function<T, CharSequence> description, @Nullable WidgetProvider<T> provider) {
 		this.name = Util.fromChars(name);
