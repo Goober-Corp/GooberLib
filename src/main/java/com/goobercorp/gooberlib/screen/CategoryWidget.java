@@ -112,6 +112,7 @@ public class CategoryWidget extends ClickableParentWidget implements Hoverable {
 			if (wrapped instanceof SectionWidget section) {
 				totalYOffset -= section.getOffsetRequired();
 			}
+			//TODO: height calculation for rendering does not take into account dual-column layouts
 			height += entry.getWrapped().getHeight() + VERTICAL_PADDING / 2f;
 		}
 		this.setHeight((int) height);

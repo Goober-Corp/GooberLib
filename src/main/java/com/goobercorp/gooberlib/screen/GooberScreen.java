@@ -78,7 +78,7 @@ public class GooberScreen extends Screen {
 	protected void init() {
 		categoryWidgets.clear();
 
-		this.scrollbar = addWidget(new Scrollbar(this.width - 2, 28, 2, this.height - 2 - 28 - 5, val -> scrollProgress = -Mth.lerp(-val, scrollTweener.max, scrollTweener.min)));
+		this.scrollbar = addWidget(new Scrollbar(this.width - 2, 26, 2, this.height - 26 - 1, val -> scrollProgress = -Mth.lerp(-val, scrollTweener.max, scrollTweener.min)));
 		this.scrollbar.setValue(1 - ((scrollProgress - scrollTweener.min) / (scrollTweener.max - scrollTweener.min)));
 
 		if (this.showTabs) {
@@ -130,12 +130,14 @@ public class GooberScreen extends Screen {
 		updateTweeners();
 		setWidgetOffsets();
 		setHoverText(mX, mY);
-		newMatrixScope(drawContext, stack -> {
-			stack.translate((float) (-mouseXTweener.get() * 0.1F), (float) (-mouseYTweener.get() * 0.1F));
-			stack.translate(Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2F - 100, Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2F - 100);
-			stack.scale(2.5F, 2.5F);
-			drawContext.blit(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath("gooberlib", "textures/him.png"), 0, 0, 100, 100, 100, 100, 100, 100);
-		});
+		if (MainConfig.KENNY.value) {
+			newMatrixScope(drawContext, stack -> {
+				stack.translate((float) (-mouseXTweener.get() * 0.1F), (float) (-mouseYTweener.get() * 0.1F));
+				stack.translate(Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2F - 100, Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2F - 100);
+				stack.scale(2.5F, 2.5F);
+				drawContext.blit(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath("gooberlib", "textures/him.png"), 0, 0, 100, 100, 100, 100, 100, 100);
+			});
+		}
 		if (MainConfig.BACKGROUND_GLOW.value) {
 			if (Minecraft.getInstance().options.getMenuBackgroundBlurriness() > 0) {
 				RenderUtils.fillEvil(drawContext, (float) mX, (float) mY, (float) (mX + 2.5f), (float) (mY + 2.5F), MainConfig.primaryCol);
@@ -146,6 +148,9 @@ public class GooberScreen extends Screen {
 					stack.translate(0, -26 * categoryHoverProgress.getF());
 					tabNavigationWidget.renderForBackgroundLayer(drawContext);
 				});
+			}
+			if (scrollbar != null) {
+				scrollbar.render(drawContext, mouseX, mouseY, tickDelta);
 			}
 		}
 
@@ -185,7 +190,7 @@ public class GooberScreen extends Screen {
 		double catHeight = getCurrentCategoryWidget().getWrapped().getHeight() - height + VERTICAL_PADDING;
 
 		if (catHeight < scrollTweener.max) {
-			catHeight = scrollTweener.max + 1;
+			catHeight = scrollTweener.max;
 			if (scrollbar != null) {
 				scrollbar.shouldRender = false;
 			}
@@ -227,17 +232,15 @@ public class GooberScreen extends Screen {
 	}
 
 	protected void drawHoveredDescription(GuiGraphics drawContext) {
+		//TODO: idk if i want to keep the small shadow effect on the bottom of the screen.
 		newMatrixScope(drawContext, stack -> {
 			List<FormattedCharSequence> lines = font.split(descriptionText, width);
 			int linesHeight = lines.size() * 9;
 			stack.translate((float) (drawContext.guiWidth() / 2), this.height - linesHeight * descriptionAnimationProgress.getF());
-//			RenderUtils.fillEvil(drawContext, 0, -1, width / 2F, linesHeight, MainConfig.shadowCol, 0x00000000);
-//			RenderUtils.fillEvil(drawContext, -width / 2F, -1, 0, linesHeight, 0x00000000, MainConfig.shadowCol);
 			RenderUtils.fillEvil(drawContext, -width / 2F, -(font.lineHeight / 2F), width / 2F, linesHeight, 0, MainConfig.shadowCol, MainConfig.shadowCol, 0);
 			for (FormattedCharSequence orderedText : lines) {
 				drawContext.drawCenteredString(font, orderedText, 0, 9 * lines.indexOf(orderedText), MainConfig.primaryCol);
 			}
-//			drawContext.drawCenteredTextWithShadow(textRenderer, descriptionText, 0, 0, MainConfig.primaryCol);
 		});
 	}
 

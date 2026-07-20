@@ -26,11 +26,17 @@ public class HotkeyWidget extends EvilBaseWidget {
 
 	@Override
 	public void renderWidget(GuiGraphics context, double mouseX, double mouseY, float delta) {
+		shouldDrawName = !isListening;
 		String text = "";
 		if (isListening) text += "> ";
 		if (!shouldClear) text += opt.keyCodesString();
 		if (isListening) text += " <";
-		context.drawString(font, text, this.getX() + this.width - font.width(text) - 5, this.getY() + 4, MainConfig.primaryCol);
+		text = text.replace("LEFT_", "L").replace("RIGHT_", "R").replace("CONTROL", "CTRL");
+		if (isListening) {
+			context.drawCenteredString(font, text, (this.getX() + this.width) / 2, this.getY() + 4, MainConfig.primaryCol);
+		} else {
+			context.drawString(font, text, this.getX() + this.width - font.width(text) - 5, this.getY() + 4, MainConfig.primaryCol);
+		}
 
 		opt.editing = isListening;
 	}
