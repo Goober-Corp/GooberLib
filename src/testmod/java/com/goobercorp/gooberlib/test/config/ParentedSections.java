@@ -17,6 +17,15 @@ public class ParentedSections {
                o.child(section);
                o.children(section, section);
            });
+           cat.section("Section meow", section -> {
+              section.option(new IntOption("mrrp"), option -> {
+                  ConfigSection Innrersection = new SectionBuilder(null, "Child in a section section", "Meow")
+                          .options(new IntOption("Child section option"))
+                          .buildSection();
+                  option.child(Innrersection);
+                  option.children(Innrersection, Innrersection);
+              });
+           });
         });
     });
 }

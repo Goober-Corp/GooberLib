@@ -67,6 +67,13 @@ public record OptionContext<P>(P parent, Option<?> option,
 		return this;
 	}
 
+
+	public OptionContext<P> children(ConfigSection... sections) {
+		for (ConfigSection section : sections) child(section);
+
+		return this;
+	}
+
 	public P build() {
 		return parent;
 	}
