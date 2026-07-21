@@ -66,6 +66,7 @@ public class CategoryBuilder {
 		return this;
 	}
 
+	// todo..?: CharSequence
 	/**
 	 * Returns (but does not yet register) a {@link SectionBuilder} for building a new section
 	 *

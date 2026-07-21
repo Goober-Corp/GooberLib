@@ -1,17 +1,20 @@
 package com.goobercorp.gooberlib.option;
 
 import com.goobercorp.gooberlib.builder.misc.OptionHolder;
+import com.goobercorp.gooberlib.builder.section.ConfigSection;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public record OptionContext<P>(P parent, Option<?> option,
-                               List<OptionContext<?>> childOptions) implements OptionHolder {
+                               List<OptionHolder> childOptions) implements OptionHolder {
 	public OptionContext(P parent, Option<?> option) {
 		this(parent, option, new ArrayList<>());
 	}
 
+	// todo check if this can be removed yet
 	@Override
 	public boolean equals(Object o) {
 		if (o == null || getClass() != o.getClass()) return false;
@@ -28,7 +31,7 @@ public record OptionContext<P>(P parent, Option<?> option,
 	}
 
 	@Override
-	public String toString() {
+	public @NonNull String toString() {
 		return "OptionContext{" +
 				"option=" + option +
 				", parent=" + parent +
@@ -37,6 +40,11 @@ public record OptionContext<P>(P parent, Option<?> option,
 
 	public OptionContext<P> child(Option<?> option) {
 		childOptions.add(new OptionContext<>(this, option));
+		return this;
+	}
+
+	public OptionContext<P> child(ConfigSection section) {
+		childOptions.add(section);
 		return this;
 	}
 

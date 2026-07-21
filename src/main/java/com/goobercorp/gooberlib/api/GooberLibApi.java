@@ -161,8 +161,14 @@ public class GooberLibApi {
 		JsonObject childrenObject = jo.get("children").getAsJsonObject();
 
 		option.option().deserialize(JsonOps.INSTANCE, valueObject);
-		for (OptionContext<?> childOptionHolder : option.childOptions()) {
-			deserializeOption(childOptionHolder, childrenObject.getAsJsonObject(childOptionHolder.option().name().getString()));
+		for (OptionHolder childOptionHolder : option.childOptions()) {
+			if (childOptionHolder instanceof OptionContext<?> optionContext) {
+				deserializeOption(childOptionHolder, childrenObject.getAsJsonObject(childOptionHolder.option().name().getString()));
+			} else if (childOptionHolder instanceof ConfigSection section) {
+				deserializeSection(section, childrenObject.getAsJsonObject(section.metadata().name().getString()));
+			} else {
+				throw new IllegalStateException("???");
+			}
 		}
 	}
 
@@ -174,12 +180,36 @@ public class GooberLibApi {
 		jo.add("value", value);
 
 		JsonObject childrenObject = new JsonObject();
-		for (OptionContext<?> childOption : option.childOptions()) {
-			serializeOption(childOption, childrenObject);
+		for (OptionHolder childOption : option.childOptions()) {
+			if (childOption instanceof OptionContext<?> optionContext) {
+				serializeOption(childOption, childrenObject);
+			} else if (childOption instanceof ConfigSection configSection) {
+				serializeSection(configSection, childrenObject);
+			}
 		}
 		jo.add("children", childrenObject);
 
 		out.add(optionName, jo);
+	}
+
+    private static void serializeSection(ConfigSection section, JsonObject childrenObject) {
+        String sectionName = section.metadata().name().getString();
+
+		JsonObject sectionObject = new JsonObject();
+
+		for (OptionContext<?> childOption : section.childOptions()) {
+			serializeOption(childOption, sectionObject);
+		}
+
+		childrenObject.add(sectionName, sectionObject);
+    }
+
+	private static void deserializeSection(ConfigSection section, JsonObject sectionObject) {
+		if (sectionObject == null) return;
+
+		for (OptionContext<?> childOptionHolder : section.childOptions()) {
+			deserializeOption(childOptionHolder, sectionObject.getAsJsonObject(childOptionHolder.option().name().getString()));
+		}
 	}
 
 	private static final List<Pair<String, DefaultHandler>> defaultHandlers = new ArrayList<>();

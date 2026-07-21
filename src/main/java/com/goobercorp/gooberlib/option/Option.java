@@ -21,6 +21,7 @@ public interface Option<T extends Option<T>> {
 
 	Component getDescription();
 
+	// todo: multiple
 	T setOnValueChange(ValueChangeCallback<T> t);
 
 	WidgetProvider<T> getWidgetProvider();
