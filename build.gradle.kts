@@ -30,7 +30,7 @@ loom {
 
 repositories {
     mavenCentral()
-    maven("https://maven.terraformersmc.com/")
+    maven("https://maven.terraformersmc.com/releases/")
 }
 
 val minecraftVersion: String by project
