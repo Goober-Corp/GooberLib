@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.screen;
 
+import com.goobercorp.gooberlib.builder.misc.OptionHolder;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
 import com.goobercorp.gooberlib.config.MainConfig;
 import com.goobercorp.gooberlib.gui.EvilBaseWidget;
@@ -121,7 +122,7 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 
 	private void drawLines(GuiGraphics guiGraphics) {
 		for (OptionContext<?> o : options) {
-			drawLinesForOption(guiGraphics, o);
+//			drawLinesForOption(guiGraphics, o);
 		}
 	}
 
@@ -143,20 +144,20 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 		}
 		RenderUtils.drawVerticalLine(drawContext, (float) mainWidget.getRealX() + 6 + offsetX, (float) mainWidget.getRealY() + mainWidget.getWrapped().getHeight() - 1 + offsetY - clickVal, (float) lastChildWidget.getRealY() + (lastChildWidget.getWrapped().getHeight() / 2F) + 1 + yeah, MainConfig.bgColor);
 		RenderUtils.drawVerticalLine(drawContext, (float) mainWidget.getRealX() + 5 + offsetX, (float) mainWidget.getRealY() + mainWidget.getWrapped().getHeight() - 1 + offsetY - clickVal, (float) lastChildWidget.getRealY() + (lastChildWidget.getWrapped().getHeight() / 2F) + yeah, MainConfig.primaryCol);
-		for (OptionContext<?> opt : o.childOptions()) {
-			PrecisePositionWidgetWrapper<?> optionWidget = evilLayout.get(opt);
-			float offX = 0;
-			float offY = 0;
-			float cVal = 0;
-			if (optionWidget.getWrapped() instanceof EvilBaseWidget) {
-				offX = ((EvilBaseWidget) optionWidget.getWrapped()).horizontalPosOffset;
-				offY = ((EvilBaseWidget) optionWidget.getWrapped()).verticalPosOffset;
-				cVal = ((EvilBaseWidget) optionWidget.getWrapped()).clickTweener.getF();
-			}
-			RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getRealX() + 6 + offsetX, (float) evilLayout.get(opt).getRealX() + offX + cVal, (float) optionWidget.getRealY() + optionWidget.getWrapped().getHeight() / 2F + 1 + offY, MainConfig.bgColor);
-			RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getRealX() + 5 + offsetX, (float) evilLayout.get(opt).getRealX() + offX + cVal, (float) optionWidget.getRealY() + optionWidget.getWrapped().getHeight() / 2F + offY, MainConfig.primaryCol);
-			drawLinesForOption(drawContext, opt);
-		}
+//		for (OptionContext<?> opt : o.childOptions()) {
+//			PrecisePositionWidgetWrapper<?> optionWidget = evilLayout.get(opt);
+//			float offX = 0;
+//			float offY = 0;
+//			float cVal = 0;
+//			if (optionWidget.getWrapped() instanceof EvilBaseWidget) {
+//				offX = ((EvilBaseWidget) optionWidget.getWrapped()).horizontalPosOffset;
+//				offY = ((EvilBaseWidget) optionWidget.getWrapped()).verticalPosOffset;
+//				cVal = ((EvilBaseWidget) optionWidget.getWrapped()).clickTweener.getF();
+//			}
+//			RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getRealX() + 6 + offsetX, (float) evilLayout.get(opt).getRealX() + offX + cVal, (float) optionWidget.getRealY() + optionWidget.getWrapped().getHeight() / 2F + 1 + offY, MainConfig.bgColor);
+//			RenderUtils.drawHorizontalLine(drawContext, (float) mainWidget.getRealX() + 5 + offsetX, (float) evilLayout.get(opt).getRealX() + offX + cVal, (float) optionWidget.getRealY() + optionWidget.getWrapped().getHeight() / 2F + offY, MainConfig.primaryCol);
+//			drawLinesForOption(drawContext, opt);
+//		}
 	}
 
 	private int addOptionWithChildren(OptionContext<?> optionContext, int y, int x, int offset) {
@@ -173,8 +174,14 @@ public class SectionWidget extends ClickableParentWidget implements Hoverable {
 		evilLayout.put(optionContext, pw);
 		addY += VERTICAL_PADDING;
 
-		for (OptionContext<?> child : optionContext.childOptions()) {
-			addY += addOptionWithChildren(child, y + addY, x + CHILD_INSET, width - CHILD_INSET, offset);
+		for (OptionHolder holder : optionContext.childOptions()) {
+			if (holder instanceof ConfigSection section) {
+				for (OptionContext<?> child : section.childOptions()) {
+					addY += addOptionWithChildren(child, y + addY, x + CHILD_INSET, width - CHILD_INSET, offset);
+				}
+			} else {
+				addY += addOptionWithChildren(((OptionContext<?>) holder), y + addY, x + CHILD_INSET, width - CHILD_INSET, offset);
+			}
 		}
 
 		return addY;

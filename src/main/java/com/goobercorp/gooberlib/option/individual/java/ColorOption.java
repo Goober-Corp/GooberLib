@@ -14,6 +14,7 @@ public class ColorOption extends BaseOption<ColorOption> {
 	private final int defaultValue;
 	/// @implNote Modifying this value directly will *not* trigger .onChange(). This is in ARGB
 	public int value;
+	//TODO: make alpha channel optional
 
 	public ColorOption(CharSequence name, Function<ColorOption, CharSequence> description, int defaultValue, WidgetProvider<ColorOption> provider) {
 		super(name, description, provider);

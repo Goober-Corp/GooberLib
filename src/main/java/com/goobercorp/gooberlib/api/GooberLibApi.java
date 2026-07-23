@@ -163,7 +163,7 @@ public class GooberLibApi {
 		option.option().deserialize(JsonOps.INSTANCE, valueObject);
 		for (OptionHolder childOptionHolder : option.childOptions()) {
 			if (childOptionHolder instanceof OptionContext<?> optionContext) {
-				deserializeOption(childOptionHolder, childrenObject.getAsJsonObject(childOptionHolder.option().name().getString()));
+				deserializeOption(optionContext, childrenObject.getAsJsonObject(optionContext.option().name().getString()));
 			} else if (childOptionHolder instanceof ConfigSection section) {
 				deserializeSection(section, childrenObject.getAsJsonObject(section.metadata().name().getString()));
 			} else {
@@ -182,7 +182,7 @@ public class GooberLibApi {
 		JsonObject childrenObject = new JsonObject();
 		for (OptionHolder childOption : option.childOptions()) {
 			if (childOption instanceof OptionContext<?> optionContext) {
-				serializeOption(childOption, childrenObject);
+				serializeOption(optionContext, childrenObject);
 			} else if (childOption instanceof ConfigSection configSection) {
 				serializeSection(configSection, childrenObject);
 			}
@@ -192,8 +192,8 @@ public class GooberLibApi {
 		out.add(optionName, jo);
 	}
 
-    private static void serializeSection(ConfigSection section, JsonObject childrenObject) {
-        String sectionName = section.metadata().name().getString();
+	private static void serializeSection(ConfigSection section, JsonObject childrenObject) {
+		String sectionName = section.metadata().name().getString();
 
 		JsonObject sectionObject = new JsonObject();
 
@@ -202,7 +202,7 @@ public class GooberLibApi {
 		}
 
 		childrenObject.add(sectionName, sectionObject);
-    }
+	}
 
 	private static void deserializeSection(ConfigSection section, JsonObject sectionObject) {
 		if (sectionObject == null) return;

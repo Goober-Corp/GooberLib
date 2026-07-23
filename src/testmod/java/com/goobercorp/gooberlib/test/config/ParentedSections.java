@@ -8,24 +8,24 @@ import com.goobercorp.gooberlib.option.individual.primitive.IntOption;
 
 @GooberConfig(modId = "parented-sections")
 public class ParentedSections {
-    public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.create("Parented sections", config -> {
-        config.category("Main", cat -> {
-           cat.option(new IntOption("Meow"), o -> {
-               ConfigSection section = new SectionBuilder(null, "Child section", "Meow")
-                       .options(new IntOption("Child section option"))
-                       .buildSection();
-               o.child(section);
-               o.children(section, section);
-           });
-           cat.section("Section meow", section -> {
-              section.option(new IntOption("mrrp"), option -> {
-                  ConfigSection Innrersection = new SectionBuilder(null, "Child in a section section", "Meow")
-                          .options(new IntOption("Child section option"))
-                          .buildSection();
-                  option.child(Innrersection);
-                  option.children(Innrersection, Innrersection);
-              });
-           });
-        });
-    });
+	public static final GooberConfigBuilder BUILDER = GooberConfigBuilder.create("Parented sections", config -> {
+		config.category("Main", cat -> {
+			cat.option(new IntOption("Meow"), o -> {
+				ConfigSection section = new SectionBuilder(null, "Child section", "Meow")
+						.options(new IntOption("Child section option"))
+						.buildSection();
+				o.child(section);
+//				o.children(section, section);
+			});
+//           cat.section("Section meow", section -> {
+//              section.option(new IntOption("mrrp"), option -> {
+//                  ConfigSection Innrersection = new SectionBuilder(null, "Child in a section section", "Meow")
+//                          .options(new IntOption("Child section option"))
+//                          .buildSection();
+//                  option.child(Innrersection);
+//                  option.children(Innrersection, Innrersection);
+//              });
+//           });
+		});
+	});
 }
