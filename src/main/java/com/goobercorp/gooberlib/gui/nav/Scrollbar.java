@@ -17,7 +17,7 @@ public class Scrollbar extends AbstractWidget {
 	private final Consumer<Double> writer;
 	private boolean dragging;
 	private double knobProgress; // 0 to 1
-	private static final double knobHeight = 2;
+	private static final float knobHeight = 2;
 	public boolean shouldRender = false;
 	private final Tweener shouldRenderTweener = new Tweener(() -> shouldRender ? 1 : 0);
 	private final Tweener knobHeightTweener = new Tweener(this::getKnobY);
@@ -38,8 +38,8 @@ public class Scrollbar extends AbstractWidget {
 		//TODO make this better
 		newMatrixScope(guiGraphics, stack -> {
 			stack.translate(width * (1 - shouldRenderTweener.getF()), 0);
-			RenderUtils.fillEvil(guiGraphics, (float) this.getX(), (float) (this.getY() - knobHeight / 2), (float) this.getRight(), (float) (this.getBottom() + knobHeight / 2), MainConfig.bgColor);
-			RenderUtils.fillEvil(guiGraphics, this.getX(), (float) (knobHeightTweener.getF() - knobHeight / 2), this.getRight(), (float) (knobHeightTweener.getF() + knobHeight / 2), MainConfig.primaryCol);
+			RenderUtils.fillEvil(guiGraphics, this.getX(), this.getY() - knobHeight / 2, this.getRight(), this.getBottom() + knobHeight / 2, MainConfig.bgColor);
+			RenderUtils.fillEvil(guiGraphics, this.getX(), knobHeightTweener.getF() - knobHeight / 2, this.getRight(), knobHeightTweener.getF() + knobHeight / 2, MainConfig.primaryCol);
 		});
 	}
 
