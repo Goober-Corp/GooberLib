@@ -69,7 +69,6 @@ public class ClickableParentWidget extends AbstractWidget implements ContainerEv
 	protected void renderWidget(GuiGraphics drawContext, int mouseX, int mouseY, float delta) {
 		for (var child : children) {
 			if (child instanceof Renderable widget) {
-				//TODO: render whichever widget is being interacted with on top
 				widget.render(drawContext, mouseX, mouseY, delta);
 			}
 		}
