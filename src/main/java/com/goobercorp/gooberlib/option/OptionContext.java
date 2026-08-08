@@ -14,30 +14,6 @@ public record OptionContext<P>(P parent, Option<?> option,
 		this(parent, option, new ArrayList<>());
 	}
 
-	// todo check if this can be removed yet
-	@Override
-	public boolean equals(Object o) {
-		if (o == null || getClass() != o.getClass()) return false;
-
-		OptionContext<?> that = (OptionContext<?>) o;
-		return Objects.equals(parent, that.parent) && Objects.equals(option, that.option) && Objects.equals(childOptions, that.childOptions);
-	}
-
-	@Override
-	public int hashCode() {
-		int result = Objects.hashCode(parent);
-		result = 31 * result + Objects.hashCode(option);
-		return result;
-	}
-
-	@Override
-	public @NonNull String toString() {
-		return "OptionContext{" +
-				"option=" + option +
-				", parent=" + parent +
-				'}';
-	}
-
 	public OptionContext<P> child(Option<?> option) {
 		childOptions.add(new OptionContext<>(this, option));
 		return this;
