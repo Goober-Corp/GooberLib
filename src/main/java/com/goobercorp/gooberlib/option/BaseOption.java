@@ -1,6 +1,7 @@
 package com.goobercorp.gooberlib.option;
 
 import com.goobercorp.gooberlib.api.GooberLibApi;
+import com.goobercorp.gooberlib.interfaces.EnabledStateChangeCallback;
 import com.goobercorp.gooberlib.interfaces.ValueChangeCallback;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.goobercorp.gooberlib.util.Util;
@@ -13,7 +14,8 @@ import java.util.function.Function;
 public abstract class BaseOption<T extends Option<T>> implements Option<T> {
 	protected Component name;
 	protected Function<T, Component> description;
-	private ValueChangeCallback<T> callback;
+	private ValueChangeCallback<T> valueChangeCallback;
+	private EnabledStateChangeCallback<T> enabledChangeCallback;
 	private final WidgetProvider<T> provider;
 	private boolean enabled = true;
 
@@ -42,14 +44,14 @@ public abstract class BaseOption<T extends Option<T>> implements Option<T> {
 
 	@Override
 	public void onChange() {
-		if (callback != null) {
-			this.callback.onValueChanged(thisT());
+		if (valueChangeCallback != null) {
+			this.valueChangeCallback.onValueChanged(thisT());
 		}
 	}
 
 	@Override
-	public T setOnValueChange(ValueChangeCallback<T> t) {
-		this.callback = t;
+	public T setOnValueChange(ValueChangeCallback<T> callback) {
+		this.valueChangeCallback = callback;
 		return thisT();
 	}
 
@@ -78,5 +80,12 @@ public abstract class BaseOption<T extends Option<T>> implements Option<T> {
 	@Override
 	public void setEnabled(boolean var) {
 		this.enabled = var;
+		enabledChangeCallback.onStateChanged(thisT(), var);
+	}
+
+	@Override
+	public T setOnEnabledStateChange(EnabledStateChangeCallback<T> callback) {
+		this.enabledChangeCallback = callback;
+		return thisT();
 	}
 }

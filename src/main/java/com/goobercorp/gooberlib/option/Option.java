@@ -1,5 +1,6 @@
 package com.goobercorp.gooberlib.option;
 
+import com.goobercorp.gooberlib.interfaces.EnabledStateChangeCallback;
 import com.goobercorp.gooberlib.interfaces.ValueChangeCallback;
 import com.goobercorp.gooberlib.interfaces.WidgetProvider;
 import com.mojang.serialization.DynamicOps;
@@ -22,7 +23,7 @@ public interface Option<T extends Option<T>> {
 	Component getDescription();
 
 	// todo: multiple
-	T setOnValueChange(ValueChangeCallback<T> t);
+	T setOnValueChange(ValueChangeCallback<T> callback);
 
 	WidgetProvider<T> getWidgetProvider();
 
@@ -33,4 +34,6 @@ public interface Option<T extends Option<T>> {
 	boolean isEnabled();
 
 	void setEnabled(boolean var);
+
+	T setOnEnabledStateChange(EnabledStateChangeCallback<T> callback);
 }
