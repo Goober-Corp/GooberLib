@@ -66,7 +66,6 @@ public class CategoryBuilder {
 		return this;
 	}
 
-	// todo..?: CharSequence
 	/**
 	 * Returns (but does not yet register) a {@link SectionBuilder} for building a new section
 	 *
@@ -74,39 +73,18 @@ public class CategoryBuilder {
 	 * @param description the description
 	 * @return the {@link SectionBuilder}
 	 */
-	public SectionBuilder section(Component name, Component description) {
+	public SectionBuilder section(CharSequence name, CharSequence description) {
 		return new SectionBuilder(this, name, description);
 	}
 
 	/**
 	 * Returns (but does not yet register) a {@link SectionBuilder} for building a new section
 	 *
-	 * @param name        the name
-	 * @param description the description
-	 * @return the {@link SectionBuilder}
-	 */
-	public SectionBuilder section(String name, String description) {
-		return section(Component.literal(name), Component.literal(description));
-	}
-
-	/**
-	 * Returns (but does not yet register) a {@link SectionBuilder} for building a new section
-	 *
 	 * @param name the name
 	 * @return the {@link SectionBuilder}
 	 */
-	public SectionBuilder section(Component name) {
+	public SectionBuilder section(CharSequence name) {
 		return section(name, Component.empty());
-	}
-
-	/**
-	 * Returns (but does not yet register) a {@link SectionBuilder} for building a new section
-	 *
-	 * @param name the name
-	 * @return the {@link SectionBuilder}
-	 */
-	public SectionBuilder section(String name) {
-		return section(Component.nullToEmpty(name), Component.empty());
 	}
 
 	/**

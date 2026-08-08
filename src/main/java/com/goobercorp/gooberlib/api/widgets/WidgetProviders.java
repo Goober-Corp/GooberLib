@@ -198,12 +198,13 @@ public class WidgetProviders {
 		}));
 	}
 
-	public static <T extends NumberOption<T>> WidgetProvider<T> numberHybrid() { // todo? make this work? teal what are you doing
-		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setFromString, theOption.getPredicate(), theOption.getImmediatePredicate(), theOption instanceof CharOption c ? String.valueOf(c.value) : theOption.getNumberValue().toString(), widget -> {
-			theOption.resetToDefault();
-			widget.setText(theOption instanceof CharOption c ? String.valueOf(c.value) : theOption.getNumberValue().toString());
-		}));
-	}
+	// todo TEAL PLEASE MAKE THIS WORK
+//	public static <T extends NumberOption<T>> WidgetProvider<T> numberHybrid() { // todo? make this work? teal what are you doing
+//		return ((theOption, x, y, width, height) -> new EvilStringWidgetWithName(theOption.name(), x, y, width, height, theOption::setFromString, theOption.getPredicate(), theOption.getImmediatePredicate(), theOption instanceof CharOption c ? String.valueOf(c.value) : theOption.getNumberValue().toString(), widget -> {
+//			theOption.resetToDefault();
+//			widget.setText(theOption instanceof CharOption c ? String.valueOf(c.value) : theOption.getNumberValue().toString());
+//		}));
+//	}
 
 	public static WidgetProvider<ColorOption> colorField() {
 		return ((theOption, x, y, width, height) -> new EvilStringColorWidget(theOption.name(), x, y, width, height, theOption::setFromString, theOption.getPredicate(), theOption.getImmediatePredicate(), "#" + Integer.toHexString(theOption.value), theOption));
