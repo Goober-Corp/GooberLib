@@ -3,6 +3,8 @@ package com.goobercorp.gooberlib.test.config;
 import com.goobercorp.gooberlib.annotations.GooberConfig;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
+import com.goobercorp.gooberlib.builder.section.SectionBuilder;
+import com.goobercorp.gooberlib.option.individual.misc.ButtonOption;
 import com.goobercorp.gooberlib.option.individual.primitive.IntOption;
 
 @GooberConfig(modId = "parented-sections")
@@ -11,7 +13,8 @@ public class ParentedSections {
 		config.category("Main", cat -> {
 			cat.option(new IntOption("Meow"), o -> {
 				ConfigSection section = ConfigSection.builder("Child section", "Meow")
-						.options(new IntOption("Child section option"))
+						.optionWithChildren(new IntOption("Child section option"), new ButtonOption("yeah!", () -> {
+						}))
 						.buildSection();
 				o.child(section);
 //				o.children(section, section);

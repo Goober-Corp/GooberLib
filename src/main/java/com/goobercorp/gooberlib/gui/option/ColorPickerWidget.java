@@ -25,6 +25,7 @@ public class ColorPickerWidget extends EvilBaseWidget {
 	@Override
 	protected void renderWidget(GuiGraphics context, int i, int j, float f) {
 		super.renderWidget(context, i, j, f);
+		this.active = opt.isEnabled();
 		newMatrixScope(context, stack -> {
 			stack.translate(horizontalPosOffset, verticalPosOffset);
 			float widthAndHeight = (getHeight() - getY() - 4);

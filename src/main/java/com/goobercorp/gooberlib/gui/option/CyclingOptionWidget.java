@@ -36,6 +36,7 @@ public class CyclingOptionWidget extends EvilBaseWidget {
 
 	@Override
 	protected void drawText(GuiGraphics drawContext) {
+		this.active = opt.isEnabled();
 		newMatrixScope(drawContext, stack -> {
 			Component displayName = valueFormatter.get();
 			if (this.centerName) {
