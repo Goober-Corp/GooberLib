@@ -32,7 +32,6 @@ public class PrecisePositionWidgetWrapper<T extends AbstractWidget> implements R
 	private double x;
 	private double y;
 	private float renderProgress = 0;
-	// todo: move this outside of this class (not related to a precise position wrapper gui element; should extend this or be handled in the screen)
 
 	public void setHoverMessage(Supplier<Component> hoverMessage) {
 		this.hoverMessage = hoverMessage;

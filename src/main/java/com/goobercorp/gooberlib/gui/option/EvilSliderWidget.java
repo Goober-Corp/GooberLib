@@ -39,6 +39,7 @@ public class EvilSliderWidget extends EvilBaseWidget {
 		super(numberOption.name(), x, y, width, height);
 		this.numberOption = numberOption;
 		this.value = getInterpolatedValue(numberOption.getNumberValue().doubleValue(), numberOption.getDoubleMin(), numberOption.getDoubleMax());
+		if (spaceBetweenSteps < 0) throw new IllegalArgumentException("spaceBetweenSteps < 0");
 		this.spaceBetweenSteps = spaceBetweenSteps;
 		this.valueFormatter = () -> valueFormatter.apply(numberOption);
 		valTweener.snapToTarget();
@@ -166,7 +167,6 @@ public class EvilSliderWidget extends EvilBaseWidget {
 		this.value = Mth.clamp(d, 0.0, 1.0);
 		double doubleVal = (1.0 - value) * numberOption.getDoubleMin() + value * numberOption.getDoubleMax();
 		if (spaceBetweenSteps != 0) {
-			//TODO: add checks for negative? or clamp?
 			doubleVal = doubleVal % spaceBetweenSteps;
 		}
 		numberOption.setDoubleValue(doubleVal);
