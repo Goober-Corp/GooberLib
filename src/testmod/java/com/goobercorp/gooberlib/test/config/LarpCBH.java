@@ -3,13 +3,16 @@ package com.goobercorp.gooberlib.test.config;
 import com.goobercorp.gooberlib.annotations.GooberConfig;
 import com.goobercorp.gooberlib.builder.GooberConfigBuilder;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
-import com.goobercorp.gooberlib.builder.section.SectionBuilder;
+import com.goobercorp.gooberlib.option.Option;
 import com.goobercorp.gooberlib.option.individual.java.ColorOption;
 import com.goobercorp.gooberlib.option.individual.java.CycleOption;
 import com.goobercorp.gooberlib.option.individual.primitive.BooleanOption;
 import com.goobercorp.gooberlib.option.individual.primitive.FloatOption;
 import com.goobercorp.gooberlib.option.individual.primitive.IntOption;
+import com.goobercorp.gooberlib.util.GooberLibUtilityMethods;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 @GooberConfig(modId = "larp-custom-block-highlight", title = "Larp CBH")
@@ -24,29 +27,22 @@ public class LarpCBH {
 	public static final CycleOption<String> OUTLINE_DEPTH_TEST = new CycleOption<>("Depth Test", "yeah", "Always Pass", "Default", "Concealed Only");
 	public static final FloatOption OUTLINE_CUT_CENTER = new FloatOption("Cut From Center");
 	public static final FloatOption OUTLINE_CUT_CORNER = new FloatOption("Cut From Corner");
-	public static final BooleanOption OUTLINE_ENABLED = new BooleanOption("Outline enabled", true).setOnValueChange(optionInstance -> {
-		//TODO: have a better way of doing this
-		OUTLINE_COLOR.setEnabled(optionInstance.getValue());
-		OUTLINE_SECONDARY_COLOR.setEnabled(optionInstance.getValue());
-		OUTLINE_ALPHA.setEnabled(optionInstance.getValue());
-		OUTLINE_RAINBOW.setEnabled(optionInstance.getValue());
-		OUTLINE_MODE.setEnabled(optionInstance.getValue());
-		OUTLINE_WIDTH.setEnabled(optionInstance.getValue());
-		OUTLINE_EXPAND.setEnabled(optionInstance.getValue());
-		OUTLINE_DEPTH_TEST.setEnabled(optionInstance.getValue());
-		OUTLINE_CUT_CENTER.setEnabled(optionInstance.getValue());
-		OUTLINE_CUT_CORNER.setEnabled(optionInstance.getValue());
-	});
+
+	public static final List<Option<?>> OUTLINE_ENABLED_CHILDREN = new ArrayList<>();
+	public static final BooleanOption OUTLINE_ENABLED = new BooleanOption("Outline enabled", true).setOnValueChange(optionInstance -> GooberLibUtilityMethods.setListEnabled(optionInstance.getValue(), OUTLINE_ENABLED_CHILDREN));
 
 	public static final Supplier<GooberConfigBuilder> BUILDER = () -> GooberConfigBuilder.create("LARP CBH")
 			.category("Outline", "", categoryBuilder -> categoryBuilder.option(OUTLINE_ENABLED, categoryBuilderOptionContext -> {
-				ConfigSection section1 = new SectionBuilder(null, "Color", "")
+				ConfigSection section1 = ConfigSection.builder("Color")
 						.options(OUTLINE_COLOR, OUTLINE_SECONDARY_COLOR, OUTLINE_ALPHA)
 //						.optionWithChildren(OUTLINE_RAINBOW, new FloatOption("Speed (test)"))
 						.buildSection();
-				ConfigSection section2 = new SectionBuilder(null, "Misc.", "")
+				ConfigSection section2 = ConfigSection.builder("Misc.")
 						.options(OUTLINE_MODE, OUTLINE_WIDTH, OUTLINE_EXPAND, OUTLINE_DEPTH_TEST, OUTLINE_CUT_CENTER, OUTLINE_CUT_CORNER)
 						.buildSection();
+
+				OUTLINE_ENABLED_CHILDREN.addAll(section1.getDirectChildOptions());
+				OUTLINE_ENABLED_CHILDREN.addAll(section2.getDirectChildOptions());
 				categoryBuilderOptionContext.children(section1, section2);
 			}))
 			.category("Fill", "")

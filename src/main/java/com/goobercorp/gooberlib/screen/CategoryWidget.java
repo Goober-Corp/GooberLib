@@ -124,6 +124,7 @@ public class CategoryWidget extends ClickableParentWidget implements Hoverable {
 				totalYOffset -= section.getOffsetRequired();
 			}
 			//TODO: height calculation for rendering does not take into account dual-column layouts
+			// :uhm: it should? see line ~80, it sets the height to y and y in dual column adds the tallest one
 			height += entry.getWrapped().getHeight() + VERTICAL_PADDING / 2f;
 		}
 		this.setHeight((int) height);
@@ -162,7 +163,6 @@ public class CategoryWidget extends ClickableParentWidget implements Hoverable {
 //			yeah += ((EvilBaseWidget) ((SectionWidget) evilLayout.get(o.childOptions().getLast()).getWrapped()).evilLayout.get(o.childOptions().getLast().childOptions().getFirst()).getWrapped()).verticalPosOffset;
 			}
 		}
-		float finalVerticalYPos;
 		RenderUtils.drawVerticalLine(drawContext, (float) mainWidget.getRealX() + 6 + offsetX, (float) mainWidget.getRealY() + mainWidget.getWrapped().getHeight() - 1 + offsetY - clickVal, (float) (lastOne.getRealY() + lastOne.getWrapped().getHeight() / 2F) + yeah, MainConfig.bgColor);
 		RenderUtils.drawVerticalLine(drawContext, (float) mainWidget.getRealX() + 5 + offsetX, (float) mainWidget.getRealY() + mainWidget.getWrapped().getHeight() - 1 + offsetY - clickVal, (float) (lastOne.getRealY() + lastOne.getWrapped().getHeight() / 2F) + yeah, MainConfig.primaryCol);
 		for (OptionHolder opt : o.childOptions()) {
