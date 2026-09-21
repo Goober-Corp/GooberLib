@@ -80,7 +80,9 @@ public abstract class BaseOption<T extends Option<T>> implements Option<T> {
 	@Override
 	public void setEnabled(boolean var) {
 		this.enabled = var;
-		enabledChangeCallback.onStateChanged(thisT(), var);
+		if (enabledChangeCallback != null) {
+			enabledChangeCallback.onStateChanged(thisT(), var);
+		}
 	}
 
 	@Override

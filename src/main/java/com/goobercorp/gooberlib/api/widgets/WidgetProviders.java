@@ -162,8 +162,12 @@ public class WidgetProviders {
 		return RangeSliderWidget::new;
 	}
 
-	public static <E> WidgetProvider<CycleOption<E>> cyclingOption() {
+	public static <E> WidgetProvider<CycleOption<E>> cyclingOptionButtons() {
 		return (opt, x, y, width, height) -> new CyclingOptionWidget(opt, x, y, width, height, Util.fromCharsFunction(opt.getDisplayNameProvider()));
+	}
+
+	public static <E> WidgetProvider<CycleOption<E>> cyclingOptionDropdown() {
+		return (opt, x, y, width, height) -> new DropdownOptionWidget(opt, x, y, width, height, Util.fromCharsFunction(opt.getDisplayNameProvider()));
 	}
 
 	public static <E> WidgetProvider<CycleOption<E>> cyclingOptionWithButtons() {

@@ -325,7 +325,7 @@ public class GooberLibApi {
 		registerWidgetProvider(t -> t instanceof Vec3iOption, WidgetProviders.vec3iFields(), -1);
 		registerWidgetProvider(t -> t instanceof Vec3dOption, WidgetProviders.vec3dFields(), -1);
 		registerWidgetProvider(t -> t instanceof Vec2fOption, WidgetProviders.vec2fFields(), -1);
-		registerWidgetProvider(t -> t instanceof CycleOption, WidgetProviders.cyclingOption(), -1);
+		registerWidgetProvider(t -> t instanceof CycleOption, WidgetProviders.cyclingOptionButtons(), -1);
 		registerWidgetProvider(t -> t instanceof ObjectOption<?>, WidgetProviders.objectOption(), -1);
 		registerWidgetProvider(t -> t instanceof HotkeyOption, WidgetProviders.hotkey(), -1);
 		registerWidgetProvider(t -> t instanceof LabelOption, WidgetProviders.label(), -1);

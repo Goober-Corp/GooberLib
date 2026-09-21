@@ -187,7 +187,8 @@ public class GooberScreen extends Screen {
 			}
 		}
 
-		double catHeight = getCurrentCategoryWidget().getWrapped().getHeight() - height + VERTICAL_PADDING;
+		PrecisePositionWidgetWrapper<CategoryWidget> widget = getCurrentCategoryWidget();
+		double catHeight = widget == null ? 0 : widget.getWrapped().getHeight() - height + VERTICAL_PADDING;
 
 		if (catHeight < scrollTweener.max) {
 			catHeight = scrollTweener.max;
@@ -211,11 +212,13 @@ public class GooberScreen extends Screen {
 	}
 
 	protected PrecisePositionWidgetWrapper<CategoryWidget> getCurrentCategoryWidget() {
+		if (categoryWidgets.isEmpty()) return null;
 		return categoryWidgets.get(showTabs ? tabNavigationWidget.getCurrentTabIndex() : 0);
 	}
 
 	protected void setHoverText(double mouseX, double mouseY) {
-		Component hoverMessage = getCurrentCategoryWidget().getHoverMessage(mouseX, mouseY);
+		PrecisePositionWidgetWrapper<CategoryWidget> widget = getCurrentCategoryWidget();
+		Component hoverMessage = widget == null ? null : widget.getHoverMessage(mouseX, mouseY);
 		if (hoverMessage != null && !hoverMessage.isEmpty()) {
 			animateHoverDescription = true;
 			this.descriptionText = hoverMessage;

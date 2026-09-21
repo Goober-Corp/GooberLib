@@ -17,6 +17,8 @@ import static com.goobercorp.gooberlib.util.RenderUtils.ease;
 import static com.goobercorp.gooberlib.util.RenderUtils.newMatrixScope;
 
 public class EvilBaseWidget extends AbstractWidget {
+	public static final Identifier BUTTON_TEXTURE = Identifier.fromNamespaceAndPath("gooberlib", "widget/button");
+
 	protected Tweener hoverTweener;
 	protected boolean mouseDown = false;
 	public float verticalPosOffset = 0;
@@ -89,7 +91,7 @@ public class EvilBaseWidget extends AbstractWidget {
 
 		newMatrixScope(drawContext, stack -> {
 			stack.translate(horizontalPosOffset, verticalPosOffset);
-			drawContext.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath("gooberlib", "widget/button"), this.getX(), this.getY(), this.getWidth(), this.getHeight(), active ? 0xA0A0A0A0 : 0xA0808080);
+			drawContext.blitSprite(RenderPipelines.GUI_TEXTURED, BUTTON_TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight(), active ? 0xA0A0A0A0 : 0xA0808080);
 			drawText(drawContext);
 			RenderUtils.drawBoxOutline(drawContext, this.getX() + clickTweener.getF(), this.getY() + clickTweener.getF(), this.getRight() - 1 - clickTweener.getF(), this.getBottom() - 1 - clickTweener.getF(), ARGB.srgbLerp(hoverTweener.getF(), 0xFF000000, MainConfig.primaryCol));
 

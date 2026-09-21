@@ -2,7 +2,6 @@ package com.goobercorp.gooberlib.option;
 
 import com.goobercorp.gooberlib.builder.misc.OptionHolder;
 import com.goobercorp.gooberlib.builder.section.ConfigSection;
-import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,5 +51,10 @@ public record OptionContext<P>(P parent, Option<?> option,
 
 	public P build() {
 		return parent;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(option, childOptions);
 	}
 }
