@@ -29,6 +29,7 @@ public class WidgetVariations {
 
 	public static final CycleOption<String> cycleOption = new CycleOption<>("cycle option", "cycle description", WidgetProviders.cyclingOptionWithButtons(), "Option one", "Option two", "Option three");
 	public static final CycleOption<String> cycleOption2 = new CycleOption<>("cycle option", "cycle description", "Option one", "Option two", "Option three");
+	public static final CycleOption<String> cycleOption3 = new CycleOption<>("cycle option", "cycle description", WidgetProviders.cyclingOptionDropdown(), "Option two", "Option three");
 
 	public static final DoubleOption doubleOption = new DoubleOption("double step", 0, 0, 10, WidgetProviders.numberSliderWithStep(0.5));
 
@@ -37,7 +38,7 @@ public class WidgetVariations {
 		category.sectionWithOptions("Slider Toggle Widget", boolopt3, boolopt4);
 		category.sectionWithOptions("String Widget", right, centered, evil, left);
 		category.sectionWithOptions("Button Widget", buttonOption, buttonOptionCentered);
-		category.sectionWithOptions("Cycling Widget", cycleOption, cycleOption2);
+		category.sectionWithOptions("Cycling Widget", cycleOption, cycleOption2, cycleOption3);
 		category.sectionWithOptions("Steps", doubleOption);
 	}));
 }
