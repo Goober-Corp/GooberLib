@@ -163,16 +163,16 @@ public class WidgetProviders {
 	}
 
 	public static <E> WidgetProvider<CycleOption<E>> cyclingOptionButtons() {
-		return (opt, x, y, width, height) -> new CyclingOptionWidget(opt, x, y, width, height, Util.fromCharsFunction(opt.getDisplayNameProvider()));
+		return (opt, x, y, width, height) -> new CyclingOptionWidget(opt, x, y, width, height, o -> Util.fromCharsFunction(opt.getDisplayNameProvider()).apply(o.value));
 	}
 
 	public static <E> WidgetProvider<CycleOption<E>> cyclingOptionDropdown() {
-		return (opt, x, y, width, height) -> new DropdownOptionWidget(opt, x, y, width, height, Util.fromCharsFunction(opt.getDisplayNameProvider()));
+		return (opt, x, y, width, height) -> new DropdownOptionWidget<>(opt, x, y, width, height, Util.fromCharsFunction(opt.getDisplayNameProvider()));
 	}
 
 	public static <E> WidgetProvider<CycleOption<E>> cyclingOptionWithButtons() {
 		return (opt, x, y, width, height) -> {
-			var yeah = new CyclingOptionWidget(opt, x + height, y, width - (height * 2), height, Util.fromCharsFunction(opt.getDisplayNameProvider()), true);
+			var yeah = new CyclingOptionWidget(opt, x + height, y, width - (height * 2), height, o -> Util.fromCharsFunction(opt.getDisplayNameProvider()).apply(o.value), true);
 			var rightArrowWidget = new EvilButtonWidget(">", opt::advance, width - height - 1, y, height + 1, height, true);
 			var leftArrowWidget = new EvilButtonWidget("<", opt::regress, x, y, height + 1, height, true);
 			return new ClickableParentWidget(x, y, width, height, Component.empty(), List.of(leftArrowWidget, yeah, rightArrowWidget));
@@ -269,7 +269,7 @@ public class WidgetProviders {
 	}
 
 	public static WidgetProvider<BooleanOption> booleanToggleWidget() {
-		return (theOption, x, y, width, height) -> new CyclingOptionWidget(theOption, x, y, width, height, o -> CommonComponents.optionStatus(o.getValue()));
+		return (theOption, x, y, width, height) -> new CyclingOptionWidget(theOption, x, y, width, height, o -> CommonComponents.optionStatus(o.value));
 	}
 
 	public static WidgetProvider<BooleanOption> booleanToggleWidgetWithCenteredName() {

@@ -29,7 +29,7 @@ public class WidgetVariations {
 
 	public static final CycleOption<String> cycleOption = new CycleOption<>("cycle option", "cycle description", WidgetProviders.cyclingOptionWithButtons(), "Option one", "Option two", "Option three");
 	public static final CycleOption<String> cycleOption2 = new CycleOption<>("cycle option", "cycle description", "Option one", "Option two", "Option three");
-	public static final CycleOption<String> cycleOption3 = new CycleOption<>("cycle option", "cycle description", WidgetProviders.cyclingOptionDropdown(), "Option two", "Option three");
+	public static final CycleOption<String> cycleOption3 = new CycleOption<>("cycle option", "cycle description", WidgetProviders.cyclingOptionDropdown(), "Option one", "Option two", "Option three");
 
 	public static final DoubleOption doubleOption = new DoubleOption("double step", 0, 0, 10, WidgetProviders.numberSliderWithStep(0.5));
 

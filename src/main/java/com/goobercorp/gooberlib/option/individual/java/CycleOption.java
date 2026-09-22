@@ -6,6 +6,7 @@ import com.goobercorp.gooberlib.option.BaseOption;
 import com.mojang.serialization.DynamicOps;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -75,14 +76,20 @@ public class CycleOption<T> extends BaseOption<CycleOption<T>> implements Advanc
 		return defaultValue;
 	}
 
-	public Function<CycleOption<T>, CharSequence> getDisplayNameProvider() {
-		return o -> displayNameProvider.apply(o.value);
+	public Function<T, CharSequence> getDisplayNameProvider() {
+		return displayNameProvider;
 	}
 
+	public List<T> getPossibleOptions() {
+		return Collections.unmodifiableList(this.options);
+	}
+
+	@Override
 	public void advance() {
 		setValue(options.get((options.indexOf(getValue()) + 1) % options.size()));
 	}
 
+	@Override
 	public void regress() {
 		int index = options.indexOf(getValue()) - 1;
 		setValue(options.get(index == -1 ? options.size() - 1 : index));
